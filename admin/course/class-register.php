@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             $_SESSION['flash_msg_type'] = 'danger';
         }
     } else {
-        $_SESSION['flash_msg'] = 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : ' و استاد مربوطه') . ' را انتخاب کنید.';
+        $_SESSION['flash_msg'] = 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : m('msg.choose_column_and_teacher')) . ' را انتخاب کنید.';
         $_SESSION['flash_msg_type'] = 'warning';
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -1435,9 +1435,9 @@ include_once '../../temp.html';
                             <?php if ((int)$adminrole === 3): ?>
                                 <input type="hidden" name="teacher_id" value="<?php echo (int)$admin_id; ?>">
                             <?php else: ?>
-                                <label class="form-label fw-bold">استاد مربوطه:</label>
+                                <label class="form-label fw-bold"><?php echo m('label.related_teacher') ?></label>
                                 <select class="form-select" name="teacher_id" required>
-                                    <option value="">-- انتخاب استاد --</option>
+                                    <option value=""><?php echo m('label.choose_teacher_dash') ?></option>
                                     <?php foreach ($teachers_list as $teacher):
                                         $teacherName = trim(($teacher['fname'] ?? '') . ' ' . ($teacher['lname'] ?? ''));
                                         if (empty($teacherName)) {

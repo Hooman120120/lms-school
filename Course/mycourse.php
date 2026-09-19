@@ -332,7 +332,7 @@ include_once '../temp.html';
                                         </button>
                                     </form>
                                 <?php  } else { ?>
-                                    <button class="btn btn-secondary disabled">برای دسترسی به خدمات آزمون، پایه موردنظر را خریداری نمایید</button>
+                                    <button class="btn btn-secondary disabled"><?php echo m('msg.buy_course_for_quiz') ?></button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -361,7 +361,7 @@ include_once '../temp.html';
                                     <a href="<?php echo url('Support/SendTicket.php') ?>" class="btn btn-outline-light">
                                         پیام به پشتیبان خود</a>
                                 <?php } else { ?>
-                                    <button class="btn btn-info disabled">برای دسترسی به خدمات کلاس مشاوره، پایه موردنظر را خریداری نمایید</button>
+                                    <button class="btn btn-info disabled"><?php echo m('msg.buy_course_for_advisory') ?></button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -373,8 +373,7 @@ include_once '../temp.html';
                                     <div class="d-flex">
                                         <label class="main-content-label my-auto pt-2">جزوات و تکلیف ارائه شده</label>
                                     </div>
-                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">جزوات ، متون و تکالیف ارائه شده جهت
-                                            دانلود برای این پایه </span>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"><?php echo m('label.materials_for_course') ?> </span>
                                 </div>
                             </div>
                             <div class="card-body text-center">
@@ -432,14 +431,14 @@ include_once '../temp.html';
                                     if (!empty($class->link_eita)) {
                                         ?>
                                         <a href="<?php echo $class->link_eita; ?>" target="_blank" class="btn btn-warning">
-                                            ورود به کانال ایتا پایه
-                                        </a>
+                                            <?php echo m('action.enter_eita_channel') ?>
+</a>
                                     <?php } else { ?>
                                         <!-- OLD BUTTON (unchanged) -->
                                         <a href="<?php echo $course->link_eita; ?>" target="_blank"
                                            class="btn btn-warning">
-                                            ورود به کانال ایتا پایه
-                                        </a>
+                                            <?php echo m('action.enter_eita_channel') ?>
+</a>
                                     <?php } ?>
 
                                     <?php
@@ -469,7 +468,7 @@ include_once '../temp.html';
                                 <?php } else { ?>
 
                                     <button class="btn btn-warning disabled">
-                                        برای دسترسی به خدمات کانال اطلاع رسانی، پایه موردنظر را خریداری نمایید
+                                        <?php echo m('msg.buy_course_for_channel') ?>
                                     </button>
 
                                 <?php } ?>
@@ -490,10 +489,9 @@ include_once '../temp.html';
                             <div class="card-body text-center">
                                 <?php if (!isset($_GET['demo'])) { ?>
                                     <a href="attendance.php?code=<?php echo $course->codecourse ?>&class=<?= $class->id ?>" target="_blank"
-                                       class="btn btn-secondary">دریافت گزارش حضور غیاب
-                                        پایه</a>
+                                       class="btn btn-secondary"><?php echo m('action.attendance_report_course') ?></a>
                                 <?php } else { ?>
-                                    <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>
+                                    <button class="btn btn-secondary disabled"><?php echo m('msg.buy_course_for_online_class') ?></button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -543,16 +541,15 @@ include_once '../temp.html';
                             <?php if (!isset($_GET['demo'])) { ?>
                                 <a href="homework.php?code=<?php echo (int)$course->codecourse ?>" target="_blank"
                                    class="btn btn-secondary position-relative">
-                                    دریافت گزارش تکالیف پایه
-
-                                    <?php if ($hwTodoCount > 0): ?>
+                                    <?php echo m('action.homework_report_course') ?>
+<?php if ($hwTodoCount > 0): ?>
                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                 <?= (int)$hwTodoCount ?>
                                             </span>
                                     <?php endif; ?>
                                 </a>
                             <?php } else { ?>
-                                <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>
+                                <button class="btn btn-secondary disabled"><?php echo m('msg.buy_course_for_online_class') ?></button>
                             <?php } ?>
                         </div>
                     </div>

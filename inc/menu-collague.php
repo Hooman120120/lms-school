@@ -23,21 +23,21 @@ if (!isset($_SESSION['auth'])) {
             </li>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="si si-graduation sidemenu-icon"></i><span class="sidemenu-label">دانش آموزان من</span><i
+                            class="si si-graduation sidemenu-icon"></i><span class="sidemenu-label"><?php echo m('menu.my_students') ?></span><i
                             class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Collague/all-student.php') ?>">  لیست دانش آموزها </a>
+                        <a class="nav-sub-link" href="<?php echo url('Collague/all-student.php') ?>">  <?php echo m('menu.student_list') ?> </a>
                     </li>
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Collague/addstudent.php') ?>">ثبت دانش آموز</a>
+                        <a class="nav-sub-link" href="<?php echo url('Collague/addstudent.php') ?>"><?php echo m('menu.student_add') ?></a>
                     </li>
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Collague/activate-student.php') ?>">فعالسازی دانش آموز</a>
+                        <a class="nav-sub-link" href="<?php echo url('Collague/activate-student.php') ?>"><?php echo m('menu.student_activate') ?></a>
                     </li>
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Collague/sales-course.php') ?>">خرید پایه برای دانش آموز</a>
+                        <a class="nav-sub-link" href="<?php echo url('Collague/sales-course.php') ?>"><?php echo m('menu.buy_grade_for_student') ?></a>
                     </li>
 
 

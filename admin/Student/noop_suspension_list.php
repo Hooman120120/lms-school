@@ -99,7 +99,7 @@ include_once '../../temp.html';
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
-    <title>لیست دانش آموزان من | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.my_students_list') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .course-pill.active { box-shadow: 0 0 0 .15rem rgba(13,110,253,.25); }
@@ -130,7 +130,7 @@ include_once '../../temp.html';
                     <div class="card-header border-bottom-0 pb-0">
                         <div>
                             <div class="d-flex">
-                                <label class="main-content-label my-auto pt-2">دانش آموزان تعلیق‌شده توسط من</label>
+                                <label class="main-content-label my-auto pt-2"><?php echo m('label.suspended_by_me') ?></label>
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ include_once '../../temp.html';
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th style="width: 150px; min-width: 150px;">دانش‌آموز</th>
+                                    <th style="width: 150px; min-width: 150px;"><?php echo m('col.student') ?></th>
                                     <th>کد ملی</th>
                                     <th style="width: 250px; min-width: 250px;">علت تعلیق</th>
                                     <th>تاریخ تعلیق</th>
@@ -190,7 +190,7 @@ include_once '../../temp.html';
                     <div class="card-header border-bottom-0 pb-0">
                         <div>
                             <div class="d-flex">
-                                <label class="main-content-label my-auto pt-2">دانش آموزان لغو پشتیبانی شده توسط من</label>
+                                <label class="main-content-label my-auto pt-2"><?php echo m('label.canceled_op_by_me') ?></label>
                             </div>
                         </div>
                     </div>
@@ -200,7 +200,7 @@ include_once '../../temp.html';
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th style="width: 150px; min-width: 150px;">دانش‌آموز</th>
+                                    <th style="width: 150px; min-width: 150px;"><?php echo m('col.student') ?></th>
                                     <th>کد ملی</th>
                                     <th>تاریخ لغو</th>
                                 </tr>

@@ -63,7 +63,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
     </div>
     <div class="main-sidebar-body">
         <ul class="nav">
-            <li class="nav-header"><span class="nav-label"> پنل کاربری معلم</span></li>
+            <li class="nav-header"><span class="nav-label"> <?php echo m('label.teacher_panel') ?></span></li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo url('admin/index.php') ?>">
                     <span class="shape1"></span>
@@ -137,7 +137,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                     </a>
                     <ul class="nav-sub">
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/course/homework_check.php') ?>">تایید تکالیف ارسالی اساتید</a>
+                            <a class="nav-sub-link" href="<?php echo url('admin/course/homework_check.php') ?>"><?php echo m('action.approve_teacher_homeworks') ?></a>
                         </li>
 
                     </ul>

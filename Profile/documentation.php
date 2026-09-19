@@ -123,7 +123,7 @@ include_once '../temp.html';
                                     <div class="d-flex">
                                         <label class="main-content-label my-auto pt-2">ارسال مدارک و مستندات</label>
                                     </div>
-                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">اگر مدرک ارسالی مرتبط با پایه خاصی می باشد در قسمت توضیحات درج گردد</span>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted"><?php echo m('doc.grade_hint') ?></span>
                                 </div>
                             </div>
                             <div class="card-body">

@@ -97,7 +97,7 @@ if (isset($_GET['addcheckout']) && $_GET['addcheckout'] != '') {
         if ($is_ajax) {
             if (ob_get_length()) ob_clean();
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode(['status' => 'error', 'message' => 'این پایه قبلا برای شما فعال شده است']);
+            echo json_encode(['status' => 'error', 'message' => m('msg.course_already_active')]);
             exit();
         }
         $_SESSION['massege'] = 31;
@@ -133,7 +133,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title> طرح ها و پایه ها | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.plans_and_courses') ?> | <?php echo __TITLE ?></title>
     <?php include_once 'inc/link.php'; ?>
 
     <style>
@@ -533,8 +533,8 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
 
                             <div id="courses-section" style="display: none; margin-top: 40px;">
                                 <h5 id="dynamic-course-title" class="mb-4 text-primary" style="font-weight: 900; border-right: 4px solid; padding-right: 10px;">
-                                    پایه های آموزشی
-                                </h5>
+                                    <?php echo m('label.educational_courses') ?>
+</h5>
                                 <div id="results-area" class="results-area-style">
                                 </div>
                             </div>

@@ -202,7 +202,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت دانش آموز | موسسه هنرآموزش</title>
+    <title> <?php echo m('page.add_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -225,20 +225,20 @@ include_once '../temp.html';
 
                     <div class="card custom-card">
                         <div class="card-header">
-                            <h5 class="mb-3 font-weight-bold tx-14">ثبت اطلاعات دانش آموز</h5>
+                            <h5 class="mb-3 font-weight-bold tx-14"><?php echo m('label.register_student_info') ?></h5>
                         </div>
 
                         <div class="card-body">
                             <?php if (isset($verify) and $verify == 100) { ?>
                             <div class="alert alert-success alert-dismissible fade show"
                                  role="alert">
-                                <h5 class="alert-heading">اطلاعات دانش آموز ثبت و رمز عبور به شماره اعلامی پیامک شد</h5>
+                                <h5 class="alert-heading"><?php echo m('msg.student_saved_sms2') ?></h5>
                                 <hr>
-                                <p class="mb-0">خواهشمند است از دانش آموز بخواهید ، وارد حساب کاربری خود شده و کد فعالسازی را به شما ارائه نماید
+                                <p class="mb-0"><?php echo m('help.ask_student_activation_code') ?>
                                    </p>
-                                <p class="mb-2">جهت آشنایی بیشتر از نحوه چگونگی استفاده ، فایل زیر را پرینت گرفته و در اختیار دانش آموز قرار دهید
+                                <p class="mb-2"><?php echo m('help.print_guide_for_student') ?>
                                 </p>
-                                <p class="mb-0"><a href="../assets/doc/s1.pdf" target="_blank" class="btn btn-primary">فایل راهنمای دانش آموز</a>
+                                <p class="mb-0"><a href="../assets/doc/s1.pdf" target="_blank" class="btn btn-primary"><?php echo m('action.student_guide_file') ?></a>
                                 </p>
                                 <button type="button" class="close" data-bs-dismiss="alert"
                                         aria-label="Close">
@@ -307,7 +307,7 @@ include_once '../temp.html';
 <!--                                                <div class="card-body">-->
 
                                                     <div class="col-xl-6">
-                                                        <label for="sens" class="form-label mg-t-15">کدملی دانش آموز: <span
+                                                        <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span
                                                                     style="color: red">*</span></label>
                                                         <input class="form-control" name="codemeli" type="text"
                                                                placeholder="با اعداد انگلیسی وارد شود"
@@ -320,13 +320,13 @@ include_once '../temp.html';
                                                     <input class="form-control" name="token" type="hidden"
                                                            value="<?php echo $hash ?>">
                                                     <div class="text-muted pd-t-10">
-                                                        حداکثر مدت زمان مجاز ثبت اطلاعات برای دانش آموز 15 دقیقه می باشد
+                                                        <?php echo m('help.max_time_for_student') ?>
                                                     </div>
                                                     <div class="text-muted pd-t-10">
-                                                        اطلاعات زیر را برای ثبت دانش آموز آماده داشته باشید
+                                                        <?php echo m('help.prepare_info') ?>
 
                                                         <ol>
-                                                            <li>کد ملی و شماره موبایل دانش آموز</li>
+                                                            <li><?php echo m('li.student_nid_mobile') ?></li>
                                                             <li>نام پدر و شماره تماس پدر و مادر</li>
                                                             <li>پایه تحصیلی و رشته</li>
                                                             <li>استان و شهر محل سکونت</li>
@@ -355,7 +355,7 @@ include_once '../temp.html';
                                                 <form method="post" data-parsley-validate="">
                                                     <div class="col-xl-6">
 
-                                                        <label for="tel-student" class="form-label">شماره دانش آموز:
+                                                        <label for="tel-student" class="form-label"><?php echo m('form.student_phone_short') ?>
                                                             <span
                                                                     style="color: red">*</span></label>
                                                         <input type="number" name="tel" class="form-control"
@@ -368,7 +368,7 @@ include_once '../temp.html';
                                                                 وارد شود
                                                             </li>
 
-                                                            <li> شماره تکراری برای دانش آموزان مورد پذیرش نمی باشد</li>
+                                                            <li> <?php echo m('help.duplicate_phone') ?></li>
 
 
                                                             <li> اطلاعات حساب کاربری ، رمزعبور و ... به این شماره ارسال
@@ -479,7 +479,7 @@ include_once '../temp.html';
                                                                                name="tel1"
 
                                                                                aria-describedby="basic-addon2"
-                                                                               aria-label="شماره همراه دانش آموز"
+                                                                               aria-label="<?php echo m('aria.student_mobile') ?>"
                                                                                class="form-control"
                                                                                value="<?php echo $_SESSION['add-student']['tel']; ?>"
                                                                                disabled>

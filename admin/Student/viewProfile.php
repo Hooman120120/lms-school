@@ -62,7 +62,7 @@ include_once '../../temp.html';
 
         نوع حساب کاربری:
             <?php if(typeUser($_GET['code'])==1){
-                $role='دانش آموز';
+                $role=t('student');
             }else{
                 $role='همکار آموزشی';
             }
@@ -95,7 +95,7 @@ include_once '../../temp.html';
             </dd>
         </dl>
         <dl class="dlist-align">
-            <dt class="">تلفن دانش آموز:</dt>
+            <dt class=""><?php echo m('label.student_phone_colon') ?></dt>
             <dd class="text-right mr-auto">
                 <?php echo $ret->tel1 ?>
             </dd>
@@ -137,7 +137,7 @@ include_once '../../temp.html';
             </dd>
         </dl>
         <dl class="dlist-align">
-            <dt class="">پایه:</dt>
+            <dt class=""><?php echo m('label.grade_colon2') ?></dt>
             <dd class="text-right mr-auto">
                 <?php echo $ret->paye ?>
             </dd>

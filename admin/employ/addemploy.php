@@ -137,7 +137,7 @@ $employeePermissionColumns = [
             'items' => [
                 ['menu-allert', 'emenu-allert', 'permision_viewalert', 'مدیریت اعلان‌ها و گفت‌وگوهای داخلی', 'امکان مشاهده و مدیریت اعلان‌ها، قواعد اعلان و گفت‌وگوهای داخلی سامانه را می‌دهد.'],
                 ['menu-doc', 'emenu-doc', 'permision_viewdocument', 'مدیریت مستندات مدرسه', 'اجازه جست‌وجو، ثبت و مدیریت مستندات داخلی مدرسه را می‌دهد.'],
-                ['menu-employ', 'emenu-employ', 'permision_viewemploy', 'مدیریت حساب همکاران و معلمان', 'امکان مشاهده، ثبت، ویرایش و فعال/غیرفعال‌سازی حساب همکاران و معلمان را می‌دهد.'],
+                ['menu-employ', 'emenu-employ', 'permision_viewemploy', m('perm.employ_title'), m('perm.employ_desc')],
                 ['menu-setting', 'emenu-setting', 'permision_viewsetting', 'مدیریت تنظیمات عمومی سامانه', 'اجازه ورود به تنظیمات عمومی، لیست سیاه و اطلاعات مالی پایه سامانه را می‌دهد.'],
             ],
         ],
@@ -146,7 +146,7 @@ $employeePermissionColumns = [
         [
             'title' => 'پایه‌ها، کلاس‌ها و آزمون',
             'items' => [
-                ['menu-course', 'emenu-course', 'permision_viewcourse', 'مدیریت پایه‌ها، کلاس‌ها و محتوای آموزشی', 'دسترسی گسترده به ایجاد و ویرایش پایه/پایه، کلاس، محتوا، حضوروغیاب، تخصیص معلم و گزارش‌های آموزشی می‌دهد.'],
+                ['menu-course', 'emenu-course', 'permision_viewcourse', 'مدیریت پایه‌ها، کلاس‌ها و محتوای آموزشی', m('perm.course_desc')],
                 ['del-course', 'edel-course', 'permision_deletcourse', 'حذف و تغییر وضعیت پایه‌ها و کلاس‌ها', 'اجازه حذف، فعال/غیرفعال‌کردن پایه‌ها و در برخی صفحات حذف کلاس یا محتوا را می‌دهد.'],
                 ['discount', 'ediscount', 'permision_discount', 'مدیریت کدهای تخفیف', 'اجازه ایجاد و مدیریت کدهای تخفیف ثبت‌نام را می‌دهد.'],
                 ['menu-quiz', 'emenu-quiz', 'permision_viewtest', 'مدیریت آزمون‌ها و نتایج', 'اجازه مشاهده، ایجاد و مدیریت آزمون، پاسخ‌نامه، غایبان و نتایج را می‌دهد. مجوز حذف آزمون جداست.'],

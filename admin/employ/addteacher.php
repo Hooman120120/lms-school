@@ -35,11 +35,11 @@ $teacherSchoolRoleStmt->execute();
 $teacherSchoolRoleId = (int)($teacherSchoolRoleStmt->fetchColumn() ?: 8);
 
 $teacherPermissionItems = [
-    ['teacher_perm_courses', 'مشاهده پایه‌ها و کلاس‌های تخصیص‌یافته', 'پایه‌ها و کلاس‌هایی که معلم به آن‌ها تخصیص داده شده است در پنل او نمایش داده می‌شوند.'],
-    ['teacher_perm_students', 'مشاهده دانش‌آموزان کلاس', 'فهرست دانش‌آموزان و وضعیت ارسال تکالیف را فقط در کلاس‌های تخصیص‌یافته به معلم نمایش می‌دهد.'],
-    ['teacher_perm_attendance', 'ثبت جلسات، حضوروغیاب و نمرات', 'معلم می‌تواند جلسه درسی تعریف کند، حضوروغیاب و نمره ثبت کند و موارد انضباطی کلاس‌های خود را ثبت کند.'],
+    ['teacher_perm_courses', 'مشاهده پایه‌ها و کلاس‌های تخصیص‌یافته', m('perm.teacher_courses_desc')],
+    ['teacher_perm_students', 'مشاهده دانش‌آموزان کلاس', m('perm.teacher_students_desc')],
+    ['teacher_perm_attendance', 'ثبت جلسات، حضوروغیاب و نمرات', m('perm.teacher_attendance_desc')],
     ['teacher_perm_homework', 'مدیریت تکالیف کلاس', 'اجازه ایجاد، ویرایش، حذف و بررسی پاسخ‌های تکلیف در کلاس‌های تخصیص‌یافته را می‌دهد.'],
-    ['teacher_perm_content', 'سرفصل، فیلم و جزوه کلاس', 'اجازه مشاهده و تعریف سرفصل و همچنین ثبت یا بارگذاری فیلم و جزوه برای پایه‌ها و کلاس‌های تخصیص‌یافته به معلم را می‌دهد.'],
+    ['teacher_perm_content', 'سرفصل، فیلم و جزوه کلاس', m('perm.teacher_content_desc')],
     ['teacher_perm_messages', 'پیام‌ها و پیگیری‌های آموزشی', 'امکان مشاهده و ارسال پیام، فایل و گزارش آموزشی به مدیریت یا مسئول پیگیری را می‌دهد.'],
 ];
 $documentUploadErrors = $_SESSION['admin_document_flash_errors'] ?? [];
@@ -82,7 +82,7 @@ function renderTeacherGroupSelector(array $selectedIds = [], string $id = 'teach
     $selectedIds = array_map('intval', $selectedIds);
     ?>
     <div class="mt-3 pt-3 border-top">
-        <label class="form-label" for="<?= htmlspecialchars($id) ?>">گروه‌های آموزشی معلم</label>
+        <label class="form-label" for="<?= htmlspecialchars($id) ?>"><?php echo m('label.teacher_groups') ?></label>
         <div class="d-flex align-items-start" style="gap:8px;">
             <select id="<?= htmlspecialchars($id) ?>" class="form-control js-teacher-groups"
                     name="teacher_groups[]" multiple data-placeholder="انتخاب گروه‌ها ..." style="flex:1 1 auto;">
@@ -215,7 +215,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title>افزودن معلم جدید | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.add_teacher') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .teacher-permission-option {
@@ -289,8 +289,8 @@ include_once '../../temp.html';
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-items-center justify-content-between" style="background-color: #5c6bc0;">
                                         اطلاعات عمومی
                                         <span class="menu-info-trigger" style="color: white; cursor: pointer;"
-                                              data-tooltip="در این بخش می‌توانید اطلاعات عمومی حساب معلم را ثبت کنید. نام کاربری و رمز عبور را فقط در اختیار شخص مجاز قرار دهید."
-                                              aria-label="راهنمای ایجاد معلم و اطلاعات ورود"
+                                              data-tooltip="<?php echo m('tooltip.add_teacher') ?>"
+                                              aria-label="<?php echo m('aria.add_teacher_help') ?>"
                                               onclick="event.preventDefault(); event.stopPropagation();">
                                             <i class="fe fe-info fs-4"></i>
                                         </span>
@@ -367,16 +367,16 @@ include_once '../../temp.html';
                             <div class="col-lg-6 mb-4">
                                 <div class="card custom-card h-100 border-0 shadow-sm">
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-items-center justify-content-between" style="background-color: #3949ab;">
-                                        مجوزهای آموزشی معلم
-                                        <span class="menu-info-trigger" style="color: white; cursor: help;"
-                                              data-tooltip="فقط امکانات مورد نیاز این معلم را فعال کنید. این مجوزها صرفاً نمایشی نیستند و دسترسی مستقیم به صفحات و عملیات مربوط نیز کنترل می‌شود."
-                                              aria-label="راهنمای مجوزهای آموزشی معلم"
+                                        <?php echo m('label.teacher_permissions') ?>
+<span class="menu-info-trigger" style="color: white; cursor: help;"
+                                              data-tooltip="<?php echo m('tooltip.teacher_permissions') ?>"
+                                              aria-label="<?php echo m('aria.teacher_permissions_help') ?>"
                                               onclick="event.preventDefault(); event.stopPropagation();">
                                             <i class="fe fe-info fs-4"></i>
                                         </span>
                                     </div>
                                     <div class="card-body">
-                                        <div class="alert alert-info py-2">مجوزهای مورد نیاز را تیک بزنید؛ معلم فقط به کلاس‌های تخصیص‌یافته خودش دسترسی خواهد داشت.</div>
+                                        <div class="alert alert-info py-2"><?php echo m('help.teacher_permissions_scope') ?></div>
                                         <?php renderTeacherPermissions($teacherPermissionItems); ?>
                                         <?php renderTeacherGroupSelector([], 'teacherGroupsAdd'); ?>
                                     </div>
@@ -387,7 +387,7 @@ include_once '../../temp.html';
                         <div class="row">
                             <div class="col-12 mb-4">
                                 <div class="card custom-card border-0 shadow-sm" id="personnel-documents">
-                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;">مدارک و سوابق معلم</div>
+                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;"><?php echo m('label.teacher_documents') ?></div>
                                     <div class="card-body">
                                         <div class="alert alert-light border">فرمت‌های مجاز: PDF، تصویر، Word — حداکثر حجم هر فایل ۱۰ مگابایت</div>
                                         <?php RenderAdminDocumentUploadFields(); ?>
@@ -400,7 +400,7 @@ include_once '../../temp.html';
                         <div class="row mt-3">
                             <div class="col-12 d-flex justify-content-start gap-2">
                                 <button type="submit" class="btn btn-success px-4" name="save">
-                                    <i class="fa fa-save"></i> ذخیره تنظیمات و ایجاد معلم
+                                    <i class="fa fa-save"></i> <?php echo m('action.save_and_create_teacher') ?>
                                 </button>
                                 <a href="listteacher.php" class="btn text-white px-4" style="background-color: #e91e63;">
                                     انصراف و بازگشت
@@ -455,8 +455,8 @@ include_once '../../temp.html';
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex justify-content-between align-items-center" style="background-color: #5c6bc0;">
                                         <span class="d-flex align-items-center gap-2">اطلاعات عمومی
                                            <span class="menu-info-trigger" style="color: white; cursor: pointer;"
-                                                 data-tooltip="در این بخش می‌توانید اطلاعات عمومی حساب کاربری معلم را ویرایش کنید."
-                                                 aria-label="راهنمای ویرایش معلم"
+                                                 data-tooltip="<?php echo m('tooltip.edit_teacher') ?>"
+                                                 aria-label="<?php echo m('aria.edit_teacher_help') ?>"
                                                  onclick="event.preventDefault(); event.stopPropagation();">
                                                 <i class="fe fe-info fs-4"></i>
                                            </span>
@@ -537,16 +537,16 @@ include_once '../../temp.html';
                             <div class="col-lg-6 mb-4">
                                 <div class="card custom-card h-100 border-0 shadow-sm">
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-items-center justify-content-between" style="background-color: #3949ab;">
-                                        مجوزهای آموزشی معلم
-                                        <span class="menu-info-trigger" style="color: white; cursor: help;"
-                                              data-tooltip="با برداشتن هر تیک، گزینه مربوط از پنل معلم حذف و دسترسی مستقیم او به آن بخش نیز مسدود می‌شود."
-                                              aria-label="راهنمای ویرایش مجوزهای معلم"
+                                        <?php echo m('label.teacher_permissions') ?>
+<span class="menu-info-trigger" style="color: white; cursor: help;"
+                                              data-tooltip="<?php echo m('tooltip.edit_teacher_permissions') ?>"
+                                              aria-label="<?php echo m('aria.edit_teacher_permissions_help') ?>"
                                               onclick="event.preventDefault(); event.stopPropagation();">
                                             <i class="fe fe-info fs-4"></i>
                                         </span>
                                     </div>
                                     <div class="card-body">
-                                        <div class="alert alert-info py-2">تغییرات بعد از ذخیره برای این معلم اعمال می‌شود و دامنه دسترسی او همچنان محدود به کلاس‌های خودش است.</div>
+                                        <div class="alert alert-info py-2"><?php echo m('help.teacher_changes_scope') ?></div>
                                         <?php renderTeacherPermissions($teacherPermissionItems, $retadmin); ?>
                                         <?php renderTeacherGroupSelector($teacherGroupIds, 'teacherGroupsEdit'); ?>
                                     </div>
@@ -557,7 +557,7 @@ include_once '../../temp.html';
                         <div class="row">
                             <div class="col-12 mb-4">
                                 <div class="card custom-card border-0 shadow-sm" id="personnel-documents">
-                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;">مدارک و سوابق معلم</div>
+                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;"><?php echo m('label.teacher_documents') ?></div>
                                     <div class="card-body">
                                         <?php if ($documentUploadErrors): ?>
                                             <div class="alert alert-danger"><?= htmlspecialchars(implode(' ', $documentUploadErrors)) ?></div>
@@ -573,7 +573,7 @@ include_once '../../temp.html';
                         <div class="row mt-3">
                             <div class="col-12 d-flex justify-content-start gap-2">
                                 <button type="submit" class="btn btn-warning px-4" name="esave">
-                                    <i class="fa fa-save"></i> ذخیره تنظیمات و ویرایش معلم
+                                    <i class="fa fa-save"></i> <?php echo m('action.save_and_edit_teacher') ?>
                                 </button>
                                 <a href="listteacher.php" class="btn text-white px-4" style="background-color: #e91e63;">
                                     انصراف و بازگشت

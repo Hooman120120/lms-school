@@ -55,7 +55,7 @@ if ($adminrole === 3 && (
     isset($_POST['username']) || isset($_POST['upload_excel']) || isset($_GET['delete_user'])
 )) {
     http_response_code(403);
-    exit('معلم مجوز افزودن یا حذف دانش‌آموز کلاس را ندارد.');
+    exit(m('perm.teacher_no_student_edit'));
 }
 
 $courseStmt = $conn->prepare("SELECT * FROM classes WHERE id = ?");

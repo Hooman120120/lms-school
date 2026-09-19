@@ -55,7 +55,7 @@ if ($adminRole === 3) {
     }
     if ($teacherMutationRequested) {
         http_response_code(403);
-        exit('معلم مجوز تغییر ساختار کلاس را ندارد.');
+        exit(m('perm.teacher_no_class_structure'));
     }
 } elseif (StaffCourseScopeRequired($currentUser) && (
     $requestedCourseCode <= 0 || !StaffHasCourseAccess($requestedCourseCode, $currentUser)

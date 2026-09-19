@@ -85,7 +85,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دانش آموزان انصرافی |<?php echo __TITLE ?></title>
+    <title> <?php echo m('page.canceled_students') ?> |<?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .course-pill.active { box-shadow: 0 0 0 .15rem rgba(13,110,253,.25); }
@@ -116,12 +116,12 @@ include_once '../../temp.html';
                                     <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                         <h6 class="main-content-label mb-0">
-                                            لیست دانش آموزان انصرافی
+                                            <?php echo m('label.canceled_students_list') ?>
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش می توانید لیست دانش آموزانی که از یک یا چند پایه انصراف داده و درخواست انصراف آن ها توسط کارشناسان پشتیبانی ثبت و در نهایت تائید شده است را مشاهده نمایید و همچنین اطلاعات پایه، وضعیت انصراف و مشخصات دانش آموزان در این بخش قابل بررسی می باشد."
-                                              aria-label="راهنمای لیست دانش‌آموزان انصرافی">
+                                              data-tooltip="<?php echo m('tooltip.canceled_students') ?>"
+                                              aria-label="<?php echo m('aria.canceled_students_help') ?>">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -129,19 +129,19 @@ include_once '../../temp.html';
                                     </div>
 
                                     <p class="text-muted card-sub-title">
-                                        مشاهده دانش آموزان انصراف‌داده از پایه‌ها
+                                        <?php echo m('label.view_canceled_from_courses') ?>
                                     </p>
                                 </div>
                             </div>
                             <!-- ====== Course Filter Dropdown ====== -->
                             <!-- ========== COURSE FILTER DROPDOWN ========== -->
                             <div class="mb-3 position-relative" id="courseFilterWrapper" dir="rtl">
-                                <label for="courseFilterDropdown" class="form-label fw-semibold">فیلتر بر اساس پایه‌ها</label>
+                                <label for="courseFilterDropdown" class="form-label fw-semibold"><?php echo m('label.filter_by_courses') ?></label>
 
                                 <div class="dropdown w-100">
                                     <button class="btn btn-outline-info w-100 d-flex justify-content-between align-items-center"
                                             type="button" id="courseFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        انتخاب پایه‌ها
+                                        <?php echo m('action.choose_courses') ?>
                                         <span class="ms-2 small text-muted">▼</span>
                                     </button>
 
@@ -194,7 +194,7 @@ include_once '../../temp.html';
                                         <th>نام</th>
                                         <th>استان</th>
                                         <th>شهر</th>
-                                        <th class="text-wrap text-break" style="max-width: 200px;">پایه</th>
+                                        <th class="text-wrap text-break" style="max-width: 200px;"><?php echo t('grade') ?></th>
                                         <th>اقدام</th>
                                     </tr>
                                     </thead>
@@ -221,7 +221,7 @@ include_once '../../temp.html';
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='6' class='text-center text-danger'>هیچ دانش آموزی با وضعیت انصرافی یافت نشد.</td></tr>";
+                                        echo "<tr><td colspan='6' class='text-center text-danger'>" . m('msg.no_canceled_student') . "</td></tr>";
                                     }
                                     ?>
                                     </tbody>

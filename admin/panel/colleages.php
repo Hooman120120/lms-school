@@ -87,7 +87,7 @@ $endG   = toGregorianDate($endJalali);
 if ($isadmin && $applied) {
 
     if (!in_array($type, ['teachers', 'staff', 'external'], true)) {
-        $_SESSION['message'] = 'ابتدا نوع را انتخاب کنید (اساتید / کارمندان / همکاران بیرونی).';
+        $_SESSION['message'] = m('msg.choose_type_first');
     } else {
 
         if ($type === 'teachers') {
@@ -199,7 +199,7 @@ include_once '../../temp.html';
                                     <!-- Types -->
                                     <div class="col-5 d-flex flex-column justify-content-center align-content-center">
                                         <div class="d-flex flex-wrap gap-2 mb-2 justify-content-center">
-                                            <button type="button" class="btn btn-outline-success type-btn" data-type="teachers">اساتید</button>
+                                            <button type="button" class="btn btn-outline-success type-btn" data-type="teachers"><?php echo t('teacher_alt') ?></button>
                                             <button type="button" class="btn btn-outline-primary type-btn" data-type="staff">کارمندان</button>
                                             <button type="button" class="btn btn-outline-warning type-btn" data-type="external">همکاران بیرونی</button>
                                         </div>

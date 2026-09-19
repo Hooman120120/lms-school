@@ -360,7 +360,7 @@ include_once '../temp.html';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>تکالیف دانش آموز</title>
+    <title><?php echo m('page.student_homeworks') ?></title>
     <?php include_once '../inc/link.php'; ?>
     <style>
         .td-description {

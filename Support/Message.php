@@ -42,7 +42,7 @@ if ($query->rowCount() > 0) {
     }
 } else { 
     $noSupporter = 1;
-    $message = 'شما پایه خریداری شده فعال ندارید . ';
+    $message = m('msg.no_active_course');
 }
 if (is_null($admin)) { 
     $admin = 'managers';

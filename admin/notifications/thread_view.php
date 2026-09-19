@@ -735,7 +735,7 @@ $teacherUsername = (string)($teacherTicket['teacher_username'] ?? '');
 function sender_label_fa(object $m, string $teacherUsername): string
 {
     $u = (string)($m->sender_username ?? '');
-    if ($u === $teacherUsername) return 'معلم';
+    if ($u === $teacherUsername) return t('teacher');
     $admin = (int)($m->sender_administrator ?? 0);
     $role = (int)($m->sender_adminrole ?? 0);
     if ($admin === 1) return 'مدیر کل';
@@ -779,7 +779,7 @@ include_once '../../temp.html';
     <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title>مشاهده تیکت معلم | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.view_teacher_ticket') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .msg-row {
@@ -938,7 +938,7 @@ include_once '../../temp.html';
                             <div class="card-header">
                                 <div class="d-flex flex-row justify-content-between" >
                                     <div class="h5">
-                                    تیکت معلم #<?= (int)$teacherTicket['id'] ?>
+                                    <?php echo m('label.teacher_ticket') ?> #<?= (int)$teacherTicket['id'] ?>
                                     — <?= h($teacherTicket['title'] ?? '—') ?>
                                     </div>
                                     <div ><a class="nav-link" data-bs-toggle="tooltip" href="#" title="محدودیت حجم آپلود 20 مگابایت است و فایل های قابل آپلود به این صورت هستند: .pdf,doc,docx,jpg,png,zip,rar">
@@ -950,7 +950,7 @@ include_once '../../temp.html';
 
                                 <div class="d-flex flex-wrap gap-3">
                                     <div>
-                                        معلم: <span
+                                        <?php echo m('label.teacher_colon') ?> <span
                                                 class="badge bg-info"><?php echo $teacherfullname[0]['fname'].' '.$teacherfullname[0]['lname'] ?></span>
                                     </div>
 

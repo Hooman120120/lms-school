@@ -66,7 +66,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> فعال سازی دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.activate_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -103,17 +103,17 @@ include_once '../temp.html';
                                     <div class="card-body">
                                         <div class="row">
 
-                                            <label for="sens" class="form-label">کد تایید دانش آموز: <span
+                                            <label for="sens" class="form-label"><?php echo m('label.student_verify_code') ?> <span
                                                         style="color: red">*</span> <span class="text-warning"> (<?php echo $_GET['id'] ?>) </span></label>
                                             <div class="col-xl-8">
                                                 <input class="form-control" name="key" type="text"
                                                        placeholder="کد با اعداد انگلیسی وارد شود"
                                                        pattern="[0-9]{4}" required>
                                                 <div class="text-muted pd-t-10">
-                                                    این کد قابل مشاهده در حساب کاربری دانش آموز می باشد
+                                                    <?php echo m('help.code_visible_in_account') ?>
                                                 </div>
                                                 <div class="text-muted pd-t-10">
-                                                    از دانش آموز بخواهید بر اساس اطلاعاتی که برایش پیامک شده وارد حساب کاربری خود شده و کد نمایان شده را به شما تحویل دهد
+                                                    <?php echo m('help.ask_student_for_code') ?>
                                                 </div>
                                             </div>
                                             <?php
@@ -145,8 +145,7 @@ include_once '../temp.html';
                             <?php if (isset($valid) and $valid == 1) { ?>
                                 <div class="alert alert-success alert-dismissible fade show"
                                      role="alert">
-                                    دانش آموز با کد ملی <?php echo $_POST['user'] ?> تایید شد. می توانید پایه برایش خرید
-                                    نمایید
+                                    <?php echo m('msg.student_verified', [':n' => $_POST['user']]) ?>
                                     <button type="button" class="close" data-bs-dismiss="alert"
                                             aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
@@ -158,14 +157,14 @@ include_once '../temp.html';
                                     <div class="card-body">
                                         <div class="row">
 
-                                            <label for="sens" class="form-label">کد ملی دانش آموز: <span
+                                            <label for="sens" class="form-label"><?php echo m('label.student_nid_colon') ?> <span
                                                         style="color: red">*</span></label>
                                             <div class="col-xl-6">
                                                 <input class="form-control" name="id" type="text"
                                                        placeholder="با اعداد انگلیسی وارد شود"
                                                        pattern="[0-9]{10}" required>
                                                 <div class="text-muted pd-t-10">
-                                                    کدملی دانش آموز را وارد کنید
+                                                    <?php echo m('help.enter_student_nid') ?>
                                                 </div>
                                             </div>
 

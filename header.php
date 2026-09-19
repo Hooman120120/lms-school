@@ -20,6 +20,12 @@ $query->execute([$_SESSION['auth']['user'],1]);
 $result=$query->fetch();
 ?>
 
+<?php /* واژه‌نامهٔ سامانه برای استفادهٔ اسکریپت‌های سمت کاربر */ ?>
+<script>
+    window.INST_TYPE = <?php echo json_encode(inst_type()) ?>;
+    window.TERMS     = <?php echo inst_terms_json() ?>;
+</script>
+
 <<div class="main-header side-header sticky">
     <div class="container-fluid">
         <div class="main-header-right">
@@ -126,7 +132,7 @@ $result=$query->fetch();
                 <div class="dropdown-menu">
                     <div class="header-navheading">
                         <h6 class="main-notification-title"><?php echo $_SESSION['auth']['name']." " .$_SESSION['auth']['famili'] ?></h6>
-                        <p class="main-notification-text"><?php if($_SESSION['auth']['role']==1){ echo 'پایه '. $_SESSION['auth']['paye'];} else{ echo 'همکار آموزشی';} ?></p>
+                        <p class="main-notification-text"><?php if($_SESSION['auth']['role']==1){ echo m('grade.with_number', [':n' => $_SESSION['auth']['paye']]);} else{ echo 'همکار آموزشی';} ?></p>
                     </div>
                     <a class="dropdown-item border-top" href="<?php echo url('Profile/user.php') ?>">
                         <i class="fe fe-user"></i>ویرایش کاربری
@@ -213,7 +219,7 @@ $result=$query->fetch();
                     <div class="dropdown-menu">
                         <div class="header-navheading">
                             <h6 class="main-notification-title"><?php echo $_SESSION['auth']['name']." " .$_SESSION['auth']['famili'] ?></h6>
-                            <p class="main-notification-text"><?php if($_SESSION['auth']['role']==1){ echo 'پایه '. $_SESSION['auth']['paye'];} else{ echo 'همکار آموزشی';} ?></p>
+                            <p class="main-notification-text"><?php if($_SESSION['auth']['role']==1){ echo m('grade.with_number', [':n' => $_SESSION['auth']['paye']]);} else{ echo 'همکار آموزشی';} ?></p>
                         </div>
                         <a class="dropdown-item border-top" href="<?php echo url('Users/profile.php') ?>">
                             <i class="fe fe-user"></i> پروفایل من

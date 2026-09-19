@@ -48,7 +48,7 @@ if(isset($_GET['state'])){
 
     if ($stm) {
         $delimiter = ",";
-        $filename = "گزارش دانش آموزان استان " . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
+        $filename = m('export.filename_by_state') . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
 
         header('Content-Encoding: UTF-8');
         header('Content-type: application/csv; charset=UTF-8');
@@ -57,7 +57,7 @@ if(isset($_GET['state'])){
         $f = fopen('php://output', 'w');
         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت'];
+        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,m('col.student_phone'), 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه',t('grade'),'رشته','منطقه','جنسیت','تاریخ عضویت'];
         fputcsv($f, $fields, $delimiter);
 
         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -93,7 +93,7 @@ if(isset($_GET['uncourse'])){
     $stm->execute([1]);
     if ($stm) {
         $delimiter = ",";
-        $filename = "گزارش دانش آموزان بدون پایه " . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
+        $filename = m('export.filename_no_course') . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
 
         header('Content-Encoding: UTF-8');
         header('Content-type: application/csv; charset=UTF-8');
@@ -102,7 +102,7 @@ if(isset($_GET['uncourse'])){
         $f = fopen('php://output', 'w');
         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت'];
+        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,m('col.student_phone'), 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه',t('grade'),'رشته','منطقه','جنسیت','تاریخ عضویت'];
         fputcsv($f, $fields, $delimiter);
 
         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -138,7 +138,7 @@ if(isset($_GET['away'])){
     $stm->execute([1,0,1]);
     if ($stm) {
         $delimiter = ",";
-        $filename = "گزارش دانش آموزان منتظر پرداخت " . $_GET['away'] ." _ " . date('Y-m-d h:i:s') . ".csv";
+        $filename = m('export.filename_awaiting_payment') . $_GET['away'] ." _ " . date('Y-m-d h:i:s') . ".csv";
 
         header('Content-Encoding: UTF-8');
         header('Content-type: application/csv; charset=UTF-8');
@@ -147,7 +147,7 @@ if(isset($_GET['away'])){
         $f = fopen('php://output', 'w');
         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت','شماره فاکتور','نام پایه','وضعیت فاکتور'];
+        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,m('col.student_phone'), 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه',t('grade'),'رشته','منطقه','جنسیت','تاریخ عضویت','شماره فاکتور',m('col.course_name'),'وضعیت فاکتور'];
         fputcsv($f, $fields, $delimiter);
 
         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -185,7 +185,7 @@ if(isset($_GET['all'])){
 
     if ($stm) {
         $delimiter = ",";
-        $filename = "گزارش همه دانش آموزان " . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
+        $filename = m('export.filename_all') . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
 
         header('Content-Encoding: UTF-8');
         header('Content-type: application/csv; charset=UTF-8');
@@ -194,7 +194,7 @@ if(isset($_GET['all'])){
         $f = fopen('php://output', 'w');
         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت'];
+        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,m('col.student_phone'), 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه',t('grade'),'رشته','منطقه','جنسیت','تاریخ عضویت'];
         fputcsv($f, $fields, $delimiter);
 
         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -291,7 +291,7 @@ $stmt->execute($params);
 $students = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 if (empty($students)) {
-    die('هیچ دانش‌آموزی یافت نشد.');
+    die(m('export.none_found'));
 }
 
 // === Mapping کامل ستون‌ها ===
@@ -299,10 +299,10 @@ $columnMapping = [
     // اطلاعات پایه
     'state' => ['title' => 'استان', 'callback' => fn($s) => $s->state ?? ''],
     'city' => ['title' => 'شهر', 'callback' => fn($s) => $s->city ?? ''],
-    'student_phone' => ['title' => 'تلفن دانش آموز', 'callback' => fn($s) => $s->tel1 ?? ''],
+    'student_phone' => ['title' => m('col.student_phone'), 'callback' => fn($s) => $s->tel1 ?? ''],
     'father_phone' => ['title' => 'تلفن پدر', 'callback' => fn($s) => $s->tel3 ?? ''],
     'mother_phone' => ['title' => 'تلفن مادر', 'callback' => fn($s) => $s->tel2 ?? ''],
-    'student_type' => ['title' => 'نوع دانش آموز', 'callback' => function ($s) use ($conn) {
+    'student_type' => ['title' => m('col.student_type'), 'callback' => function ($s) use ($conn) {
         $q = $conn->prepare("SELECT tv.name FROM dbpersonal_type_vip ptv 
                              INNER JOIN type_vip tv ON ptv.type_vip_id = tv.id 
                              WHERE ptv.dbpersonal_id = ?");
@@ -310,7 +310,7 @@ $columnMapping = [
         $types = $q->fetchAll(PDO::FETCH_COLUMN);
         return !empty($types) ? implode('|', $types) : 'تعریف نشده';
     }],
-    'shift' => ['title' => 'شیفت دانش آموز', 'callback' => function ($s) {
+    'shift' => ['title' => m('col.student_shift'), 'callback' => function ($s) {
         return match ($s->shift ?? null) {
             '0' => 'صبح',
             '1' => 'بعدازظهر',
@@ -329,7 +329,7 @@ $columnMapping = [
     'reshte' => ['title' => 'رشته', 'callback' => fn($s) => $s->reshtestudent ?? ''],
 
     // اطلاعات دوره‌ای (تجمیعی)
-    'course_names' => ['title' => 'نام پایه‌ها', 'callback' => function ($s) use ($conn) {
+    'course_names' => ['title' => m('col.course_names'), 'callback' => function ($s) use ($conn) {
         $q = $conn->prepare("SELECT ct.coursename FROM dbcourse dc 
                              INNER JOIN codtbl_course ct ON dc.codecourse = ct.codecourse 
                              WHERE dc.username = ? AND ct.courseactive = 1");
@@ -337,7 +337,7 @@ $columnMapping = [
         $names = $q->fetchAll(PDO::FETCH_COLUMN);
         return implode('|', $names);
     }],
-    'course_count' => ['title' => 'تعداد پایه ثبت نامی', 'callback' => function ($s) use ($conn) {
+    'course_count' => ['title' => m('col.course_count'), 'callback' => function ($s) use ($conn) {
         $q = $conn->prepare("SELECT COUNT(*) FROM dbcourse dc 
                              INNER JOIN codtbl_course ct ON dc.codecourse = ct.codecourse 
                              WHERE dc.username = ? AND ct.courseactive = 1");
@@ -394,7 +394,7 @@ $columnMapping = [
     'attended' => ['title' => 'وضعیت شرکت در آزمون کشوری', 'callback' => fn($s) => $s->attended_exam ?? ''],
     'result' => ['title' => 'نتیجه آزمون کشوری', 'callback' => fn($s) => $s->exam_result ?? ''],
     'not_registered_reason' => ['title' => 'توضیحات عدم ثبت نام', 'callback' => fn($s) => $s->not_registered_reason ?? ''],
-    'student_comment' => ['title' => 'نظر دانش آموز', 'callback' => fn($s) => $s->student_comment ?? ''],
+    'student_comment' => ['title' => m('col.student_comment'), 'callback' => fn($s) => $s->student_comment ?? ''],
     'supporter_comment' => ['title' => 'نظر پشتیبان', 'callback' => fn($s) => $s->supporter_comment ?? ''],
     'avg_first_semester' => ['title' => 'معدل ترم اول', 'callback' => fn($s) => $s->avg_first_semester ?? ''],
     'avg_second_semester' => ['title' => 'معدل ترم دوم', 'callback' => fn($s) => $s->avg_second_semester ?? ''],
@@ -402,7 +402,7 @@ $columnMapping = [
 ];
 
 // ستون‌های پایه همیشه نمایش داده می‌شوند
-$baseColumns = ['کد ملی', 'نام', 'نام خانوادگی', 'پایه'];
+$baseColumns = ['کد ملی', 'نام', 'نام خانوادگی', t('grade')];
 
 // ستون‌های انتخاب شده توسط کاربر
 $selectedTitles = [];
@@ -416,7 +416,7 @@ $allHeaders = array_merge($baseColumns, $selectedTitles);
 // === ساخت اکسل ===
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
-$sheet->setTitle('گزارش دانش‌آموزان');
+$sheet->setTitle(m('export.sheet_title'));
 
 // هدر
 foreach ($allHeaders as $i => $title) {
@@ -465,10 +465,10 @@ foreach ($sheet->getColumnIterator() as $column) {
 
 // نام فایل
 $titleMap = [
-    'all' => 'همه دانش‌آموزان',
-    'uncourse' => 'دانش‌آموزان بدون پایه',
+    'all' => m('filter.all_students'),
+    'uncourse' => m('filter.students_no_course'),
     'away' => 'منتظر پرداخت فاکتور',
-    'state' => 'دانش‌آموزان استان ' . ($stateFilter ?? '')
+    'state' => m('filter.students_by_state') . ($stateFilter ?? '')
 ];
 $filename = $titleMap[$reportType] . "_" . jdate('Y-m-d_H-i') . ".xlsx";
 

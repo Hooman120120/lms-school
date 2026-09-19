@@ -42,7 +42,7 @@ if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3 && (
     $class_id <= 0 || !TeacherHasClassAccess($class_id)
 )) {
     http_response_code(403);
-    exit('شما به پرونده دانش‌آموزان این کلاس دسترسی ندارید.');
+    exit(m('msg.no_class_file_access'));
 }
 
 // Fetch student by idpersonal from dbpersonal
@@ -83,7 +83,7 @@ if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3) {
     $studentClassStmt->execute([$studentUsername, $class_id, $class_id]);
     if (!$studentUsername || !$studentClassStmt->fetchColumn()) {
         http_response_code(403);
-        exit('این دانش‌آموز عضو کلاس تخصیص‌یافته شما نیست.');
+        exit(m('msg.not_in_your_class'));
     }
 }
 
@@ -173,7 +173,7 @@ include_once '../../temp.html';
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
-    <title>پروفایل دانش آموز |<?php echo __TITLE ?></title>
+    <title><?php echo m('page.student_profile') ?> |<?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -195,13 +195,13 @@ include_once '../../temp.html';
                                 <div class="col-xl-11">
                                     <div>
                                         <h6 class="main-content-label mb-1">
-                                            دانش آموز :
-                                            <span class="text-primary">
+                                            <?php echo m('label.student_colon') ?>
+<span class="text-primary">
                                                 <?php echo htmlspecialchars($user->fname ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 <?php echo htmlspecialchars($user->lname ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                             </span>
                                             |
-                                            پایه تحصیلی و رشته:
+                                            <?php echo m('label.grade_and_field') ?>
                                             <span class="badge badge-success-light">
                                                 <?php echo htmlspecialchars(($user->paye ?? '---') . ' - ' . ($user->reshtestudent ?? '---'), ENT_QUOTES, 'UTF-8'); ?>
                                             </span>
@@ -239,7 +239,7 @@ include_once '../../temp.html';
 
                             <?php if (!$studentUsername): ?>
                                 <div class="alert alert-warning mb-0">
-                                    نام کاربری دانش‌آموز برای اتصال به جدول dbcourse پیدا نشد (codemeli / user / username / student_username).
+                                    <?php echo m('msg.username_not_found_dbcourse') ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -252,8 +252,8 @@ include_once '../../temp.html';
                 <div class="col-12">
                     <div class="card custom-card">
                         <div class="card-header p-3 tx-medium my-auto tx-white bg-purple">
-                            تکالیف دانش‌آموز
-                        </div>
+                            <?php echo m('label.student_homeworks') ?>
+</div>
 
                         <div class="card-body">
 
@@ -267,9 +267,9 @@ include_once '../../temp.html';
 
                                 <div class="alert alert-info mb-0">
                                     <?php if ($class_id > 0): ?>
-                                        این دانش‌آموز در این کلاس ثبت‌نام نیست یا این کلاس تکلیفی ندارد.
+                                        <?php echo m('msg.not_enrolled_or_no_homework') ?>
                                     <?php else: ?>
-                                        کلاسی که تکلیف داشته باشد برای این دانش‌آموز پیدا نشد.
+                                        <?php echo m('msg.no_class_with_homework') ?>
                                     <?php endif; ?>
                                 </div>
 
@@ -369,9 +369,9 @@ include_once '../../temp.html';
                                                                         <th>مهلت (شمسی)</th>
                                                                         <th>فایل تکلیف</th>
                                                                         <th>ویدیو تکلیف</th>
-                                                                        <th>پاسخ دانش‌آموز</th>
+                                                                        <th><?php echo m('col.student_answer') ?></th>
                                                                         <th>فایل پاسخ</th>
-                                                                        <th>جواب استاد</th>
+                                                                        <th><?php echo m('col.teacher_answer') ?></th>
                                                                         <th>زمان ارسال</th>
                                                                     </tr>
                                                                     </thead>

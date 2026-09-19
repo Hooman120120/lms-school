@@ -102,7 +102,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت گروهی دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.bulk_add_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -138,7 +138,7 @@ include_once '../../temp.html';
                                                 <div class="card custom-card pt-0 pb-0" style="background-color: lightgreen">
                                                     <div class="card-header border-bottom-0 pb-1">
                                                         <label class="main-content-label mb-2 pt-1">ثبت نام دسته جمعی</label>
-                                                        <p class="tx-12 mb-0 text-muted font-weight-bolder">ثبت نام دسته جمعی دانش آموزان با فایل اکسل</p>
+                                                        <p class="tx-12 mb-0 text-muted font-weight-bolder"><?php echo m('label.bulk_add_excel') ?></p>
                                                     </div>
                                                     <div class="card-body">
                                                         <form method="POST" enctype="multipart/form-data">

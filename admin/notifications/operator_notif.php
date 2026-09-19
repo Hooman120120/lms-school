@@ -334,8 +334,8 @@ if (!function_exists('countNewStudent')) {
                             <div class="card-header border-bottom-0">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">
-                                        بخش اساتید
-                                    </h5>
+                                        <?php echo m('label.teachers_section') ?>
+</h5>
                                 </div>
                             </div>
 
@@ -344,11 +344,11 @@ if (!function_exists('countNewStudent')) {
                                     <a href="<?= url('admin/notifications/teachers_notif.php') ?>" class="safe-call-card">
                                         <div class="safe-call-card-title">
 
-                                            <span>تیکت اساتید</span>
+                                            <span><?php echo m('label.teacher_tickets_section') ?></span>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش تیکت‌هایی که اساتید برای شما ارسال کرده‌اند نمایش داده می‌شود. این تیکت‌ها معمولاً برای گزارش مشکلات، طرح سؤالات، درخواست رسیدگی یا پیگیری موضوعات آموزشی و اجرایی ثبت می‌شوند. از طریق این بخش می‌توانید تیکت‌ها را بررسی کرده، پاسخ دهید و وضعیت رسیدگی به آن‌ها را مدیریت کنید."
-                                                  aria-label="راهنمای تیکت اساتید"
+                                                  data-tooltip="<?php echo m('tooltip.teacher_tickets_operator') ?>"
+                                                  aria-label="<?php echo m('aria.teacher_tickets_help') ?>"
                                                   onclick="event.preventDefault(); event.stopPropagation();">
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>

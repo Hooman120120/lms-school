@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'set_s
     } elseif ($id <= 0 || !in_array($status, $allowed, true)) {
         $_SESSION['flash_err'] = 'داده‌های ارسالی نامعتبر است.';
     } elseif ($isTeacher) {
-        $_SESSION['flash_err'] = 'مدرس اجازه تغییر وضعیت ندارد.';
+        $_SESSION['flash_err'] = m('msg.teacher_cannot_change_status');
     } else {
         // fetch ticket and verify access
         $t = $conn->prepare("SELECT id, codemeli, teacher_username, target_group FROM teacher_ticket WHERE id=? LIMIT 1");
@@ -226,7 +226,7 @@ include_once '../../temp.html';
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title>تیکت‌های مدرس | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.teacher_tickets') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .row-hover tbody tr:hover { background:#fafafa; }
@@ -287,7 +287,7 @@ include_once '../../temp.html';
                             <span>لیست تیکت‌ها</span>
 
                             <span class="menu-info-trigger"
-                                  data-tooltip="در این بخش تیکت‌هایی که اساتید برای گزارش مشکلات، درخواست‌ها یا پیگیری موضوعات مختلف ثبت کرده‌اند نمایش داده می‌شود. این تیکت‌ها برای پشتیبان‌ها یا مدیریت ارسال شده و امکان بررسی، پاسخگویی و پیگیری وضعیت آن‌ها از همین قسمت فراهم است."
+                                  data-tooltip="<?php echo m('tooltip.teacher_tickets_admin') ?>"
                                   aria-label="راهنمای لیست تیکت‌ها"
                                   onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -316,7 +316,7 @@ include_once '../../temp.html';
                             <thead class="bg-light">
                             <tr class="border-light">
                                 <th class="text-center" style="width:60px">#</th>
-                                <th class="text-center" style="width:130px">فرستنده/استاد</th>
+                                <th class="text-center" style="width:130px"><?php echo m('col.sender_teacher') ?></th>
                                 <th>عنوان</th>
                                 <th>دانش‌آموز</th>
                                 <th class="text-center" style="width:120px">کلاس</th>

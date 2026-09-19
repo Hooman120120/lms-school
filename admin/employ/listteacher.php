@@ -128,7 +128,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> لیست معلمان | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.teacher_list') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -156,42 +156,42 @@ include_once '../../temp.html';
                                     <div class="col-8">
                                         <div>
                                             <div style="display:flex; align-items:center; gap:12px;">
-                                                <h6 class="main-content-label mb-1">معلمان</h6>
+                                                <h6 class="main-content-label mb-1"><?php echo t('teacher_pl') ?></h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش لیست معلمان نمایش داده می‌شود. می‌توانید آنها را بر اساس پایه‌های فعال سال تحصیلی جاری فیلتر کنید."
-                                                      aria-label="راهنمای معلمان"
+                                                      data-tooltip="<?php echo m('tooltip.teacher_list') ?>"
+                                                      aria-label="<?php echo m('aria.teacher_list_help') ?>"
                                                       onclick="event.preventDefault(); event.stopPropagation();">
                                                     <i class="fe fe-info fs-4"></i>
                                                 </span>
                                             </div>
                                             <p class="text-muted card-sub-title">
-                                                لیست معلمان و پایه‌های فعال آن‌ها در سال تحصیلی <?= htmlspecialchars($academicYear['label']) ?>
+                                                <?php echo m('label.teacher_list_courses_prefix') ?><?= htmlspecialchars($academicYear['label']) ?>
                                             </p>
                                         </div>
                                     </div>
                                     <div class="col-4 text-left">
                                         <a href="<?php echo url('admin/employ/addteacher.php') ?> "
                                            target="_blank"
-                                           class="btn btn-sm btn-primary"><i class="fe fe-download"></i> افزودن معلم جدید </a>
+                                           class="btn btn-sm btn-primary"><i class="fe fe-download"></i> <?php echo m('action.add_new_teacher') ?> </a>
                                     </div>
                                 </div>
                                 <div class="row row-sm align-items-end my-3">
                                     <div class="col-md-8 col-lg-6">
                                         <label for="courseFilter">پایه فعال سال تحصیلی <?= htmlspecialchars($academicYear['label']) ?></label>
                                         <select class="form-control" id="courseFilter">
-                                            <option value="0">همه معلمان</option>
+                                            <option value="0"><?php echo m('filter.all_teachers') ?></option>
                                             <?php foreach ($activeCourses as $course) { ?>
                                                 <option value="<?= (int)$course->codecourse ?>" <?= $selectedCourse === (int)$course->codecourse ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($course->coursename) ?>
                                                     <?= !empty($course->paye) ? ' - ' . htmlspecialchars($course->paye) : '' ?>
-                                                    (<?= number_format((int)$course->teacher_count) ?> معلم)
+                                                    (<?= number_format((int)$course->teacher_count) ?> <?php echo t('teacher') ?>)
                                                 </option>
                                             <?php } ?>
                                         </select>
                                     </div>
                                     <div class="col-md-4 col-lg-3 mt-2 mt-md-0">
-                                        <a href="listteacher.php" class="btn btn-outline-secondary btn-block">همه معلمان</a>
+                                        <a href="listteacher.php" class="btn btn-outline-secondary btn-block"><?php echo m('filter.all_teachers') ?></a>
                                     </div>
                                 </div>
                                 <div class="table">
@@ -278,7 +278,7 @@ include_once '../../temp.html';
                                             }
                                         } else { ?>
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted py-4">معلمی با این فیلتر یافت نشد.</td>
+                                                <td colspan="7" class="text-center text-muted py-4"><?php echo m('msg.no_teacher_for_filter') ?></td>
                                             </tr>
                                         <?php }
                                         ?>

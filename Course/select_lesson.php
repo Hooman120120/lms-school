@@ -74,7 +74,7 @@ include_once '../temp.html';
                         <div class="card custom-card text-center shadow">
                             <div class="card-header d-flex flex-row justify-content-between">
                                 <h5 class="mb-2 font-weight-bold text-right">
-                                    انتخاب درس برای پایه: <span
+                                    <?php echo m('label.choose_lesson_for_course') ?> <span
                                             class="text-primary"><?php echo $course->coursename; ?></span>
                                 </h5>
                                 <div>
@@ -108,7 +108,7 @@ include_once '../temp.html';
                                             </a>
                                         <?php }
                                     } else { ?>
-                                        <p class="text-danger mt-3 text-center">هیچ درسی برای این پایه ثبت نشده است.</p>
+                                        <p class="text-danger mt-3 text-center"><?php echo m('msg.no_lesson_for_course') ?></p>
                                     <?php } ?>
                                 </div>
                             </div>

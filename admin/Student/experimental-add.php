@@ -225,7 +225,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.add_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -260,7 +260,7 @@ include_once '../../temp.html';
                                                 <i class="fe fe-alert-triangle fs-4 me-2"></i>
                                                 <div>
                                                     <strong>توجه:</strong>
-                                                    مدیر محترم، برای ثبت‌نام موقت یا قطعی دانش آموز، لطفاً از شماره تماسی استفاده نمایید که به پیامک‌های ارسالی آن دسترسی دارید؛ زیرا کدهای تأیید و اطلاع‌رسانی به همین شماره ارسال خواهند شد.
+                                                    <?php echo m('msg.phone_notice') ?>
                                                 </div>
                                             </div>
 
@@ -269,12 +269,12 @@ include_once '../../temp.html';
                                                     <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                         <h6 class="main-content-label mb-0">
-                                                            افزودن دانش آموز موقت
+                                                            <?php echo m('action.add_temp_student') ?>
                                                         </h6>
 
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="در این بخش می‌توانید اطلاعات دانش آموز موقت را ثبت کرده و برای او حساب کاربری آزمایشی ایجاد کنید. این نوع ثبت‌نام برای دانش آموزانی است که هنوز ثبت‌نام قطعی نشده‌اند و به‌صورت موقت از خدمات یا دوره‌های فوق برنامه استفاده می‌کنند."
-                                                              aria-label="راهنمای افزودن دانش آموز موقت">
+                                                              data-tooltip="<?php echo m('tooltip.add_temp_student') ?>"
+                                                              aria-label="<?php echo m('aria.add_temp_student_help') ?>">
 
                                                                 <i class="fe fe-info fs-4"></i>
                                                             </span>
@@ -282,7 +282,7 @@ include_once '../../temp.html';
                                                     </div>
 
                                                     <p class="text-muted card-sub-title">
-                                                        ثبت اطلاعات و ایجاد حساب کاربری موقت برای دانش آموز
+                                                        <?php echo m('label.create_temp_account') ?>
                                                     </p>
                                                 </div>
                                             </div>
@@ -295,7 +295,7 @@ include_once '../../temp.html';
                                                         type="button">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
-                                                اطلاعات دانش آموز با موفقیت ثبت و رمز عبور برایشان پیامک شد.
+                                                <?php echo m('msg.student_saved_sms') ?>
                                                 <hr>
                                                 <p class="mb-0">نام کاربری : شماره تماس ثبت شده
                                                 </p>
@@ -362,18 +362,14 @@ include_once '../../temp.html';
                                                         <form method="post" data-parsley-validate="">
                                                             <div class="row">
                                                                 <div class="col-xl-6 mb-2">
-                                                                    <label for="sens" class="form-label mg-t-15">کدملی
-                                                                        دانش آموز: <span
-                                                                                style="color: red">*</span></label>
+                                                                    <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span style="color: red">*</span></label>
                                                                     <input class="form-control" name="codemeli"
                                                                            type="text"
                                                                            placeholder="با اعداد انگلیسی وارد شود"
                                                                            required>
                                                                 </div>
                                                                 <div class="col-xl-6">
-                                                                    <label for="sens" class="form-label mg-t-15">ملیت
-                                                                        دانش آموز: <span
-                                                                                style="color: red">*</span></label>
+                                                                    <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nationality') ?> <span style="color: red">*</span></label>
                                                                     <select class="form-control select2 "
                                                                             name="melliat"
                                                                             aria-describedby="basic-addon2" required>
@@ -483,7 +479,7 @@ include_once '../../temp.html';
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-4 mg-t-auto">
-                                                                                <label class="form-label text-center">شماره همراه دانش آموز (مقداردهی شده از بخش قبل) </label>
+                                                                                <label class="form-label text-center"><?php echo m('label.student_mobile_prefilled') ?> </label>
                                                                                 <div class="input-group mb-3">
 
                                                                                     <input type="text"
@@ -491,7 +487,7 @@ include_once '../../temp.html';
                                                                                            name="tel1"
 
                                                                                            aria-describedby="basic-addon2"
-                                                                                           aria-label="شماره همراه دانش آموز"
+                                                                                           aria-label="<?php echo m('aria.student_mobile') ?>"
                                                                                            class="form-control"
                                                                                            value="<?php echo $_SESSION['add-student2']['tel']; ?>"
                                                                                            disabled>

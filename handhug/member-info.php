@@ -144,8 +144,8 @@ include_once '../header.php';
 <div class="main-content side-content pt-0">
     <div class="container-fluid">
         <div class="inner-body">
-            <h4 class="mb-4 fw-bold text-dark"><i class="fa fa-graduation-cap me-2"></i>سوابق تحصیلی دانش آموز
-                : <?= $user->fname . ' ' . $user->lname ?></h4>
+            <h4 class="mb-4 fw-bold text-dark"><i class="fa fa-graduation-cap me-2"></i><?php echo m('label.student_academic_history') ?>
+: <?= $user->fname . ' ' . $user->lname ?></h4>
             <?php
             $sql = 'SELECT * FROM dbcourse INNER JOIN codtbl_course ON dbcourse.codecourse = codtbl_course.codecourse WHERE dbcourse.username = ?';
             $stmt = $conn->prepare($sql);
@@ -365,8 +365,8 @@ include_once '../header.php';
                                         <tr>
                                             <td colspan="4" class="py-4 text-muted">
                                                 <i class="fa fa-info-circle me-1"></i>
-                                                آزمونی برای این پایه ثبت نشده است.
-                                            </td>
+                                                <?php echo m('msg.no_quiz_for_course2') ?>
+</td>
                                         </tr>
                                     <?php endif; ?>
                                     </tbody>

@@ -56,7 +56,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> جزوات بارگزاری شده برای پایه : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
+    <title> جزوات بارگزاری شده <?php echo m('label.for_course_colon') ?> <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
     <style>
         /* برای select2 نسخه‌های معمولی */
@@ -103,8 +103,7 @@ include_once '../temp.html';
                                             <label class="main-content-label my-auto pt-2">جزوات و تکالیف ارائه شده
                                             </label>
                                         </div>
-                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> پایه
-                                            <?php echo $course1->coursename ?> </span>
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> <?php echo t('grade') ?> <?php echo $course1->coursename ?> </span>
                                     </div>
                                     <?php if (!isset($_GET['demo'])) { ?>
                                         <div class="mt-2 d-flex justify-content-center ">

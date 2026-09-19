@@ -86,7 +86,7 @@ include_once '../../temp.html';
                                     <div class="col-9">
                                         <div>
                                             <h6 class="main-content-label mb-1">گزارش فایل های دانلود شده : <span class="text-primary"><?php echo $user->fname . ' ' . $user->lname  ?></span> </h6>
-                                            <p class="text-muted card-sub-title"> نام پایه :<span class="text-primary"><?php echo $course->coursename ?></span>
+                                            <p class="text-muted card-sub-title"> <?php echo m('label.course_name_colon') ?><span class="text-primary"><?php echo $course->coursename ?></span>
                                             </p>
                                         </div>
                                     </div>

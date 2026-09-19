@@ -87,7 +87,7 @@ function showDemo($username)
                     <div class="col-4">
                         <a href="' . $link . '">
                             <div class="d-flex">
-                                <button class="btn btn-block btn-outline-secondary">ورود به پایه</button>
+                                <button class="btn btn-block btn-outline-secondary">' . m('action.enter_course') . '</button>
                             </div>
                         </a>
                     </div>
@@ -111,7 +111,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> پایه های من | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.my_courses') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -152,9 +152,9 @@ include_once '../temp.html';
                                 <div class="card-header  border-bottom-0 pb-0">
                                     <div>
                                         <div class="d-flex">
-                                            <label class="main-content-label my-auto pt-2">پایه های ثبت نام شده</label>
+                                            <label class="main-content-label my-auto pt-2"><?php echo m('label.enrolled_courses') ?></label>
                                         </div>
-                                        <span class="d-block tx-12 mt-2 mb-0 text-muted">پایه های فعال برای شما </span>
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"><?php echo m('label.active_courses_for_you') ?> </span>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -175,9 +175,7 @@ include_once '../temp.html';
                                                     <a href="<?php echo url('Course/mycourse.php?code=') . $course->codecourse ?> ">
                                                         <div class="d-flex">
 
-                                                            <button class="btn btn-block btn-outline-secondary">ورود به
-                                                                پایه
-                                                            </button>
+                                                            <button class="btn btn-block btn-outline-secondary"><?php echo m('action.enter_course') ?> </button>
 
                                                         </div>
                                                     </a>

@@ -567,7 +567,7 @@ else                  $c = '#15233f';
                         اعلان‌ها
 
                         <span class="menu-info-trigger"
-                              data-tooltip="مدیریت و پیگیری اعلان‌های سامانه؛ در این بخش می‌توانید اعلان‌های مدیریت، اپراتورها، اساتید، معاونت‌های مختلف، واحد فروش و واحد پشتیبانی را مشاهده کنید. همچنین امکان کنترل محدودیت اعلان‌ها، بررسی موارد ارجاع‌شده و مشاهده تعداد اعلان‌های جدید هر بخش وجود دارد."
+                              data-tooltip="<?php echo m('tooltip.notifications_menu') ?>"
                               aria-label="راهنمای مدیریت اعلان‌ها"
                               onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -626,8 +626,8 @@ else                  $c = '#15233f';
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
                                        href="<?= url('admin/notifications/admin_teacher_notif.php') ?>">
-                                        اعلان اساتید
-                                        <?php if ($adminteachernotif > 0): ?>
+                                        <?php echo m('label.teacher_notifications') ?>
+<?php if ($adminteachernotif > 0): ?>
                                             <span class="badge badge-warning"
                                                   style="border-radius: 50px; display: flex; margin-right: 60px; height: 20px;"><?= (int)$adminteachernotif ?></span>
                                         <?php endif; ?>
@@ -972,7 +972,7 @@ else                  $c = '#15233f';
 
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/employ/listteacher.php') ?>">مشاهده
-                                معلمان </a>
+                                <?php echo t('teacher_pl') ?> </a>
 
                         </li>
 
@@ -982,8 +982,8 @@ else                  $c = '#15233f';
                         </li>
 
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> ثبت معلم
-                                جدید </a>
+                            <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> <?php echo m('action.add_teacher') ?>
+جدید </a>
                         </li>
 
                     </ul>
@@ -1158,7 +1158,7 @@ else                  $c = '#15233f';
             تایید تکالیف
 
             <span class="menu-info-trigger"
-                  data-tooltip="در این بخش لیست تکالیف طراحی‌شده توسط اساتید و پشتیبانان، پیش از انتشار در پنل دانش آموزان نمایش داده میشود که پس از بررسی محتوا تأیید و یا رد می‌شوند."
+                  data-tooltip="<?php echo m('tooltip.homework_review') ?>"
                   aria-label="راهنمای تایید تکالیف"
                   onclick="event.preventDefault(); event.stopPropagation();">
 

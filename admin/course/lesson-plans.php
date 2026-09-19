@@ -242,7 +242,7 @@ include_once '../../temp.html';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>طرح درس معلمان | <?= __TITLE ?></title>
+    <title><?php echo m('page.lesson_plans') ?> | <?= __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -252,7 +252,7 @@ include_once '../../temp.html';
     <div class="main-content side-content pt-0">
         <div class="container-fluid"><div class="inner-body">
             <div class="page-header"><div>
-                <h2 class="main-content-title tx-24"><?= $isTeacher ? 'طرح درس من' : 'طرح درس معلمان پایه «' . htmlspecialchars($lockedCourse->coursename) . '»' ?></h2>
+                <h2 class="main-content-title tx-24"><?= $isTeacher ? 'طرح درس من' : m('label.lesson_plan_of_teachers_prefix') . htmlspecialchars($lockedCourse->coursename) . '»' ?></h2>
                 <p class="text-muted mb-0">سال تحصیلی <?= htmlspecialchars($academicYear['label']) ?> — برنامه سرفصل‌های تدریس در هر کلاس</p>
             </div></div>
 
@@ -278,7 +278,7 @@ include_once '../../temp.html';
             </div></div>
             <?php else: ?>
             <div class="card custom-card mb-4"><div class="card-body"><form method="get"><input type="hidden" name="course" value="<?= $lockedCourseCode ?>"><div class="row">
-                <div class="col-lg-2 col-md-4 form-group"><label>معلم</label><select name="teacher" class="form-control"><option value="">همه</option><?php $seen=[]; foreach($filterRows as $r): if(isset($seen[$r->username]))continue; $seen[$r->username]=1; ?><option value="<?= htmlspecialchars($r->username) ?>"<?= ($_GET['teacher']??'')===$r->username?' selected':'' ?>><?= htmlspecialchars(trim($r->fname.' '.$r->lname) ?: $r->username) ?></option><?php endforeach; ?></select></div>
+                <div class="col-lg-2 col-md-4 form-group"><label><?php echo t('teacher') ?></label><select name="teacher" class="form-control"><option value="">همه</option><?php $seen=[]; foreach($filterRows as $r): if(isset($seen[$r->username]))continue; $seen[$r->username]=1; ?><option value="<?= htmlspecialchars($r->username) ?>"<?= ($_GET['teacher']??'')===$r->username?' selected':'' ?>><?= htmlspecialchars(trim($r->fname.' '.$r->lname) ?: $r->username) ?></option><?php endforeach; ?></select></div>
                 <div class="col-lg-2 col-md-4 form-group"><label>کلاس</label><select name="class" class="form-control"><option value="">همه</option><?php $seen=[]; foreach($filterRows as $r): if(isset($seen[$r->class_id]))continue; $seen[$r->class_id]=1; ?><option value="<?= (int)$r->class_id ?>"<?= (string)($_GET['class']??'')===(string)$r->class_id?' selected':'' ?>><?= htmlspecialchars($r->class_name) ?></option><?php endforeach; ?></select></div>
                 <div class="col-lg-2 col-md-4 form-group"><label>درس</label><select name="dars" class="form-control"><option value="">همه</option><?php $seen=[]; foreach($filterRows as $r): if(isset($seen[$r->dars_id]))continue; $seen[$r->dars_id]=1; ?><option value="<?= (int)$r->dars_id ?>"<?= (string)($_GET['dars']??'')===(string)$r->dars_id?' selected':'' ?>><?= htmlspecialchars($r->dars_name) ?></option><?php endforeach; ?></select></div>
                 <div class="col-lg-2 col-md-4 form-group"><label>از تاریخ</label><input class="form-control fc-datepicker" name="from" value="<?= htmlspecialchars($_GET['from']??'') ?>" placeholder="<?= $academicYear['start_jalali'] ?>"></div>
@@ -287,7 +287,7 @@ include_once '../../temp.html';
             <?php endif; ?>
 
             <div class="card custom-card"><div class="card-header"><h6 class="main-content-label mb-0">فهرست طرح درس‌ها</h6></div><div class="card-body"><div class="table-responsive">
-                <table class="table table-bordered text-center" id="example1"><thead><tr><th>ردیف</th><?php if(!$isTeacher):?><th>معلم</th><?php endif;?><th>تاریخ</th><th>پایه</th><th>کلاس</th><th>درس</th><th>سرفصل</th><th style="min-width:220px">توضیحات</th><?php if($isTeacher):?><th>اقدامات</th><?php endif;?></tr></thead><tbody>
+                <table class="table table-bordered text-center" id="example1"><thead><tr><th>ردیف</th><?php if(!$isTeacher):?><th><?php echo t('teacher') ?></th><?php endif;?><th>تاریخ</th><th>پایه</th><th>کلاس</th><th>درس</th><th>سرفصل</th><th style="min-width:220px">توضیحات</th><?php if($isTeacher):?><th>اقدامات</th><?php endif;?></tr></thead><tbody>
                 <?php if($plans): foreach($plans as $i=>$plan): ?><tr><td><?= $i+1 ?></td><?php if(!$isTeacher):?><td><?= htmlspecialchars(trim($plan->teacher_name) ?: $plan->teacher_username) ?></td><?php endif;?><td><?= htmlspecialchars(lessonPlanGregorianToJalali($plan->plan_date)) ?></td><td><?= htmlspecialchars($plan->coursename) ?></td><td><?= htmlspecialchars($plan->class_name) ?></td><td><?= htmlspecialchars($plan->dars_name) ?></td><td><?= htmlspecialchars($plan->lesson_name) ?></td><td class="text-right" style="white-space:normal"><?= $plan->description ? nl2br(htmlspecialchars($plan->description)) : '<span class="text-muted">—</span>' ?></td><?php if($isTeacher):?><td><a class="btn btn-sm btn-warning" href="?edit=<?= (int)$plan->id ?>"><i class="fe fe-edit"></i></a> <form method="post" class="d-inline"><input type="hidden" name="token" value="<?= $token ?>"><input type="hidden" name="plan_id" value="<?= (int)$plan->id ?>"><button class="btn btn-sm btn-danger" name="delete_plan" onclick="return confirm('طرح درس حذف شود؟')"><i class="fe fe-trash"></i></button></form></td><?php endif;?></tr><?php endforeach; else: ?><tr><td colspan="<?= $isTeacher?8:8 ?>">طرح درسی در این بازه ثبت نشده است.</td></tr><?php endif; ?>
                 </tbody></table>
             </div></div></div>

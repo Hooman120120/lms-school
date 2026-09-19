@@ -54,7 +54,7 @@ if ($adminRole === 3) {
     }
     if (isset($_POST['updatelesson']) || isset($_GET['edit']) || isset($_GET['delete'])) {
         http_response_code(403);
-        exit('معلم مجاز به تعریف سرفصل جدید است، اما ویرایش یا حذف سرفصل‌ها در اختیار مدیریت است.');
+        exit(m('perm.teacher_lesson_scope'));
     }
 }
 $staffCourseCode = $lessonCourseCode;

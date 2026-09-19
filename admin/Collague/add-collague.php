@@ -372,7 +372,7 @@ include_once '../../temp.html';
                                                                             <input class="form-control" name="semat"
                                                                                    aria-describedby="basic-addon2"
                                                                                    type="text"
-                                                                                   placeholder="مدیر مدرسه | معلم ریاضی | مشاور آموزشی و ...">
+                                                                                   placeholder="<?php echo m('placeholder.job_title') ?>">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-lg-4 mg-t-20">

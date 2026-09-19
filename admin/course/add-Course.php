@@ -565,7 +565,7 @@ include_once '../../temp.html';
 
 <?php /*
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10 mg-t-10"> انتخاب استاد</p>
+                                                <p class="mg-b-10 mg-t-10"> <?php echo m('label.choose_teacher') ?></p>
                                                 <select class="form-control select2" name="teacher[]"
                                                         multiple="multiple">
                                                     <?php
@@ -983,7 +983,7 @@ include_once '../../temp.html';
                                             </div>
                                       <?php /*
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10 mg-t-10"> انتخاب استاد</p>
+                                                <p class="mg-b-10 mg-t-10"> <?php echo m('label.choose_teacher') ?></p>
                                                 <select class="form-control select2" name="teacher[]"
                                                         multiple="multiple">
                                                     <?php

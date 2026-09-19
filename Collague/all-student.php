@@ -37,7 +37,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> لیست دانش آموزان من | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.my_students_list') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -61,9 +61,8 @@ include_once '../temp.html';
                         <div class="card custom-card">
                             <div class="card-body">
                                 <div>
-                                    <h6 class="main-content-label mb-1">لیست دانش آموزان ثبت نامی</h6>
-                                    <p class="text-muted card-sub-title">جهت سهولت مشاهده لیست دانش آموزان از رایانه
-                                        استفاده نمایید</p>
+                                    <h6 class="main-content-label mb-1"><?php echo m('label.enrolled_students_list') ?></h6>
+                                    <p class="text-muted card-sub-title"><?php echo m('help.view_on_computer') ?></p>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table text-nowrap text-md-nowrap table-bordered mg-b-0">
@@ -72,7 +71,7 @@ include_once '../temp.html';
                                         <tr>
                                             <th>ردیف</th>
                                             <th>نام</th>
-                                            <th>پایه</th>
+                                            <th><?php echo t('grade') ?></th>
                                             <th>وضعیت</th>
                                             <th>اقدامات</th>
 
@@ -106,15 +105,15 @@ include_once '../temp.html';
                                                         <td class="wd-20"><span class="badge badge-success">فعال</span></td>
                                                         <td>
                                                             <a href="sales-course.php?sales=<?php echo $gmc->codemeli ?>"
-                                                               class="btn btn-outline-primary btn-block">افزودن پایه</a>
+                                                               class="btn btn-outline-primary btn-block"><?php echo m('action.add_course') ?></a>
                                                         </td>
                                                     <?php } ?>
                                                     <?php if (keyactcourse($gmc->codemeli) == 400) { ?>
-                                                        <td><span class="badge badge-warning">منتظر خرید پایه</span>
+                                                        <td><span class="badge badge-warning"><?php echo m('badge.awaiting_purchase') ?></span>
                                                         </td>
                                                         <td>
                                                             <a href="sales-course.php?sales=<?php echo $gmc->codemeli ?>"
-                                                               class="btn btn-outline-primary btn-block">خرید پایه</a>
+                                                               class="btn btn-outline-primary btn-block"><?php echo m('action.buy_course') ?></a>
                                                         </td>
                                                     <?php } ?>
                                                 </tr>

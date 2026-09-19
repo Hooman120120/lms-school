@@ -82,7 +82,7 @@ include_once '../../temp.html';
                             <table id="example1" class="table table-bordered table-striped text-center mg-b-0 text-md-nowrap">
                                 <thead>
                                 <tr>
-                                    <th>دانش‌آموز</th>
+                                    <th><?php echo m('col.student') ?></th>
                                     <th>ارسال‌کننده</th>
                                     <th>نوع درخواست</th>
                                     <th>بررسی‌کننده</th>
@@ -169,7 +169,7 @@ include_once '../../temp.html';
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-light">
                                                         <h5 class="modal-title text-info" id="modalRefLabel<?php echo $row['id']; ?>">
-                                                            تاریخچه ارجاعات - دانش آموز: <?php echo htmlspecialchars($row['student_username'] ?? ''); ?>
+                                                            <?php echo m('label.referral_history_student') ?> <?php echo htmlspecialchars($row['student_username'] ?? ''); ?>
                                                         </h5>
                                                         <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>

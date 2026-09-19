@@ -40,7 +40,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
         $semat = 'همکار آموزشی';
     } else {
         $user = $factorId->username;
-        $semat = 'دانش آموز';
+        $semat = t('student');
     }
     $qau = retPerson($user);
     $tel = $qau->tel1;
@@ -53,7 +53,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
-    $semat = 'دانش آموز';
+    $semat = t('student');
     $qau = retPerson($_GET['call-student']);
     $tel = $qau->tel1;
     $name = $semat . ' ' . $qau->fname . ' ' . $qau->lname;
@@ -75,7 +75,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> گزارش آماری دانش آموزان | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.student_stats') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -107,13 +107,13 @@ include_once '../../temp.html';
                                     $query_st->execute([1]);
                                     $result_student = $query_st->fetch(PDO::FETCH_OBJ);
                                     ?>
-                                    <label class="main-content-label mb-3 pt-1">همه دانش آموزان</label>
+                                    <label class="main-content-label mb-3 pt-1"><?php echo m('label.all_students_label') ?></label>
                                     <h2 class="text-left card-item-icon card-icon">
                                         <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                 class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
                                     </h2>
                                     <p class="text-left"><a href="export-student.php?all" class="btn btn-sm btn-primary">دریافت لیست</a> </p>
-                                        <p class="mb-0 mt-4 text-muted">لیست همه دانش آموزان</p>
+                                        <p class="mb-0 mt-4 text-muted"><?php echo m('label.all_students_list') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -129,13 +129,13 @@ include_once '../../temp.html';
                                     $query_st->execute([1]);
                                     $result_student = $query_st->fetch(PDO::FETCH_OBJ);
                                     ?>
-                                    <label class="main-content-label mb-3 pt-1"> بدون پایه</label>
+                                    <label class="main-content-label mb-3 pt-1"> <?php echo m('label.without_course') ?></label>
                                     <h2 class="text-left card-item-icon card-icon">
                                         <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                 class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
                                     </h2>
                                     <p class="text-left"><a href="export-student.php?uncourse" class="btn btn-sm btn-primary">دریافت لیست</a> </p>
-                                             <p class="mb-0 mt-4 text-muted">تا کنون هیچ پایه ای ثبت نام نکرده</p>
+                                             <p class="mb-0 mt-4 text-muted"><?php echo m('label.never_enrolled') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -186,7 +186,7 @@ include_once '../../temp.html';
                             <div class="card-body">
                                 <div class="col-10">
                                     <div>
-                                        <h6 class="main-content-label mb-1"> آخرین حساب کاربری ایجاد شده دانش آموز</h6>
+                                        <h6 class="main-content-label mb-1"> <?php echo m('label.last_student_account') ?></h6>
                                         <p class="text-muted card-sub-title">30 حساب کاربری اخیر
                                         </p>
                                     </div>
@@ -241,8 +241,7 @@ include_once '../../temp.html';
                                                                 </a>
                                                                 <a class="dropdown-item  "
                                                                    href="?call-student=<?php echo $res->username ?>"
-                                                                ><i class="fe fe-phone-forwarded"></i> تماس
-                                                                    با دانش آموز
+                                                                ><i class="fe fe-phone-forwarded"></i> <?php echo m('action.call_student') ?>
                                                                 </a>
 
 
@@ -293,8 +292,8 @@ include_once '../../temp.html';
                             <div class="card-body">
                                 <div class="col-10">
                                     <div>
-                                        <h6 class="main-content-label mb-1">گزارش تعداد استانی دانش آموزان</h6>
-                                        <p class="text-muted card-sub-title">آمار تعداد دانش آموزان به تفکیک استان
+                                        <h6 class="main-content-label mb-1"><?php echo m('label.students_by_state') ?></h6>
+                                        <p class="text-muted card-sub-title"><?php echo m('label.students_by_state_sub') ?>
                                         </p>
                                     </div>
                                 </div>

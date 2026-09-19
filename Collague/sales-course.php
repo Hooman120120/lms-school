@@ -70,7 +70,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> خرید پایه برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.buy_course_for_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -97,14 +97,14 @@ include_once '../temp.html';
                                     <div class="card-body">
                                         <div class="row">
 
-                                            <label for="sens" class="form-label">کد ملی دانش آموز: <span
+                                            <label for="sens" class="form-label"><?php echo m('label.student_nid_colon') ?> <span
                                                         style="color: red">*</span></label>
                                             <div class="col-xl-6">
                                                 <input class="form-control" name="sales" type="text"
                                                        placeholder="با اعداد انگلیسی وارد شود"
                                                        pattern="[0-9]{10}" required>
                                                 <div class="text-muted pd-t-10">
-                                                    کدملی دانش آموز را وارد کنید
+                                                    <?php echo m('help.enter_student_nid') ?>
                                                 </div>
                                             </div>
 
@@ -122,13 +122,13 @@ include_once '../temp.html';
                             <?php } else { ?>
 
                                 <div class="card-header border-bottom-0 pb-1">
-                                    <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت نام</label>
-                                    <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را انتخاب کنید</p>
+                                    <label class="main-content-label mb-2 pt-1"><?php echo m('label.enrolling_courses') ?></label>
+                                    <p class="tx-12 mb-0 text-muted"><?php echo m('label.select_courses_for_student') ?></p>
                                 </div>
                                 <?php
                                 $rest = retPerson($_GET['sales']);
                                 ?>
-                                <label class="main-content-label mb-2 pt-1">نام دانش آموز: <span
+                                <label class="main-content-label mb-2 pt-1"><?php echo m('label.student_name') ?> <span
                                             class="text-warning">  <?php echo $rest->fname . ' ' . $rest->lname ?> </span></label>
                                 <hr>
                                 <div class="card-body pt-0">

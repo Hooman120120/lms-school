@@ -287,7 +287,7 @@ include_once '../temp.html';
                                                                 <thead>
                                                                 <tr>
                                                                     <th>ردیف</th>
-                                                                    <th>پایه</th>
+                                                                    <th><?php echo t('grade') ?></th>
                                                                     <th>مبلغ</th>
                                                                     <th>خدمات پشتیبانی</th>
                                                                 </tr>

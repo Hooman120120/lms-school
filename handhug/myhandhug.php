@@ -87,8 +87,7 @@ include_once '../temp.html';
                                         <?= $course->coursemuted ?> </p>
                                 <?php } else { ?>
                                     <p class="text-black fs-6"> به نسخه آزمایشی بغل دستی خودش آمدید.<br>
-                                        جهت دسترسی کامل و استفاده از طرح "بغل دستی ها" ثبت نام خود را تکمیل کرده و پایه
-                                        مربوطه را خریداری کنید. </p>
+                                        <?php echo m('msg.handhug_complete_registration') ?> </p>
                                 <?php } ?>
                                 <br><br>
                             </div>
@@ -158,8 +157,7 @@ include_once '../temp.html';
                                 ?>
                                 <a href="attendance.php?code=<?php // echo $course->codecourse
                                 ?>" target="_blank"
-                                   class="btn btn-secondary">دریافت گزارش حضور غیاب
-                                    پایه</a>
+                                   class="btn btn-secondary"><?php echo m('action.attendance_report_course') ?></a>
                                 <?php // } else {
                                 ?>
                                 <?php // }
@@ -176,7 +174,7 @@ include_once '../temp.html';
                                         <label class="main-content-label my-auto pt-2">جزوات و تکلیف ارائه شده</label>
                                     </div>
                                     <span class="d-block tx-12 mt-2 mb-0 fs-8">جزوات ، متون و تکالیف ارائه شده جهت
-                                            دانلود برای این پایه </span>
+                                            دانلود برای این <?php echo t('grade') ?> </span>
                                 </div>
                             </div>
                             <div class="card-body text-center">

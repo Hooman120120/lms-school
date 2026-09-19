@@ -68,9 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'activ
         $st->execute([date("Y-m-d H:i:s"), $requestedBy, $studentUsername]);
 
         if ($st->rowCount() > 0) {
-            $_SESSION['flash_success_op'][] = ' دانش آموز مورد نظر تخصیص پشتیبانی شد.';
+            $_SESSION['flash_success_op'][] = ' ' . m('msg.student_assigned_support');
         } else {
-            $_SESSION['flash_errors_op'][] = 'دانش آموز مورد نظر پیدا نشد یا قبلاً فعال بوده است.';
+            $_SESSION['flash_errors_op'][] = m('msg.student_not_found_or_active');
         }
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
@@ -246,7 +246,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
-    <title>دانش آموزان لغو پشتیبانی | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.canceled_op_students') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .course-pill.active {
@@ -321,7 +321,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>دانش‌آموز</th>
+                                        <th><?php echo m('col.student') ?></th>
                                         <th>نام کاربری</th>
                                         <th>ارسال‌کننده</th>
                                         <th>نوع درخواست</th>
@@ -399,12 +399,12 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="d-flex align-items-center" style="gap: 12px;">
 
                                     <label class="main-content-label my-auto pt-2">
-                                        دانش آموزان لغو پشتیبانی‌شده
-                                    </label>
+                                        <?php echo m('label.canceled_op_students') ?>
+</label>
 
                                     <span class="menu-info-trigger"
-                                          data-tooltip="در این بخش می‌توانید فهرست دانش آموزانی را مشاهده کنید که پشتیبانی آن‌ها پس از بررسی و تأیید درخواست لغو شده است. اطلاعات دانش آموز و جزئیات مربوط به وضعیت لغو پشتیبانی از این قسمت قابل بررسی است."
-                                          aria-label="راهنمای دانش آموزان لغو پشتیبانی‌شده">
+                                          data-tooltip="<?php echo m('tooltip.canceled_op_students') ?>"
+                                          aria-label="<?php echo m('aria.canceled_op_students_help') ?>">
 
                                         <i class="fe fe-info fs-4"></i>
                                     </span>
@@ -461,7 +461,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                     <?php if (empty($opCanceledStudents)) : ?>
                                         <tr>
-                                            <td colspan="4" class="text-center">دانش آموز لغوپشتیبانی شده ای وجود ندارد.</td>
+                                            <td colspan="4" class="text-center"><?php echo m('msg.no_canceled_op_student') ?></td>
                                         </tr>
                                     <?php else : ?>
                                         <?php foreach ($opCanceledStudents as $s) : ?>
@@ -479,7 +479,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?php echo htmlspecialchars($s['username'] ?? '-'); ?></td>
                                                 <td><?php echo htmlspecialchars($s['requested_by'] ?? '-'); ?></td>
                                                 <td style="min-width:140px;">
-                                                    <form method="post" onsubmit="return confirm('در صورت انجام عملیات دانش آموز مربوطه به اپراتور درخواست داده شده تخصیص می یابد. انجام شود ؟');">
+                                                    <form method="post" onsubmit="return confirm(<?php echo json_encode(m('confirm.assign_operator'), JSON_UNESCAPED_UNICODE) ?>);">
                                                         <input type="hidden" name="action" value="activate_student">
                                                         <input type="hidden" name="student_username" value="<?php echo htmlspecialchars($s['username']); ?>">
                                                         <input type="hidden" name="requested_by" value="<?php echo htmlspecialchars($s['requested_by']); ?>">

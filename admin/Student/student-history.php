@@ -151,7 +151,7 @@ if (Permision('history_permission')) {
         $history_year = isset($_POST['history_year']) ? (int)$_POST['history_year'] : 0;
 
         $errors = [];
-        if (!$student_id) $errors[] = "شناسه دانش آموز الزامی است";
+        if (!$student_id) $errors[] = m('err.student_id_required');
         if (!$exam_type) $errors[] = "نوع آزمون الزامی است";
         if (!$registered) $errors[] = "وضعیت ثبت نام الزامی است";
 
@@ -266,7 +266,7 @@ if (Permision('history_permission')) {
 
         $errors_status = [];
         if (!$student_id) {
-            $errors_status[] = "شناسه دانش آموز الزامی است";
+            $errors_status[] = m('err.student_id_required');
         }
 
         if (
@@ -667,7 +667,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 
     if (!$answerRow || $answerRow->username !== $studentId) {
-        $_SESSION['edit_answer_error'] = 'رکورد معتبر نیست یا به این دانش‌آموز تعلق ندارد.';
+        $_SESSION['edit_answer_error'] = m('err.record_not_owned');
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
@@ -765,7 +765,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="description" content="LMS hamsepar">
     <meta name="author" content="hamsepar.ir">
-    <title>سوابق دانش‌آموز | <?php echo __TITLE; ?></title>
+    <title><?php echo m('page.student_history') ?> | <?php echo __TITLE; ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -858,9 +858,9 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
         <div class="row mt-2 mb-3">
             <div class="col-12">
 
-                <h4 class="mb-1">سوابق دانش‌آموز</h4>
+                <h4 class="mb-1"><?php echo m('page.student_history') ?></h4>
                 <p class="text-muted mb-3">
-                    وضعیت آزمون‌ها، نمرات، توضیحات و پایه‌های ثبت‌نام‌شده در سال‌های مختلف
+                    <?php echo m('label.history_subtitle') ?>
                 </p>
 
                 <?php if (!empty($years)): ?>
@@ -908,7 +908,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                         <span class="ms-auto text-muted" style="font-size: 12px;">
                                     آزمون‌ها: <?php echo $examCount; ?> |
                                     وضعیت/نظرات: <?php echo $statusCount; ?> |
-                                    پایه‌ها: <?php echo $courseCount; ?>
+                                    <?php echo m('label.courses_colon') ?> <?php echo $courseCount; ?>
                                 </span>
                                     </button>
                                 </h2>
@@ -1048,7 +1048,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                             </div>
 
                                                             <div class="mb-1 d-flex">
-                                                                <strong>نظر دانش‌آموز:&nbsp;</strong>
+                                                                <strong><?php echo m('label.student_comment_colon') ?>&nbsp;</strong>
                                                                 <div><?php echo $student_comment ?: '-'; ?></div>
                                                             </div>
 
@@ -1067,7 +1067,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
 
                                             <div class="col-md-12 mb-3">
                                                 <h6 class="border-bottom pb-2 mb-3 fw-bold text-secondary">
-                                                    شرح حال دانش آموز (از زبان پشتیبان)
+                                                    <?php echo m('label.student_narrative') ?>
                                                 </h6>
 
                                                 <?php $yearSupporterComments = $historyByYear[$year]['supporter_comments'] ?? []; ?>
@@ -1197,7 +1197,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                             <?php if (!$hasNumbers): ?>
                                                 <div class="alert alert-warning d-flex align-items-center mb-2" style="direction: rtl; font-size: 1rem;">
                                                     <i class="fe fe-alert-triangle ms-2" style="font-size: 1.4rem;"></i>
-                                                    <div>برای این دانش آموز هیچ شمارهٔ معتبری ثبت نشده است.</div>
+                                                    <div><?php echo m('msg.no_valid_phone') ?></div>
                                                 </div>
                                             <?php elseif ($callStatsThisYear): ?>
                                                 <div class="card shadow-sm border-0 mb-3" style="direction: rtl;">
@@ -1241,7 +1241,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                         <!-- Courses for this year -->
                                         <?php if (!empty($yearCourses)): ?>
                                             <hr class="my-3">
-                                            <h6 class="border-bottom pb-2 mb-2">پایه‌های ثبت‌نام‌شده در این سال</h6>
+                                            <h6 class="border-bottom pb-2 mb-2"><?php echo m('label.courses_this_year') ?></h6>
 
                                             <div class="history-course-list" style="max-height:20vh; overflow-y:auto; font-size:15px; line-height:1.5;">
                                                 <?php
@@ -1381,7 +1381,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                                         }
                                                                     }
                                                                 } else {
-                                                                    $senderLabel = 'دانش‌آموز';
+                                                                    $senderLabel = t('student');
                                                                 }
                                                                 ?>
 
@@ -1577,7 +1577,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                 <?php else: ?>
                     <div class="card">
                         <div class="card-body text-center text-muted py-5">
-                            هیچ سابقه‌ای برای این دانش‌آموز ثبت نشده است.
+                            <?php echo m('msg.no_history') ?>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -1712,8 +1712,8 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                     </div>
 
                     <div class="mb-3">
-                        <label for="student_comment" class="form-label" style="color:#222;">نظر دانش‌آموز</label>
-                        <textarea class="form-control" id="student_comment" name="student_comment" rows="3" placeholder="نظر دانش‌آموز را وارد کنید"></textarea>
+                        <label for="student_comment" class="form-label" style="color:#222;"><?php echo m('label.student_comment') ?></label>
+                        <textarea class="form-control" id="student_comment" name="student_comment" rows="3" placeholder="<?php echo m('label.student_comment_ph') ?>"></textarea>
                     </div>
 
                     <div class="mb-3">

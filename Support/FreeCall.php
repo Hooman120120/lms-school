@@ -27,7 +27,7 @@ if (session_id() != $re['session_id']) {
 }
 if (isset($_POST['submit'])) {
     if ($_SESSION['auth']['role'] == 1) {
-        $name = 'دانش آموز: ' . $_SESSION['auth']['name'] . ' ' . $_SESSION['auth']['famili'];
+        $name = m('name.student_colon_prefix') . $_SESSION['auth']['name'] . ' ' . $_SESSION['auth']['famili'];
     } else {
         $name = 'همکار آموزشی: ' . $_SESSION['auth']['name'] . ' ' . $_SESSION['auth']['famili'];
     }

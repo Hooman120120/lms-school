@@ -363,7 +363,7 @@ include_once '../../temp.html';
 
                                                                                 </div>
                                                                                 <div class="dropdown-item disabled ">
-                                                                                    <i class="fa fa-chalkboard-teacher"> </i>انتخاب معلم
+                                                                                    <i class="fa fa-chalkboard-teacher"> </i><?php echo m('action.choose_teacher2') ?>
 
                                                                                 </div>
                                                                                 <a class="dropdown-item"
@@ -504,7 +504,7 @@ include_once '../../temp.html';
 
                                                                                     </div>
                                                                                     <div class="dropdown-item disabled ">
-                                                                                        <i class="fa fa-chalkboard-teacher"> </i>انتخاب معلم
+                                                                                        <i class="fa fa-chalkboard-teacher"> </i><?php echo m('action.choose_teacher2') ?>
 
                                                                                     </div>
                                                                                     <a class="dropdown-item"
@@ -646,7 +646,7 @@ include_once '../../temp.html';
 
                                                                                     </div>
                                                                                     <div class="dropdown-item disabled ">
-                                                                                        <i class="fa fa-chalkboard-teacher"> </i>انتخاب معلم
+                                                                                        <i class="fa fa-chalkboard-teacher"> </i><?php echo m('action.choose_teacher2') ?>
 
                                                                                     </div>
                                                                                     <a class="dropdown-item"

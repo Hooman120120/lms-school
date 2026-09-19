@@ -98,14 +98,14 @@ if (isset($_POST['sales-course'])) {
                 $model = isset($priceModels[$code]) ? trim((string)$priceModels[$code]) : '';
 
                 if (!in_array($model, ['with_supporter', 'without_supporter'], true)) {
-                    $salesCourseError = 'لطفاً مدل قیمت هر پایه انتخاب‌شده را مشخص کنید.';
+                    $salesCourseError = m('course.price_model_required');
                     break;
                 }
 
                 if ($model === 'with_supporter') {
                     $supporter = isset($supporters[$code]) ? trim((string)$supporters[$code]) : '';
                     if ($supporter === '') {
-                        $salesCourseError = 'برای هر پایه با مدل «با پشتیبان»، انتخاب پشتیبان الزامی است.';
+                        $salesCourseError = m('course.supporter_required');
                         break;
                     }
 
@@ -126,7 +126,7 @@ if (isset($_POST['sales-course'])) {
                     $fee = $feeStmt->fetchColumn();
 
                     if ($fee === false) {
-                        $salesCourseError = 'پایه انتخاب‌شده معتبر نیست یا فعال نیست.';
+                        $salesCourseError = m('course.invalid');
                         break;
                     }
 
@@ -134,7 +134,7 @@ if (isset($_POST['sales-course'])) {
 
                     // Without-supporter price must be greater than zero.
                     if ($fee <= 0) {
-                        $salesCourseError = 'قیمت بدون پشتیبان برای یکی از پایه‌های انتخاب‌شده تعریف نشده است.';
+                        $salesCourseError = m('course.price_missing');
                         break;
                     }
 
@@ -207,8 +207,8 @@ if (isset($_POST['sales-course'])) {
                     $studentFullName = $studentInfo ? trim($studentInfo->fname . ' ' . $studentInfo->lname) : $username;
                     CreateSchoolNotification(
                         'new_student',
-                        'ثبت‌نام دانش‌آموز جدید: ' . $studentFullName,
-                        'دانش‌آموز در پایه جدید ثبت‌نام شد.',
+                        m('log.new_student_enroll') . $studentFullName,
+                        m('log.enrolled_new_course'),
                         (int)($_SESSION['admin']['idadmin'] ?? 0),
                         (string)$_SESSION['admin']['user'],
                         (int)$code,
@@ -226,7 +226,7 @@ if (isset($_POST['sales-course'])) {
                 exit;
             }
         } else {
-            $salesCourseError = 'لطفاً حداقل یک پایه را انتخاب کنید.';
+            $salesCourseError = m('course.select_at_least_one');
         }
     }
 }
@@ -258,7 +258,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد پایه برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.create_course_for_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -290,12 +290,12 @@ include_once '../../temp.html';
                                             <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                 <h6 class="main-content-label mb-0">
-                                                    ایجاد پایه برای دانش آموز
+                                                    <?php echo m('page.create_course_for_student') ?>
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موردنظر پایه جدید ثبت کنید و با انتخاب پایه، مبلغ و سایر اطلاعات لازم، فاکتور مربوط به ثبت‌نام او را صادر نمایید."
-                                                      aria-label="راهنمای ایجاد پایه و صدور فاکتور برای دانش آموز">
+                                                      data-tooltip="<?php echo m('tooltip.create_course_for_student') ?>"
+                                                      aria-label="<?php echo m('aria.create_course_help') ?>">
 
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -303,7 +303,7 @@ include_once '../../temp.html';
                                             </div>
 
                                             <p class="text-muted card-sub-title">
-                                                صدور فاکتور جدید برای دانش آموز
+                                                <?php echo m('page.new_invoice_for_student') ?>
                                             </p>
                                         </div>
                                     </div>
@@ -325,9 +325,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        فاکتور شماره : <?php echo $idf ?> با موفقیت صادر شد. دانش آموز
-                                        و یا حسابدار
-                                        می بایست فاکتور را پرداخت نمایند
+                                        <?php echo m('invoice.issued_success', [':n' => $idf]) ?>
 
                                     </div>
                                 <?php } ?>
@@ -338,7 +336,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
+                                        <?php echo m('error.nid_is_collague') ?>
 
                                     </div>
                                 <?php } ?>
@@ -379,9 +377,7 @@ include_once '../../temp.html';
                                                 <form method="post" data-parsley-validate="">
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-2">
-                                                            <label for="sens" class="form-label mg-t-15">کد ملی یا شماره تماس
-                                                                دانش آموز: <span
-                                                                        style="color: red">*</span></label>
+                                                            <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_or_phone') ?> <span style="color: red">*</span></label>
                                                             <input class="form-control" name="codemeli"
                                                                    type="text"
                                                                    placeholder="با اعداد انگلیسی وارد شود"
@@ -399,9 +395,8 @@ include_once '../../temp.html';
 
                                                     <div class="text-center mg-10">
                                                         <button type="submit" class="btn btn-success "
-                                                                name="search-melli"><i
-                                                                    class="fa fa-search"></i>
-                                                            جستجوی دانش آموز
+                                                                name="search-melli"><i class="fa fa-search"></i>
+                                                            <?php echo m('action.search_student') ?>
                                                         </button>
                                                     </div>
                                                 </form>
@@ -411,13 +406,11 @@ include_once '../../temp.html';
                                                             <div class="d-flex flex-column mb-3">
                                                                 <div class="d-flex align-items-center mg-t-15"
                                                                      style="gap: 12px;">
-                                                                    <label for="excel_file" class="form-label mb-0">
-                                                                        ایجاد
-                                                                        پایه برای گروهی از دانش آموزان </label>
+                                                                    <label for="excel_file" class="form-label mb-0"><?php echo m('action.bulk_create_course') ?></label>
                                                                     <span
                                                                             class="menu-info-trigger"
-                                                                            data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک یا چند پایه را برای گروهی از دانش آموزان ثبت کنید. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
-                                                                            aria-label="راهنمای ایجاد گروهی پایه برای دانش آموزان"> <i
+                                                                            data-tooltip="<?php echo m('tooltip.bulk_create_course') ?>"
+                                                                            aria-label="<?php echo m('aria.bulk_create_course_help') ?>"> <i
                                                                                 class="fe fe-info fs-4"></i> </span>
                                                                 </div>
                                                                 <div class="input-group file-browser mt-3">
@@ -434,7 +427,7 @@ include_once '../../temp.html';
                                                                 <button type="button" name="course_signup"
                                                                         class="btn btn-success w-25 align-self-center"
                                                                         id="openModalBtn">
-                                                                    ایجاد پایه برای گروهی از دانش آموزان
+                                                                    <?php echo m('action.bulk_create_course') ?>
                                                                 </button>
                                                                 <br>
                                                                 <p class="header-message">
@@ -446,7 +439,7 @@ include_once '../../temp.html';
                                                                     <li>دکمه <strong>OK</strong> را کلیک کنید و پنجره را ببندید.</li>
                                                                     <li>فایل اکسل را باز کنید و روی <strong>Enable Content</strong> کلیک نمایید</li>
                                                                     <li><strong>ALT+F8</strong> را بزنید و در پنجره ای که باز میشود روی اولین فایل دوبار کلیک نمایید</li>
-                                                                    <li>پیغام موفقیت ظاهر می شود و می توانید از کد پایه های فعال استفاده کنید</li>
+                                                                    <li><?php echo m('help.excel_step3') ?></li>
                                                                 </ol>
                                                                 <p>
                                                                     <a href="<?php echo url('assets/doc/addcourse.xlsm') ?>" class="btn btn-info ripple"> دانلود فایل نمونه</a>
@@ -482,15 +475,15 @@ include_once '../../temp.html';
                                                 <div class="row row-sm">
                                                     <div class="col-xl-8">
                                                         <div class="card-header border-bottom-0 pb-1">
-                                                            <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت نام</label>
-                                                            <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را انتخاب کنید</p>
+                                                            <label class="main-content-label mb-2 pt-1"><?php echo m('label.courses_open_enrollment') ?></label>
+                                                            <p class="tx-12 mb-0 text-muted"><?php echo m('label.select_courses_for_student') ?></p>
                                                         </div>
 
                                                         <?php
                                                         $rest = retPerson($_SESSION['add-course']['codemeli']);
                                                         ?>
                                                         <label class="main-content-label mb-2 pt-1">
-                                                            نام دانش آموز:
+                                                            <?php echo m('label.student_name') ?>
                                                             <span class="text-warning">
                                                                     <?php echo htmlspecialchars($rest->fname . ' ' . $rest->lname, ENT_QUOTES, 'UTF-8'); ?>
                                                                 </span>
@@ -501,7 +494,7 @@ include_once '../../temp.html';
                                                         <div class="row mb-3 align-items-center">
 
                                                             <div class="col-12 mb-2">
-                                                                <h6 class="main-content-label mb-1">فیلتر پایه های فعال</h6>
+                                                                <h6 class="main-content-label mb-1"><?php echo m('label.filter_active_courses') ?></h6>
                                                             </div>
 
                                                             <div class="col-12 col-lg-1 mb-2">
@@ -619,7 +612,7 @@ include_once '../../temp.html';
                                                                 <label for="courseTypeFilter" class="form-label mb-1"></label>
                                                                 <select id="courseTypeFilter"
                                                                         class="form-control bg-primary text-white border-0">
-                                                                    <option value="all">همه پایه‌ها</option>
+                                                                    <option value="all"><?php echo m('label.all_courses') ?></option>
                                                                     <option value="0">آموزشی</option>
                                                                     <option value="2">المپیاد</option>
                                                                     <option value="1">مهارتی</option>
@@ -699,7 +692,7 @@ include_once '../../temp.html';
                                                                             <div class="course-settings-container mt-2" id="course-settings-<?php echo htmlspecialchars($results->codecourse, ENT_QUOTES, 'UTF-8'); ?>" style="display: none;">
                                                                                 <div class="border rounded p-3 bg-light">
                                                                                     <div class="mb-2">
-                                                                                        <label class="form-label mb-2 fw-bold">مدل قیمت این پایه:</label>
+                                                                                        <label class="form-label mb-2 fw-bold"><?php echo m('label.price_model_this_course') ?></label>
                                                                                         <div class="d-flex flex-wrap gap-3">
                                                                                             <div class="form-check">
                                                                                                 <input class="form-check-input price-model-radio"
@@ -790,7 +783,7 @@ include_once '../../temp.html';
                                                                 <tr>
                                                                     <th>ردیف</th>
                                                                     <th>پشتیبان</th>
-                                                                    <th>تعداد ( نفر پایه )</th>
+                                                                    <th><?php echo m('label.count_person_course') ?></th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -1069,7 +1062,7 @@ include_once '../../temp.html';
                         },
                         success: function(response) {
                             let html = `
-                        <label class="form-label small text-primary mb-1">کلاس این پایه را انتخاب کنید:</label>
+                        <label class="form-label small text-primary mb-1"><?php echo m('label.choose_class_for_course') ?></label>
                         <select name="class_id[${code}]" class="form-control form-control-sm border-primary" required>
                             <option value="">(انتخاب کلاس الزامى است)</option>
                             ${response}
@@ -1104,7 +1097,7 @@ include_once '../../temp.html';
 
                     if (!model) {
                         valid = false;
-                        errorMessage = 'لطفاً مدل قیمت هر پایه انتخاب‌شده را مشخص کنید.';
+                        errorMessage = <?php echo json_encode(m('course.price_model_required'), JSON_UNESCAPED_UNICODE) ?>;
                         settings.stop(true, true).slideDown();
                         return false;
                     }
@@ -1113,7 +1106,7 @@ include_once '../../temp.html';
                         const supporter = settings.find('.supporter-select').val();
                         if (!supporter) {
                             valid = false;
-                            errorMessage = 'برای پایه‌ای که «با پشتیبان» انتخاب شده، انتخاب پشتیبان الزامی است.';
+                            errorMessage = <?php echo json_encode(m('course.supporter_required_js'), JSON_UNESCAPED_UNICODE) ?>;
                             settings.find('.supporter-wrapper').stop(true, true).slideDown();
                             settings.find('.supporter-select').prop('required', true);
                             return false;

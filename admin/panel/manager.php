@@ -273,7 +273,7 @@ include_once '../../temp.html';
                                                         همکاران
                                                     </label>
                                                     <span class="menu-info-trigger"
-                                                          data-tooltip="تعداد کل همکاران و معلمان دارای حساب مدیریتی مدرسه نمایش داده می‌شود. با کلیک روی این سلول، بازدیدهای امروز معلمان و سایر همکاران به تفکیک قابل مشاهده است."
+                                                          data-tooltip="<?php echo m('tooltip.staff_count') ?>"
                                                           aria-label="راهنمای همکاران">
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -282,7 +282,7 @@ include_once '../../temp.html';
                                                             class="mdi mdi-cube icon-size float-right text-primary"></i><span
                                                             class="font-weight-bold"><?php echo number_format($result_student->countcollague) ?> </span>
                                                 </h2>
-                                                <p class="mb-0 mt-4 text-muted">معلمان و سایر همکاران مدرسه</p>
+                                                <p class="mb-0 mt-4 text-muted"><?php echo m('label.teachers_and_staff') ?></p>
                                             </div>
                                         </div>
                                     </div>

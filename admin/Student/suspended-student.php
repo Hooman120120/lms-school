@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'unsus
         $st->execute([$studentUsername]);
 
         if ($st->rowCount() > 0) {
-            $_SESSION['flash_success'][] = 'حساب دانش آموز فعال شد.';
+            $_SESSION['flash_success'][] = m('msg.student_activated');
         } else {
-            $_SESSION['flash_errors'][] = 'دانش آموز مورد نظر پیدا نشد یا قبلاً فعال بوده است.';
+            $_SESSION['flash_errors'][] = m('msg.student_not_found_or_active');
         }
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
@@ -213,7 +213,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title>دانش آموزان تعلیقی | <?php echo __TITLE ?></title>
+    <title><?php echo m('page.suspended_students') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         .course-pill.active { box-shadow: 0 0 0 .15rem rgba(13,110,253,.25); }
@@ -280,7 +280,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th style="width: 100px;">دانش‌آموز</th>
+                                        <th style="width: 100px;"><?php echo m('col.student') ?></th>
                                         <th>نام کاربری</th>
                                         <th>ارسال‌کننده</th>
                                         <th>نوع درخواست</th>
@@ -340,12 +340,12 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="d-flex align-items-center pt-2" style="gap: 12px;">
 
                                         <label class="main-content-label my-auto">
-                                            دانش آموزان تعلیق‌شده
-                                        </label>
+                                            <?php echo m('label.suspended_students') ?>
+</label>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش می‌توانید فهرست دانش آموزانی را مشاهده کنید که درخواست تعلیق آن‌ها تأیید شده و وضعیتشان به حالت تعلیق درآمده است. اطلاعات و وضعیت تعلیق هر دانش آموز از این قسمت قابل بررسی است."
-                                              aria-label="راهنمای دانش آموزان تعلیق‌شده">
+                                              data-tooltip="<?php echo m('tooltip.suspended_students') ?>"
+                                              aria-label="<?php echo m('aria.suspended_students_help') ?>">
 
                                             <i class="fe fe-info fs-4"></i>
                                         </span>
@@ -398,7 +398,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                         <tbody>
                                         <?php if (empty($suspendedStudents)) : ?>
                                             <tr>
-                                                <td colspan="4" class="text-center">دانش آموز تعلیق‌شده‌ای وجود ندارد.</td>
+                                                <td colspan="4" class="text-center"><?php echo m('msg.no_suspended_student') ?></td>
                                             </tr>
                                         <?php else : ?>
                                             <?php foreach ($suspendedStudents as $s) : ?>
@@ -414,7 +414,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                                     <td><?php echo htmlspecialchars($s['codemeli'] ?? '-'); ?></td>
                                                     <td><?php echo htmlspecialchars($s['suspension_reason'] ?? ''); ?></td>
                                                     <td style="min-width:140px;">
-                                                        <form method="post" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید این دانش آموز را فعال کنید؟');">
+                                                        <form method="post" onsubmit="return confirm(<?php echo json_encode(m('confirm.activate_student'), JSON_UNESCAPED_UNICODE) ?>);">
                                                             <input type="hidden" name="action" value="unsuspend_student">
                                                             <input type="hidden" name="student_username" value="<?php echo htmlspecialchars($s['codemeli']); ?>">
                                                             <button type="submit" class="btn btn-sm btn-outline-success w-100">فعال کردن</button>

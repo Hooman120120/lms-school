@@ -81,7 +81,7 @@ SendSms($_SESSION['verify']['tel'],$text,171697,$_SESSION['verify']['tel']);
                                         <h6 class="alert-heading">به خانواده بزرگ هنرآموزش خوش آمدید!</h6>
 
                                         <hr>
-                                        <p class="mb-0"><?php if($_SESSION['verify']['role']==1) {echo 'دانش آموز گرامی:' ;} else {echo 'همکار گرامی:';} ?>
+                                        <p class="mb-0"><?php if($_SESSION['verify']['role']==1) {echo m('label.dear_student_colon') ;} else {echo 'همکار گرامی:';} ?>
                                             :<strong> <?php echo $_SESSION['verify']['name']." ".$_SESSION['verify']['famili'] ?> </strong></p>
                                         <p class="mb-0"> نام کاربری
                                             :<strong><?php echo $_SESSION['verify']['tel'] ?></strong></p>

@@ -17,7 +17,7 @@ if (isset($_POST['codecourse'])) {
         }
     } else {
         // در صورتی که کلاسی تعریف نشده باشد
-        echo "<option value='' disabled>کلاسی برای این پایه تعریف نشده است</option>";
+        echo "<option value='' disabled>" . m('msg.no_class_for_course') . "</option>";
     }
 }
 ?>
