@@ -97,7 +97,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> افزودن فیلم به دوره | <?php echo __TITLE ?></title>
+    <title> افزودن فیلم به پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -126,7 +126,7 @@ include_once '../../temp.html';
                                     <div class="col-12">
                                         <?php $course = returnCourse($_GET['code']); ?>
                                         <div>
-                                            <h6 class="main-content-label mb-1">فیلم های ایجاد شده برای دوره <span
+                                            <h6 class="main-content-label mb-1">فیلم های ایجاد شده برای پایه <span
                                                     class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                             <p class="text-muted card-sub-title">
                                             </p>
@@ -220,7 +220,7 @@ include_once '../../temp.html';
                                     <div class="card-body">
                                         <div class="col-12">
                                             <div>
-                                                <h6 class="main-content-label mb-1">افزودن فیلم جدید به دوره <span
+                                                <h6 class="main-content-label mb-1">افزودن فیلم جدید به پایه <span
                                                         class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                                 <p class="text-muted card-sub-title">
                                                 </p>
@@ -345,7 +345,7 @@ include_once '../../temp.html';
                                     <div class="card-body">
                                         <div class="col-12">
                                             <div>
-                                                <h6 class="main-content-label mb-1">ویرایش فیلم دوره <span
+                                                <h6 class="main-content-label mb-1">ویرایش فیلم پایه <span
                                                         class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                                 <p class="text-muted card-sub-title">
                                                 </p>

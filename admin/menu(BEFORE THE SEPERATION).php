@@ -289,12 +289,12 @@ $notifTotalCount = (int)$reportCount + (int)$teacherNotifCount + (int)$studentOp
                         <?php endif; ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/Student/addcourse.php') ?>">ثبت
-                                دوره </a>
+                                پایه </a>
                         </li>
                         <!-- <//?php if ($adminRole !== 2): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<//?php echo url('admin/democourse/addstudent.php') ?>">ثبت
-                                    دوره آزمایشی</a>
+                                    دوره فوق برنامه</a>
                             </li>
                         <//?php endif; ?> -->
 
@@ -356,7 +356,7 @@ $notifTotalCount = (int)$reportCount + (int)$teacherNotifCount + (int)$studentOp
                         <?php if ($adminRole !== 2): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/democourse/addstudent.php') ?>">ثبت
-                                    دوره آزمایشی</a>
+                                    دوره فوق برنامه</a>
                             </li>
                         <?php endif; ?>
 
@@ -420,41 +420,39 @@ $notifTotalCount = (int)$reportCount + (int)$teacherNotifCount + (int)$studentOp
             <?php } ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label">دوره ها</span><i
+                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label">پایه ها</span><i
                         class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <?php if ($adminRole !== 2): ?>
                         <?php if (Permision('permision_viewcourse')) { ?>
                             <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>"> ثبت دوره
+                                <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>"> ثبت پایه
                                     جدید</a>
                             </li>
                         <?php } ?>
                         <?php if ((int)$adminRole !== 3) { ?>
                             <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/democourse/add-democourse.php') ?>"> ثبت دوره آزمایشی جدید</a>
+                                <a class="nav-sub-link" href="<?php echo url('admin/democourse/add-democourse.php') ?>"> ثبت دوره فوق برنامه جدید</a>
                             </li>
                         <?php } ?>
 
                     <?php endif; ?>
 
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"> دوره های
+                        <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"> پایه های
                             فعال</a>
                     </li>
                     <?php if ($adminRole !== 3): ?>
 
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/democourse/list-democourse.php') ?>"> دوره های
-                                آزمایشی</a>
+                            <a class="nav-sub-link" href="<?php echo url('admin/democourse/list-democourse.php') ?>"> دوره‌های فوق برنامه</a>
                         </li>
                     <?php endif; ?>
                     <?php if ($adminRole !== 2): ?>
                         <?php if (Permision('permision_viewcourse')) { ?>
                             <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/course/unactive-course.php') ?>"> دوره
-                                    های غیر فعال</a>
+                                <a class="nav-sub-link" href="<?php echo url('admin/course/unactive-course.php') ?>"> بایگانی سال‌های قبل</a>
                             </li>
                         <?php } ?>
                         <?php if (Permision('permision_discount')) { ?>

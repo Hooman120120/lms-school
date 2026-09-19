@@ -70,7 +70,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> خرید دوره برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> خرید پایه برای دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -122,8 +122,8 @@ include_once '../temp.html';
                             <?php } else { ?>
 
                                 <div class="card-header border-bottom-0 pb-1">
-                                    <label class="main-content-label mb-2 pt-1">دوره های در حال ثبت نام</label>
-                                    <p class="tx-12 mb-0 text-muted">دوره های مورد نظر برای دانش آموز را انتخاب کنید</p>
+                                    <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت نام</label>
+                                    <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را انتخاب کنید</p>
                                 </div>
                                 <?php
                                 $rest = retPerson($_GET['sales']);

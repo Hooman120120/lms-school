@@ -27,7 +27,7 @@ if ($_SESSION['auth']['role'] != 1) {
     die();
 }
 
-// چک کردن وجود کد دوره
+// چک کردن وجود کد پایه
 if (!isset($_GET['code']) or $_GET['code'] == '') {
     header('location: ' . url('Course/allcourse.php'));
     die();
@@ -74,7 +74,7 @@ include_once '../temp.html';
                         <div class="card custom-card text-center shadow">
                             <div class="card-header d-flex flex-row justify-content-between">
                                 <h5 class="mb-2 font-weight-bold text-right">
-                                    انتخاب درس برای دوره: <span
+                                    انتخاب درس برای پایه: <span
                                             class="text-primary"><?php echo $course->coursename; ?></span>
                                 </h5>
                                 <div>
@@ -108,7 +108,7 @@ include_once '../temp.html';
                                             </a>
                                         <?php }
                                     } else { ?>
-                                        <p class="text-danger mt-3 text-center">هیچ درسی برای این دوره ثبت نشده است.</p>
+                                        <p class="text-danger mt-3 text-center">هیچ درسی برای این پایه ثبت نشده است.</p>
                                     <?php } ?>
                                 </div>
                             </div>

@@ -178,7 +178,7 @@ if (isset($_POST['verifychange'])) {
         unset($_SESSION['newFactor']);
         echo '<script>window.close()</script>';
         die();
-    } // تغییری در فاکتور نداریم و فقط جابجایی دوره داریم
+    } // تغییری در فاکتور نداریم و فقط جابجایی پایه داریم
     if ($_SESSION['newFactor']['reminder'] < 0) {
         $baghimande = $_SESSION['newFactor']['reminder'] * -1;
         date_default_timezone_set("Iran");
@@ -367,7 +367,7 @@ include_once '../../temp.html';
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> جابجابی دوره : <?php echo $_GET['order'] ?> | <?php echo __TITLE ?></title>
+    <title> جابجابی پایه : <?php echo $_GET['order'] ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -419,8 +419,8 @@ include_once '../../temp.html';
                         <div class="row">
                             <div class="col-9">
                                 <div>
-                                    <h6 class="main-content-label mb-1">جابجایی دوره </h6>
-                                    <p class="text-muted card-sub-title"> مشاهده دوره ها و انتخاب جایگزین</p>
+                                    <h6 class="main-content-label mb-1">جابجایی پایه </h6>
+                                    <p class="text-muted card-sub-title"> مشاهده پایه ها و انتخاب جایگزین</p>
                                 </div>
                             </div>
                         </div>
@@ -439,7 +439,7 @@ include_once '../../temp.html';
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">
-                                                        دوره قبلی:
+                                                        پایه قبلی:
                                                     </div>
                                                 </div>
                                                 <input class="form-control"
@@ -452,13 +452,13 @@ include_once '../../temp.html';
                                         <div class="col-6 mg-t-20">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
-                                                    دوره جایگزین<span
+                                                    پایه جایگزین<span
                                                             class="tx-danger">*</span>
                                                 </div>
                                                 <select class="form-control text-danger select2 "
                                                         aria-describedby="basic-addon2"
                                                         required="" name="doure[]">
-                                                    <option label="دوره ">
+                                                    <option label="پایه ">
                                                     </option>
                                                     <?php
                                                     $sql = 'SELECT * FROM codtbl_course  WHERE activecourse=? ORDER BY idcourse DESC ';
@@ -487,7 +487,7 @@ include_once '../../temp.html';
                                 <button type="submit" class="btn btn-success "
                                         name="save"><i
                                             class="fa fa-save"></i>
-                                    جابجایی دوره
+                                    جابجایی پایه
                                 </button>
                             </div>
                         </form>
@@ -498,7 +498,7 @@ include_once '../../temp.html';
     <?php } else { ?>
         <div class="alert alert-success" role="alert">
             <span class="alert-inner--icon"><i class="fa fa-info"></i></span>
-            در جابجایی دوره ، مبلغ تخفیف و کارمزد همکار همانند فاکتور اولیه محاسبه و از فاکتور جدید کم میگردد!
+            در جابجایی پایه ، مبلغ تخفیف و کارمزد همکار همانند فاکتور اولیه محاسبه و از فاکتور جدید کم میگردد!
         </div>
         <div class="row">
             <div class="col-6">

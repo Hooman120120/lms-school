@@ -177,14 +177,14 @@ include_once '../../temp.html';
                                                     <h6 class="main-content-label mb-1">فاکتورهای مسترد شده</h6>
 
                                                     <span class="menu-info-trigger"
-                                                          data-tooltip="در این بخش فاکتورهایی نمایش داده می‌شوند که به دلیل انصراف دانش آموز از دوره، فرآیند استرداد برای آن‌ها انجام شده است. این لیست امکان بررسی سوابق فاکتورهای برگشت داده‌شده و پیگیری وضعیت انصراف از دوره را فراهم می‌کند."
+                                                          data-tooltip="در این بخش فاکتورهایی نمایش داده می‌شوند که به دلیل انصراف دانش آموز از پایه، فرآیند استرداد برای آن‌ها انجام شده است. این لیست امکان بررسی سوابق فاکتورهای برگشت داده‌شده و پیگیری وضعیت انصراف از پایه را فراهم می‌کند."
                                                           aria-label="راهنمای فاکتورهای مسترد شده"
                                                           onclick="event.preventDefault(); event.stopPropagation();">
 
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
                                                 </div>
-                                                <p class="text-muted card-sub-title">فاکتورهای انصراف از دوره</p>
+                                                <p class="text-muted card-sub-title">فاکتورهای انصراف از پایه</p>
                                             </div>
                                         </div>
                                         <div class="col-2 text-left">

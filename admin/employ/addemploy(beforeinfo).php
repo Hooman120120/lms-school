@@ -763,7 +763,7 @@ include_once '../../temp.html';
                                                 <input name="edit-student" type="checkbox"> ویرایش دانش آموز
                                             </div>
                                             <div class="col-lg-2">
-                                                <input name="course-student" type="checkbox"> ثبت دوره دانش آموز
+                                                <input name="course-student" type="checkbox"> ثبت پایه دانش آموز
                                             </div>
                                             <div class="col-lg-2">
                                                 <input name="report-student" type="checkbox"> گزارش دانش آموزان
@@ -783,15 +783,15 @@ include_once '../../temp.html';
                                         </div>
                                         <hr>
                                         <div class="row ">
-                                            <p class="text-muted card-sub-title">مجوزات و دسترسی های مرتبط با دوره
+                                            <p class="text-muted card-sub-title">مجوزات و دسترسی های مرتبط با پایه
                                                 ها</p>
                                             <div class="col-lg-2">
 
-                                                <input name="menu-course" type="checkbox"> منو دوره ها
+                                                <input name="menu-course" type="checkbox"> منو پایه ها
                                             </div>
                                             <div class="col-lg-2">
 
-                                                <input name="del-course" type="checkbox"> حذف دوره ها
+                                                <input name="del-course" type="checkbox"> حذف پایه ها
                                             </div>
                                             <div class="col-lg-3">
                                                 <input name="discount" type="checkbox"> ثبت کد تخفیف
@@ -1149,7 +1149,7 @@ include_once '../../temp.html';
                                                 <input name="manage-skill"
                                                        type="checkbox" <?php if ($retadmin->skill_permission == 1) {
                                                     echo 'checked';
-                                                } ?>> دسترسی دوره های مهارتی
+                                                } ?>> دسترسی پایه های مهارتی
                                             </div>
 
                                             <div class="col-lg-2">
@@ -1223,7 +1223,7 @@ include_once '../../temp.html';
                                                 <input name="ecourse-student"
                                                        type="checkbox"<?php if ($retadmin->permision_addcourse_student == 1) {
                                                     echo 'checked';
-                                                } ?> > ثبت دوره دانش آموز
+                                                } ?> > ثبت پایه دانش آموز
                                             </div>
                                             <div class="col-lg-2">
                                                 <input name="ereport-student"
@@ -1252,21 +1252,21 @@ include_once '../../temp.html';
                                         </div>
                                         <hr>
                                         <div class="row ">
-                                            <p class="text-muted card-sub-title">مجوزات و دسترسی های مرتبط با دوره
+                                            <p class="text-muted card-sub-title">مجوزات و دسترسی های مرتبط با پایه
                                                 ها</p>
                                             <div class="col-lg-2">
 
                                                 <input name="emenu-course"
                                                        type="checkbox"<?php if ($retadmin->permision_viewcourse == 1) {
                                                     echo 'checked';
-                                                } ?>> منو دوره ها
+                                                } ?>> منو پایه ها
                                             </div>
                                             <div class="col-lg-2">
 
                                                 <input name="edel-course"
                                                        type="checkbox"<?php if ($retadmin->permision_deletcourse == 1) {
                                                     echo 'checked';
-                                                } ?>> حذف دوره ها
+                                                } ?>> حذف پایه ها
                                             </div>
                                             <div class="col-lg-3">
                                                 <input name="ediscount"

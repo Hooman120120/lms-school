@@ -129,13 +129,13 @@ include_once '../../temp.html';
                                     $query_st->execute([1]);
                                     $result_student = $query_st->fetch(PDO::FETCH_OBJ);
                                     ?>
-                                    <label class="main-content-label mb-3 pt-1"> بدون دوره</label>
+                                    <label class="main-content-label mb-3 pt-1"> بدون پایه</label>
                                     <h2 class="text-left card-item-icon card-icon">
                                         <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                 class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
                                     </h2>
                                     <p class="text-left"><a href="export-student.php?uncourse" class="btn btn-sm btn-primary">دریافت لیست</a> </p>
-                                             <p class="mb-0 mt-4 text-muted">تا کنون هیچ دوره ای ثبت نام نکرده</p>
+                                             <p class="mb-0 mt-4 text-muted">تا کنون هیچ پایه ای ثبت نام نکرده</p>
                                 </div>
                             </div>
                         </div>

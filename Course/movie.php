@@ -54,7 +54,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> فیلم های برگزار شده برای دوره : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
+    <title> فیلم های برگزار شده برای پایه : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
     <style>
         /* برای select2 نسخه‌های معمولی */
@@ -101,7 +101,7 @@ include_once '../temp.html';
                                             <label class="main-content-label my-auto pt-2">فیلم کلاس های برگزار
                                                 شده</label>
                                         </div>
-                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> دوره
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> پایه
                                             <?php echo $course1->coursename ?> </span>
                                     </div>
                                     <?php if (!isset($_GET['demo'])) { ?>

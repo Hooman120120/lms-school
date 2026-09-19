@@ -162,7 +162,7 @@ include_once '../header.php';
                                         class="badge bg-primary-subtle text-primary fw-normal ms-2"
                                         style="font-size: 10px;">کد: <?= $userCourse->codecourse ?></span></h5>
                             <!--                            <div class="d-flex align-items-center">-->
-                            <!--                                <span class="stat-label me-2">پیشرفت دوره:</span>-->
+                            <!--                                <span class="stat-label me-2">پیشرفت پایه:</span>-->
                             <!--                                <div class="progress-tiny">-->
                             <!--                                    <div class="progress-bar bg-primary" style="width: 75%"></div>-->
                             <!--                                </div>-->
@@ -306,7 +306,7 @@ include_once '../header.php';
                                 <!--                                        <tr>-->
                                 <!--                                            <td colspan="3" class="py-4 text-muted">-->
                                 <!--                                                <i class="fa fa-info-circle me-1"></i>-->
-                                <!--                                                آزمونی برای این دوره ثبت نشده است.-->
+                                <!--                                                آزمونی برای این پایه ثبت نشده است.-->
                                 <!--                                            </td>-->
                                 <!--                                        </tr>-->
                                 <!--                                    --><?php //endif; ?>
@@ -365,7 +365,7 @@ include_once '../header.php';
                                         <tr>
                                             <td colspan="4" class="py-4 text-muted">
                                                 <i class="fa fa-info-circle me-1"></i>
-                                                آزمونی برای این دوره ثبت نشده است.
+                                                آزمونی برای این پایه ثبت نشده است.
                                             </td>
                                         </tr>
                                     <?php endif; ?>

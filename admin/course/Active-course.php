@@ -309,7 +309,7 @@ if (isset($_GET['schedule'])) {
         header('Location: Active-course.php');
         die();
     } else {
-        $_SESSION['message'] = "برنامه هفتگی برای این دوره تعریف نشده است";
+        $_SESSION['message'] = "برنامه هفتگی برای این پایه تعریف نشده است";
         header('Location: Active-course.php');
         die();
     }
@@ -336,7 +336,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -442,13 +442,13 @@ include_once '../../temp.html';
                                                         <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                             <h6 class="main-content-label mb-0">
-                                                                دوره‌های فعال
+                                                                پایه‌های فعال
                                                             </h6>
 
                                                             <span class="menu-info-trigger"
-                                                                  data-tooltip="در این بخش می توانید لیست دوره های فعال را به صورت کلی یا با فیلتر مورد نظر مشاهده و مدیریت کنید.همچنین علاوه بر مدیریت دوره های فعال
-مدیریت کلاس های مرتبط با هر دوره / دانش آموزان ثبت نام شده در هر دوره ، ویرایش و حذف دوره در این بخش قرار دارد."
-                                                                  aria-label="راهنمای دوره‌های فعال">
+                                                                  data-tooltip="در این بخش می توانید لیست پایه های فعال را به صورت کلی یا با فیلتر مورد نظر مشاهده و مدیریت کنید.همچنین علاوه بر مدیریت پایه های فعال
+مدیریت کلاس های مرتبط با هر پایه / دانش آموزان ثبت نام شده در هر پایه ، ویرایش و حذف پایه در این بخش قرار دارد."
+                                                                  aria-label="راهنمای پایه‌های فعال">
 
                                                                 <i class="fe fe-info fs-4"></i>
                                                             </span>
@@ -456,7 +456,7 @@ include_once '../../temp.html';
                                                         </div>
 
                                                         <p class="text-muted card-sub-title">
-                                                            مشاهده و مدیریت دوره‌های فعال
+                                                            مشاهده و مدیریت پایه‌های فعال
                                                         </p>
                                                     </div>
                                                 </div>
@@ -652,8 +652,8 @@ include_once '../../temp.html';
                                                             <th>مشاوره</th>
                                                             <th>آزمون</th>
                                                         <?php endif; ?>
-                                                            <th>کد دوره</th>
-                                                            <th>نام دوره</th>
+                                                            <th>کد پایه</th>
+                                                            <th>نام پایه</th>
                                                             <th> موفق</th>
                                                             <th>منتظر</th>
                                                         <?php if (Permision('permision_viewcourse')) { ?>
@@ -758,7 +758,7 @@ include_once '../../temp.html';
                                                                                     اقدام <i
                                                                                             class="fas fa-caret-down mr-1"></i>
                                                                                     <span class="menu-info-trigger"
-                                                                                          data-tooltip="مدیریت دوره‌های آموزشی: در این منو تمامی ابزارهای موردنیاز برای مدیریت دوره و کلاس در اختیار شما قرار دارد. از طریق گزینه‌های این بخش می‌توانید دسترسی ورود استاد و دانش آموز به کلاس آنلاین، لیست دانش آموزان، مدیریت کلاس، ویرایش یا حذف دوره را انجام دهید. همچنین امکان فعال یا غیرفعال کردن وضعیت دوره و مدیریت وضعیت ثبت‌نام دانش آموزان در یک یا چند دوره نیز فراهم است. برای آشنایی بیشتر با عملکرد هر گزینه، روی آیتم موردنظر در منوی «اقدام» کلیک کنید."
+                                                                                          data-tooltip="مدیریت پایه‌های آموزشی: در این منو تمامی ابزارهای موردنیاز برای مدیریت پایه و کلاس در اختیار شما قرار دارد. از طریق گزینه‌های این بخش می‌توانید دسترسی ورود استاد و دانش آموز به کلاس آنلاین، لیست دانش آموزان، مدیریت کلاس، ویرایش یا حذف پایه را انجام دهید. همچنین امکان فعال یا غیرفعال کردن وضعیت پایه و مدیریت وضعیت ثبت‌نام دانش آموزان در یک یا چند پایه نیز فراهم است. برای آشنایی بیشتر با عملکرد هر گزینه، روی آیتم موردنظر در منوی «اقدام» کلیک کنید."
                                                                                           aria-label="راهنمای منوی اقدام"
                                                                                           onclick="event.preventDefault(); event.stopPropagation();">
                                                                                         <i class="fe fe-info fs-4"></i>
@@ -839,11 +839,11 @@ include_once '../../temp.html';
                                                                                         <?php if (Permision('permision_viewcourse')) { ?>
                                                                                             <hr>
                                                                                             <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
-                                                                                                <i class="fe fe-edit"></i> ویرایش دوره
+                                                                                                <i class="fe fe-edit"></i> ویرایش پایه
                                                                                             </a>
                                                                                             <?php if (Permision('permision_deletcourse')) { ?>
-                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این دوره موافقید؟')">
-                                                                                                    <i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
+                                                                                                    <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                 </a>
                                                                                             <?php } ?>
                                                                                         <?php } ?>
@@ -908,7 +908,7 @@ include_once '../../temp.html';
                                                             </tr>
                                                         <?php }
                                                     } else {
-                                                        echo '<tr><td colspan="10" class="text-center">هیچ دوره‌ای یافت نشد.</td></tr>';
+                                                        echo '<tr><td colspan="10" class="text-center">هیچ پایه‌ای یافت نشد.</td></tr>';
                                                     }
                                                     ?>
                                                     </tbody>
@@ -934,7 +934,7 @@ include_once '../../temp.html';
                                             <div class="row">
                                                 <div class="col-8">
                                                     <div>
-                                                        <h6 class="main-content-label mb-1">دوره های فعال </h6>
+                                                        <h6 class="main-content-label mb-1">پایه های فعال </h6>
                                                         <p class="text-muted card-sub-title">
                                                         </p>
                                                     </div>
@@ -970,8 +970,8 @@ include_once '../../temp.html';
                                                         <th>کلاس</th>
                                                         <th>مشاوره</th>
                                                         <th>آزمون</th>
-                                                        <th>کد دوره</th>
-                                                        <th>نام دوره</th>
+                                                        <th>کد پایه</th>
+                                                        <th>نام پایه</th>
                                                         <th> موفق</th>
                                                         <th>منتظر</th>
                                                         <?php if (Permision('permision_viewcourse')) { ?>
@@ -1114,11 +1114,11 @@ include_once '../../temp.html';
                                                                                         <?php if (Permision('permision_viewcourse')) { ?>
                                                                                             <hr>
                                                                                             <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
-                                                                                                <i class="fe fe-edit"></i> ویرایش دوره
+                                                                                                <i class="fe fe-edit"></i> ویرایش پایه
                                                                                             </a>
                                                                                             <?php if (Permision('permision_deletcourse')) { ?>
-                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این دوره موافقید؟')">
-                                                                                                    <i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
+                                                                                                    <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                 </a>
                                                                                             <?php } ?>
                                                                                         <?php } ?>
@@ -1211,7 +1211,7 @@ include_once '../../temp.html';
                                             <div class="row">
                                                 <div class="col-8">
                                                     <div>
-                                                        <h6 class="main-content-label mb-1">دوره های فعال </h6>
+                                                        <h6 class="main-content-label mb-1">پایه های فعال </h6>
                                                         <p class="text-muted card-sub-title"></p>
                                                     </div>
                                                 </div>
@@ -1247,8 +1247,8 @@ include_once '../../temp.html';
                                                         <th>مشاوره</th>
                                                          <th>آزمون</th>
                                                         <?php endif; ?>
-                                                        <th>کد دوره</th>
-                                                        <th>نام دوره</th>
+                                                        <th>کد پایه</th>
+                                                        <th>نام پایه</th>
                                                         <th>موفق</th>
                                                         <th>منتظر</th>
                                                         <?php if (Permision('permision_viewcourse')) { ?>
@@ -1386,11 +1386,11 @@ include_once '../../temp.html';
                                                                                         <?php if (Permision('permision_viewcourse')) { ?>
                                                                                             <hr>
                                                                                             <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
-                                                                                                <i class="fe fe-edit"></i> ویرایش دوره
+                                                                                                <i class="fe fe-edit"></i> ویرایش پایه
                                                                                             </a>
                                                                                             <?php if (Permision('permision_deletcourse')) { ?>
-                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این دوره موافقید؟')">
-                                                                                                    <i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                                                <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
+                                                                                                    <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                 </a>
                                                                                             <?php } ?>
                                                                                         <?php } ?>
@@ -1449,7 +1449,7 @@ include_once '../../temp.html';
                                                             </tr>
                                                         <?php }
                                                     } else {
-                                                        echo '<tr><td colspan="10" class="text-center">هیچ دوره‌ای یافت نشد.</td></tr>';
+                                                        echo '<tr><td colspan="10" class="text-center">هیچ پایه‌ای یافت نشد.</td></tr>';
                                                     }
                                                     ?>
                                                     </tbody>

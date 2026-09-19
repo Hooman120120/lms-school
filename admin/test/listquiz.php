@@ -94,7 +94,7 @@ include_once '../../temp.html';
                                     <div class="col-6">
                                         <div>
                                             <h6 class="main-content-label mb-1">لیست آزمون ها</h6>
-                                            <p class="text-muted card-sub-title">آزمون های مرتبط با دوره ها
+                                            <p class="text-muted card-sub-title">آزمون های مرتبط با پایه ها
                                             </p>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@ include_once '../../temp.html';
                                     <div class="col-6 text-left">
                                        
                                         <a href="?newgroup" class="btn btn-sm btn-primary"><i
-                                                    class="fe fe-refresh-cw"></i> بازخوانی دوره ها </a>
+                                                    class="fe fe-refresh-cw"></i> بازخوانی پایه ها </a>
                                     </div>
                                 </div>
 
@@ -112,7 +112,7 @@ include_once '../../temp.html';
                                             <form method="post" data-parsley-validate="">
                                                 <div class="row">
                                                     <div class="col-xl-6 mb-2">
-                                                        <label for="sens" class="form-label mg-t-15">انتخاب دوره / طرح
+                                                        <label for="sens" class="form-label mg-t-15">انتخاب پایه / طرح
                                                             های فعال
                                                             <span
                                                                     style="color: red">*</span></label>
@@ -152,7 +152,7 @@ include_once '../../temp.html';
                                                     <button type="submit" class="btn btn-success "
                                                             name="search"><i
                                                                 class="fa fa-database"></i>
-                                                        انتخاب دوره / طرح
+                                                        انتخاب پایه / طرح
                                                     </button>
                                                 </div>
                                             </form>
@@ -161,7 +161,7 @@ include_once '../../temp.html';
                                             <?php
                                             $course = returnCourse($_SESSION['qroupquiz']);
                                             ?>
-                                            <div class="header-message">نام دوره : <span
+                                            <div class="header-message">نام پایه : <span
                                                         class="text-warning"><?php echo $course->coursename ?></span>
                                             </div>
                                             <?php   $sql2 = 'SELECT COUNT(idquiz) as codb FROM dbquiz WHERE codecourse=?';

@@ -29,12 +29,12 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
             <?php else : ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-tv sidemenu-icon"></i><span class="sidemenu-label">دوره های من</span><i
+                            class="fe fe-tv sidemenu-icon"></i><span class="sidemenu-label">پایه های من</span><i
                             class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Course/allcourse.php') ?>"> مشاهده لیست دوره ها </a>
+                        <a class="nav-sub-link" href="<?php echo url('Course/allcourse.php') ?>"> مشاهده لیست پایه ها </a>
                     </li>
  <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Course/allhandhugs.php') ?>"> مشاهده لیست "بغل دستی" ها </a>
@@ -44,7 +44,7 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
                         <a class="nav-sub-link" href="<?php echo url('') ?>">تکالیف </a>
                     </li>
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('') ?>">انصراف از دوره </a>
+                        <a class="nav-sub-link" href="<?php echo url('') ?>">انصراف از پایه </a>
                     </li>
 
                 </ul>
@@ -68,12 +68,12 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
 
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-shopping-bag sidemenu-icon"></i><span class="sidemenu-label">خرید دوره</span><i
+                            class="fe fe-shopping-bag sidemenu-icon"></i><span class="sidemenu-label">خرید پایه</span><i
                             class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('course.php') ?>"> ثبت نام در دوره </a>
+                        <a class="nav-sub-link" href="<?php echo url('course.php') ?>"> ثبت نام در پایه </a>
                     </li>
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('checkout.php') ?>">سبد خرید</a>

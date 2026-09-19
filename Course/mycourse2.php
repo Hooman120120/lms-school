@@ -236,7 +236,7 @@ include_once '../temp.html';
                                     <div>
                                         <div class="d-flex">
                                             <label class="main-content-label my-auto pt-2">لینک برنامه هفتگی
-                                                دوره</label>
+                                                پایه</label>
                                         </div>
                                         <span class="d-block tx-12 mt-2 mb-0 text-muted">مشاهده برنامه هفتگی</span>
                                     </div>
@@ -283,7 +283,7 @@ include_once '../temp.html';
                                     <a href="<?php echo $course->link_eita ?>" target="_blank"
                                         class="btn btn-warning">ورود
                                         به کانال ایتا
-                                        دوره</a>
+                                        پایه</a>
 
                                 </div>
                             </div>
@@ -302,7 +302,7 @@ include_once '../temp.html';
                                 <div class="card-body text-center">
                                     <a href="attendance.php?code=<?php echo $course->codecourse ?>" target="_blank"
                                         class="btn btn-secondary">دریافت گزارش حضور غیاب
-                                        دوره</a>
+                                        پایه</a>
 
                                 </div>
                             </div>
@@ -339,7 +339,7 @@ include_once '../temp.html';
                                         <label class="main-content-label my-auto pt-2">جزوات و تکلیف ارائه شده</label>
                                     </div>
                                     <span class="d-block tx-12 mt-2 mb-0 text-muted">جزوات ، متون و تکالیف ارائه شده جهت
-                                        دانلود برای این دوره </span>
+                                        دانلود برای این پایه </span>
                                 </div>
                             </div>
                             <div class="card-body text-center">

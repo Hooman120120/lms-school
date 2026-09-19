@@ -159,7 +159,7 @@ if (isset($_GET['disable'])) {
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
     $qu->execute([0, $disable]);
-    $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز غیرفعال شد';
+    $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز غیرفعال شد';
     header('location: students.php');
     die();
 }
@@ -175,11 +175,11 @@ if (isset($_GET['enable'])) {
         $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
         $qu = $conn->prepare($update);
         $qu->execute([1, $disable]);
-        $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز فعال شد';
+        $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز فعال شد';
         header('location: students.php');
         die();
     } else {
-        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این دوره هنوز پرداخت / تایید نشده است';
+        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این پایه هنوز پرداخت / تایید نشده است';
         header('location: students.php');
         die();
     }
@@ -277,7 +277,7 @@ include_once '../../temp.html';
                                         $query_st->execute([1]);
                                         $result_student = $query_st->fetch(PDO::FETCH_OBJ);
                                         ?>
-                                        <label class="main-content-label mb-3 pt-1"> بدون دوره</label>
+                                        <label class="main-content-label mb-3 pt-1"> بدون پایه</label>
                                         <h2 class="text-left card-item-icon card-icon">
                                             <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                 class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
@@ -287,7 +287,7 @@ include_once '../../temp.html';
                                                 دریافت لیست
                                             </button>
                                         </p>
-                                        <p class="mb-0 mt-4 text-muted">تا کنون هیچ دوره ای ثبت نام نکرده</p>
+                                        <p class="mb-0 mt-4 text-muted">تا کنون هیچ پایه ای ثبت نام نکرده</p>
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +342,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-10">
                                         <div>
-                                            <h6 class="main-content-label mb-1">گزارش دانش آموزان بر اساس دوره های فعال /
+                                            <h6 class="main-content-label mb-1">گزارش دانش آموزان بر اساس پایه های فعال /
                                                 غیرفعال</h6>
                                             <p class="text-muted card-sub-title">لطفا اطلاعات خواسته شده را جهت تولید گزارش
                                                 وارد کنید
@@ -356,10 +356,10 @@ include_once '../../temp.html';
                                                 <label for="sens" class="form-label mg-t-15">نوع گزارش:<span style="color: red">*</span></label>
                                                 <select class="form-control select2" name="typereport" id="type" aria-describedby="basic-addon2" required>
                                                     <option value="" label="اقدام لازم"></option>
-                                                    <option value="1">1- نفر دوره فعال</option>
-                                                    <option value="2">2- نفر دوره غیرفعال</option>
-                                                    <option value="3">3- نفر دوره تجمیعی فعال</option>
-                                                    <option value="4">4- نفر دوره تجمیعی غیرفعال</option>
+                                                    <option value="1">1- نفر پایه فعال</option>
+                                                    <option value="2">2- نفر بایگانی سال‌های قبل</option>
+                                                    <option value="3">3- نفر پایه تجمیعی فعال</option>
+                                                    <option value="4">4- نفر پایه تجمیعی غیرفعال</option>
                                                     <!-- <option value="5">5- گزارش وضعیت دانش آموز</option> -->
                                                 </select>
                                             </div>
@@ -376,7 +376,7 @@ include_once '../../temp.html';
                                             </div>
 
                                             <div class="col-md-3 mt-n1">
-                                                <label for="sens" class="form-label mg-t-15">از تاریخ ثبت دوره :<span style="color: red">*</span></label>
+                                                <label for="sens" class="form-label mg-t-15">از تاریخ ثبت پایه :<span style="color: red">*</span></label>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
@@ -400,12 +400,12 @@ include_once '../../temp.html';
                                             </div>
                                         </div>
 
-                                        <!-- ردیف دوم: انتخاب دوره (تمام عرض) -->
+                                        <!-- ردیف دوم: انتخاب پایه (تمام عرض) -->
                                         <div class="row mt-2">
                                             <div class="col-12 mt-n1">
-                                                <label for="sens" class="form-label mg-t-15">انتخاب دوره:<span style="color: red">*</span></label>
+                                                <label for="sens" class="form-label mg-t-15">انتخاب پایه:<span style="color: red">*</span></label>
                                                 <select class="form-control select2" name="courses[]" id="course" aria-describedby="basic-addon2" multiple required>
-                                                    <!-- گزینه‌های دوره توسط AJAX یا داده‌های سرور پر می‌شود -->
+                                                    <!-- گزینه‌های پایه توسط AJAX یا داده‌های سرور پر می‌شود -->
                                                 </select>
                                             </div>
                                         </div>
@@ -426,7 +426,7 @@ include_once '../../temp.html';
                                     <div class="col-6">
                                         <div>
                                             <h6 class="main-content-label mb-1">جستجوی دانش آموز</h6>
-                                            <p class="text-muted card-sub-title"> برحسب نفردوره </p>
+                                            <p class="text-muted card-sub-title"> برحسب نفرپایه </p>
                                         </div>
 
                                         <form method="post" data-parsley-validate="">
@@ -495,9 +495,9 @@ include_once '../../temp.html';
                                                 <tr>
                                                     <th class="wd-30">اقدامات</th>
                                                     <th class="wd-100">نام و نام خانوادگی</th>
-                                                    <th>دوره</th>
+                                                    <th>پایه</th>
                                                     <th class="wd-30">وضعیت فردی</th>
-                                                    <th class="wd-30">وضعیت دوره</th>
+                                                    <th class="wd-30">وضعیت پایه</th>
                                                     <th class="wd-30">پشتیبان</th>
                                                     <th class="wd-30">اولین ورود</th>
                                                     <th class="wd-30">همکارآموزشی</th>
@@ -812,10 +812,10 @@ include_once '../../temp.html';
                 });
 
                 $('#course').select2({
-                    placeholder: ' دوره فعال/غیرفعال',
+                    placeholder: ' پایه فعال/غیرفعال',
                     language: {
                         noResults: function() {
-                            return "دوره ای یافت نشد";
+                            return "پایه ای یافت نشد";
                         }
                     }
                 });
@@ -828,24 +828,24 @@ include_once '../../temp.html';
                 $('#type').on('change', function() {
                     const selectedType = $(this).val();
 
-                    // پاک کردن سلکت دوره‌ها
+                    // پاک کردن سلکت پایه‌ها
                     $('#course').empty().trigger('change');
 
                     if (!selectedType) return; // اگر چیزی انتخاب نشده، کاری نکن
 
                     // افزودن گزینه‌های پیش‌فرض برای هر نوع گزارش
                     if (selectedType == '1' || selectedType == '3') {
-                        const allOption = new Option('همه دوره‌های فعال', 'all_active', false, false);
+                        const allOption = new Option('همه پایه‌های فعال', 'all_active', false, false);
                         $('#course').append(allOption);
                     } else if (selectedType == '2' || selectedType == '4') {
-                        const allOption = new Option('همه دوره‌های غیرفعال', 'all_inactive', false, false);
+                        const allOption = new Option('همه بایگانی سال‌های قبل', 'all_inactive', false, false);
                         $('#course').append(allOption);
                     } else if (selectedType == '5') {
-                        const allOption = new Option('همه دوره‌ها', 'all_courses', false, false);
+                        const allOption = new Option('همه پایه‌ها', 'all_courses', false, false);
                         $('#course').append(allOption);
                     }
 
-                    // درخواست AJAX برای گرفتن دوره‌ها
+                    // درخواست AJAX برای گرفتن پایه‌ها
                     $.ajax({
                         url: '../course/get_courses_by_type.php',
                         method: 'GET',
@@ -860,7 +860,7 @@ include_once '../../temp.html';
                                 return;
                             }
 
-                            // افزودن دوره‌ها به سلکت
+                            // افزودن پایه‌ها به سلکت
                             data.forEach(item => {
                                 const newOption = new Option(item.coursename, item.codecourse, false, false);
                                 $('#course').append(newOption);
@@ -969,7 +969,7 @@ include_once '../../temp.html';
                         value: 'reshte'
                     },
                     {
-                        label: 'نام دوره',
+                        label: 'نام پایه',
                         value: 'course_name'
                     },
                     {
@@ -1115,11 +1115,11 @@ include_once '../../temp.html';
                         value: 'reshte'
                     },
                     {
-                        label: 'نام دوره‌ها',
+                        label: 'نام پایه‌ها',
                         value: 'course_names'
                     },
                     {
-                        label: 'تعداد دوره ثبت نامی',
+                        label: 'تعداد پایه ثبت نامی',
                         value: 'course_count'
                     },
                     {
@@ -1196,7 +1196,7 @@ include_once '../../temp.html';
                     }
                 ];
 
-                // گزینه‌های ستون‌ها برای گزارش‌های دانش‌آموزی (مشترک برای همه دانش‌آموزان، بدون دوره، منتظر پرداخت)
+                // گزینه‌های ستون‌ها برای گزارش‌های دانش‌آموزی (مشترک برای همه دانش‌آموزان، بدون پایه، منتظر پرداخت)
                 const optionsStudent = [{
                         label: 'استان',
                         value: 'state'
@@ -1260,7 +1260,7 @@ include_once '../../temp.html';
                 ];
 
                 // دکمه‌های دریافت لیست
-                // دکمه‌های دریافت لیست (همه دانش‌آموزان، بدون دوره، منتظر پرداخت)
+                // دکمه‌های دریافت لیست (همه دانش‌آموزان، بدون پایه، منتظر پرداخت)
                 $('.export-btn').on('click', function(e) {
                     e.preventDefault();
                     const reportType = $(this).data('report-type'); // all, uncourse, away
@@ -1310,7 +1310,7 @@ include_once '../../temp.html';
                     $('#excelOptionsContainer').empty();
                     $('#excelOptionsText').text('لطفا گزینه‌های زیر را برای نمایش گزارش استانی در اکسل مشخص کنید:');
 
-                    // برای گزارش استانی از گزینه‌های تجمیعی استفاده می‌کنیم (چون ممکن است چند دوره داشته باشند)
+                    // برای گزارش استانی از گزینه‌های تجمیعی استفاده می‌کنیم (چون ممکن است چند پایه داشته باشند)
                     optionsAggregate.forEach(opt => {
                         $('#excelOptionsContainer').append(`
                         <div class="col-md-4">
@@ -1416,7 +1416,7 @@ include_once '../../temp.html';
                         $('#excel-course').submit();
 
                     } else if (reportType === 'student') {
-                        // گزارش‌های: همه دانش‌آموزان، بدون دوره، منتظر پرداخت
+                        // گزارش‌های: همه دانش‌آموزان، بدون پایه، منتظر پرداخت
                         const studentReport = $('#excelOptionsModal').data('student-report');
 
                         form = $('<form>', {

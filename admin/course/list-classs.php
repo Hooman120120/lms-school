@@ -50,7 +50,7 @@ if (isset($_POST['addclass'])) {
             include_once '../../inc/function-quiz.php';
             $course = returnCourse($_GET['code']);
 
-            // بررسی اینکه آیا دوره اصلی اصلا در سامانه آزمون ugid دارد یا نه
+            // بررسی اینکه آیا پایه اصلی اصلا در سامانه آزمون ugid دارد یا نه
             if ($course && !empty($course->ugid)) {
                 $ugid_parent = $course->ugid;
                 $groupCode = generateUniqueCode(8);
@@ -72,7 +72,7 @@ if (isset($_POST['addclass'])) {
                     $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما ساخت زیرگروه در سامانه آزمون با خطا مواجه شد: " . $errorMsg;
                 }
             } else {
-                $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما دوره اصلی (گروه والد) فاقد شناسه آزمون است، بنابراین زیرگروه ساخته نشد.";
+                $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما پایه اصلی (گروه والد) فاقد شناسه آزمون است، بنابراین زیرگروه ساخته نشد.";
             }
         } else {
             $_SESSION['success_msg'] = "کلاس با موفقیت در سیستم ایجاد شد (بدون آزمون).";
@@ -364,7 +364,7 @@ include_once '../../temp.html';
                                                     <p class="mg-b-10">توضیحات:<span class="tx-danger">*</span></p>
                                                     <input class="form-control" name="description"
                                                            placeholder="توضیحات را وارد کنید ..." required>
-                                                    <p class="mg-b-10 mt-4">آدرس کانال دوره:<span
+                                                    <p class="mg-b-10 mt-4">آدرس کانال پایه:<span
                                                                 class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                            aria-describedby="basic-addon2"
@@ -430,7 +430,7 @@ include_once '../../temp.html';
                                                     <input class="form-control" name="description"
                                                            placeholder="توضیحات را وارد کنید ..."
                                                            value="<?= $res->description ?>" required>
-                                                    <p class="mg-b-10 mt-4">آدرس کانال دوره:<span
+                                                    <p class="mg-b-10 mt-4">آدرس کانال پایه:<span
                                                                 class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                            aria-describedby="basic-addon2"

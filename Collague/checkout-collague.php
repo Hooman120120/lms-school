@@ -262,7 +262,7 @@ if (isset($_POST['subtotal']) and $_POST['pay'][0] != '') {
                                     <table class="table border table-hover text-nowrap table-shopping-cart mb-0">
                                         <thead class="text-muted">
                                         <tr class="small text-uppercase">
-                                            <th scope="col">طرح - دوره</th>
+                                            <th scope="col">طرح - پایه</th>
                                             <th scope="col" class="text-center ">حذف</th>
                                         </tr>
                                         </thead>

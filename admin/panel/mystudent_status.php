@@ -69,7 +69,7 @@ include_once '../../temp.html';
                                     دانش آموزان </label>
 
                             </div>
-                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> وضعیت دانش آموزان من (نفر دوره)  </span>
+                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> وضعیت دانش آموزان من (نفر پایه)  </span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -78,7 +78,7 @@ include_once '../../temp.html';
                                 <thead>
                                 <tr class="bg-light">
                                     <th>عنوان</th>
-                                    <th>دوره</th>
+                                    <th>پایه</th>
                                     <th class="wd-15">تعداد</th>
                                     <th class="wd-15"></th>
 

@@ -44,7 +44,7 @@ if (isset($_POST['addquiz'])) {
             $qss = $conn->prepare($insql);
             $qss->execute([$code, $dars, $tasalsol, $namequiz, $datestart]);
             $lastId = $conn->lastInsertId();
-            $text = 'دوره با شناسه <strong>' . $lastId . '</strong> ایجاد شد';
+            $text = 'پایه با شناسه <strong>' . $lastId . '</strong> ایجاد شد';
         } else {
             $erortoken = 'این آزمون از قبل ایجاد شده است';
         }
@@ -195,11 +195,11 @@ include_once '../../temp.html';
                                         <div class="row">
 
                                             <div class="col-lg-12">
-                                                <p class="mg-b-10 mg-t-20"> انتخاب کد دوره <span
+                                                <p class="mg-b-10 mg-t-20"> انتخاب کد پایه <span
                                                             class="tx-danger">*</span></p>
                                                 <select class="form-control select2" name="codecourse"
                                                         required>
-                                                    <option label="کد دوره ">
+                                                    <option label="کد پایه ">
                                                     </option>
                                                     <?php
                                                     $sql = 'SELECT * FROM codtbl_course  WHERE activecourse=? ORDER BY idcourse DESC ';
@@ -358,11 +358,11 @@ include_once '../../temp.html';
                                         <div class="row">
 
                                             <div class="col-lg-12">
-                                                <p class="mg-b-10 mg-t-20"> انتخاب کد دوره <span
+                                                <p class="mg-b-10 mg-t-20"> انتخاب کد پایه <span
                                                             class="tx-danger">*</span></p>
                                                 <select class="form-control select2" name="ucodecourse"
                                                         required>
-                                                    <option label="کد دوره ">
+                                                    <option label="کد پایه ">
                                                     </option>
                                                     <?php
                                                     $sql = 'SELECT * FROM codtbl_course  WHERE activecourse=? ORDER BY idcourse DESC ';
@@ -481,7 +481,7 @@ include_once '../../temp.html';
                                             <th>نام آزمون</th>
                                             <th>درس</th>
                                             <th>توالی</th>
-                                            <th>دوره</th>
+                                            <th>پایه</th>
                                             <th>تاریخ برگزاری</th>
                                             <th>ویرایش</th>
                                             <th>حذف</th>

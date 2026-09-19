@@ -127,7 +127,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> افزودن جزوه به دوره | <?php echo __TITLE ?></title>
+    <title> افزودن جزوه به پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -156,7 +156,7 @@ include_once '../../temp.html';
                                     <div class="col-10">
                                         <?php $course = returnCourse($_GET['code']); ?>
                                         <div>
-                                            <h6 class="main-content-label mb-1">جزوات های ایجاد شده برای دوره <span
+                                            <h6 class="main-content-label mb-1">جزوات های ایجاد شده برای پایه <span
                                                     class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                             <p class="text-muted card-sub-title">
                                             </p>
@@ -250,7 +250,7 @@ include_once '../../temp.html';
                                     <div class="card-body">
                                         <div class="col-10">
                                             <div>
-                                                <h6 class="main-content-label mb-1">افزودن جزوات جدید به دوره <span
+                                                <h6 class="main-content-label mb-1">افزودن جزوات جدید به پایه <span
                                                         class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                                 <p class="text-muted card-sub-title">
                                                 </p>
@@ -381,7 +381,7 @@ include_once '../../temp.html';
                                     <div class="card-body">
                                         <div class="col-12">
                                             <div>
-                                                <h6 class="main-content-label mb-1">ویرایش جزوه دوره <span
+                                                <h6 class="main-content-label mb-1">ویرایش جزوه پایه <span
                                                         class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                                 <p class="text-muted card-sub-title">
                                                 </p>

@@ -120,7 +120,7 @@ include_once '../../temp.html';
                             انتخاب نوع دانش آموز
 
                             <span class="menu-info-trigger"
-                                  data-tooltip="در این بخش می‌توانید گزارش دانش آموزان ثبت‌نام‌شده در دوره موردنظر را دریافت کنید. این گزارش شامل اطلاعات حساب کاربری، اطلاعات سکونت و تحصیلی، وضعیت دانش آموز، دوره‌های ثبت‌نام‌شده، اطلاعات مالی و پرداخت‌های دوره، ایجادکننده حساب، پشتیبان دانش آموز و همچنین زمان اولین ورود دانش آموز به پنل کاربری است."
+                                  data-tooltip="در این بخش می‌توانید گزارش دانش آموزان ثبت‌نام‌شده در پایه موردنظر را دریافت کنید. این گزارش شامل اطلاعات حساب کاربری، اطلاعات سکونت و تحصیلی، وضعیت دانش آموز، پایه‌های ثبت‌نام‌شده، اطلاعات مالی و پرداخت‌های پایه، ایجادکننده حساب، پشتیبان دانش آموز و همچنین زمان اولین ورود دانش آموز به پنل کاربری است."
                                   aria-label="راهنمای انتخاب نوع دانش آموز"
                                   onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -132,7 +132,7 @@ include_once '../../temp.html';
                                 <a href="<?php echo url("admin/course/list-student.php?code=$code&op=with") ?>" class="safe-call-card">
                                     <div class="safe-call-card-title">لیست دانش آموزان با پشتیبان</div>
                                     <div class="safe-call-card-desc">
-                                        دانش آموزانی که دوره با پشتیبانی ثبت نام کرده اند
+                                        دانش آموزانی که پایه با پشتیبانی ثبت نام کرده اند
                                     </div>
                                 </a>
                             </div>
@@ -140,7 +140,7 @@ include_once '../../temp.html';
                                 <a href="<?php echo url("admin/course/list-student.php?code=$code&op=all") ?>" class="safe-call-card">
                                     <div class="safe-call-card-title">لیست همه دانش آموزان</div>
                                     <div class="safe-call-card-desc">
-                                        دانش آموزانی که دوره مورد نظر را ثبت نام کرده اند
+                                        دانش آموزانی که پایه مورد نظر را ثبت نام کرده اند
                                     </div>
                                 </a>
                             </div>
@@ -148,7 +148,7 @@ include_once '../../temp.html';
                                 <a href="<?php echo url("admin/course/list-student.php?code=$code&op=none") ?>" class="safe-call-card">
                                     <div class="safe-call-card-title">لیست دانش آموزان بدون پشتیبان</div>
                                     <div class="safe-call-card-desc">
-                                        دانش آموزانی که دوره بدون پشتیبانی ثبت نام کرده اند
+                                        دانش آموزانی که پایه بدون پشتیبانی ثبت نام کرده اند
                                     </div>
                                 </a>
                             </div>
@@ -177,7 +177,7 @@ include_once '../../temp.html';
                                                 }
                                                 ?>
 
-                                                <h6 class="main-content-label mb-1">لیست دانش آموزان دوره <span
+                                                <h6 class="main-content-label mb-1">لیست دانش آموزان پایه <span
                                                         class="text-warning"> <?php echo $course->coursename ?> (<?php echo $_GET['code'] ?>)</span>
                                                     <br><br>
                                                     <span class="text-primary"><?= $sup ?></span>

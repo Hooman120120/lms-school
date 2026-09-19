@@ -59,7 +59,7 @@ include_once '../temp.html';
     <meta name="description" content="LMS hamsepar Produce">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> کلاسهای آنلاین برگزار شده برای دوره : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
+    <title> کلاسهای آنلاین برگزار شده برای پایه : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 

@@ -111,7 +111,7 @@ include_once '../../temp.html';
                                             <div class="col-xl-12">
                                                 <?php $course = returnCourse($_GET['code']); ?>
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">افزودن سرفصل برای دوره <span
+                                                    <h6 class="main-content-label mb-1">افزودن سرفصل برای پایه <span
                                                             class="text-warning"> <?php echo $course->coursename ?></span> </h6>
                                                 </div>
                                             </div>
@@ -154,7 +154,7 @@ include_once '../../temp.html';
                                             <div class="col-xl-12">
                                                 <?php $course = returnCourse($_GET['code']); ?>
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">ویرایش سرفصل برای دوره <span
+                                                    <h6 class="main-content-label mb-1">ویرایش سرفصل برای پایه <span
                                                             class="text-warning"> <?php echo $course->coursename ?></span> </h6>
                                                 </div>
                                             </div>
@@ -192,7 +192,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-xl-12 mb-4">
                                         <div>
-                                            <h6 class="main-content-label mb-1">لیست سرفصل های دوره <span
+                                            <h6 class="main-content-label mb-1">لیست سرفصل های پایه <span
                                                     class="text-warning"> <?php echo $course->coursename ?></span></h6>
                                         </div>
                                     </div>

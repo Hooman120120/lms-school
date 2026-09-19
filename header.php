@@ -88,7 +88,7 @@ $result=$query->fetch();
                         <a href="<?php echo url('course.php?IdCourse='). $res['codecourse'] ?>">
                         <div class="media">
 
-                            <div class="main-img-user online"><img alt="دوره" src="<?php echo $res['piclink'] ?>"></div>
+                            <div class="main-img-user online"><img alt="پایه" src="<?php echo $res['piclink'] ?>"></div>
                             <div class="media-body">
                                 <p><?php echo htmlentities($res['coursename']) ?></p><span><?php echo number_format($res['fee'])  ?>  تومان </span>
                             </div>
@@ -177,7 +177,7 @@ $result=$query->fetch();
 
                             <a href="<?php echo url('course.php?IdCourse='). $res['codecourse'] ?>">
                                     <div class="media">
-                                        <div class="main-img-user online"><img alt="دوره" src="<?php echo $res['piclink'] ?>"></div>
+                                        <div class="main-img-user online"><img alt="پایه" src="<?php echo $res['piclink'] ?>"></div>
                                         <div class="media-body">
                                             <p><?php echo htmlentities($res['coursename']) ?></p><span><?php echo number_format($res['fee'])  ?>  تومان </span>
                                         </div>

@@ -228,7 +228,7 @@ include_once '../../temp.html';
                 <div class="col-12 pd-t-30 text-center">
                     <button class="btn ripple  btn-success pd-x-20"
                             type="submit"
-                            name="verify">تایید واریزی و فعالسازی دوره
+                            name="verify">تایید واریزی و فعالسازی پایه
                     </button>
 
                 </div>

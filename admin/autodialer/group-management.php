@@ -361,7 +361,7 @@ include_once '../../temp.html';
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalBlacklistLabel">انتخاب مخاطبین و دوره‌ها</h5>
+                    <h5 class="modal-title" id="modalBlacklistLabel">انتخاب مخاطبین و پایه‌ها</h5>
                     <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -413,7 +413,7 @@ include_once '../../temp.html';
                                 <button class="accordion-button collapsed" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#collapseCourses"
                                         aria-expanded="false" aria-controls="collapseCourses">
-                                    انتخاب دوره‌ها <span class="ms-2 text-muted small" id="coursesCount">(0)</span>
+                                    انتخاب پایه‌ها <span class="ms-2 text-muted small" id="coursesCount">(0)</span>
                                 </button>
                             </h2>
                             <div id="collapseCourses" class="accordion-collapse collapse"

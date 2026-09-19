@@ -115,7 +115,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد دوره برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> ایجاد پایه برای دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -144,7 +144,7 @@ include_once '../../temp.html';
                                 <div class="row">
                                     <div class="col-9">
                                         <div>
-                                            <h6 class="main-content-label mb-1">ایجاد دوره برای دانش آموز </h6>
+                                            <h6 class="main-content-label mb-1">ایجاد پایه برای دانش آموز </h6>
                                             <p class="text-muted card-sub-title">صدور فاکتور جدید برای دانش آموز
                                             </p>
                                         </div>
@@ -181,7 +181,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت دوره برایش فراهم نیست
+                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
 
                                     </div>
                                 <?php } ?>
@@ -246,9 +246,9 @@ include_once '../../temp.html';
       <div class="row row-sm">
                                                     <div class="col-xl-8">
                                                 <div class="card-header border-bottom-0 pb-1">
-                                                    <label class="main-content-label mb-2 pt-1">دوره های در حال ثبت
+                                                    <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت
                                                         نام</label>
-                                                    <p class="tx-12 mb-0 text-muted">دوره های مورد نظر برای دانش آموز را
+                                                    <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را
                                                         انتخاب کنید</p>
                                                 </div>
                                                 <?php
@@ -359,7 +359,7 @@ include_once '../../temp.html';
                                                             <tr>
                                                                 <th>ردیف</th>
                                                                 <th>پشتیبان</th>
-                                                                <th>تعداد ( نفر دوره )</th>
+                                                                <th>تعداد ( نفر پایه )</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>

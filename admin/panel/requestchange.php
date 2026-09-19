@@ -101,7 +101,7 @@ if(isset($_POST['changecolor'])){
                                                 <td class="text-success tx-18"><?php echo $user->fname.' '.$user->lname   ?></td>
                                         </tr>
                                         <tr>
-                                            <th>نام دوره</th>
+                                            <th>نام پایه</th>
                                             <?php
                                          $name=Getcourse($dbcourse->codecourse,0 ,2);
                                           $name=$name['coursename'];

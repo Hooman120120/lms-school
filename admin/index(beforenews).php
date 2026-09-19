@@ -148,9 +148,9 @@ include_once 'panel/calendar.php';
                             <a class="stat-card link-card"
                                onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>','CourseDetail','width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
-                                    <p class="stat-label">دوره‌های در حال ثبت‌نام</p>
+                                    <p class="stat-label">پایه‌های در حال ثبت‌نام</p>
                                     <p class="stat-value"><?php echo number_format($countCourses); ?></p>
-                                    <p class="stat-note">جزئیات دوره‌ها </p>
+                                    <p class="stat-note">جزئیات پایه‌ها </p>
                                 </div>
                                 <div class="stat-icon icon-green" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>

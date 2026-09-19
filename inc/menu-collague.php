@@ -37,7 +37,7 @@ if (!isset($_SESSION['auth'])) {
                         <a class="nav-sub-link" href="<?php echo url('Collague/activate-student.php') ?>">فعالسازی دانش آموز</a>
                     </li>
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('Collague/sales-course.php') ?>">خرید دوره برای دانش آموز</a>
+                        <a class="nav-sub-link" href="<?php echo url('Collague/sales-course.php') ?>">خرید پایه برای دانش آموز</a>
                     </li>
 
 

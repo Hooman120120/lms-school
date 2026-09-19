@@ -101,12 +101,12 @@ if (isset($_POST['save'])) {
                     }
                 }
 
-                $text = 'دوره ' . $_POST['coursename'] . ' با موفقیت ایجاد شد';
+                $text = 'پایه ' . $_POST['coursename'] . ' با موفقیت ایجاد شد';
             } else {
-                $erordublicate = 'این کد دوره، در سامانه آزمون موجود است';
+                $erordublicate = 'این کد پایه، در سامانه آزمون موجود است';
             }
         } else {
-            $erordublicate = 'این کد دوره، متعلق به دوره دیگری است';
+            $erordublicate = 'این کد پایه، متعلق به پایه دیگری است';
         }
     } else {
         $erortoken = 'خطای غیر منتظره رخ داد، لطفا مجدد امتحان کنید';
@@ -149,7 +149,7 @@ if (isset($_POST['save-update'])) {
             global $ponn;
             $adt = $ponn->prepare($updatequiz);
             $adt->execute([$code, $_POST['coursename'], $_GET['edit']]);
-            $text = 'دوره ' . $_POST['coursename'] . ' با موفقیت ویرایش شد';
+            $text = 'پایه ' . $_POST['coursename'] . ' با موفقیت ویرایش شد';
             if (isset($_GET['id'])) {
                 $stmt = $conn->prepare("SELECT * FROM codtbl_course WHERE idcourse = ?");
                 $stmt->execute([$_GET['id']]);
@@ -167,7 +167,7 @@ if (isset($_POST['save-update'])) {
                 }
             }
         } else {
-            $erordublicate = 'این کد دوره، متعلق به دوره دیگری است';
+            $erordublicate = 'این کد پایه، متعلق به پایه دیگری است';
         }
     } else {
         $erortoken = 'خطای غیر منتظره رخ داد، لطفا مجدد امتحان کنید';
@@ -186,7 +186,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت دوره جدید | <?php echo __TITLE ?></title>
+    <title> ثبت پایه جدید | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -215,8 +215,8 @@ include_once '../../temp.html';
                                         <div class="row">
                                             <div class="col-9">
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">افزودن دوره جدید </h6>
-                                                    <p class="text-muted card-sub-title">ایجاد یک دوره جدید
+                                                    <h6 class="main-content-label mb-1">افزودن پایه جدید </h6>
+                                                    <p class="text-muted card-sub-title">ایجاد یک پایه جدید
                                                     </p>
                                                 </div>
                                             </div>
@@ -258,7 +258,7 @@ include_once '../../temp.html';
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                کد دوره:
+                                                                کد پایه:
                                                                 <span
                                                                     class="tx-danger">*</span>
                                                             </div>
@@ -274,7 +274,7 @@ include_once '../../temp.html';
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                نام دوره:
+                                                                نام پایه:
                                                                 <span
                                                                     class="tx-danger">*</span>
                                                             </div>
@@ -282,7 +282,7 @@ include_once '../../temp.html';
                                                         <input class="form-control" name="coursename"
                                                             aria-describedby="basic-addon2"
                                                             type="text" required
-                                                            placeholder="دوره هوش پاییزی 1402">
+                                                            placeholder="پایه هوش پاییزی 1402">
                                                     </div>
                                                     <?php
                                                     $hash = bin2hex(random_bytes(32));
@@ -398,14 +398,14 @@ include_once '../../temp.html';
                                             <hr>
                                             <div class="row ">
                                                 <div class="col-lg-4">
-                                                    <p class="mg-b-10">مبلغ دوره<span
+                                                    <p class="mg-b-10">مبلغ پایه<span
                                                             class="tx-danger">*</span></p>
 
 
                                                     <div class="input-group mb-3">
                                                         <input aria-describedby="basic-addon2" aria-label="شارژ حساب"
                                                             name="value" class="form-control" value="1350000"
-                                                            placeholder="مبلغ دوره به تومان" type="number" required>
+                                                            placeholder="مبلغ پایه به تومان" type="number" required>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text" id="basic-addon2">تومان</span>
                                                         </div>
@@ -420,7 +420,7 @@ include_once '../../temp.html';
                                                         placeholder="4562153">
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <p class="mg-b-10 "> آدرس کانال دوره <span
+                                                    <p class="mg-b-10 "> آدرس کانال پایه <span
                                                             class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                         aria-describedby="basic-addon2"
@@ -442,9 +442,9 @@ include_once '../../temp.html';
                                                     <textarea class="form-control" name="meta"></textarea>
                                                 </div>
                                                 <div class="mb-3 col-12 col-sm-6 col-md-4">
-                                                    <label for="course_type" class="form-label">نوع دوره</label>
+                                                    <label for="course_type" class="form-label">نوع پایه</label>
                                                     <select name="course_type" id="course_type" class="form-select" required>
-                                                        <option value="" disabled selected>انتخاب نوع دوره</option>
+                                                        <option value="" disabled selected>انتخاب نوع پایه</option>
                                                         <option value="0">آموزشی</option>
                                                         <option value="1">مهارت</option>
                                                         <option value="2">المپیاد</option>
@@ -492,7 +492,7 @@ include_once '../../temp.html';
                                                             name="activity-course"
                                                             class="custom-switch-input" checked>
                                                         <span class="custom-switch-indicator"></span>
-                                                        <span class=""> فعال سازی دوره </span>
+                                                        <span class=""> فعال سازی پایه </span>
                                                     </label>
                                                 </div>
 
@@ -501,7 +501,7 @@ include_once '../../temp.html';
                                                 <button type="submit"
                                                     name="save"
                                                     class="btn btn-primary  mr-1">
-                                                    تایید و ایجاد دوره
+                                                    تایید و ایجاد پایه
                                                 </button>
 
                                             </div>
@@ -525,8 +525,8 @@ include_once '../../temp.html';
                                         <div class="row">
                                             <div class="col-9">
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">ویرایش دوره </h6>
-                                                    <p class="text-muted card-sub-title">ویرایش دوره ای که از قبل ایجاد شده
+                                                    <h6 class="main-content-label mb-1">ویرایش پایه </h6>
+                                                    <p class="text-muted card-sub-title">ویرایش پایه ای که از قبل ایجاد شده
                                                     </p>
                                                 </div>
                                             </div>
@@ -571,7 +571,7 @@ include_once '../../temp.html';
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                کد دوره:
+                                                                کد پایه:
                                                                 <span
                                                                     class="tx-danger">*</span>
                                                             </div>
@@ -588,7 +588,7 @@ include_once '../../temp.html';
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                نام دوره:
+                                                                نام پایه:
                                                                 <span
                                                                     class="tx-danger">*</span>
                                                             </div>
@@ -597,7 +597,7 @@ include_once '../../temp.html';
                                                             aria-describedby="basic-addon2"
                                                             type="text" required
                                                             value="<?php echo $result->coursename; ?>"
-                                                            placeholder="دوره هوش پاییزی 1402">
+                                                            placeholder="پایه هوش پاییزی 1402">
                                                     </div>
                                                     <?php
                                                     $hash = bin2hex(random_bytes(32));
@@ -726,7 +726,7 @@ include_once '../../temp.html';
                                             <hr>
                                             <div class="row ">
                                                 <div class="col-lg-4">
-                                                    <p class="mg-b-10">مبلغ دوره<span
+                                                    <p class="mg-b-10">مبلغ پایه<span
                                                             class="tx-danger">*</span></p>
 
 
@@ -734,7 +734,7 @@ include_once '../../temp.html';
                                                         <input aria-describedby="basic-addon2" aria-label="شارژ حساب"
                                                             name="value" class="form-control"
                                                             value="<?php echo $result->coursefee; ?>"
-                                                            placeholder="مبلغ دوره به تومان" type="number" required>
+                                                            placeholder="مبلغ پایه به تومان" type="number" required>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text" id="basic-addon2">تومان</span>
                                                         </div>
@@ -749,7 +749,7 @@ include_once '../../temp.html';
                                                         placeholder="http://skyroom.online/yourclass/12">
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <p class="mg-b-10 "> آدرس کانال دوره <span
+                                                    <p class="mg-b-10 "> آدرس کانال پایه <span
                                                             class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                         aria-describedby="basic-addon2"
@@ -773,7 +773,7 @@ include_once '../../temp.html';
                                                         name="meta"><?php echo $result->coursemeta; ?></textarea>
                                                 </div>
                                                 <div class="mb-3 col-12 col-sm-6 col-md-4">
-                                                    <label for="course_type" class="form-label">نوع دوره</label>
+                                                    <label for="course_type" class="form-label">نوع پایه</label>
                                                     <select name="course_type" id="course_type" class="form-select">
                                                         <option value="0" <?= ($result->course_type == 0) ? 'selected' : '' ?>>آموزشی</option>
                                                         <option value="1" <?= ($result->course_type == 1) ? 'selected' : '' ?>>مهارت</option>
@@ -793,7 +793,7 @@ include_once '../../temp.html';
                                                         $stmt->execute();
                                                         $teachers = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-                                                        // گرفتن معلم‌های مرتبط با دوره
+                                                        // گرفتن معلم‌های مرتبط با پایه
                                                         $sql2 = "SELECT teacher_username FROM course_teacher WHERE codecourse = ?";
                                                         $stmt2 = $conn->prepare($sql2);
                                                         $stmt2->execute([$_GET['edit']]);
@@ -837,7 +837,7 @@ include_once '../../temp.html';
                                                                                             echo 'checked';
                                                                                         } ?>>
                                                         <span class="custom-switch-indicator"></span>
-                                                        <span class=""> فعال سازی دوره </span>
+                                                        <span class=""> فعال سازی پایه </span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -845,7 +845,7 @@ include_once '../../temp.html';
                                                 <button type="submit"
                                                     name="save-update"
                                                     class="btn btn-warning  mr-1">
-                                                    تایید و ویرایش دوره
+                                                    تایید و ویرایش پایه
                                                 </button>
 
                                             </div>

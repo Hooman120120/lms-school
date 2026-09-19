@@ -88,7 +88,7 @@ if (isset($_GET['disable'])) {
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
     $qu->execute([0, $disable]);
-    $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز غیرفعال شد';
+    $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز غیرفعال شد';
     header('location: registration-Course.php');
     die();
 }
@@ -104,11 +104,11 @@ if (isset($_GET['enable'])) {
         $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
         $qu = $conn->prepare($update);
         $qu->execute([1, $disable]);
-        $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز فعال شد';
+        $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز فعال شد';
         header('location: registration-Course.php');
         die();
     } else {
-        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این دوره هنوز پرداخت / تایید نشده است';
+        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این پایه هنوز پرداخت / تایید نشده است';
         header('location: registration-Course.php');
         die();
     }
@@ -158,7 +158,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> مشاهده دوره های دانش آموز | <?php echo __TITLE ?></title>
+    <title> مشاهده پایه های دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -186,7 +186,7 @@ include_once '../../temp.html';
                                     <div>
                                         <h6 class="main-content-label mb-1">جستجوی دانش آموز</h6>
                                         <p class="text-muted card-sub-title"> در صورت ثبت نام فعال و یا غیر فعال در یکی
-                                            از دوره ها
+                                            از پایه ها
                                         </p>
                                     </div>
 
@@ -246,7 +246,7 @@ include_once '../../temp.html';
                                 <div class="col-6 my-auto mx-auto">
                                     <div>
                                         <h6 class="main-content-label mb-1">گزارش کل</h6>
-                                        <p class="text-muted card-sub-title">بر اساس دوره های فعال</p>
+                                        <p class="text-muted card-sub-title">بر اساس پایه های فعال</p>
                                     </div>
                                     <form method="post" data-parsley-validate="">
                                         <div class="d-flex align-items-center flex-nowrap" style="gap: 10px;">
@@ -261,7 +261,7 @@ include_once '../../temp.html';
                                                     $courses = $stmt->fetchAll(PDO::FETCH_OBJ);
                                                     foreach ($courses as $course):
                                                         ?>
-                                                        <option value="<?= $course->codecourse ?>">دوره
+                                                        <option value="<?= $course->codecourse ?>">پایه
                                                             <?= $course->coursename ?>
                                                         </option>
                                                     <?php endforeach; ?>
@@ -338,9 +338,9 @@ include_once '../../temp.html';
                                             <tr>
                                                 <th class="wd-30">اقدامات</th>
                                                 <th class="wd-100">نام و نام خانوادگی</th>
-                                                <th>دوره</th>
+                                                <th>پایه</th>
                                                 <th class="wd-30">وضعیت فردی</th>
-                                                <th class="wd-30">وضعیت دوره</th>
+                                                <th class="wd-30">وضعیت پایه</th>
                                                 <th class="wd-30">پشتیبان</th>
                                                 <th class="wd-30">اولین ورود</th>
                                                 <th class="wd-30">همکارآموزشی</th>

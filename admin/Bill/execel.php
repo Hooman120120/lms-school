@@ -100,13 +100,13 @@ if (isset($_SESSION['execel'])) {
                            AND codtbl_course.activecourse = 1";
     $countStm = $conn->prepare($activeCoursesQuery);
 
-    if ($course == 1) {   //همه دوره ها
+    if ($course == 1) {   //همه پایه ها
         $stm = $conn->prepare("SELECT * FROM dbfactor INNER JOIN dbpersonal ON dbfactor.username=dbpersonal.codemeli WHERE status=? AND " . $qdate . " BETWEEN ? AND ? ORDER BY " . $qdate . " DESC  ");
         $stm->execute([$status, $startdate, $enddate]);
 
         if ($stm) {
             $delimiter = ",";
-            $filename = "گزارش صورتحساب همه دوره ها_" . date('Y-m-d h:i:s') . ".csv";
+            $filename = "گزارش صورتحساب همه پایه ها_" . date('Y-m-d h:i:s') . ".csv";
 
             header('Content-Encoding: UTF-8');
             header('Content-type: application/csv; charset=UTF-8');
@@ -115,8 +115,8 @@ if (isset($_SESSION['execel'])) {
             $f = fopen('php://output', 'w');
             fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-            // ADDED: 'تعداد دوره های فعال' to the end of headers
-            $fields = ['شماره فاکتور', 'کدملی', 'نام', 'نام خانوادگی', 'پایه', 'استان', 'شهر', 'منطقه', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'مبلغ فاکتور', 'وضعیت', 'تاریخ', 'دوره های ثبت نامی', 'ایجاد کننده', 'تعداد دوره های فعال'];
+            // ADDED: 'تعداد پایه های فعال' to the end of headers
+            $fields = ['شماره فاکتور', 'کدملی', 'نام', 'نام خانوادگی', 'پایه', 'استان', 'شهر', 'منطقه', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'مبلغ فاکتور', 'وضعیت', 'تاریخ', 'پایه های ثبت نامی', 'ایجاد کننده', 'تعداد پایه های فعال'];
             fputcsv($f, $fields, $delimiter);
 
             while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -164,7 +164,7 @@ if (isset($_SESSION['execel'])) {
 
             fpassthru($f);
         }
-    } else { // دوره خاص (Specific Course)
+    } else { // پایه خاص (Specific Course)
         $stm = $conn->prepare('SELECT * FROM dbfactor INNER JOIN dbcourse ON dbcourse.numfactor=dbfactor.idfactor INNER JOIN dbpersonal ON dbpersonal.codemeli=dbfactor.username WHERE status=? AND codecourse=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ');
         $stm->execute([$status, $course, $startdate, $enddate]);
 
@@ -180,8 +180,8 @@ if (isset($_SESSION['execel'])) {
             $f = fopen('php://output', 'w');
             fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-            // ADDED: 'تعداد دوره های فعال' to the end of headers
-            $fields = ['شماره فاکتور', 'کدملی', 'نام', 'نام خانوادگی', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'مبلغ فاکتور', 'وضعیت', 'تاریخ', 'ایجاد کننده', 'تعداد دوره های فعال'];
+            // ADDED: 'تعداد پایه های فعال' to the end of headers
+            $fields = ['شماره فاکتور', 'کدملی', 'نام', 'نام خانوادگی', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'مبلغ فاکتور', 'وضعیت', 'تاریخ', 'ایجاد کننده', 'تعداد پایه های فعال'];
             fputcsv($f, $fields, $delimiter);
 
             while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -455,7 +455,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
 // آماده کردن پارامترها
         $params = array_merge($schoolYearParams, $schoolYearParams, [$startdate, $enddate]);
-// اضافه کردن شرط دوره‌ها
+// اضافه کردن شرط پایه‌ها
         if (!empty($courses)) {
             $placeholders = implode(',', array_fill(0, count($courses), '?'));
             $sql .= " AND dbcourse.codecourse IN ($placeholders)";
@@ -482,7 +482,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
         if ($stm) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('گزارش نفر دوره');
+            $sheet->setTitle('گزارش نفر پایه');
 
             // نقشه رنگ‌ها
             $hexMap = [
@@ -616,7 +616,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
                     return $jalali . ' ' . $user->timecreated ?? '';
                 }],
-                'course_name' => ['title' => 'نام دوره', 'callback' => function ($user, $row) {
+                'course_name' => ['title' => 'نام پایه', 'callback' => function ($user, $row) {
                     return $row->coursename ?? '';
                 }],
                 'creator' => ['title' => 'ایجاد کننده', 'callback' => function ($user, $row) {
@@ -802,7 +802,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
 
             // ارسال فایل
-            $filename = "گزارش نفر دوره_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
+            $filename = "گزارش نفر پایه_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Cache-Control: max-age=0');
@@ -1040,7 +1040,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
                         array_push($useractive, 'خودش');
                     }
 
-                    // گرفتن همه دوره ها
+                    // گرفتن همه پایه ها
                     if ($type == 3) {
                         $doreha = returnAllCoursesWithStatus($res->username, $startdate, $enddate, 1, $studentsActiveStatus);
                         array_push($course, $doreha);
@@ -1071,7 +1071,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
             // ایجاد شیء Excel
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('گزارش تجمیعی نفر دوره');
+            $sheet->setTitle('گزارش تجمیعی نفر پایه');
 
             // جمع‌آوری داده‌های رنگ
             $studentIds = array_unique($codemelli);
@@ -1130,7 +1130,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
                 'suspension_reason' => ['title' => 'علت تعلیق', 'callback' => function ($index, $suspension_reason) {
                     return $suspension_reason[$index];
                 }],
-                'course_names' => ['title' => 'نام دوره‌ها', 'callback' => function ($index, $course) {
+                'course_names' => ['title' => 'نام پایه‌ها', 'callback' => function ($index, $course) {
                     if (!empty($course[$index]) && is_array($course[$index])) {
                         $courseNames = [];
                         foreach ($course[$index] as $c) {
@@ -1141,7 +1141,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
                     }
                     return '';
                 }],
-                'course_count' => ['title' => 'تعداد دوره ثبت نامی', 'callback' => function ($index, $course) {
+                'course_count' => ['title' => 'تعداد پایه ثبت نامی', 'callback' => function ($index, $course) {
                     return !empty($course[$index]) && is_array($course[$index]) ? count($course[$index]) : 0;
                 }],
                 'total_payment' => ['title' => 'جمع پرداختی', 'callback' => function ($index, $fee) {
@@ -1304,7 +1304,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
                 }
             }
             $specialColumns = [
-                'نام دوره‌ها' => 90,
+                'نام پایه‌ها' => 90,
                 'توضیحات چرایی عدم ثبت نام در آزمون کشوری' => 30,
                 'نظر دانش آموز' => 30,
                 'نظر پشتیبان' => 30,
@@ -1441,7 +1441,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
             // $sheet->getStyle('AF1:AF' . $highestRow)->getAlignment()->setWrapText(true);
 
-            $filename = "گزارش تجمیعی نفر دوره_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
+            $filename = "گزارش تجمیعی نفر پایه_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header("Content-Disposition: attachment; filename=\"" . rawurlencode($filename) . "\"; filename*=UTF-8''" . rawurlencode($filename));
             header('Cache-Control: max-age=0');
@@ -1456,7 +1456,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
     //     $stm->execute([1, $startdate, $enddate]);
     //     if ($stm) {
     //         $delimiter = ",";
-    //         $filename = "گزارش نفر دوره _" . date('Y-m-d h:i:s') . ".csv";
+    //         $filename = "گزارش نفر پایه _" . date('Y-m-d h:i:s') . ".csv";
 
     //         header('Content-Encoding: UTF-8');
     //         header('Content-type: application/csv; charset=UTF-8');
@@ -1465,7 +1465,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
     //         $f = fopen('php://output', 'w');
     //         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-    //         $fields = ['کدملی', 'نام', 'نام خانوادگی', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'نام دوره', 'ایجاد کننده','پشتیبان', 'شماره فاکتور'];
+    //         $fields = ['کدملی', 'نام', 'نام خانوادگی', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'نام پایه', 'ایجاد کننده','پشتیبان', 'شماره فاکتور'];
     //         fputcsv($f, $fields, $delimiter);
     //         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
 
@@ -1567,7 +1567,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
     //     if ($codemelli != NULL) {
     //         $delimiter = ",";
-    //         $filename = "گزارش تجمیعی نفر دوره _" . date('Y-m-d h:i:s') . ".csv";
+    //         $filename = "گزارش تجمیعی نفر پایه _" . date('Y-m-d h:i:s') . ".csv";
 
     //         header('Content-Encoding: UTF-8');
     //         header('Content-type: application/csv; charset=UTF-8');
@@ -1576,7 +1576,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
     //         $f = fopen('php://output', 'w');
     //         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-    //         $fields = ['شماره فاکتور','کدملی', 'نام', 'نام خانوادگی', 'پایه', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'نام دوره ها', 'تعداد دوره ثبت نامی','جمع پرداختی','اولین ورود', 'ایجاد کننده','تاییدکننده فاکتور','پشتیبان','نوع دانش آموز','شیفت دانش آموز'];
+    //         $fields = ['شماره فاکتور','کدملی', 'نام', 'نام خانوادگی', 'پایه', 'استان', 'شهر', 'تلفن دانش آموز', 'تلفن پدر', 'تلفن مادر', 'نام پایه ها', 'تعداد پایه ثبت نامی','جمع پرداختی','اولین ورود', 'ایجاد کننده','تاییدکننده فاکتور','پشتیبان','نوع دانش آموز','شیفت دانش آموز'];
     //         fputcsv($f, $fields, $delimiter);
     //         for ($num = 0; $num < sizeof($codemelli); $num++) {
     //             if($suporter[$num]!=NULL) {
@@ -1750,7 +1750,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
     //     }
 
     //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    //     header('Content-Disposition: attachment; filename="گزارش_نفر_دوره_' . date('Y-m-d_H-i-s') . '.xlsx"');
+    //     header('Content-Disposition: attachment; filename="گزارش_نفر_پایه_' . date('Y-m-d_H-i-s') . '.xlsx"');
     //     header('Cache-Control: max-age=0');
     //     $writer = new Xlsx($spreadsheet);
     //     $writer->save('php://output');
@@ -1783,7 +1783,7 @@ GROUP BY dbcourse.username
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام دوره', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پرداختی'];
+        $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام پایه', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پرداختی'];
         foreach ($fields as $i => $f) {
             $cell = Coordinate::stringFromColumnIndex($i + 1) . "1";
             $sheet->setCellValue($cell, $f);
@@ -1939,7 +1939,7 @@ GROUP BY username
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
-            $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام دوره', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'پرداختی'];
+            $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام پایه', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'پرداختی'];
             foreach ($fields as $i => $f) {
                 $cell = Coordinate::stringFromColumnIndex($i + 1) . "1";
                 $sheet->setCellValue($cell, $f);
@@ -2055,7 +2055,7 @@ GROUP BY username
             }
 
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="دانش آموزان دوره_' . date('Y-m-d_H-i-s') . '_' . uniqid() . '.xlsx"');
+            header('Content-Disposition: attachment; filename="دانش آموزان پایه_' . date('Y-m-d_H-i-s') . '_' . uniqid() . '.xlsx"');
             header('Cache-Control: max-age=0');
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
@@ -2102,7 +2102,7 @@ AND dbcourse.type_process = ?
         $sheet = $spreadsheet->getActiveSheet();
 
         // Exclude "ورود", "تایید", and "عدم تایید"
-        $fields = ['#', 'رنگ جدید', 'کد ملی', 'نام و نام خانوادگی', 'نام دوره', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'توضیح'];
+        $fields = ['#', 'رنگ جدید', 'کد ملی', 'نام و نام خانوادگی', 'نام پایه', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'توضیح'];
         foreach ($fields as $i => $f) {
             $cell = Coordinate::stringFromColumnIndex($i + 1) . "1";
             $sheet->setCellValue($cell, $f);
@@ -2271,7 +2271,7 @@ AND dbcourse.color = ?
         $sheet = $spreadsheet->getActiveSheet();
 
         // Exclude "ورود"
-        $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام دوره', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'پرداختی'];
+        $fields = ['ردیف', 'کد ملی', 'نام و نام خانوادگی', 'نام پایه', 'آزمون', 'آخرین پشتیبانی', 'پشتیبانی بعدی', 'نوع', 'رنگ', 'پشتیبان', 'پرداختی'];
         foreach ($fields as $i => $f) {
             $cell = Coordinate::stringFromColumnIndex($i + 1) . "1";
             $sheet->setCellValue($cell, $f);

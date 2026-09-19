@@ -65,7 +65,7 @@ include_once '../../temp.html';
             <div class="card-header border-bottom-0">
                 <label class="main-content-label my-auto pt-2">تراکنش های مالی فاکتور: <span
                             class="text-warning"> <?php echo $_GET['id'] . '#'; ?> </span> </label>
-                <span class="d-block tx-12 mb-4 mt-1 text-muted">بدهکاری و بستانکاری هایی که بواسطه فاکتور خرید دوره انجام گرفته است</span>
+                <span class="d-block tx-12 mb-4 mt-1 text-muted">بدهکاری و بستانکاری هایی که بواسطه فاکتور خرید پایه انجام گرفته است</span>
             </div>
             <ul class="crypto-transcation list-unstyled mg-b-0">
                 <?php

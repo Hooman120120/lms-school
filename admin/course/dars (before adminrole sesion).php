@@ -156,7 +156,7 @@ include_once '../../temp.html';
                                             <div class="col-xl-12">
                                                 <?php $course = returnCourse($_GET['code']); ?>
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">ویرایش درس برای دوره <span
+                                                    <h6 class="main-content-label mb-1">ویرایش درس برای پایه <span
                                                             class="text-info"> <?php echo $course->coursename ?></span>
                                                     </h6>
                                                 </div>

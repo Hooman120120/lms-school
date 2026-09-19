@@ -114,7 +114,7 @@ include_once '../../temp.html';
                                             <select class="form-control text-danger select2 "
                                                     aria-describedby="basic-addon2"
                                                     required="" name="act">
-                                                <option label="دوره ">
+                                                <option label="پایه ">
                                                 </option>
                                                 <option value="01">تاییدیه کد</option>
                                                 <option value="02">رها سازی</option>
@@ -141,7 +141,7 @@ include_once '../../temp.html';
                                                 <th>نام دانش آموز</th>
                                                 <th>پایه</th>
                                                 <th>تاییدیه</th>
-                                                <th>تعداد دوره</th>
+                                                <th>تعداد پایه</th>
                                                 <th>تاریخ عضویت</th>
 
                                             </tr>

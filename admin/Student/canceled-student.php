@@ -120,7 +120,7 @@ include_once '../../temp.html';
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش می توانید لیست دانش آموزانی که از یک یا چند دوره انصراف داده و درخواست انصراف آن ها توسط کارشناسان پشتیبانی ثبت و در نهایت تائید شده است را مشاهده نمایید و همچنین اطلاعات دوره، وضعیت انصراف و مشخصات دانش آموزان در این بخش قابل بررسی می باشد."
+                                              data-tooltip="در این بخش می توانید لیست دانش آموزانی که از یک یا چند پایه انصراف داده و درخواست انصراف آن ها توسط کارشناسان پشتیبانی ثبت و در نهایت تائید شده است را مشاهده نمایید و همچنین اطلاعات پایه، وضعیت انصراف و مشخصات دانش آموزان در این بخش قابل بررسی می باشد."
                                               aria-label="راهنمای لیست دانش‌آموزان انصرافی">
 
                                                 <i class="fe fe-info fs-4"></i>
@@ -129,19 +129,19 @@ include_once '../../temp.html';
                                     </div>
 
                                     <p class="text-muted card-sub-title">
-                                        مشاهده دانش آموزان انصراف‌داده از دوره‌ها
+                                        مشاهده دانش آموزان انصراف‌داده از پایه‌ها
                                     </p>
                                 </div>
                             </div>
                             <!-- ====== Course Filter Dropdown ====== -->
                             <!-- ========== COURSE FILTER DROPDOWN ========== -->
                             <div class="mb-3 position-relative" id="courseFilterWrapper" dir="rtl">
-                                <label for="courseFilterDropdown" class="form-label fw-semibold">فیلتر بر اساس دوره‌ها</label>
+                                <label for="courseFilterDropdown" class="form-label fw-semibold">فیلتر بر اساس پایه‌ها</label>
 
                                 <div class="dropdown w-100">
                                     <button class="btn btn-outline-info w-100 d-flex justify-content-between align-items-center"
                                             type="button" id="courseFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        انتخاب دوره‌ها
+                                        انتخاب پایه‌ها
                                         <span class="ms-2 small text-muted">▼</span>
                                     </button>
 
@@ -194,7 +194,7 @@ include_once '../../temp.html';
                                         <th>نام</th>
                                         <th>استان</th>
                                         <th>شهر</th>
-                                        <th class="text-wrap text-break" style="max-width: 200px;">دوره</th>
+                                        <th class="text-wrap text-break" style="max-width: 200px;">پایه</th>
                                         <th>اقدام</th>
                                     </tr>
                                     </thead>

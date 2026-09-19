@@ -42,7 +42,7 @@ $stm = $conn->prepare("SELECT * FROM dbpersonal INNER JOIN  dblogin ON `dbperson
 $stm->execute([$_GET['code'], 1]);
 if ($stm) {
     $delimiter = ",";
-    $filename = "لیست نفرات دوره_" . date('Y-m-d h:i:s') . ".csv";
+    $filename = "لیست نفرات پایه_" . date('Y-m-d h:i:s') . ".csv";
 
     header('Content-Encoding: UTF-8');
     header('Content-type: application/csv; charset=UTF-8');
@@ -50,7 +50,7 @@ if ($stm) {
 
     $f = fopen('php://output', 'w');
     fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
-    $fields = ['کدملی','رمز عبور','نام','نام خانوادگی','نام پدر','تلفن دانش آموز','تلفن پدر','تلفن مادر','نام دوره','شماره فاکتور','استان','شهر','پایه','رشته','مدرسه','همکار آموزشی','اولین ورود','ایجاد کننده','پشتیبان'];
+    $fields = ['کدملی','رمز عبور','نام','نام خانوادگی','نام پدر','تلفن دانش آموز','تلفن پدر','تلفن مادر','نام پایه','شماره فاکتور','استان','شهر','پایه','رشته','مدرسه','همکار آموزشی','اولین ورود','ایجاد کننده','پشتیبان'];
     fputcsv($f, $fields, $delimiter);
     while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
         $dore=returnCourse($row->codecourse);

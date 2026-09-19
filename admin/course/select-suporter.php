@@ -94,7 +94,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">انتخاب پشتیبان برای : <span
                                                     class="text-primary"><?php echo $user->fname . ' ' . $user->lname ?></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title"> نام دوره :<span
+                                        <p class="text-muted card-sub-title"> نام پایه :<span
                                                     class="text-primary"><?php echo $course->coursename ?></span>
                                         </p>
                                     </div>
@@ -109,7 +109,7 @@ include_once '../../temp.html';
                                             <tr>
                                                 <th>ردیف</th>
                                                 <th>پشتیبان</th>
-                                                <th>تعداد ( نفر دوره )</th>
+                                                <th>تعداد ( نفر پایه )</th>
                                             </tr>
                                             </thead>
                                             <tbody>

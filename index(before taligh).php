@@ -51,7 +51,7 @@ function showDemo($username)
 {
     global $conn;
 
-    // کوئری دوره‌های دمو
+    // کوئری دوره‌های فوق برنامه
     $sql2 = 'SELECT dbcourse_demo.*, course_demo.coursename
              FROM dbcourse_demo
              INNER JOIN course_demo ON dbcourse_demo.codecourse = course_demo.codecourse
@@ -65,14 +65,14 @@ function showDemo($username)
             <div class="card-header border-bottom-0 pb-0">
                 <div>
                     <div class="d-flex">
-                        <label class="main-content-label my-auto pt-2">دوره های آزمایشی ثبت نام شده</label>
+                        <label class="main-content-label my-auto pt-2">دوره‌های فوق برنامه ثبت نام شده</label>
                     </div>
-                    <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره های آزمایشی برای شما</span>
+                    <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره‌های فوق برنامه برای شما</span>
                 </div>
             </div>
             <div class="card-body">';
 
-    // رندر دوره‌های دمو
+    // رندر دوره‌های فوق برنامه
     if (!empty($demos)) {
         foreach ($demos as $course) {
             $coursename = htmlspecialchars($course->coursename);
@@ -85,7 +85,7 @@ function showDemo($username)
                     <div class="col-4">
                         <a href="' . $link . '">
                             <div class="d-flex">
-                                <button class="btn btn-block btn-outline-secondary">ورود به دوره</button>
+                                <button class="btn btn-block btn-outline-secondary">ورود به پایه</button>
                             </div>
                         </a>
                     </div>
@@ -173,14 +173,14 @@ include_once 'temp.html';
                         <?php } ?>
                         <!--     <div class="alert alert-warning" role="alert">-->
                         <!--    <span class="alert-inner--icon"><i class="fe fe-info"></i></span>-->
-                        <!--    <span class="alert-inner--text"><strong>خبر جدید!</strong>  دوره ها از روز چهارشنبه 10 بهمن مطابق برنامه درحال برگزاری است</span>-->
+                        <!--    <span class="alert-inner--text"><strong>خبر جدید!</strong>  پایه ها از روز چهارشنبه 10 بهمن مطابق برنامه درحال برگزاری است</span>-->
                         <!--</div>-->
 
                     <?php } ?>
                     <?php if (isset($_SESSION['auth']) and $_SESSION['auth']['role'] == 1) { ?>
                         <!--                داشبورد دانش آموز-->
                         <?php
-                        if (isset($courseregister) and $courseregister == 1) {     // این بخش درصورت فعال نبودن دوره ظاهر میشود
+                        if (isset($courseregister) and $courseregister == 1) {     // این بخش درصورت فعال نبودن پایه ظاهر میشود
                             if ($_SESSION['auth']['keyactive'] != NULL and $_SESSION['auth']['truekey'] == 0) {
                                 $sql = 'SELECT keyactive FROM dblogin WHERE username=?';
                                 $query = $conn->prepare($sql);
@@ -275,12 +275,12 @@ include_once 'temp.html';
                                         <div class="row row-sm">
                                             <div class="example">
                                                 <div class="alert alert-warning mb-0" role="alert">
-                                                    <h4 class="alert-heading">شما تا کنون دوره ای ثبت نام نکرده اید</h4>
-                                                    <p> جهت بهره مندی از مطالب و دوره ها، نسبت به خرید دوره اقدام کنید</p>
+                                                    <h4 class="alert-heading">شما تا کنون پایه ای ثبت نام نکرده اید</h4>
+                                                    <p> جهت بهره مندی از مطالب و پایه ها، نسبت به خرید پایه اقدام کنید</p>
                                                     <hr>
                                                     <div class="text-center">
                                                         <a href="course.php" class="btn ripple btn-outline-warning">مشاهده
-                                                            دوره ها</a>
+                                                            پایه ها</a>
                                                     </div>
 
                                                 </div>
@@ -291,12 +291,12 @@ include_once 'temp.html';
                                 <?php if (hasDemo($_SESSION["auth"]["user"])) {
                                     showDemo($_SESSION["auth"]["user"]);
                                 } ?>
-                            <?php } // اعلان ثبت نام نکردن هیچ دوره ای تاکنون
+                            <?php } // اعلان ثبت نام نکردن هیچ پایه ای تاکنون
                         } else { ?>
                             <!--Row-->
                             <div class="alert alert-success" role="alert">
                                 <span class="alert-inner--icon"><i class="fe fe-info"></i></span>
-                                <span class="alert-inner--text"><strong>اطلاعیه!</strong>حتما در کانال ایتا دوره خود عضو شوید، با ورود به دوره و زدن دکمه ورود به کانال ایتا</span>
+                                <span class="alert-inner--text"><strong>اطلاعیه!</strong>حتما در کانال ایتا پایه خود عضو شوید، با ورود به پایه و زدن دکمه ورود به کانال ایتا</span>
                             </div>
 
 
@@ -330,9 +330,9 @@ include_once 'temp.html';
                                         <div class="card-header  border-bottom-0 pb-0">
                                             <div>
                                                 <div class="d-flex">
-                                                    <label class="main-content-label my-auto pt-2">دوره های ثبت نام شده</label>
+                                                    <label class="main-content-label my-auto pt-2">پایه های ثبت نام شده</label>
                                                 </div>
-                                                <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره های فعال برای شما </span>
+                                                <span class="d-block tx-12 mt-2 mb-0 text-muted">پایه های فعال برای شما </span>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -354,7 +354,7 @@ include_once 'temp.html';
                                                                 <div class="d-flex">
 
                                                                     <button class="btn btn-block btn-outline-secondary">ورود به
-                                                                        دوره
+                                                                        پایه
                                                                     </button>
 
                                                                 </div>

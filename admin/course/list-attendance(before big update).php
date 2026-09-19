@@ -65,9 +65,9 @@ include_once '../../temp.html';
                             <div class="row">
                                 <div class="col-12">
                                     <div>
-                                        <h6 class="main-content-label mb-1">گرارش حضورغیاب دوره : <span
+                                        <h6 class="main-content-label mb-1">گرارش حضورغیاب پایه : <span
                                                     class="text-primary"><?php echo $general->classname ?></span></h6>
-                                        <p class="text-muted card-sub-title"> کد دوره :<span
+                                        <p class="text-muted card-sub-title"> کد پایه :<span
                                                     class="text-primary"><?php echo $general->codecourse ?></span>
                                         </p>
                                     </div>
@@ -163,9 +163,9 @@ include_once '../../temp.html';
                                 <div class="col-12" >
                                     <div>
                                         <?php $general = rettblattendance($ids); ?>
-                                        <h6 class="main-content-label mb-1">گرارش حضورغیاب دوره : <span
+                                        <h6 class="main-content-label mb-1">گرارش حضورغیاب پایه : <span
                                                     class="text-primary"><?php echo $general->classname ?></span></h6>
-                                        <p class="text-muted card-sub-title"> کد دوره :<span
+                                        <p class="text-muted card-sub-title"> کد پایه :<span
                                                     class="text-primary"><?php echo $general->codecourse ?></span>
                                         </p>
                                     </div>

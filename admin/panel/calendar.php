@@ -1235,9 +1235,9 @@ function renderCalendar() {
 
                             <div id="userTargetsContainer" style="display:none;">
                                 <div class="mb-3">
-                                    <label class="form-label" for="coursesSelect">دوره‌های هدف (چندگانه)</label>
+                                    <label class="form-label" for="coursesSelect">پایه‌های هدف (چندگانه)</label>
                                     <select id="coursesSelect" class="form-control js-target-select" multiple
-                                            data-placeholder="انتخاب دوره‌ها ...">
+                                            data-placeholder="انتخاب پایه‌ها ...">
                                         <?php
                                         $courses = retCourse(1);
                                         if ($courses && count($courses) > 0):
@@ -1250,7 +1250,7 @@ function renderCalendar() {
                                     <small class="text-muted">در صورت عدم انتخاب، رویداد برای همه کاربران نمایش داده می‌شود.</small>
                                 </div>
                                 <div class="mt-3">
-                                    <label class="form-label">دوره‌های انتخاب شده:</label>
+                                    <label class="form-label">پایه‌های انتخاب شده:</label>
                                     <div id="selectedCoursesSummary" class="text-muted small" style="background:#f5f5f5; padding:8px; border-radius:6px;">هیچکدام (همه کاربران)</div>
                                 </div>
                                 <input type="hidden" id="selectedCourses" name="selected_courses" value="">
@@ -1348,9 +1348,9 @@ function renderCalendar() {
 
                                 <div id="exportUserFilters" style="display:none;">
                                     <div class="mb-3">
-                                        <label class="form-label" for="exportCoursesSelect">دوره‌های هدف (چندگانه)</label>
+                                        <label class="form-label" for="exportCoursesSelect">پایه‌های هدف (چندگانه)</label>
                                         <select id="exportCoursesSelect" class="form-control js-target-select" multiple
-                                                data-placeholder="انتخاب دوره‌ها ...">
+                                                data-placeholder="انتخاب پایه‌ها ...">
                                             <?php
                                             $courses = retCourse(1);
                                             if ($courses && count($courses) > 0):
@@ -1358,7 +1358,7 @@ function renderCalendar() {
                                                     <option value="<?= $course->idcourse ?>"><?= htmlspecialchars($course->coursename) ?></option>
                                                 <?php endforeach; endif; ?>
                                         </select>
-                                        <small class="text-muted">در صورت عدم انتخاب، رویدادهای همه دوره‌ها نمایش داده می‌شوند.</small>
+                                        <small class="text-muted">در صورت عدم انتخاب، رویدادهای همه پایه‌ها نمایش داده می‌شوند.</small>
                                     </div>
                                 </div>
 
@@ -1502,7 +1502,7 @@ function renderCalendar() {
                 selectedCoursesSummary.innerText = 'هیچکدام (همه کاربران)';
                 selectedCoursesInput.value = '[]';
             } else {
-                selectedCoursesSummary.innerText = 'دوره‌ها: ' + selected.map(o => o.textContent.trim()).join(', ');
+                selectedCoursesSummary.innerText = 'پایه‌ها: ' + selected.map(o => o.textContent.trim()).join(', ');
                 selectedCoursesInput.value = JSON.stringify(selected.map(o => o.value));
             }
             syncEmptySelectState(courseSelect);
@@ -1542,7 +1542,7 @@ function renderCalendar() {
             updateCoursesSummary();
         }
 
-        // انتخاب دوره های ذخیره شده هنگام ویرایش رویداد
+        // انتخاب پایه های ذخیره شده هنگام ویرایش رویداد
         function applyStoredCourses(storedCourses) {
             if (!courseSelect) return;
             const wanted = (storedCourses || []).map(String);
@@ -1880,7 +1880,7 @@ function renderCalendar() {
             if (!courseSelect) {
                 initCoursePills();
             }
-            // دوره های ذخیره شده روی دراپ‌داون اعمال می شوند
+            // پایه های ذخیره شده روی دراپ‌داون اعمال می شوند
             applyStoredCourses(storedCourses);
 
             // ---- Set form fields ----
@@ -2298,7 +2298,7 @@ function renderCalendar() {
                             audienceHtml = '<div style="margin-bottom:15px;"><strong>کاربران:</strong> همه کاربران</div>';
                         } else {
                             const courseNames = courseIds.map(id => courseNameMap[id] || id).join('، ');
-                            audienceHtml = `<div style="margin-bottom:15px;"><strong>کاربران (دوره‌ها):</strong> ${courseNames}</div>`;
+                            audienceHtml = `<div style="margin-bottom:15px;"><strong>کاربران (پایه‌ها):</strong> ${courseNames}</div>`;
                         }
                     } else if (ev.extendedProps.target_type === 'both') {
                         const targetSummary = ev.extendedProps.target_summary || 'همه ادمین‌ها';
@@ -2308,7 +2308,7 @@ function renderCalendar() {
                             courseHtml = '<div><strong>کاربران:</strong> همه کاربران</div>';
                         } else {
                             const courseNames = courseIds.map(id => courseNameMap[id] || id).join('، ');
-                            courseHtml = `<div><strong>کاربران (دوره‌ها):</strong> ${courseNames}</div>`;
+                            courseHtml = `<div><strong>کاربران (پایه‌ها):</strong> ${courseNames}</div>`;
                         }
                         audienceHtml = `<div style="margin-bottom:15px;"><strong>ادمین‌ها:</strong> ${targetSummary}</div>${courseHtml}`;
                     } else {
@@ -2679,7 +2679,7 @@ function renderCalendar() {
                     userContainer.style.display = 'block';
                 }
 
-                // کادر دوره ها تا این لحظه مخفی بوده و select2 عرضش را صفر حساب می کند،
+                // کادر پایه ها تا این لحظه مخفی بوده و select2 عرضش را صفر حساب می کند،
                 // پس هر بار که نمایان می شود دوباره ساخته می شود تا placeholder درست دیده شود.
                 if (userContainer.style.display !== 'none'
                     && typeof window.__buildCourseSelect2 === 'function') {
@@ -2837,7 +2837,7 @@ function renderCalendar() {
             const parts = [];
             if (roles.length)   parts.push('نقش‌ها: ' + exportSelectLabels(exportRolesSelect).join('، '));
             if (admins.length)  parts.push('ادمین‌ها: ' + exportSelectLabels(exportAdminsSelect).join('، '));
-            if (courses.length) parts.push('دوره‌ها: ' + exportSelectLabels(exportCoursesSelect).join('، '));
+            if (courses.length) parts.push('پایه‌ها: ' + exportSelectLabels(exportCoursesSelect).join('، '));
 
             const summaryDiv = document.getElementById('exportSelectedSummary');
             if (summaryDiv) {

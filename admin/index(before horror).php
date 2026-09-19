@@ -139,12 +139,12 @@ $adminRole = isset($admin->adminrole) ? (int)$admin->adminrole : 0;
                                     $query_st->execute([1]);
                                     $result_student = $query_st->fetch(PDO::FETCH_OBJ);
                                     ?>
-                                    <label class="main-content-label mb-3 pt-1"> دوره های درحال ثبت نام</label>
+                                    <label class="main-content-label mb-3 pt-1"> پایه های درحال ثبت نام</label>
                                     <h2 class="text-left"><i
                                                 class="fe fe-activity icon-size float-right text-primary"></i><span
                                                 class="font-weight-bold"><?php echo number_format($result_student->course) ?> </span>
                                     </h2>
-                                    <p class="mb-0 mt-4 text-muted">تعداد دوره های درحال ثبت نام </p>
+                                    <p class="mb-0 mt-4 text-muted">تعداد پایه های درحال ثبت نام </p>
                                 </div>
                             </div>
                         </div>
@@ -177,7 +177,7 @@ $adminRole = isset($admin->adminrole) ? (int)$admin->adminrole : 0;
                         <div class="card custom-card">
                             <div class="card-header border-bottom-0 pb-1">
                                 <label class="main-content-label mb-2 pt-1">تعداد ثبت نام </label>
-                                <p class="tx-12 mb-0 text-muted">دوره های فعال و درحال اجرا</p>
+                                <p class="tx-12 mb-0 text-muted">پایه های فعال و درحال اجرا</p>
                             </div>
                             <div class="card-body pt-0">
                                 <ul class="top-selling-products pb-0 mb-0 pr-0">
@@ -240,7 +240,7 @@ $adminRole = isset($admin->adminrole) ? (int)$admin->adminrole : 0;
                                         ?>
                                         <div class="product-amount">
                                             <div class="product-price"><span
-                                                        class="font-weight-semibold text-danger"><?php echo $rec->coreg ?>  نفر دوره </span>
+                                                        class="font-weight-semibold text-danger"><?php echo $rec->coreg ?>  نفر پایه </span>
                                             </div>
                                             <div class="items-sold"></div>
                                         </div>
@@ -259,7 +259,7 @@ $adminRole = isset($admin->adminrole) ? (int)$admin->adminrole : 0;
                                         ?>
                                         <div class="product-amount">
                                             <div class="product-price"><span
-                                                        class="font-weight-semibold text-danger"><?php echo $rec->coreg ?>  نفر دوره </span>
+                                                        class="font-weight-semibold text-danger"><?php echo $rec->coreg ?>  نفر پایه </span>
                                             </div>
                                             <div class="items-sold"></div>
                                         </div>

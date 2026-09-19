@@ -93,7 +93,7 @@ include_once '../../temp.html';
                                         <!-- Date filter form -->
                                         <form method="post" id="talktimeFilterForm" class="row g-3 align-items-end" style="margin:0;">
                                             <div class="col-xl-3">
-                                                <p class="mb-1">از تاریخ ثبت دوره :<span style="color: red">*</span></p>
+                                                <p class="mb-1">از تاریخ ثبت پایه :<span style="color: red">*</span></p>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
@@ -176,7 +176,7 @@ include_once '../../temp.html';
                                                 <th>ورود</th>
                                                 <th>کد ملی</th>
                                                 <th>نام و نام خانوادگی</th>
-                                                <th>نام دوره</th>
+                                                <th>نام پایه</th>
                                                 <th>زمان مکالمه</th>
                                                 <th>آزمون</th>
                                                 <th>آخرین پشتیبانی</th>

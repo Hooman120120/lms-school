@@ -74,7 +74,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">گزارش تعداد دانش آموزان <?php echo $colors ?> رنگ پشتیبان : <?php echo $_SESSION['admin']['user']  ?> <span
                                                     class="text-primary"></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title"> کد دوره :<span
+                                        <p class="text-muted card-sub-title"> کد پایه :<span
                                                     class="text-primary"><?php echo $_GET['Id']   ?></span>
                                         </p>
                                     </div>
@@ -90,7 +90,7 @@ include_once '../../temp.html';
                                             <th>ورود</th>
                                             <th>کد ملی</th>
                                             <th>نام و نام خانوادگی</th>
-                                            <th>نام دوره</th>
+                                            <th>نام پایه</th>
                                             <th>آزمون </th>
                                             <th>آخرین پشتیبانی</th>
                                             <th>پشتیبانی بعدی</th>

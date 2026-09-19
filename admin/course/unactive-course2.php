@@ -79,7 +79,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های غیرفعال | <?php echo __TITLE ?></title>
+    <title> بایگانی سال‌های قبل | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -155,7 +155,7 @@ include_once '../../temp.html';
                                 <div class="row">
                                     <div class="col-2">
                                         <div>
-                                            <h6 class="main-content-label mb-1">دوره های غیر فعال </h6>
+                                            <h6 class="main-content-label mb-1">بایگانی سال‌های قبل </h6>
                                             <p class="text-muted card-sub-title">
                                             </p>
                                         </div>
@@ -255,8 +255,8 @@ include_once '../../temp.html';
                                         <thead>
                                         <tr>
                                             <th>اقدامات</th>
-                                            <th>کد دوره</th>
-                                            <th>نام دوره</th>
+                                            <th>کد پایه</th>
+                                            <th>نام پایه</th>
                                             <th> موفق</th>
                                             <th>منتظر</th>
                                             <th>وضعیت ثبت نام</th>
@@ -316,7 +316,7 @@ include_once '../../temp.html';
                                                                     </button>
                                                                     <div class="dropdown-menu tx-8">
                                                                         <a class="dropdown-item text-success "   href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>" >
-                                                                            <i class="fe fe-edit-2"></i>ویرایش دوره
+                                                                            <i class="fe fe-edit-2"></i>ویرایش پایه
                                                                         </a>
                                                                         <a class="dropdown-item"
                                                                            href="movie.php?code=<?php echo $res->codecourse ?>"
@@ -353,8 +353,8 @@ include_once '../../temp.html';
                                                                             <hr>
                                                                             <a class="dropdown-item text-danger "
                                                                                href="?close=<?php echo $res->codecourse ?>"
-                                                                               onclick="return confirm('آیا با حذف این دوره موافقید موافقید؟')"
-                                                                            ><i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                               onclick="return confirm('آیا با حذف این پایه موافقید موافقید؟')"
+                                                                            ><i class="fe fe-x-square"></i> حذف دائم پایه
                                                                             </a>
                                                                         <?php  } ?>
 
@@ -412,7 +412,7 @@ include_once '../../temp.html';
                                         <div class="row">
                                             <div class="col-9">
                                                 <div>
-                                                    <h6 class="main-content-label mb-1">دوره های غیر فعال </h6>
+                                                    <h6 class="main-content-label mb-1">بایگانی سال‌های قبل </h6>
                                                     <p class="text-muted card-sub-title">
                                                     </p>
                                                 </div>
@@ -424,8 +424,8 @@ include_once '../../temp.html';
                                                 <thead>
                                                 <tr>
                                                     <th>اقدامات</th>
-                                                    <th>کد دوره</th>
-                                                    <th>نام دوره</th>
+                                                    <th>کد پایه</th>
+                                                    <th>نام پایه</th>
                                                     <th> موفق</th>
                                                     <th>منتظر</th>
                                                     <th>وضعیت ثبت نام</th>
@@ -457,7 +457,7 @@ include_once '../../temp.html';
                                                                             </button>
                                                                             <div class="dropdown-menu tx-8">
                                                                                 <a class="dropdown-item text-success "   href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>" >
-                                                                                    <i class="fe fe-edit-2"></i>ویرایش دوره
+                                                                                    <i class="fe fe-edit-2"></i>ویرایش پایه
                                                                                 </a>
                                                                                 <a class="dropdown-item"
                                                                                    href="movie.php?code=<?php echo $res->codecourse ?>"
@@ -494,8 +494,8 @@ include_once '../../temp.html';
                                                                                     <hr>
                                                                                     <a class="dropdown-item text-danger "
                                                                                        href="?close=<?php echo $res->codecourse ?>"
-                                                                                       onclick="return confirm('آیا با حذف این دوره موافقید موافقید؟')"
-                                                                                    ><i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                                       onclick="return confirm('آیا با حذف این پایه موافقید موافقید؟')"
+                                                                                    ><i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                     </a>
                                                                                 <?php  } ?>
 

@@ -176,7 +176,7 @@ include_once '../../temp.html';
                                         <thead>
                                         <tr class="bg-light">
                                             <th>عنوان</th>
-                                            <th>دوره</th>
+                                            <th>پایه</th>
                                             <th class="wd-15">تعداد</th>
                                             <th class="wd-15"></th>
                                         </tr>

@@ -46,7 +46,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> آزمون های برگزار شده برای دوره : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
+    <title> آزمون های برگزار شده برای پایه : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -73,7 +73,7 @@ include_once '../temp.html';
                                         <div class="d-flex">
                                             <label class="main-content-label my-auto pt-2">برنامه هفتگی</label>
                                         </div>
-                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> دوره
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted"> پایه
                                             <?php echo $course1->coursename ?> </span>
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@ include_once '../temp.html';
                                     </div>
                                 <?php } else { ?>
                                     <div class="card-body">
-                                        <p>برنامه هفتگی برای این دوره تعریف نشده است </p>
+                                        <p>برنامه هفتگی برای این پایه تعریف نشده است </p>
                                     </div>
                                 <?php } ?>
                             </div>

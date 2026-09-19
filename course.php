@@ -97,7 +97,7 @@ if (isset($_GET['addcheckout']) && $_GET['addcheckout'] != '') {
         if ($is_ajax) {
             if (ob_get_length()) ob_clean();
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode(['status' => 'error', 'message' => 'این دوره قبلا برای شما فعال شده است']);
+            echo json_encode(['status' => 'error', 'message' => 'این پایه قبلا برای شما فعال شده است']);
             exit();
         }
         $_SESSION['massege'] = 31;
@@ -133,7 +133,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title> طرح ها و دوره ها | <?php echo __TITLE ?></title>
+    <title> طرح ها و پایه ها | <?php echo __TITLE ?></title>
     <?php include_once 'inc/link.php'; ?>
 
     <style>
@@ -501,7 +501,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                     <div class="inner-body">
                         <div class="courses-wrapper w-100 pt-3" style="direction: rtl; text-align: right;">
 
-                            <h6 class="mb-3 text-muted" style="font-weight: bold;">۱. دوره تحصیلی خود را انتخاب کنید:</h6>
+                            <h6 class="mb-3 text-muted" style="font-weight: bold;">۱. پایه تحصیلی خود را انتخاب کنید:</h6>
                             <div class="top-nav-container">
                                 <div class="main-tabs">
                                     <button class="btn-main" onclick="switchGroup('ebtedayi', this)">ابتدایی</button>
@@ -533,7 +533,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
 
                             <div id="courses-section" style="display: none; margin-top: 40px;">
                                 <h5 id="dynamic-course-title" class="mb-4 text-primary" style="font-weight: 900; border-right: 4px solid; padding-right: 10px;">
-                                    دوره های آموزشی
+                                    پایه های آموزشی
                                 </h5>
                                 <div id="results-area" class="results-area-style">
                                 </div>
@@ -545,7 +545,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
             </div>
             <?php
         } else {
-            // بخش جزئیات دوره (IdCourse)
+            // بخش جزئیات پایه (IdCourse)
             if ($_GET['IdCourse'] != '' && Getcourse($_GET['IdCourse'])) {
                 $idcourse = intval($_GET['IdCourse']);
                 $sql1 = 'SELECT * FROM codtbl_course WHERE codecourse=? ';
@@ -642,7 +642,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
         $("#courses-section").show(); // نمایش بخش محصولات
 
         // تغییر متن تیتر سوم
-        $("#dynamic-course-title").text('دوره‌های پایه ' + gradeName);
+        $("#dynamic-course-title").text('پایه‌های پایه ' + gradeName);
 
         // درخواست Ajax ساده و مستقیم
         $.ajax({

@@ -106,15 +106,15 @@ include_once '../temp.html';
                                                         <td class="wd-20"><span class="badge badge-success">فعال</span></td>
                                                         <td>
                                                             <a href="sales-course.php?sales=<?php echo $gmc->codemeli ?>"
-                                                               class="btn btn-outline-primary btn-block">افزودن دوره</a>
+                                                               class="btn btn-outline-primary btn-block">افزودن پایه</a>
                                                         </td>
                                                     <?php } ?>
                                                     <?php if (keyactcourse($gmc->codemeli) == 400) { ?>
-                                                        <td><span class="badge badge-warning">منتظر خرید دوره</span>
+                                                        <td><span class="badge badge-warning">منتظر خرید پایه</span>
                                                         </td>
                                                         <td>
                                                             <a href="sales-course.php?sales=<?php echo $gmc->codemeli ?>"
-                                                               class="btn btn-outline-primary btn-block">خرید دوره</a>
+                                                               class="btn btn-outline-primary btn-block">خرید پایه</a>
                                                         </td>
                                                     <?php } ?>
                                                 </tr>

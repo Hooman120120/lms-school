@@ -306,7 +306,7 @@ include_once '../../temp.html';
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong>دوره:</strong>
+                                    <p><strong>پایه:</strong>
                                         <?= htmlspecialchars($course->coursename ?? 'نامشخص', ENT_QUOTES, 'UTF-8') ?>
                                         (کد: <?= htmlspecialchars($codecourse, ENT_QUOTES, 'UTF-8') ?>)
                                     </p>
@@ -318,7 +318,7 @@ include_once '../../temp.html';
                     <!-- Homeworks by Class -->
                     <?php if (empty($homeworksByClass)): ?>
                         <div class="alert alert-info text-center">
-                            هیچ تکلیفی برای کلاس‌های این دوره تعریف نشده است.
+                            هیچ تکلیفی برای کلاس‌های این پایه تعریف نشده است.
                         </div>
                     <?php else: ?>
                         <?php

@@ -54,7 +54,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> آزمون های برگزار شده برای دوره : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
+    <title> آزمون های برگزار شده برای پایه : <?php echo $course1->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -143,7 +143,7 @@ include_once '../temp.html';
                                         <?php
                                     }
                                 }else{
-                                    echo 'آزمونی برای این دوره برگزار نشده است';
+                                    echo 'آزمونی برای این پایه برگزار نشده است';
                                 }
                                 ?>
                             </div>

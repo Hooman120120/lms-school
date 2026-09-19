@@ -127,7 +127,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد دوره برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> ایجاد پایه برای دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -156,7 +156,7 @@ include_once '../../temp.html';
                                     <div class="row">
                                         <div class="col-9">
                                             <div>
-                                                <h6 class="main-content-label mb-1">ایجاد دوره برای دانش آموز </h6>
+                                                <h6 class="main-content-label mb-1">ایجاد پایه برای دانش آموز </h6>
                                                 <p class="text-muted card-sub-title">صدور فاکتور جدید برای دانش آموز
                                                 </p>
                                             </div>
@@ -193,7 +193,7 @@ include_once '../../temp.html';
                                                 type="button">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-                                            این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت دوره برایش فراهم نیست
+                                            این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
 
                                         </div>
                                     <?php } ?>
@@ -257,8 +257,8 @@ include_once '../../temp.html';
                                                     <div class="row row-sm">
                                                         <div class="col-xl-8">
                                                             <div class="card-header border-bottom-0 pb-1">
-                                                                <label class="main-content-label mb-2 pt-1">دوره های در حال ثبت نام</label>
-                                                                <p class="tx-12 mb-0 text-muted">دوره های مورد نظر برای دانش آموز را انتخاب کنید</p>
+                                                                <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت نام</label>
+                                                                <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را انتخاب کنید</p>
                                                             </div>
 
                                                             <?php
@@ -272,11 +272,11 @@ include_once '../../temp.html';
                                                             </label>
                                                             <hr>
 
-                                                            <!-- 🔎 فیلتر دوره‌ها بر اساس پایه -->
+                                                            <!-- 🔎 فیلتر پایه‌ها بر اساس پایه -->
                                                             <div class="row mb-3 align-items-center">
 
                                                                 <div class="col-12 mb-2">
-                                                                    <h6 class="main-content-label mb-1">فیلتر دوره های فعال</h6>
+                                                                    <h6 class="main-content-label mb-1">فیلتر پایه های فعال</h6>
                                                                 </div>
 
                                                                 <div class="col-12 col-lg-1 mb-2">
@@ -394,7 +394,7 @@ include_once '../../temp.html';
                                                                     <label for="courseTypeFilter" class="form-label mb-1"></label>
                                                                     <select id="courseTypeFilter"
                                                                             class="form-control bg-primary text-white border-0">
-                                                                        <option value="all">همه دوره‌ها</option>
+                                                                        <option value="all">همه پایه‌ها</option>
                                                                         <option value="0">آموزشی</option>
                                                                         <option value="2">المپیاد</option>
                                                                         <option value="1">مهارتی</option>
@@ -525,7 +525,7 @@ include_once '../../temp.html';
                                                                         <tr>
                                                                             <th>ردیف</th>
                                                                             <th>پشتیبان</th>
-                                                                            <th>تعداد ( نفر دوره )</th>
+                                                                            <th>تعداد ( نفر پایه )</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -613,7 +613,7 @@ include_once '../../temp.html';
                 const fileInput = excelForm.querySelector('input[type="file"]');
                 const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
 
-                // 🚦 وقتی روی دکمه "ثبت دوره گروهی" کلیک شد
+                // 🚦 وقتی روی دکمه "ثبت پایه گروهی" کلیک شد
                 openModalBtn.addEventListener("click", function() {
                     if (!fileInput.value) {
                         // اگر فایل انتخاب نشده بود
@@ -649,12 +649,12 @@ include_once '../../temp.html';
             });
 //here
                 document.addEventListener("DOMContentLoaded", function () {
-                // ----- فیلتر دوره ها بر اساس پایه / رشته + نوع دوره -----
+                // ----- فیلتر پایه ها بر اساس پایه / رشته + نوع پایه -----
                 const filterButtons     = document.querySelectorAll(".btn-course-filter");
                 const courseItems       = document.querySelectorAll(".top-selling-products .product-item");
                 const typeFilterSelect  = document.getElementById("courseTypeFilter");
 
-                // اگر هنوز فیلتر یا لیست دوره‌ها روی صفحه نیست، کاری نکن
+                // اگر هنوز فیلتر یا لیست پایه‌ها روی صفحه نیست، کاری نکن
                 if (!filterButtons.length || !courseItems.length) {
                 return;
             }
@@ -669,7 +669,7 @@ include_once '../../temp.html';
                 const field = (item.dataset.field || "").trim();
                 const type  = (item.dataset.type  || "").trim();
 
-                // ---- فیلتر نوع دوره (course_type) ----
+                // ---- فیلتر نوع پایه (course_type) ----
                 // typeFilter: "all" | "0" | "1" | "2"
                 if (typeFilter !== "all") {
                 if (type !== typeFilter) {
@@ -745,7 +745,7 @@ include_once '../../temp.html';
             });
             });
 
-                // تغییر نوع دوره (course_type)
+                // تغییر نوع پایه (course_type)
                 if (typeFilterSelect) {
                 typeFilterSelect.addEventListener("change", function () {
                 applyFilter();

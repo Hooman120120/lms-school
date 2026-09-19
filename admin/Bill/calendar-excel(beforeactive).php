@@ -182,7 +182,7 @@ foreach ($events as $event) {
             $nameStmt = $conn->prepare("SELECT coursename FROM codtbl_course WHERE idcourse IN ($in)");
             $nameStmt->execute($courseIds);
             $courseNames = $nameStmt->fetchAll(PDO::FETCH_COLUMN);
-            $target_summary = 'دوره‌ها: ' . implode('، ', $courseNames);
+            $target_summary = 'پایه‌ها: ' . implode('، ', $courseNames);
         }
     }
 

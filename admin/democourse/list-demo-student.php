@@ -95,7 +95,7 @@ include_once '../../temp.html';
                                         $course = $stmt->fetch(PDO::FETCH_OBJ);
                                         ?>
 
-                                        <h6 class="main-content-label mb-1">لیست دانش آموزان دوره <span
+                                        <h6 class="main-content-label mb-1">لیست دانش آموزان پایه <span
                                                     class="text-warning"> <?php echo $course->coursename ?> (<?php echo $_GET['code'] ?>)</span>
                                         </h6>
                                         <p class="text-muted card-sub-title">

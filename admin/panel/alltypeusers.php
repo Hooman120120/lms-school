@@ -121,9 +121,9 @@ include_once '../../temp.html';
                 <div class="card-body row justify-content-around">
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/panel/mypersonalcourse.php') ?>" class="safe-call-card">
-                            <div class="safe-call-card-title"> دانش آموزان نفر دوره</div>
+                            <div class="safe-call-card-title"> دانش آموزان نفر پایه</div>
                             <div class="safe-call-card-desc">
-                                لیست دانش آموزان شما بر اساس نفر دوره
+                                لیست دانش آموزان شما بر اساس نفر پایه
                             </div>
                         </a>
                     </div>

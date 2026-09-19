@@ -96,7 +96,7 @@ if (isset($_POST['search'])) {
     $enddate = explode('/', $enddate);
     $enddate = jalali_to_gregorian($enddate[0], $enddate[1], $enddate[2]);
     $enddate = implode('-', $enddate);
-    if ($course == 1) {   //همه دوره ها
+    if ($course == 1) {   //همه پایه ها
         $anycourse = 'SELECT * FROM dbfactor WHERE status=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ';
         $quap = $conn->prepare($anycourse);
         $quap->execute([$status, $startdate, $enddate]);
@@ -413,7 +413,7 @@ include_once '../../temp.html';
                                             </select>
                                         </div>
                                         <div class="col-xl-3 mb-2">
-                                            <label for="sens" class="form-label mg-t-15">دوره مورد نظر:<span
+                                            <label for="sens" class="form-label mg-t-15">پایه مورد نظر:<span
                                                         style="color: red">*</span>
                                             </label>
                                             <select class="form-control select2 "
@@ -421,7 +421,7 @@ include_once '../../temp.html';
                                                     aria-describedby="basic-addon2" required>
                                                 <option label="اقدام لازم">
                                                 </option>
-                                                <option value="1">همه دوره ها</option>
+                                                <option value="1">همه پایه ها</option>
                                                 <?php
                                                 $sql = 'SELECT * FROM codtbl_course  WHERE activecourse=? ORDER BY idcourse DESC ';
                                                 $query = $conn->prepare($sql);
@@ -613,10 +613,10 @@ include_once '../../temp.html';
                                                                                 با دانش آموز
                                                                             </a>
                                                                             <div class="dropdown-item "
-                                                                                 onclick="window.open('transfer.php?order='+'<?php echo $exp->idfactor ?>','جابجایی دوره'
+                                                                                 onclick="window.open('transfer.php?order='+'<?php echo $exp->idfactor ?>','جابجایی پایه'
                                                                                          ,'width=1000,height=600,menubar=0,toolbar=0,resizable=0,left=500,top=180,status=0,scrollbars=0,location=0' )"
                                                                             ><i class="fe fe-shuffle"></i>جابجایی
-                                                                                دوره
+                                                                                پایه
                                                                             </div>
 
 
@@ -626,7 +626,7 @@ include_once '../../temp.html';
                                                                                onclick="return confirm('آیا با انصراف کلی این فاکتور موافقید؟')"
                                                                             ><i class="fe fe-x-square"></i>
                                                                                 انصراف از
-                                                                                دوره ها
+                                                                                پایه ها
                                                                             </a>
 
 

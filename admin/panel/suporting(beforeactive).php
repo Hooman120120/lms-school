@@ -1536,7 +1536,7 @@ if ($codemeli === '') {
             $j = gregorian_to_jalali((int)$gy, (int)$gm, (int)$gd, '/');
             $msg .= 'آخرین زمان فعالیت این دانش‌آموز: <span dir="ltr">' . $j . '</span>';
             if ($lastCourseName) {
-                $msg .= ' — نام دوره: <strong>' . $lastCourseName . '</strong>';
+                $msg .= ' — نام پایه: <strong>' . $lastCourseName . '</strong>';
             }
         } else {
             $msg .= 'هیچ تاریخی برای آخرین فعالیت پیدا نشد.';
@@ -1546,7 +1546,7 @@ if ($codemeli === '') {
         if ($active > 0) {
             $statusAlert = '<div class="alert alert-success text-center" role="alert" style="direction:rtl">این دانش‌آموز <strong>فعال</strong> است.</div>';
         } else {
-            $statusAlert = '<div class="alert alert-info text-center" role="alert" style="direction:rtl">هیچ دوره‌ای برای این دانش‌آموز ثبت نشده است.</div>';
+            $statusAlert = '<div class="alert alert-info text-center" role="alert" style="direction:rtl">هیچ پایه‌ای برای این دانش‌آموز ثبت نشده است.</div>';
         }
     }
 }
@@ -2035,7 +2035,7 @@ include_once '../../temp.html';
                             <i class="bi bi-link-45deg"></i> لینک ساخته شد
                         </h6>
                         <p class="text-muted x-small mb-2">برای: <strong><?= $data['student_name'] ?></strong></p>
-                        <p class="text-muted x-small mb-2">دوره: <strong><?= $data['course'] ?></strong></p>
+                        <p class="text-muted x-small mb-2">پایه: <strong><?= $data['course'] ?></strong></p>
 
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control bg-light border-0" value="<?= $token ?>"
@@ -3421,7 +3421,7 @@ include_once '../../temp.html';
                                 <thead>
                                 <tr class="bg-light">
                                     <th>#</th>
-                                    <th>دوره های قطعی</th>
+                                    <th>پایه‌های در حال اجرا</th>
                                     <th>کلاس</th>
                                     <th>آزمون</th>
                                     <th>فیلم</th>
@@ -3658,7 +3658,7 @@ include_once '../../temp.html';
                                 <thead>
                                 <tr class="bg-light">
                                     <th>#</th>
-                                    <th>دوره های موقت</th>
+                                    <th>دوره‌های فوق برنامه</th>
                                     <th>کلاس</th>
                                     <th>فیلم</th>
                                     <th>جزوات</th>

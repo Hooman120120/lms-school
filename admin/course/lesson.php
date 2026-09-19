@@ -201,8 +201,8 @@ include_once '../../temp.html';
                                                     </h6>
 
                                                     <span class="menu-info-trigger"
-                                                          data-tooltip="در این بخش می‌توانید سرفصل آموزشی جدیدی برای دوره انتخاب‌شده ثبت کنید. سرفصل ایجادشده به درس مربوط متصل می‌شود و برای سازمان‌دهی مباحث و محتوای آموزشی دوره مورد استفاده قرار می‌گیرد."
-                                                          aria-label="راهنمای افزودن سرفصل به دوره">
+                                                          data-tooltip="در این بخش می‌توانید سرفصل آموزشی جدیدی برای پایه انتخاب‌شده ثبت کنید. سرفصل ایجادشده به درس مربوط متصل می‌شود و برای سازمان‌دهی مباحث و محتوای آموزشی پایه مورد استفاده قرار می‌گیرد."
+                                                          aria-label="راهنمای افزودن سرفصل به پایه">
 
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -320,7 +320,7 @@ include_once '../../temp.html';
                                         <div class="col-xl-12">
                                             <?php $course = returnCourse($_GET['code']); ?>
                                             <div>
-                                                <h6 class="main-content-label mb-1">ویرایش سرفصل برای دوره <span
+                                                <h6 class="main-content-label mb-1">ویرایش سرفصل برای پایه <span
                                                             class="text-warning"> <?php echo $course->coursename ?></span>
                                                 </h6>
                                             </div>
@@ -431,8 +431,8 @@ include_once '../../temp.html';
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید سرفصل‌های آموزشی تعریف‌شده برای دوره انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر سرفصل و گزینه‌های مربوط به ویرایش، حذف یا بررسی جزئیات آن از این قسمت در دسترس است."
-                                                  aria-label="راهنمای لیست سرفصل‌های دوره">
+                                                  data-tooltip="در این بخش می‌توانید سرفصل‌های آموزشی تعریف‌شده برای پایه انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر سرفصل و گزینه‌های مربوط به ویرایش، حذف یا بررسی جزئیات آن از این قسمت در دسترس است."
+                                                  aria-label="راهنمای لیست سرفصل‌های پایه">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -528,7 +528,7 @@ include_once '../../temp.html';
                                                                     <div class="dropdown-menu tx-8">
                                                                         <a class="dropdown-item"
                                                                            href="#"
-                                                                           onclick="window.open('sub-chapters.php?lesson='+'<?php echo $lesson->id ?>','مشاهده دوره'
+                                                                           onclick="window.open('sub-chapters.php?lesson='+'<?php echo $lesson->id ?>','مشاهده پایه'
                                                                                    ,'width=850,height=500,menubar=0,toolbar=0,resizable=0,left=0,top=0,status=0,scrollbars=0,location=0' ); return false;"
                                                                         >
                                                                             <i class="fe fe-layers"></i> مشاهده زیرفصل

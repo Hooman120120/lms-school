@@ -23,12 +23,12 @@ die();
 
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-shopping-bag sidemenu-icon"></i><span class="sidemenu-label">خرید دوره</span><i
+                            class="fe fe-shopping-bag sidemenu-icon"></i><span class="sidemenu-label">خرید پایه</span><i
                             class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('course.php') ?>"> ثبت نام در دوره </a>
+                        <a class="nav-sub-link" href="<?php echo url('course.php') ?>"> ثبت نام در پایه </a>
                     </li>
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('checkout.php') ?>">سبد خرید</a>

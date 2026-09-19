@@ -282,7 +282,7 @@ include_once '../../temp.html';
                             <span class="menu-info-trigger"
                                   data-tooltip="<?= $isTeacher
                                       ? 'در این بخش می‌توانید سرفصل‌های کلاس را تعریف کنید و فیلم‌ها یا جزوه‌های همین کلاس را با لینک یا بارگذاری فایل ثبت و مشاهده کنید.'
-                                      : 'در این بخش می‌توانید اطلاعات جامع کلاس انتخاب‌شده را مشاهده و مدیریت کنید. مشخصات کلاس، اطلاعات دوره، دانش آموزان، جلسات، درس‌ها و سایر تنظیمات مرتبط با کلاس از این قسمت قابل بررسی است.' ?>"
+                                      : 'در این بخش می‌توانید اطلاعات جامع کلاس انتخاب‌شده را مشاهده و مدیریت کنید. مشخصات کلاس، اطلاعات پایه، دانش آموزان، جلسات، درس‌ها و سایر تنظیمات مرتبط با کلاس از این قسمت قابل بررسی است.' ?>"
                                   aria-label="راهنمای جزئیات کلاس">
 
                                 <i class="fe fe-info fs-4"></i>
@@ -315,7 +315,7 @@ include_once '../../temp.html';
                                     <table class="table table-bordered table-striped text-md-nowrap mg-b-0">
                                         <tbody>
                                         <tr>
-                                            <th class="wd-20p bg-light">نام دوره اصلی </th>
+                                            <th class="wd-20p bg-light">نام پایه اصلی </th>
                                             <td><span class="badge badge-primary tx-14"><?= htmlspecialchars($classDetails->coursename ?? 'نامشخص') ?></span> (کد: <?= htmlspecialchars($classDetails->codecourse) ?>)</td>
                                         </tr>
                                         <tr>

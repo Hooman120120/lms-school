@@ -93,7 +93,7 @@ if(isset($_GET['uncourse'])){
     $stm->execute([1]);
     if ($stm) {
         $delimiter = ",";
-        $filename = "گزارش دانش آموزان بدون دوره " . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
+        $filename = "گزارش دانش آموزان بدون پایه " . $_GET['state'] ." _ " . date('Y-m-d h:i:s') . ".csv";
 
         header('Content-Encoding: UTF-8');
         header('Content-type: application/csv; charset=UTF-8');
@@ -147,7 +147,7 @@ if(isset($_GET['away'])){
         $f = fopen('php://output', 'w');
         fputs($f, "\xEF\xBB\xBF"); // UTF-8 BOM !!!!!
 
-        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت','شماره فاکتور','نام دوره','وضعیت فاکتور'];
+        $fields = ['کدملی', 'نام', 'نام خانوادگی','نام پدر' ,'تلفن دانش آموز', 'تلفن مادر', 'تلفن پدر','ملیت','تاریخ تولد','استان','شهر','نام مدرسه','نوع مدرسه','پایه','رشته','منطقه','جنسیت','تاریخ عضویت','شماره فاکتور','نام پایه','وضعیت فاکتور'];
         fputcsv($f, $fields, $delimiter);
 
         while ($row = $stm->fetch(PDO::FETCH_OBJ)) {
@@ -329,7 +329,7 @@ $columnMapping = [
     'reshte' => ['title' => 'رشته', 'callback' => fn($s) => $s->reshtestudent ?? ''],
 
     // اطلاعات دوره‌ای (تجمیعی)
-    'course_names' => ['title' => 'نام دوره‌ها', 'callback' => function ($s) use ($conn) {
+    'course_names' => ['title' => 'نام پایه‌ها', 'callback' => function ($s) use ($conn) {
         $q = $conn->prepare("SELECT ct.coursename FROM dbcourse dc 
                              INNER JOIN codtbl_course ct ON dc.codecourse = ct.codecourse 
                              WHERE dc.username = ? AND ct.courseactive = 1");
@@ -337,7 +337,7 @@ $columnMapping = [
         $names = $q->fetchAll(PDO::FETCH_COLUMN);
         return implode('|', $names);
     }],
-    'course_count' => ['title' => 'تعداد دوره ثبت نامی', 'callback' => function ($s) use ($conn) {
+    'course_count' => ['title' => 'تعداد پایه ثبت نامی', 'callback' => function ($s) use ($conn) {
         $q = $conn->prepare("SELECT COUNT(*) FROM dbcourse dc 
                              INNER JOIN codtbl_course ct ON dc.codecourse = ct.codecourse 
                              WHERE dc.username = ? AND ct.courseactive = 1");
@@ -466,7 +466,7 @@ foreach ($sheet->getColumnIterator() as $column) {
 // نام فایل
 $titleMap = [
     'all' => 'همه دانش‌آموزان',
-    'uncourse' => 'دانش‌آموزان بدون دوره',
+    'uncourse' => 'دانش‌آموزان بدون پایه',
     'away' => 'منتظر پرداخت فاکتور',
     'state' => 'دانش‌آموزان استان ' . ($stateFilter ?? '')
 ];

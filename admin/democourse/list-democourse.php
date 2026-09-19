@@ -136,7 +136,7 @@ if (isset($_GET['schedule'])) {
         header('Location: Active-course.php');
         die();
     } else {
-        $_SESSION['message'] = "برنامه هفتگی برای این دوره تعریف نشده است";
+        $_SESSION['message'] = "برنامه هفتگی برای این پایه تعریف نشده است";
         header('Location: Active-course.php');
         die();
     }
@@ -155,7 +155,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های آزمایشی | <?php echo __TITLE ?></title>
+    <title> دوره‌های فوق برنامه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -200,16 +200,16 @@ include_once '../../temp.html';
                                             <div class="col-1">
                                                 <div>
                                                     <div class="d-flex flex-row">
-                                                    <h6 class="main-content-label mb-1">دوره های آزمایشی </h6>
+                                                    <h6 class="main-content-label mb-1">دوره‌های فوق برنامه </h6>
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="مدیریت دوره‌های موقت: در این منو تمامی ابزارهای موردنیاز برای مدیریت دوره در اختیار شما قرار دارد. از طریق گزینه‌های این بخش می‌توانید دسترسی ورود دانش آموز به کلاس آنلاین، لیست دانش آموزان، ویرایش یا حذف دوره را انجام دهید. همچنین امکان فعال یا غیرفعال کردن کلاس یا اتاق برگزاری جلسه نیز فراهم است. برای آشنایی بیشتر با عملکرد هر گزینه، روی آیتم موردنظر در منوی «اقدام» کلیک کنید."
+                                                              data-tooltip="مدیریت دوره‌های فوق برنامه: در این منو تمامی ابزارهای موردنیاز برای مدیریت پایه در اختیار شما قرار دارد. از طریق گزینه‌های این بخش می‌توانید دسترسی ورود دانش آموز به کلاس آنلاین، لیست دانش آموزان، ویرایش یا حذف پایه را انجام دهید. همچنین امکان فعال یا غیرفعال کردن کلاس یا اتاق برگزاری جلسه نیز فراهم است. برای آشنایی بیشتر با عملکرد هر گزینه، روی آیتم موردنظر در منوی «اقدام» کلیک کنید."
                                                               aria-label="راهنمای منوی اقدام"
                                                               onclick="event.preventDefault(); event.stopPropagation();">
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
                                                     </div>
                                                     <p class="text-muted card-sub-title">
-                                                        لیست دوره های آزمایشی
+                                                        لیست دوره‌های فوق برنامه
                                                     </p>
                                                 </div>
                                             </div>
@@ -401,8 +401,8 @@ include_once '../../temp.html';
                                                     <?php if ($adminRole !== 3):  ?>
                                                         <th>کلاس</th>
                                                     <?php endif; ?>
-                                                    <th>کد دوره</th>
-                                                    <th>نام دوره</th>
+                                                    <th>کد پایه</th>
+                                                    <th>نام پایه</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -492,15 +492,15 @@ include_once '../../temp.html';
                                                                                        href="add-democourse.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->id ?>">
                                                                                         <i class="fe fe-edit"></i>
                                                                                         ویرایش
-                                                                                        دوره آزمایشی
+                                                                                        دوره فوق برنامه
                                                                                     </a>
                                                                                     <?php if (Permision('permision_deletcourse')) { ?>
 
                                                                                         <a class="dropdown-item text-danger"
                                                                                            href="?close=<?php echo $res->codecourse ?>"
-                                                                                           onclick="return confirm('آیا با حذف این دوره موافقید؟')"><i
+                                                                                           onclick="return confirm('آیا با حذف این پایه موافقید؟')"><i
                                                                                                     class="fe fe-x-square"></i>
-                                                                                            حذف دائم دوره آزمایشی
+                                                                                            حذف دائم دوره فوق برنامه
                                                                                         </a>
                                                                                     <?php } ?>
                                                                                 <?php } ?>
@@ -522,7 +522,7 @@ include_once '../../temp.html';
                                                         </tr>
                                                     <?php }
                                                 } else {
-                                                    echo '<tr><td colspan="10" class="text-center">هیچ دوره‌ آزمایشی یافت نشد.</td></tr>';
+                                                    echo '<tr><td colspan="10" class="text-center">هیچ پایه‌ آزمایشی یافت نشد.</td></tr>';
                                                 }
                                                 ?>
                                                 </tbody>
@@ -546,7 +546,7 @@ include_once '../../temp.html';
                                             <div class="row">
                                                 <div class="col-8">
                                                     <div>
-                                                        <h6 class="main-content-label mb-1">دوره های فعال </h6>
+                                                        <h6 class="main-content-label mb-1">پایه های فعال </h6>
                                                         <p class="text-muted card-sub-title">
                                                         </p>
                                                     </div>
@@ -579,8 +579,8 @@ include_once '../../temp.html';
                                                         <th>کلاس</th>
                                                         <th>مشاوره</th>
                                                         <th>آزمون</th>
-                                                        <th>کد دوره</th>
-                                                        <th>نام دوره</th>
+                                                        <th>کد پایه</th>
+                                                        <th>نام پایه</th>
                                                         <th> موفق</th>
                                                         <th>منتظر</th>
                                                         <?php if (Permision('permision_viewcourse')) { ?>
@@ -619,7 +619,7 @@ include_once '../../temp.html';
                                                                                 ?><!--&id=-->
                                                                                 <?php //echo $res->idcourse
                                                                                 ?><!--">-->
-                                                                                <!--                                                                                        <i class="fe fe-edit"></i> ویرایش دوره-->
+                                                                                <!--                                                                                        <i class="fe fe-edit"></i> ویرایش پایه-->
                                                                                 <!--                                                                                    </a>-->
                                                                                 <!--                                                                                    <a class="dropdown-item"-->
                                                                                 <!--                                                                                       href="movie.php?code=-->
@@ -780,9 +780,9 @@ include_once '../../temp.html';
                                                                                 <!--                                                                                           href="?close=-->
                                                                                 <?php //echo $res->codecourse
                                                                                 ?><!--"-->
-                                                                                <!--                                                                                           onclick="return confirm('آیا با حذف این دوره  موافقید؟')"><i-->
+                                                                                <!--                                                                                           onclick="return confirm('آیا با حذف این پایه  موافقید؟')"><i-->
                                                                                 <!--                                                                                                    class="fe fe-x-square"></i> حذف دائم-->
-                                                                                <!--                                                                                            دوره-->
+                                                                                <!--                                                                                            پایه-->
                                                                                 <!--                                                                                        </a>-->
                                                                                 <!--                                                                                    --><?php //}
                                                                                 ?>
@@ -861,15 +861,15 @@ include_once '../../temp.html';
                                                                                         <a class="dropdown-item text-success"
                                                                                            href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                             <i class="fe fe-edit"></i>
-                                                                                            ویرایش دوره
+                                                                                            ویرایش پایه
                                                                                         </a>
                                                                                         <?php if (Permision('permision_deletcourse')) { ?>
 
                                                                                             <a class="dropdown-item text-danger"
                                                                                                href="?close=<?php echo $res->codecourse ?>"
-                                                                                               onclick="return confirm('آیا با حذف این دوره موافقید؟')"><i
+                                                                                               onclick="return confirm('آیا با حذف این پایه موافقید؟')"><i
                                                                                                         class="fe fe-x-square"></i>
-                                                                                                حذف دائم دوره
+                                                                                                حذف دائم پایه
                                                                                             </a>
                                                                                         <?php } ?>
                                                                                     <?php } ?>

@@ -189,7 +189,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> افزودن جزوه به دوره | <?php echo __TITLE ?></title>
+    <title> افزودن جزوه به پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
         #dars option {
@@ -226,15 +226,15 @@ include_once '../../temp.html';
                                         <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                             <h6 class="main-content-label mb-0">
-                                                جزوات ایجادشده برای دوره
+                                                جزوات ایجادشده برای پایه
                                                 <span class="text-primary">
                                                     <?php echo htmlspecialchars($course->coursename, ENT_QUOTES, 'UTF-8'); ?>
                                                 </span>
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید جزوات و فایل‌های آموزشی ثبت‌شده برای دوره انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر جزوه و گزینه‌های مربوط به ویرایش، حذف، دانلود یا بررسی جزئیات آن از این قسمت در دسترس است."
-                                                  aria-label="راهنمای جزوات آموزشی دوره">
+                                                  data-tooltip="در این بخش می‌توانید جزوات و فایل‌های آموزشی ثبت‌شده برای پایه انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر جزوه و گزینه‌های مربوط به ویرایش، حذف، دانلود یا بررسی جزئیات آن از این قسمت در دسترس است."
+                                                  aria-label="راهنمای جزوات آموزشی پایه">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -242,7 +242,7 @@ include_once '../../temp.html';
                                         </div>
 
                                         <p class="text-primary mb-0">
-                                            مشاهده و مدیریت جزوات آموزشی دوره
+                                            مشاهده و مدیریت جزوات آموزشی پایه
                                         </p>
                                     </div>
                                 </div>
@@ -347,14 +347,14 @@ include_once '../../temp.html';
                                             <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                 <h6 class="main-content-label mb-0">
-                                                    افزودن جزوه جدید به دوره
+                                                    افزودن جزوه جدید به پایه
                                                     <span class="text-primary">
                                                         <?php echo htmlspecialchars($course->coursename, ENT_QUOTES, 'UTF-8'); ?>
                                                     </span>
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید جزوه یا فایل آموزشی جدیدی برای دوره انتخاب‌شده ثبت کنید. جزوه پس از ثبت به درس و دوره مربوط متصل می‌شود و اطلاعاتی مانند عنوان، کلاس مربوطه، لینک فایل و سایر تنظیمات آن قابل تعیین است."
+                                                      data-tooltip="در این بخش می‌توانید جزوه یا فایل آموزشی جدیدی برای پایه انتخاب‌شده ثبت کنید. جزوه پس از ثبت به درس و پایه مربوط متصل می‌شود و اطلاعاتی مانند عنوان، کلاس مربوطه، لینک فایل و سایر تنظیمات آن قابل تعیین است."
                                                       aria-label="راهنمای افزودن جزوه آموزشی جدید">
 
                                                     <i class="fe fe-info fs-4"></i>
@@ -363,7 +363,7 @@ include_once '../../temp.html';
                                             </div>
 
                                             <p class="text-muted card-sub-title">
-                                                ثبت جزوه و فایل آموزشی جدید برای دوره
+                                                ثبت جزوه و فایل آموزشی جدید برای پایه
                                             </p>
                                         </div>
                                     </div>
@@ -552,7 +552,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-12">
                                         <div>
-                                            <h6 class="main-content-label mb-1">ویرایش جزوه دوره <span
+                                            <h6 class="main-content-label mb-1">ویرایش جزوه پایه <span
                                                         class="text-primary"> <?php echo $course->coursename ?></span>
                                             </h6>
                                             <p class="text-muted card-sub-title">

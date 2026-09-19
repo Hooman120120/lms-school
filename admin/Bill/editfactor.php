@@ -61,10 +61,10 @@ if (isset($_POST['save'])) {
     $discount_new = intval($_POST['discount']);
     $wage_new = intval($_POST['wage']);
     $subtotal_new = $discount_new + $wage_new;
-    if ($factor->sumitem < $subtotal_new) {  //مبلغ دوره کمتر از تخفیف است
-        $eror = 'خطا ! تخفیف و کارمزد نمی تواند بیشتر از هزینه دوره باشد';
+    if ($factor->sumitem < $subtotal_new) {  //مبلغ پایه کمتر از تخفیف است
+        $eror = 'خطا ! تخفیف و کارمزد نمی تواند بیشتر از هزینه پایه باشد';
     } else {
-        if ($factor->sumitem == $subtotal_new) {  // دوره رایگان شده است
+        if ($factor->sumitem == $subtotal_new) {  // پایه رایگان شده است
             if ($factor->wallet > 0) {
                 $detail = 'افزایش موجودی بخاطر اصلاح فاکتور : ' . $_GET['id'];
                 $inwallet = 'INSERT INTO db_wallet (username,fee,status,datecreted,timecreated,detail_wallet,mode,factornum,ip,os,useractive,dateactive,timeactive,ipactive,osactive)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
@@ -267,7 +267,7 @@ include_once '../../temp.html';
                 <thead>
                 <tr>
                     <th>ردیف</th>
-                    <th>دوره</th>
+                    <th>پایه</th>
                     <th>مبلغ</th>
                     <th>خدمات پشتیبانی</th>
                 </tr>

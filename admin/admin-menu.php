@@ -222,7 +222,7 @@ else                  $c = '#15233f';
                             دانش آموزان
 
                             <span class="menu-info-trigger"
-                                  data-tooltip="در این بخش امکان ثبت نام دانش آموز به صورت قطعی و موقت و همچنین ثبت نام دوره آموزشی و ویرایش اطلاعات دانش آموز وجود دارد. همچنین امکان مشاهده گزارش‌های تفکیکی، دانش آموزان فردی و نفر دوره، افراد غیرفعال، انصرافی، تعلیقی و لغو پشتیبانی‌شده وجود دارد."
+                                  data-tooltip="در این بخش امکان ثبت نام دانش آموز به صورت قطعی و موقت و همچنین ثبت نام پایه آموزشی و ویرایش اطلاعات دانش آموز وجود دارد. همچنین امکان مشاهده گزارش‌های تفکیکی، دانش آموزان فردی و نفر پایه، افراد غیرفعال، انصرافی، تعلیقی و لغو پشتیبانی‌شده وجود دارد."
                                   aria-label="راهنمای مدیریت دانش آموزان"
                                   onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -275,7 +275,7 @@ else                  $c = '#15233f';
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                            href="<?= url('admin/panel/mypersonalcourse.php') ?>">
-                                            دانش آموزان نفر دوره
+                                            دانش آموزان نفر پایه
                                         </a>
                                     </li>
 
@@ -463,7 +463,7 @@ else                  $c = '#15233f';
                                 <?php } ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
-                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>">دوره‌های
+                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>">پایه‌های
                                         فوق برنامه</a>
                                 </li>
                             <?php endif; ?>
@@ -509,12 +509,12 @@ else                  $c = '#15233f';
                             </li>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
-                                   href="<?php echo url('admin/handhug/handhug-management.php') ?>"> دوره های فعال "بغل
+                                   href="<?php echo url('admin/handhug/handhug-management.php') ?>"> پایه های فعال "بغل
                                     دستی ها"</a>
                             </li>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
-                                   href="<?php echo url('admin/handhug/disabled-handhugs.php') ?>"> دوره های غیرفعال
+                                   href="<?php echo url('admin/handhug/disabled-handhugs.php') ?>"> بایگانی سال‌های قبل
                                     "بغل دستی ها"</a>
                             </li>
                             <!--<li class="nav-sub-item">-->

@@ -76,7 +76,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
             <?php if (TeacherPermission('teacher_perm_courses')): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label">دوره ها</span><i
+                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label">پایه ها</span><i
                         class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">

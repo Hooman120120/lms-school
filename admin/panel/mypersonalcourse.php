@@ -36,7 +36,7 @@ include_once '../../temp.html';
     <meta name="description" content="LMS hamsepar">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> نفردوره های من | <?php echo __TITLE ?></title>
+    <title> نفرپایه های من | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -63,7 +63,7 @@ include_once '../../temp.html';
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-                                            <h6 class="main-content-label mb-1">لیست دانش آموزان نفر دوره من </h6>
+                                            <h6 class="main-content-label mb-1">لیست دانش آموزان نفر پایه من </h6>
                                             <p class="text-muted card-sub-title">
                                             </p>
                                         </div>
@@ -79,8 +79,8 @@ include_once '../../temp.html';
                                             <th>ورود</th>
                                             <th>نام</th>
                                             <th>پایه</th>
-                                            <!-- استایل اضافه شده برای هدر ستون دوره -->
-                                            <th class="align-middle" style="max-width: 220px;">دوره </th>
+                                            <!-- استایل اضافه شده برای هدر ستون پایه -->
+                                            <th class="align-middle" style="max-width: 220px;">پایه </th>
                                             <th>رنگ</th>
                                             <th>آزمون </th>
                                             <th>اولین ورود</th>
@@ -184,7 +184,7 @@ include_once '../../temp.html';
                                                     <td><?php echo $person->fname . ' ' . $person->lname ?></td>
                                                     <td class="wd-20"><?php echo $person->paye; ?></td>
 
-                                                    <!-- سلول دوره با قابلیت برش متن و نمایش کامل در هاور -->
+                                                    <!-- سلول پایه با قابلیت برش متن و نمایش کامل در هاور -->
                                                     <td class="align-middle text-right"
                                                         style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;"
                                                         title="<?php echo htmlspecialchars($res->coursename); ?>">

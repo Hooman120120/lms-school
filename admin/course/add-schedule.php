@@ -30,7 +30,7 @@ $sql = "SELECT * FROM dbschedules WHERE codecourse = ?";
 $stmt = $conn->prepare($sql);
 $stmt->execute([$_GET['code']]);
 if ($stmt->rowCount() > 0) {
-    $_SESSION['message'] = "برنامه هفتگی برای این دوره تعریف شده است";
+    $_SESSION['message'] = "برنامه هفتگی برای این پایه تعریف شده است";
     header('Location: Active-course.php');
     die();
 }
@@ -146,7 +146,7 @@ include_once '../../temp.html';
                                             <div>
                                                 <h6 class="main-content-label mb-1">افزودن برنامه هفتگی </h6>
                                                 <p class="text-muted card-sub-title">
-                                                    دوره <?= $course->coursename ?>
+                                                    پایه <?= $course->coursename ?>
                                                 </p>
                                             </div>
                                         </div>

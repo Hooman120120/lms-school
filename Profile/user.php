@@ -540,7 +540,7 @@ include_once '../temp.html';
                                                                                                     echo $id;
                                                                                                 } else {
                                                                                                     echo '0';
-                                                                                                } ?></strong> دوره های ثبت نامی
+                                                                                                } ?></strong> پایه های ثبت نامی
                                                 </li>
                                                 <li>
                                                     <strong class="badge <?php if (isset($courseregister) and $courseregister == 1) { ?>  badge-danger ">

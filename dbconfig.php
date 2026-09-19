@@ -120,7 +120,7 @@ if (isset($_GET['logoutadmin'])) {
     die();
 }
 //Ticket Topic
-define('__MOSHAVER', 'واحد مشاوره و خرید دوره');
+define('__MOSHAVER', 'واحد مشاوره و خرید پایه');
 define('__LOGINROOM', ' مشکلات ورود به کلاس آنلاین');
 define('__OFFICIAL', 'واحد مالی و اداری');
 define('__TECHER', 'اساتید و مربیان');

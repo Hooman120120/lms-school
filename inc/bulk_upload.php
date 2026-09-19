@@ -467,7 +467,7 @@ if (isset($_POST['delete_bulk_id'])) {
 //                 continue;
 //             }
 //             if (empty($codecourse)) {
-//                 $errors[] = "ردیف $rowNumber: کد دوره خالی است";
+//                 $errors[] = "ردیف $rowNumber: کد پایه خالی است";
 //                 continue;
 //             }
 
@@ -489,7 +489,7 @@ if (isset($_POST['delete_bulk_id'])) {
 //             $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
 //             if (!$course) {
-//                 $errors[] = "ردیف $rowNumber: کد دوره $codecourse معتبر نیست";
+//                 $errors[] = "ردیف $rowNumber: کد پایه $codecourse معتبر نیست";
 //                 continue;
 //             }
 
@@ -499,7 +499,7 @@ if (isset($_POST['delete_bulk_id'])) {
 //             $exists = $stmt->fetchColumn();
 
 //             if ($exists) {
-//                 $errors[] = "ردیف $rowNumber: دانشجو با کد ملی $codemeli قبلاً در این دوره ثبت‌نام شده است";
+//                 $errors[] = "ردیف $rowNumber: دانشجو با کد ملی $codemeli قبلاً در این پایه ثبت‌نام شده است";
 //                 $skipped++;
 //                 continue;
 //             }
@@ -586,7 +586,7 @@ if (isset($_POST['confirm_invoice'])) {
                 continue;
             }
             if (empty($codecourse)) {
-                $errors[] = "ردیف $row: کد دوره خالی است";
+                $errors[] = "ردیف $row: کد پایه خالی است";
                 $skipped++;
                 continue;
             }
@@ -618,7 +618,7 @@ if (isset($_POST['confirm_invoice'])) {
                 $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if (!$course) {
-                    $errors[] = "ردیف $row: کد دوره $code معتبر نیست ";
+                    $errors[] = "ردیف $row: کد پایه $code معتبر نیست ";
                     $skipped++;
                     $isCourseNotValid = true;
                     break;
@@ -634,7 +634,7 @@ if (isset($_POST['confirm_invoice'])) {
                 $exists = $stmt->fetchColumn();
 
                 if ($exists) {
-                    $errors[] = "ردیف $row: دانش آموز قبلاً در دوره $code ثبت‌نام شده است";
+                    $errors[] = "ردیف $row: دانش آموز قبلاً در پایه $code ثبت‌نام شده است";
                     $skipped++;
                     $duplicate = true;
                     break;
@@ -662,7 +662,7 @@ if (isset($_POST['confirm_invoice'])) {
             }
 
             if ($amount > $total) {
-                $errors[] = "ردیف $row : مبلغ واریزی نمی تواند بیشتر از جمع مبالغ دوره باشد ";
+                $errors[] = "ردیف $row : مبلغ واریزی نمی تواند بیشتر از جمع مبالغ پایه باشد ";
                 $skipped++;
                 continue;
             }
@@ -708,7 +708,7 @@ if (isset($_POST['confirm_invoice'])) {
 
                         $c_id = $class_info ? $class_info->id : null;
                         $success = $stmt->execute([$username, $code, $c_id, $factorId, $supporter, $firstAssignedAt]);
-                        if (!$success) throw new PDOException("خطا در ثبت جدول dbcourse برای دوره $code");
+                        if (!$success) throw new PDOException("خطا در ثبت جدول dbcourse برای پایه $code");
                         $newCourseRecordId = (string)$conn->lastInsertId();
                         CreateSchoolNotification(
                             'new_student', 'ثبت‌نام دانش‌آموز جدید: ' . $username,
@@ -742,7 +742,7 @@ if (isset($_POST['confirm_invoice'])) {
 
                         $c_id = $class_info ? $class_info->id : null;
                         $success = $stmt->execute([$username, $code, $c_id, $factorId, $supporter, $firstAssignedAt]);
-                        if (!$success) throw new PDOException("خطا در ثبت دوره $code");
+                        if (!$success) throw new PDOException("خطا در ثبت پایه $code");
                         $newCourseRecordId = (string)$conn->lastInsertId();
                         CreateSchoolNotification(
                             'new_student', 'ثبت‌نام دانش‌آموز جدید: ' . $username,
@@ -854,7 +854,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file']) && iss
             continue;
         }
         if (empty($codecourse)) {
-            $errors[] = "ردیف $row: کد دوره خالی است";
+            $errors[] = "ردیف $row: کد پایه خالی است";
             $skipped++;
             continue;
         }
@@ -886,7 +886,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file']) && iss
             $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$course) {
-                $errors[] = "ردیف $row: کد دوره $code معتبر نیست ";
+                $errors[] = "ردیف $row: کد پایه $code معتبر نیست ";
                 $skipped++;
                 $isCourseNotValid = true;
                 break;
@@ -903,7 +903,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file']) && iss
             $exists = $stmt->fetchColumn();
 
             if ($exists) {
-                $errors[] = "ردیف $row: دانش آموز با کد ملی $codemeli قبلاً در دوره با کد $code  ثبت‌نام شده است";
+                $errors[] = "ردیف $row: دانش آموز با کد ملی $codemeli قبلاً در پایه با کد $code  ثبت‌نام شده است";
                 $skipped++;
                 $duplicate = true;
                 break;

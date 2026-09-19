@@ -423,7 +423,7 @@ include_once '../../temp.html';
 $codemeli      = isset($_GET['Id']) ? trim($_GET['Id']) : null;
 $studentInfo   = null;
 $historyByYear = [];
-$coursesByYear = [];   // سال‌ها و دوره‌ها
+$coursesByYear = [];   // سال‌ها و پایه‌ها
 $messagesByYear = [];
 $supportByYear  = [];
 $numbers         = [];
@@ -1071,7 +1071,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
 
                 <h4 class="mb-1">سوابق دانش‌آموز</h4>
                 <p class="text-muted mb-3">
-                    وضعیت آزمون‌ها، نمرات، توضیحات و دوره‌های ثبت‌نام‌شده در سال‌های مختلف
+                    وضعیت آزمون‌ها، نمرات، توضیحات و پایه‌های ثبت‌نام‌شده در سال‌های مختلف
                 </p>
 
                 <?php if (!empty($years)): ?>
@@ -1121,7 +1121,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                         <span class="ms-auto text-muted" style="font-size: 12px;">
                                             آزمون‌ها: <?php echo $examCount; ?> |
                                             وضعیت/نظرات: <?php echo $statusCount; ?> |
-                                            دوره‌ها: <?php echo $courseCount; ?>
+                                            پایه‌ها: <?php echo $courseCount; ?>
                                         </span>
                                     </button>
                                 </h2>
@@ -1449,7 +1449,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                         <?php if (!empty($yearCourses)): ?>
                                             <hr class="my-3">
                                             <h6 class="border-bottom pb-2 mb-2">
-                                                دوره‌های ثبت‌نام‌شده در این سال
+                                                پایه‌های ثبت‌نام‌شده در این سال
                                             </h6>
 
                                             <div class="history-course-list" style="max-height:20vh; overflow-y:auto; font-size:15px; line-height:1.5;">

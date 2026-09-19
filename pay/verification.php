@@ -141,7 +141,7 @@ if (isset($_SESSION['payment']) and $_SESSION['payment']['metod'] == 1) {
     foreach ($rew as $tbt) {
         $uid = GetUserIdByApi($tbt->username);
         // باز کردن فایل لاگ برای دیباگ
-        $logMsg = "\n--- بررسی فاکتور دوره: " . $tbt->idcourse . " ---\n";
+        $logMsg = "\n--- بررسی فاکتور پایه: " . $tbt->idcourse . " ---\n";
 
         // ۱. دریافت آیدی کلاس
         $class_id = isset($tbt->class_id) ? $tbt->class_id : null;

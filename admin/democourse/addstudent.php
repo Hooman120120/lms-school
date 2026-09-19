@@ -108,7 +108,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد دوره موقت برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> ایجاد دوره فوق برنامه برای دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -140,12 +140,12 @@ include_once '../../temp.html';
                                             <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                 <h6 class="main-content-label mb-0">
-                                                    ایجاد دوره موقت برای دانش آموز
+                                                    ایجاد دوره فوق برنامه برای دانش آموز
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موقت، دوره آزمایشی ثبت کنید. این دوره بدون صدور فاکتور و بدون ثبت پرداخت ایجاد می‌شود و برای ارائه دسترسی موقت به دانش آموز مورد استفاده قرار می‌گیرد."
-                                                      aria-label="راهنمای ایجاد دوره موقت برای دانش آموز">
+                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موقت، دوره فوق برنامه ثبت کنید. این پایه بدون صدور فاکتور و بدون ثبت پرداخت ایجاد می‌شود و برای ارائه دسترسی موقت به دانش آموز مورد استفاده قرار می‌گیرد."
+                                                      aria-label="راهنمای ایجاد دوره فوق برنامه برای دانش آموز">
 
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -153,7 +153,7 @@ include_once '../../temp.html';
                                             </div>
 
                                             <p class="text-muted card-sub-title">
-                                                ثبت دوره موقت بدون صدور فاکتور
+                                                ثبت دوره فوق برنامه بدون صدور فاکتور
                                             </p>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@ include_once '../../temp.html';
                                         <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        دوره های موقت : <?php echo $idf ?> با موفقیت ایجاد شدند.
+                                        دوره‌های فوق برنامه : <?php echo $idf ?> با موفقیت ایجاد شدند.
                                     </div>
                                 <?php } ?>
                                 <?php if (isset($erorstudent) and $erorstudent == 1) { ?>
@@ -183,7 +183,7 @@ include_once '../../temp.html';
                                         <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت دوره برایش فراهم نیست
+                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
 
                                     </div>
                                 <?php } ?>
@@ -241,12 +241,12 @@ include_once '../../temp.html';
                                                                 <div class="d-flex align-items-center mg-t-15" style="gap: 12px;">
 
                                                                     <label for="excel_file" class="form-label mb-0">
-                                                                        ایجاد دوره موقت برای گروهی از دانش آموزان
+                                                                        ایجاد دوره فوق برنامه برای گروهی از دانش آموزان
                                                                     </label>
 
                                                                     <span class="menu-info-trigger"
-                                                                          data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک دوره موقت را برای گروهی از دانش آموزان ثبت کنید. این دوره‌ها بدون صدور فاکتور و ثبت پرداخت ایجاد می‌شوند و اطلاعات فایل اکسل باید مطابق قالب تعیین‌شده باشد. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
-                                                                          aria-label="راهنمای ایجاد گروهی دوره موقت برای دانش آموزان">
+                                                                          data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک دوره فوق برنامه را برای گروهی از دانش آموزان ثبت کنید. این پایه‌ها بدون صدور فاکتور و ثبت پرداخت ایجاد می‌شوند و اطلاعات فایل اکسل باید مطابق قالب تعیین‌شده باشد. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
+                                                                          aria-label="راهنمای ایجاد گروهی دوره فوق برنامه برای دانش آموزان">
 
                                                                             <i class="fe fe-info fs-4"></i>
                                                                         </span>
@@ -266,7 +266,7 @@ include_once '../../temp.html';
                                                                 <button type="submit" name="course_signup"
                                                                         class="btn btn-success w-25 align-self-center"
                                                                         id="openModalBtn">
-                                                                    ایجاد دوره موقت برای گروهی از دانش آموزان
+                                                                    ایجاد دوره فوق برنامه برای گروهی از دانش آموزان
                                                                 </button>
                                                                 <br>
                                                                 <p class="header-message">
@@ -278,7 +278,7 @@ include_once '../../temp.html';
                                                                     <li>دکمه <strong>OK</strong> را کلیک کنید و پنجره را ببندید.</li>
                                                                     <li>فایل اکسل را باز کنید و روی <strong>Enable Content</strong> کلیک نمایید</li>
                                                                     <li><strong>ALT+F8</strong> را بزنید و در پنجره ای که باز میشود روی اولین فایل دوبار کلیک نمایید</li>
-                                                                    <li>پیغام موفقیت ظاهر می شود و می توانید از کد دوره های فعال استفاده کنید</li>
+                                                                    <li>پیغام موفقیت ظاهر می شود و می توانید از کد پایه های فعال استفاده کنید</li>
                                                                 </ol>
                                                                 <p>
                                                                     <a href="<?php echo url('assets/doc/addcourse-demo.xlsm') ?>" class="btn btn-info ripple"> دانلود فایل نمونه</a>
@@ -314,10 +314,9 @@ include_once '../../temp.html';
                                                 <div class="row row-sm">
                                                     <div class="col-xl-8">
                                                         <div class="card-header border-bottom-0 pb-1">
-                                                            <label class="main-content-label mb-2 pt-1">لیست دوره های
-                                                                موقت
+                                                            <label class="main-content-label mb-2 pt-1">لیست دوره‌های فوق برنامه
                                                             </label>
-                                                            <p class="tx-12 mb-0 text-muted">دوره های آزمایشی مورد نظر
+                                                            <p class="tx-12 mb-0 text-muted">دوره‌های فوق برنامه مورد نظر
                                                                 برای دانش آموز را
                                                                 انتخاب کنید</p>
                                                         </div>

@@ -53,7 +53,7 @@ function showDemo($username)
 {
     global $conn;
 
-    // کوئری دوره‌های دمو
+    // کوئری دوره‌های فوق برنامه
     $sql2 = 'SELECT dbcourse_demo.*, course_demo.coursename
              FROM dbcourse_demo
              INNER JOIN course_demo ON dbcourse_demo.codecourse = course_demo.codecourse
@@ -67,14 +67,14 @@ function showDemo($username)
             <div class="card-header border-bottom-0 pb-0">
                 <div>
                     <div class="d-flex">
-                        <label class="main-content-label my-auto pt-2">دوره های آزمایشی ثبت نام شده</label>
+                        <label class="main-content-label my-auto pt-2">دوره‌های فوق برنامه ثبت نام شده</label>
                     </div>
-                    <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره های آزمایشی برای شما</span>
+                    <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره‌های فوق برنامه برای شما</span>
                 </div>
             </div>
             <div class="card-body">';
 
-    // رندر دوره‌های دمو
+    // رندر دوره‌های فوق برنامه
     if (!empty($demos)) {
         foreach ($demos as $course) {
             $coursename = htmlspecialchars($course->coursename);
@@ -87,7 +87,7 @@ function showDemo($username)
                     <div class="col-4">
                         <a href="' . $link . '">
                             <div class="d-flex">
-                                <button class="btn btn-block btn-outline-secondary">ورود به دوره</button>
+                                <button class="btn btn-block btn-outline-secondary">ورود به پایه</button>
                             </div>
                         </a>
                     </div>
@@ -111,7 +111,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های من | <?php echo __TITLE ?></title>
+    <title> پایه های من | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -152,9 +152,9 @@ include_once '../temp.html';
                                 <div class="card-header  border-bottom-0 pb-0">
                                     <div>
                                         <div class="d-flex">
-                                            <label class="main-content-label my-auto pt-2">دوره های ثبت نام شده</label>
+                                            <label class="main-content-label my-auto pt-2">پایه های ثبت نام شده</label>
                                         </div>
-                                        <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره های فعال برای شما </span>
+                                        <span class="d-block tx-12 mt-2 mb-0 text-muted">پایه های فعال برای شما </span>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -176,7 +176,7 @@ include_once '../temp.html';
                                                         <div class="d-flex">
 
                                                             <button class="btn btn-block btn-outline-secondary">ورود به
-                                                                دوره
+                                                                پایه
                                                             </button>
 
                                                         </div>

@@ -69,7 +69,7 @@ if (isset($_POST['course_color_excel'])) {
 // Display error messages
 if (isset($_GET['error'])) {
     $errorMessages = [
-        'invalid_params' => 'خطا: کد دوره یا رنگ نامعتبر است.',
+        'invalid_params' => 'خطا: کد پایه یا رنگ نامعتبر است.',
         'session_missing' => 'خطا: اطلاعات جلسه یافت نشد.',
         'no_data' => 'خطا: داده‌ای برای این گزارش یافت نشد.',
         'excel_error' => 'خطا: خطا در تولید فایل اکسل.',
@@ -115,7 +115,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">گزارش تعداد دانش آموزان <?php echo $colors ?>
                                             <span class="text-primary"></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title">کد دوره: <span class="text-primary"><?php echo $_GET['Id'] ?></span></p>
+                                        <p class="text-muted card-sub-title">کد پایه: <span class="text-primary"><?php echo $_GET['Id'] ?></span></p>
                                     </div>
                                     <?php
                                     $currentUser = $_SESSION['admin']['user'];
@@ -123,7 +123,7 @@ include_once '../../temp.html';
                                         $code = isset($_GET['Id']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['Id']) ? $_GET['Id'] : '';
                                         $color = isset($_GET['color']) && in_array($_GET['color'], ['0', '1', '2', '3']) ? $_GET['color'] : '';
                                         if (empty($code) || $color === '') {
-                                            echo '<p class="text-danger">خطا: کد دوره یا رنگ نامعتبر است.</p>';
+                                            echo '<p class="text-danger">خطا: کد پایه یا رنگ نامعتبر است.</p>';
                                         } else {
                                             ?>
                                             <form action="" method="post" style="display: inline;">
@@ -149,7 +149,7 @@ include_once '../../temp.html';
                                             <th>ورود</th>
                                             <th>کد ملی</th>
                                             <th>نام و نام خانوادگی</th>
-                                            <th>نام دوره</th>
+                                            <th>نام پایه</th>
                                             <th>آزمون </th>
                                             <th>آخرین پشتیبانی</th>
                                             <th>پشتیبانی بعدی</th>

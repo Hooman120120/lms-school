@@ -84,7 +84,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> طرح ها و دوره ها | <?php echo __TITLE ?></title>
+    <title> طرح ها و پایه ها | <?php echo __TITLE ?></title>
     <?php include_once 'inc/link.php'; ?>
     <!-- <style>
         .category-title {
@@ -400,7 +400,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                                                                     type="button">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
-                                                                طرح/ دوره مورد نظر به سبد خرید افزوده شد
+                                                                طرح/ پایه مورد نظر به سبد خرید افزوده شد
                                                                 <a href="checkout.php">
                                                                     <button class="btn ripple btn-success pd-x-20"> مشاهده
                                                                         سبد
@@ -419,7 +419,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                                                                     type="button">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
-                                                                امکان افزودن مجدد این طرح / دوره به سبد خرید وجود ندارد
+                                                                امکان افزودن مجدد این طرح / پایه به سبد خرید وجود ندارد
                                                             </div>
                                                         <?php
                                                         }
@@ -432,7 +432,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                                                                     type="button">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
-                                                                این دوره وجود ندارد یا فعال نیست
+                                                                این پایه وجود ندارد یا فعال نیست
                                                             </div>
                                                         <?php
                                                         } ?>
@@ -497,13 +497,13 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                                                                 <?php if (isset($mass) and $mass == 2) {
                                                                     echo '
                                                         <span class="tx-13 text-warning mb-2"><i class="fe fe-bell"></i>
-                                                            این (دوره/طرح) به سبد خرید شما
+                                                            این (پایه/طرح) به سبد خرید شما
                                                             اضافه شده است.</span>';
                                                                 }
                                                                 if (isset($mass) and $mass == 3) {
                                                                     echo '
                                                         <p class="tx-13 text-danger mb-2"><i class="ti ti-info-alt"></i>
-                                                            شما قبلا این دوره را ثبت نام
+                                                            شما قبلا این پایه را ثبت نام
                                                             کردید.</p>';
                                                                 }
                                                                 if (isset($mass) and $mass == 1) {

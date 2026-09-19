@@ -440,9 +440,9 @@ include_once '../../temp.html';
                                                                                 با دانش آموز
                                                                             </a>
                                                                             <div class="dropdown-item "
-                                                                                 onclick="window.open('transfer.php?order='+'<?php echo $res->idfactor ?>','جابجایی دوره'
+                                                                                 onclick="window.open('transfer.php?order='+'<?php echo $res->idfactor ?>','جابجایی پایه'
                                                                                          ,'width=1000,height=600,menubar=0,toolbar=0,resizable=0,left=500,top=180,status=0,scrollbars=0,location=0' )"
-                                                                            ><i class="fe fe-shuffle"></i>جابجایی دوره
+                                                                            ><i class="fe fe-shuffle"></i>جابجایی پایه
                                                                             </div>
                                                                             <div class="dropdown-item "
                                                                                  style="text-align: right"
@@ -458,7 +458,7 @@ include_once '../../temp.html';
                                                                                href="?cancel=<?php echo $res->idfactor ?>"
                                                                                onclick="return confirm('آیا با استرداد این فاکتور موافقید؟')"
                                                                             ><i class="fe fe-x-square"></i> انصراف از
-                                                                                دوره ها
+                                                                                پایه ها
                                                                             </a>
 
 
@@ -650,10 +650,10 @@ include_once '../../temp.html';
                                                                                         با دانش آموز
                                                                                     </a>
                                                                                     <div class="dropdown-item "
-                                                                                         onclick="window.open('transfer.php?order='+'<?php echo $ret->idfactor ?>','جابجایی دوره'
+                                                                                         onclick="window.open('transfer.php?order='+'<?php echo $ret->idfactor ?>','جابجایی پایه'
                                                                                                  ,'width=1000,height=600,menubar=0,toolbar=0,resizable=0,left=500,top=180,status=0,scrollbars=0,location=0' )"
                                                                                     ><i class="fe fe-shuffle"></i>جابجایی
-                                                                                        دوره
+                                                                                        پایه
                                                                                     </div>
                                                                                     <div class="dropdown-item "
                                                                                          style="text-align: right"
@@ -670,7 +670,7 @@ include_once '../../temp.html';
                                                                                        onclick="return confirm('آیا با استرداد این فاکتور موافقید؟')"
                                                                                     ><i class="fe fe-x-square"></i>
                                                                                         انصراف از
-                                                                                        دوره ها
+                                                                                        پایه ها
                                                                                     </a>
 
 

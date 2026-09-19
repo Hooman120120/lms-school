@@ -14,7 +14,7 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 
-// دریافت کد دوره
+// دریافت کد پایه
 $courseCode = isset($_POST['codecourse']) ? trim($_POST['codecourse']) : '';
 
 if (empty($courseCode)) {
@@ -23,7 +23,7 @@ if (empty($courseCode)) {
 }
 
 try {
-    // شمارش دانش‌آموزان فعال در دوره
+    // شمارش دانش‌آموزان فعال در پایه
     $sql = "SELECT COUNT(*) as count 
             FROM dbcourse d 
             WHERE d.codecourse = ? AND d.activityuser = 1";

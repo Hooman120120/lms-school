@@ -75,7 +75,7 @@ if (isset($_SESSION['massege'])) {
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
-    <title>دوره‌ها | <?php echo __TITLE ?></title>
+    <title>پایه‌ها | <?php echo __TITLE ?></title>
     <?php include_once 'inc/link.php'; ?>
 
     <style>
@@ -134,7 +134,7 @@ if (isset($_SESSION['massege'])) {
                                 type="button">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            طرح/ دوره مورد نظر به سبد خرید افزوده شد
+                            طرح/ پایه مورد نظر به سبد خرید افزوده شد
                             <a href="checkout.php">
                                 <button class="btn ripple btn-success pd-x-20"> مشاهده
                                     سبد
@@ -153,7 +153,7 @@ if (isset($_SESSION['massege'])) {
                                 type="button">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            امکان افزودن مجدد این طرح / دوره به سبد خرید وجود ندارد
+                            امکان افزودن مجدد این طرح / پایه به سبد خرید وجود ندارد
                         </div>
                     <?php
                     }
@@ -166,7 +166,7 @@ if (isset($_SESSION['massege'])) {
                                 type="button">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            این دوره وجود ندارد یا فعال نیست
+                            این پایه وجود ندارد یا فعال نیست
                         </div>
                     <?php
                     } ?>

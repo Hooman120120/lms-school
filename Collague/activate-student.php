@@ -145,7 +145,7 @@ include_once '../temp.html';
                             <?php if (isset($valid) and $valid == 1) { ?>
                                 <div class="alert alert-success alert-dismissible fade show"
                                      role="alert">
-                                    دانش آموز با کد ملی <?php echo $_POST['user'] ?> تایید شد. می توانید دوره برایش خرید
+                                    دانش آموز با کد ملی <?php echo $_POST['user'] ?> تایید شد. می توانید پایه برایش خرید
                                     نمایید
                                     <button type="button" class="close" data-bs-dismiss="alert"
                                             aria-label="Close">

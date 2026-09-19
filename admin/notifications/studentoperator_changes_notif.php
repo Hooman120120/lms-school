@@ -125,7 +125,7 @@ $learners = $q->fetchAll(PDO::FETCH_OBJ);
                                             <th>کدملی</th>
                                             <th>نام</th>
                                             <th>نام خانوادگی</th>
-                                            <th>دوره</th>
+                                            <th>پایه</th>
                                             <?php if ($isAdministrator): ?>
                                                 <th>اپراتور جدید</th>
                                             <?php endif; ?>

@@ -263,7 +263,7 @@ include_once '../temp.html';
                                                 آنلاین</a>
                                         <?php }
                                     } else { ?>
-                                        <button class="btn btn-primary disabled">برای دسترسی به خدمات کلاس آنلاین، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-primary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -296,7 +296,7 @@ include_once '../temp.html';
                                             </form>
                                         <?php }
                                     } else { ?>
-                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات آزمون، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات آزمون، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -325,7 +325,7 @@ include_once '../temp.html';
                                         <a href="<?php echo url('Support/SendTicket.php') ?>" class="btn btn-outline-light">
                                             پیام به پشتیبان خود</a>
                                     <?php } else { ?>
-                                        <button class="btn btn-info disabled">برای دسترسی به خدمات کلاس مشاوره، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-info disabled">برای دسترسی به خدمات کلاس مشاوره، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -346,7 +346,7 @@ include_once '../temp.html';
                                         <a href="result-quiz.php?code=<?php echo $course->codecourse ?> " target="_blank"
                                             class="btn btn-info">مشاهده کارنامه</a>
                                     <?php } else { ?>
-                                        <button class="btn btn-info disabled">برای دسترسی به خدمات آزمون، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-info disabled">برای دسترسی به خدمات آزمون، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@ include_once '../temp.html';
 
                                         <!-- OLD BUTTON (unchanged) -->
                                         <a href="<?php echo $course->link_eita; ?>" target="_blank" class="btn btn-warning">
-                                            ورود به کانال ایتا دوره
+                                            ورود به کانال ایتا پایه
                                         </a>
 
                                         <?php
@@ -397,7 +397,7 @@ include_once '../temp.html';
                                     <?php } else { ?>
 
                                         <button class="btn btn-warning disabled">
-                                            برای دسترسی به خدمات کانال اطلاع رسانی، دوره موردنظر را خریداری نمایید
+                                            برای دسترسی به خدمات کانال اطلاع رسانی، پایه موردنظر را خریداری نمایید
                                         </button>
 
                                     <?php } ?>
@@ -419,9 +419,9 @@ include_once '../temp.html';
                                     <?php if (!isset($_GET['demo'])) { ?>
                                         <a href="attendance.php?code=<?php echo $course->codecourse ?>" target="_blank"
                                             class="btn btn-secondary">دریافت گزارش حضور غیاب
-                                            دوره</a>
+                                            پایه</a>
                                     <?php } else { ?>
-                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -472,9 +472,9 @@ include_once '../temp.html';
                                     <?php if (!isset($_GET['demo'])) { ?>
                                         <a href="homework.php?code=<?php echo $course->codecourse ?>" target="_blank"
                                            class="btn btn-secondary">دریافت گزارش تکالیف
-                                            دوره</a>
+                                            پایه</a>
                                     <?php } else { ?>
-                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، دوره موردنظر را خریداری نمایید</button>
+                                        <button class="btn btn-secondary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -489,7 +489,7 @@ include_once '../temp.html';
                                         <label class="main-content-label my-auto pt-2">جزوات و تکلیف ارائه شده</label>
                                     </div>
                                     <span class="d-block tx-12 mt-2 mb-0 text-muted">جزوات ، متون و تکالیف ارائه شده جهت
-                                        دانلود برای این دوره </span>
+                                        دانلود برای این پایه </span>
                                 </div>
                             </div>
                             <div class="card-body text-center">

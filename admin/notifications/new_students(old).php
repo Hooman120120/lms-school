@@ -273,7 +273,7 @@ include_once '../../temp.html';
                                                     <th>کدملی</th>
                                                     <th>نام</th>
                                                     <th>نام خانوادگی</th>
-                                                    <th class="course-col">دوره</th>
+                                                    <th class="course-col">پایه</th>
                                                     <?php if ($isAdministrator): ?>
                                                         <th>اپراتور جدید</th>
                                                     <?php endif; ?>

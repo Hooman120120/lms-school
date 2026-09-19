@@ -287,7 +287,7 @@ include_once '../temp.html';
                                                                 <thead>
                                                                 <tr>
                                                                     <th>ردیف</th>
-                                                                    <th>دوره</th>
+                                                                    <th>پایه</th>
                                                                     <th>مبلغ</th>
                                                                     <th>خدمات پشتیبانی</th>
                                                                 </tr>

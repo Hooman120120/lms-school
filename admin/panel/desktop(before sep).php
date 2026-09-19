@@ -50,7 +50,7 @@ if (isset($_POST['send-message'])) {
         if ($stmt->rowCount() > 0) {
             $_SESSION['message'] = 'پیام ها با موفقیت صادر شدند';
         } else {
-            $_SESSION['message'] = 'عملیات با شکست مواجه شد . دانش آموزی در این دوره برای شما ثبت نشده است';
+            $_SESSION['message'] = 'عملیات با شکست مواجه شد . دانش آموزی در این پایه برای شما ثبت نشده است';
         }
 
         header('Location: desktop.php');
@@ -222,7 +222,7 @@ include_once '../../temp.html';
 
                                 //echo $rec->coreg ?><!--  </span>-->
                                 <!--                                                </h2>-->
-                                <!--                                                <p class="mb-0 mt-4 text-muted">نفر دوره </p>-->
+                                <!--                                                <p class="mb-0 mt-4 text-muted">نفر پایه </p>-->
                                 <!--                                            </div>-->
                                 <!--                                        </div>-->
                                 <!--                                    </div>-->
@@ -261,7 +261,7 @@ include_once '../../temp.html';
                                                     <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                             class="font-weight-bold">(<?php echo $rec->coreg ?>)<?php echo $id ?> </span>
                                                 </h2>
-                                                <p class="mb-0 mt-4 text-muted">فرد (نفردوره)</p>
+                                                <p class="mb-0 mt-4 text-muted">فرد (نفرپایه)</p>
                                             </div>
                                         </div>
                                     </div>
@@ -335,7 +335,7 @@ include_once '../../temp.html';
                                 <!--                                        <div class="  d-flex align-item-center justify-item-center flex-column">-->
                                 <!--                                            <div class="card-order  ">-->
                                 <!--                                                <p class="main-content-label text-center" style="margin-top: 10px;">دانش آموزان ثبت نامی شما</p>-->
-                                <!--                                                <p class="mb-0 text-muted text-center" > <span style="color: black;"><span class="text-muted"> نفر دوره : </span>--><?php //echo $db_fac_adder->corem; ?><!--</span>-->
+                                <!--                                                <p class="mb-0 text-muted text-center" > <span style="color: black;"><span class="text-muted"> نفر پایه : </span>--><?php //echo $db_fac_adder->corem; ?><!--</span>-->
                                 <!--                                                <p class="mb-0 text-muted text-center" > <span style="color: black;"><span class="text-muted"> نفر : </span>--><?php //echo $rec->user_count; ?><!--</span>-->
                                 <!--                                            </div>-->
                                 <!--                                        </div>-->
@@ -605,7 +605,7 @@ include_once '../../temp.html';
                             <!--                                                        class="fe fe-database icon-size float-right text-primary"></i><span-->
                             <!--                                                        class="font-weight-bold">--><?php //echo $rec->coreg ?><!--  </span>-->
                             <!--                                            </h2>-->
-                            <!--                                            <p class="mb-0 mt-4 text-muted">نفر دوره </p>-->
+                            <!--                                            <p class="mb-0 mt-4 text-muted">نفر پایه </p>-->
                             <!--                                        </div>-->
                             <!--                                    </div>-->
                             <!--                                </div>-->
@@ -756,7 +756,7 @@ include_once '../../temp.html';
                                                 </label>
 
                                             </div>
-                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> تاریخ های برنامه ریزی شده آتی- محاسبه بصورت نفر دوره </span>
+                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> تاریخ های برنامه ریزی شده آتی- محاسبه بصورت نفر پایه </span>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -820,7 +820,7 @@ include_once '../../temp.html';
                                                     دانش آموزان </label>
 
                                             </div>
-                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> ارسال پیام به  دانش آموزان من یا همه دانش آموزان یک دوره </span>
+                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> ارسال پیام به  دانش آموزان من یا همه دانش آموزان یک پایه </span>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -830,7 +830,7 @@ include_once '../../temp.html';
 
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
-                                                            ارسال به دوره<span
+                                                            ارسال به پایه<span
                                                                     class="tx-danger">*</span>
                                                         </div>
 
@@ -838,7 +838,7 @@ include_once '../../temp.html';
                                                         <select class="form-control select2 "
                                                                 name="codecourse"
                                                                 aria-describedby="basic-addon2" required>
-                                                            <option label="دوره ">
+                                                            <option label="پایه ">
                                                             </option>
                                                             <?php
                                                             $course = retCourse();
@@ -854,7 +854,7 @@ include_once '../../temp.html';
                                                         <input type="checkbox" name="sendAll"
                                                                class="custom-switch-input" checked="">
                                                         <span class="custom-switch-indicator"></span>
-                                                        <span class="custom-switch-description">ارسال پیام به همه دانش آموزان در دوره</span>
+                                                        <span class="custom-switch-description">ارسال پیام به همه دانش آموزان در پایه</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-xl-12 mt-2">
@@ -1034,7 +1034,7 @@ include_once '../../temp.html';
                                     <div class="col-lg-12 mg-b-25 ">
                                         <a href="<?php echo url('admin/panel/mypersonalcourse.php') ?>  "
                                            class="btn btn-block btn-outline-info"><i
-                                                    class="fe fe-list"></i> دانش آموزان نفر دوره </a>
+                                                    class="fe fe-list"></i> دانش آموزان نفر پایه </a>
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
@@ -1053,7 +1053,7 @@ include_once '../../temp.html';
                                                 <label class="main-content-label my-auto pt-2">خلاصه وضعیت دانش آموزان </label>
 
                                             </div>
-                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> وضعیت دانش آموزان من (نفر دوره)  </span>
+                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> وضعیت دانش آموزان من (نفر پایه)  </span>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -1062,7 +1062,7 @@ include_once '../../temp.html';
                                                 <thead>
                                                 <tr class="bg-light">
                                                     <th>عنوان</th>
-                                                    <th>دوره</th>
+                                                    <th>پایه</th>
                                                     <th class="wd-15">تعداد</th>
                                                     <th class="wd-15"></th>
 

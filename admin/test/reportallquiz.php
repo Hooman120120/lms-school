@@ -65,7 +65,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-10">
                                         <div>
-                                            <h6 class="main-content-label mb-1">گزارش نتایج بر اساس درس و دوره</h6>
+                                            <h6 class="main-content-label mb-1">گزارش نتایج بر اساس درس و پایه</h6>
                                             <p class="text-muted card-sub-title">لطفا اطلاعات خواسته شده را جهت تولید
                                                 گزارش
                                                 وارد کنید
@@ -75,7 +75,7 @@ include_once '../../temp.html';
                                     <form method="post" data-parsley-validate="">
                                         <div class="row">
                                             <div class="col-xl-6 mb-2">
-                                                <label for="sens" class="form-label mg-t-15">دوره مورد نظر:<span
+                                                <label for="sens" class="form-label mg-t-15">پایه مورد نظر:<span
                                                             style="color: red">*</span>
                                                 </label>
                                                 <select class="form-control select2 "
@@ -138,7 +138,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-10">
                                         <div>
-                                            <h6 class="main-content-label mb-1">گزارش نتایج مدیریتی بر اساس دوره</h6>
+                                            <h6 class="main-content-label mb-1">گزارش نتایج مدیریتی بر اساس پایه</h6>
                                             <p class="text-muted card-sub-title">لطفا اطلاعات خواسته شده را جهت تولید
                                                 گزارش
                                                 وارد کنید
@@ -148,7 +148,7 @@ include_once '../../temp.html';
                                     <form method="post" data-parsley-validate="">
                                         <div class="row">
                                             <div class="col-xl-6 mb-2">
-                                                <label for="sens" class="form-label mg-t-15">دوره مورد نظر:<span
+                                                <label for="sens" class="form-label mg-t-15">پایه مورد نظر:<span
                                                             style="color: red">*</span>
                                                 </label>
                                                 <select class="form-control select2 "

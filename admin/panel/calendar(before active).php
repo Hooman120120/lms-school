@@ -468,7 +468,7 @@ function renderCalendar() {
 
                             <div id="userTargetsContainer" style="display:none;">
                                 <div class="mb-3">
-                                    <label class="form-label">دوره‌های هدف (چندگانه)</label>
+                                    <label class="form-label">پایه‌های هدف (چندگانه)</label>
                                     <div class="d-flex flex-wrap gap-2" id="coursePillsList">
                                         <?php
                                         $courses = retCourse(1);
@@ -482,7 +482,7 @@ function renderCalendar() {
                                     <small class="text-muted">در صورت عدم انتخاب، رویداد برای همه کاربران نمایش داده می‌شود.</small>
                                 </div>
                                 <div class="mt-3">
-                                    <label class="form-label">دوره‌های انتخاب شده:</label>
+                                    <label class="form-label">پایه‌های انتخاب شده:</label>
                                     <div id="selectedCoursesSummary" class="text-muted small" style="background:#f5f5f5; padding:8px; border-radius:6px;">هیچکدام (همه کاربران)</div>
                                 </div>
                                 <input type="hidden" id="selectedCourses" name="selected_courses" value="">
@@ -579,7 +579,7 @@ function renderCalendar() {
                                 <!-- User filters (visible when event_type = user) -->
                                 <div id="exportUserFilters" style="display:none;">
                                     <div class="mb-3">
-                                        <label class="form-label">دوره‌های هدف (چندگانه)</label>
+                                        <label class="form-label">پایه‌های هدف (چندگانه)</label>
                                         <div class="d-flex flex-wrap gap-2" id="exportCoursePillsList">
                                             <?php
                                             $courses = retCourse(1);
@@ -590,7 +590,7 @@ function renderCalendar() {
                                                     </div>
                                                 <?php endforeach; endif; ?>
                                         </div>
-                                        <small class="text-muted">در صورت عدم انتخاب، رویدادهای همه دوره‌ها نمایش داده می‌شوند.</small>
+                                        <small class="text-muted">در صورت عدم انتخاب، رویدادهای همه پایه‌ها نمایش داده می‌شوند.</small>
                                     </div>
                                 </div>
 
@@ -664,7 +664,7 @@ function renderCalendar() {
                 selectedCoursesInput.value = '[]';
             } else {
                 const selectedNames = coursePills.filter(pill => pill.classList.contains('active')).map(pill => pill.innerText.trim());
-                selectedCoursesSummary.innerText = 'دوره‌ها: ' + selectedNames.join(', ');
+                selectedCoursesSummary.innerText = 'پایه‌ها: ' + selectedNames.join(', ');
                 selectedCoursesInput.value = JSON.stringify(selectedIds);
             }
         }
@@ -1048,7 +1048,7 @@ function renderCalendar() {
                             audienceHtml = '<div style="margin-bottom:15px;"><strong>کاربران:</strong> همه کاربران</div>';
                         } else {
                             const courseNames = courseIds.map(id => courseNameMap[id] || id).join('، ');
-                            audienceHtml = `<div style="margin-bottom:15px;"><strong>کاربران (دوره‌ها):</strong> ${courseNames}</div>`;
+                            audienceHtml = `<div style="margin-bottom:15px;"><strong>کاربران (پایه‌ها):</strong> ${courseNames}</div>`;
                         }
                     } else {
                         // admin event
@@ -1269,10 +1269,10 @@ function renderCalendar() {
                 document.getElementById('exportSelectedUsers').value = '[]';
 
                 if (selectedCourses.length === 0) {
-                    summaryText = 'هیچکدام (همه دوره‌ها)';
+                    summaryText = 'هیچکدام (همه پایه‌ها)';
                 } else {
                     const courseNames = selectedCourses.map(c => { let pill = exportCoursePills.find(p => p.getAttribute('data-course-id') === c); return pill ? pill.innerText.trim() : c; });
-                    summaryText = 'دوره‌ها: ' + courseNames.join(', ');
+                    summaryText = 'پایه‌ها: ' + courseNames.join(', ');
                 }
             }
             const summaryDiv = document.getElementById('exportSelectedSummary');

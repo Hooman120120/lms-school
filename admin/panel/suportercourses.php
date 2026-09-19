@@ -58,7 +58,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title>گزارش نفرات دوره | <?php echo __TITLE ?></title>
+    <title>گزارش نفرات پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -79,20 +79,20 @@ include_once '../../temp.html';
                                 <div class="row">
                                     <div class="col-12 d-flex align-items-center justify-content-between">
                                         <div>
-                                            <h6 class="main-content-label mb-1">گزارش تعداد دانش آموزان دوره
+                                            <h6 class="main-content-label mb-1">گزارش تعداد دانش آموزان پایه
                                                 <?php
                                                 $course = returnCourse($_GET['code']);
                                                 echo $course->coursename ?>
                                                 <span class="text-primary"></span>
                                             </h6>
-                                            <p class="text-muted card-sub-title">کد دوره: <span class="text-primary"><?php echo $_GET['code'] ?></span></p>
+                                            <p class="text-muted card-sub-title">کد پایه: <span class="text-primary"><?php echo $_GET['code'] ?></span></p>
                                         </div>
                                         <?php
                                         $currentUser = $_SESSION['admin']['user'];
                                         if (PermisionUser('excel_permission', $currentUser)):
                                             $code = isset($_GET['code']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['code']) ? $_GET['code'] : '';
                                             if (empty($code)) {
-                                                echo '<p class="text-danger">خطا: کد دوره نامعتبر یا وجود ندارد.</p>';
+                                                echo '<p class="text-danger">خطا: کد پایه نامعتبر یا وجود ندارد.</p>';
                                             } else {
                                                 ?>
                                                 <form action="" method="post" style="display: inline;">
@@ -117,7 +117,7 @@ include_once '../../temp.html';
                                                     <th>ورود</th>
                                                     <th>کد ملی</th>
                                                     <th>نام و نام خانوادگی</th>
-                                                    <th>نام دوره</th>
+                                                    <th>نام پایه</th>
                                                     <th>آزمون</th>
                                                     <th>آخرین پشتیبانی</th>
                                                     <th>پشتیبانی بعدی</th>

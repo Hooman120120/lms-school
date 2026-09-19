@@ -88,7 +88,7 @@ if (isset($_GET['disable'])) {
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
     $qu->execute([0, $disable]);
-    $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز غیرفعال شد';
+    $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز غیرفعال شد';
     header('location: registration-Course-experimental.php');
     die();
 }
@@ -104,11 +104,11 @@ if (isset($_GET['enable'])) {
         $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
         $qu = $conn->prepare($update);
         $qu->execute([1, $disable]);
-        $_SESSION['massege'] = 'دسترسی به دوره برای دانش آموز فعال شد';
+        $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز فعال شد';
         header('location: registration-Course-experimental.php');
         die();
     } else {
-        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این دوره هنوز پرداخت / تایید نشده است';
+        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این پایه هنوز پرداخت / تایید نشده است';
         header('location: registration-Course-experimental.php');
         die();
     }
@@ -158,7 +158,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> مشاهده دوره های دانش آموز | <?php echo __TITLE ?></title>
+    <title> مشاهده پایه های دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -191,7 +191,7 @@ include_once '../../temp.html';
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش می‌توانید دانش آموز موقت موردنظر را جستجو کرده و وضعیت ثبت‌نام فعال یا غیرفعال او در دوره‌های موقت را بررسی کنید."
+                                              data-tooltip="در این بخش می‌توانید دانش آموز موقت موردنظر را جستجو کرده و وضعیت ثبت‌نام فعال یا غیرفعال او در دوره‌های فوق برنامه را بررسی کنید."
                                               aria-label="راهنمای جستجوی دانش آموز موقت">
 
                                                 <i class="fe fe-info fs-4"></i>
@@ -200,7 +200,7 @@ include_once '../../temp.html';
                                     </div>
 
                                     <p class="text-muted card-sub-title">
-                                        بررسی ثبت‌نام فعال یا غیرفعال دانش آموز موقت در دوره‌ها
+                                        بررسی ثبت‌نام فعال یا غیرفعال دانش آموز موقت در پایه‌ها
                                     </p>
                                 </div>
 
@@ -266,7 +266,7 @@ include_once '../../temp.html';
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش می‌توانید گزارش کلی دانش آموزان موقت را بر اساس دوره‌های موقت مشاهده کنید و وضعیت ثبت‌نام آن‌ها را در دوره‌های موقت بررسی نمایید."
+                                              data-tooltip="در این بخش می‌توانید گزارش کلی دانش آموزان موقت را بر اساس دوره‌های فوق برنامه مشاهده کنید و وضعیت ثبت‌نام آن‌ها را در دوره‌های فوق برنامه بررسی نمایید."
                                               aria-label="راهنمای گزارش کل دانش آموزان موقت">
 
                                                 <i class="fe fe-info fs-4"></i>
@@ -275,7 +275,7 @@ include_once '../../temp.html';
                                     </div>
 
                                     <p class="text-muted card-sub-title">
-                                        گزارش دانش آموزان موقت بر اساس دوره‌های فعال
+                                        گزارش دانش آموزان موقت بر اساس پایه‌های فعال
                                     </p>
                                 </div>
                                 <form method="post" data-parsley-validate="">
@@ -291,7 +291,7 @@ include_once '../../temp.html';
                                                 $courses = $stmt->fetchAll(PDO::FETCH_OBJ);
                                                 foreach ($courses as $course):
                                                     ?>
-                                                    <option value="<?= $course->codecourse ?>">دوره
+                                                    <option value="<?= $course->codecourse ?>">پایه
                                                         <?= $course->coursename ?>
                                                     </option>
                                                 <?php endforeach; ?>
@@ -368,9 +368,9 @@ include_once '../../temp.html';
                                     <tr>
                                         <th class="wd-30">اقدامات</th>
                                         <th class="wd-100">نام و نام خانوادگی</th>
-                                        <th>دوره آزمایشی</th>
+                                        <th>دوره فوق برنامه</th>
                                         <th class="wd-30">وضعیت فردی</th>
-                                        <th class="wd-30">وضعیت دوره</th>
+                                        <th class="wd-30">وضعیت پایه</th>
                                         <th class="wd-30">ایجادکننده</th>
                                         <th class="wd-30">اولین ورود</th>
                                         <th class="wd-30">همکارآموزشی</th>

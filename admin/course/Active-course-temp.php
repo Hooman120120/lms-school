@@ -130,7 +130,7 @@ if (isset($_GET['schedule'])) {
         header('Location: Active-course.php');
         die();
     } else {
-        $_SESSION['message'] = "برنامه هفتگی برای این دوره تعریف نشده است";
+        $_SESSION['message'] = "برنامه هفتگی برای این پایه تعریف نشده است";
         header('Location: Active-course.php');
         die();
     }
@@ -149,7 +149,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -187,7 +187,7 @@ include_once '../../temp.html';
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-                                                <h6 class="main-content-label mb-1">دوره های فعال </h6>
+                                                <h6 class="main-content-label mb-1">پایه های فعال </h6>
                                                 <p class="text-muted card-sub-title">
                                                 </p>
                                             </div>
@@ -215,8 +215,8 @@ include_once '../../temp.html';
                                                     <th>کلاس</th>
                                                     <th>مشاوره</th>
                                                     <th>آزمون</th>
-                                                    <th>کد دوره</th>
-                                                    <th>نام دوره</th>
+                                                    <th>کد پایه</th>
+                                                    <th>نام پایه</th>
                                                     <th> موفق</th>
                                                     <th>منتظر</th>
                                                     <th>وضعیت ثبت نام</th>
@@ -247,7 +247,7 @@ include_once '../../temp.html';
                                                                             <div class="dropdown-menu tx-8">
                                                                                 <a class="dropdown-item text-success "
                                                                                     href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
-                                                                                    <i class="fe fe-edit"></i> ویرایش دوره
+                                                                                    <i class="fe fe-edit"></i> ویرایش پایه
                                                                                 </a>
                                                                                 <a class="dropdown-item"
                                                                                     href="movie.php?code=<?php echo $res->codecourse ?>"><i
@@ -349,9 +349,9 @@ include_once '../../temp.html';
                                                                                     <hr>
                                                                                     <a class="dropdown-item text-danger "
                                                                                         href="?close=<?php echo $res->codecourse ?>"
-                                                                                        onclick="return confirm('آیا با حذف این دوره  موافقید؟')"><i
+                                                                                        onclick="return confirm('آیا با حذف این پایه  موافقید؟')"><i
                                                                                             class="fe fe-x-square"></i> حذف دائم
-                                                                                        دوره
+                                                                                        پایه
                                                                                     </a>
                                                                                 <?php } ?>
 

@@ -84,7 +84,7 @@ if (isset($_POST['addclass'])) {
             include_once '../../inc/function-quiz.php';
             $course = returnCourse($_GET['code']);
 
-            // بررسی اینکه آیا دوره اصلی اصلا در سامانه آزمون ugid دارد یا نه
+            // بررسی اینکه آیا پایه اصلی اصلا در سامانه آزمون ugid دارد یا نه
             if ($course && !empty($course->ugid)) {
                 $ugid_parent = $course->ugid;
                 $groupCode = generateUniqueCode(8);
@@ -106,7 +106,7 @@ if (isset($_POST['addclass'])) {
                     $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما ساخت زیرگروه در سامانه آزمون با خطا مواجه شد: " . $errorMsg;
                 }
             } else {
-                $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما دوره اصلی (گروه والد) فاقد شناسه آزمون است، بنابراین زیرگروه ساخته نشد.";
+                $_SESSION['error_msg'] = "کلاس در سیستم ایجاد شد اما پایه اصلی (گروه والد) فاقد شناسه آزمون است، بنابراین زیرگروه ساخته نشد.";
             }
         } else {
             $_SESSION['success_msg'] = "کلاس با موفقیت در سیستم ایجاد شد (بدون آزمون).";
@@ -509,8 +509,8 @@ include_once '../../temp.html';
                                                         </h6>
 
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="در این بخش می‌توانید یک کلاس جدید برای دوره انتخاب‌شده ایجاد کنید و اطلاعات و تنظیمات موردنیاز کلاس را ثبت نمایید. کلاس ایجادشده به همین دوره متصل خواهد شد."
-                                                              aria-label="راهنمای افزودن کلاس برای دوره">
+                                                              data-tooltip="در این بخش می‌توانید یک کلاس جدید برای پایه انتخاب‌شده ایجاد کنید و اطلاعات و تنظیمات موردنیاز کلاس را ثبت نمایید. کلاس ایجادشده به همین پایه متصل خواهد شد."
+                                                              aria-label="راهنمای افزودن کلاس برای پایه">
 
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
@@ -529,7 +529,7 @@ include_once '../../temp.html';
                                                     <p class="mg-b-10">توضیحات:<span class="tx-danger">*</span></p>
                                                     <input class="form-control" name="description"
                                                            placeholder="توضیحات را وارد کنید ..." required>
-                                                    <p class="mg-b-10 mt-4">آدرس کانال دوره:<span
+                                                    <p class="mg-b-10 mt-4">آدرس کانال پایه:<span
                                                                 class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                            aria-describedby="basic-addon2"
@@ -595,7 +595,7 @@ include_once '../../temp.html';
                                                     <input class="form-control" name="description"
                                                            placeholder="توضیحات را وارد کنید ..."
                                                            value="<?= $res->description ?>" required>
-                                                    <p class="mg-b-10 mt-4">آدرس کانال دوره:<span
+                                                    <p class="mg-b-10 mt-4">آدرس کانال پایه:<span
                                                                 class="tx-danger">*</span></p>
                                                     <input class="form-control" name="chanel"
                                                            aria-describedby="basic-addon2"
@@ -639,7 +639,7 @@ include_once '../../temp.html';
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید کلاس‌های مربوط به دوره انتخاب‌شده را مشاهده و مدیریت کنید. همچنین در صورت وجود کلاس و داشتن سطح دسترسی لازم، از طریق دکمه مدیریت درس‌ها می‌توانید درس‌های این دوره را بررسی و تنظیم نمایید."
+                                                  data-tooltip="در این بخش می‌توانید کلاس‌های مربوط به پایه انتخاب‌شده را مشاهده و مدیریت کنید. همچنین در صورت وجود کلاس و داشتن سطح دسترسی لازم، از طریق دکمه مدیریت درس‌ها می‌توانید درس‌های این پایه را بررسی و تنظیم نمایید."
                                                   aria-label="راهنمای لیست کلاس‌ها و مدیریت درس‌ها">
 
                                                 <i class="fe fe-info fs-4"></i>

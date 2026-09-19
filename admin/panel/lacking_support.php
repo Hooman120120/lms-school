@@ -108,7 +108,7 @@ include_once '../../temp.html';
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0">
-                                    کاربران فاقد پشتیبان (نفردوره)
+                                    کاربران فاقد پشتیبان (نفرپایه)
                                     <span class="badge bg-danger">تعداد: <?= $countNotSuporter ?></span>
                                 </h5>
                             </div>
@@ -121,8 +121,8 @@ include_once '../../temp.html';
                                         <th>نام کاربری</th>
                                         <th>نام</th>
                                         <th>نام خانوادگی</th>
-                                        <th>کد دوره</th>
-                                        <th>عنوان دوره</th>
+                                        <th>کد پایه</th>
+                                        <th>عنوان پایه</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -152,7 +152,7 @@ include_once '../../temp.html';
                             </div>
 
                             <div class="mt-3 text-muted">
-                                <small>کاربرانی که حداقل یک دورهٔ فعال دارند و برای آن‌ها پشتیبان تعیین نشده است.</small>
+                                <small>کاربرانی که حداقل یک پایهٔ فعال دارند و برای آن‌ها پشتیبان تعیین نشده است.</small>
                             </div>
                         </div>
                     </div>

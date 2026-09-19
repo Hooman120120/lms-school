@@ -57,7 +57,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> گزارش آزمون های دوره | <?php echo __TITLE ?></title>
+    <title> گزارش آزمون های پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -81,7 +81,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">گزارش آزمون های : <span
                                                     class="text-primary"><?php echo $user->fname . ' ' . $user->lname ?></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title"> نام دوره :<span
+                                        <p class="text-muted card-sub-title"> نام پایه :<span
                                                     class="text-primary"><?php echo $course->coursename ?></span>
                                         </p>
                                     </div>

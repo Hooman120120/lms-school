@@ -92,7 +92,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -170,7 +170,7 @@ include_once '../../temp.html';
                                             <?php if ($_GET['status'] == 'all') { ?>
                                                 <p class="text-center">اگر فروش مجدد موفقیت آمیز بود، ابتدا دانش آموز را
                                                     ثبت
-                                                    دوره و سپس در فاکتور تائید نمایید، سپس دکمه تائید را بزنید.</p>
+                                                    پایه و سپس در فاکتور تائید نمایید، سپس دکمه تائید را بزنید.</p>
                                             <?php } ?>
                                             <table class="table table-bordered table-hover text-center align-middle"
                                                    id="example1">

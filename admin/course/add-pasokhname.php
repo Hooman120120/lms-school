@@ -123,7 +123,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">افزودن پاسخنامه : <span
                                                     class="text-primary"><?php echo $db->quizname ?></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title">کد دوره : <?php echo $db->codecourse ?>
+                                        <p class="text-muted card-sub-title">کد پایه : <?php echo $db->codecourse ?>
                                         </p>
                                     </div>
                                 </div>

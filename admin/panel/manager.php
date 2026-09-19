@@ -179,7 +179,7 @@ include_once '../../temp.html';
                 <div class="alert alert-solid-danger" role="alert">
                     <button aria-label="Close" class="close" data-bs-dismiss="alert" type="button">
                         <span aria-hidden="true">&times;</span></button>
-                    <strong>خطـــا !</strong> تعدادی از (کدملی ، کد دوره) را در سیستم پیدا نکردیم بنا براین برای افراد
+                    <strong>خطـــا !</strong> تعدادی از (کدملی ، کد پایه) را در سیستم پیدا نکردیم بنا براین برای افراد
                     زیر هیچ اتفاقی نیفتاد
                     <div class="col-3">
                         <table class="table table-bordered">
@@ -398,7 +398,7 @@ include_once '../../temp.html';
                             <!--                                                <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span-->
                             <!--                                                        class="font-weight-bold">(--><?php //echo $rec->coreg ?><!--)--><?php //echo $id ?><!-- </span>-->
                             <!--                                            </h2>-->
-                            <!--                                            <p class="mb-0 mt-4 text-muted">فرد (نفردوره)</p>-->
+                            <!--                                            <p class="mb-0 mt-4 text-muted">فرد (نفرپایه)</p>-->
                             <!--                                        </div>-->
                             <!--                                    </div>-->
                             <!--                                </a>-->
@@ -446,8 +446,8 @@ include_once '../../temp.html';
                                                     پشتیبانی نشده
                                                 </label>
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش تعداد دوره‌هایی نمایش داده می‌شود که دانش آموزان ثبت‌نام‌شده در آن‌ها تاکنون هیچ سابقه پشتیبانی دریافت نکرده‌اند. این آمار به تفکیک دوره محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند دوره ثبت‌نام کرده باشد و تنها در یکی از دوره‌ها پشتیبانی دریافت نکرده باشد، همان دوره به‌عنوان یک مورد در این شمارنده ثبت خواهد شد."
-                                                      aria-label="راهنمای دوره‌های فاقد پشتیبانی">
+                                                      data-tooltip="در این بخش تعداد پایه‌هایی نمایش داده می‌شود که دانش آموزان ثبت‌نام‌شده در آن‌ها تاکنون هیچ سابقه پشتیبانی دریافت نکرده‌اند. این آمار به تفکیک پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه ثبت‌نام کرده باشد و تنها در یکی از پایه‌ها پشتیبانی دریافت نکرده باشد، همان پایه به‌عنوان یک مورد در این شمارنده ثبت خواهد شد."
+                                                      aria-label="راهنمای پایه‌های فاقد پشتیبانی">
                                                     <i class="fe fe-info fs-4"></i>
                                                 </span>
                                             </div>
@@ -483,8 +483,8 @@ include_once '../../temp.html';
                                                         فاقد پشتیبان
                                                     </label>
                                                     <span class="menu-info-trigger"
-                                                          data-tooltip="در این بخش تعداد ثبت‌نام‌های فعال در دوره‌ها نمایش داده می‌شود که برای آن‌ها نیاز به پشتیبان وجود دارد، اما هنوز هیچ پشتیبانی به آن‌ها اختصاص داده نشده است. این آمار بر اساس ثبت‌نام هر دانش آموز در هر دوره محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند دوره فعال بدون پشتیبان ثبت‌نام کرده باشد، هر دوره به‌صورت یک مورد مستقل در این شمارنده محاسبه خواهد شد."
-                                                          aria-label="راهنمای دوره‌های فاقد پشتیبان">
+                                                          data-tooltip="در این بخش تعداد ثبت‌نام‌های فعال در پایه‌ها نمایش داده می‌شود که برای آن‌ها نیاز به پشتیبان وجود دارد، اما هنوز هیچ پشتیبانی به آن‌ها اختصاص داده نشده است. این آمار بر اساس ثبت‌نام هر دانش آموز در هر پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه فعال بدون پشتیبان ثبت‌نام کرده باشد، هر پایه به‌صورت یک مورد مستقل در این شمارنده محاسبه خواهد شد."
+                                                          aria-label="راهنمای پایه‌های فاقد پشتیبان">
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
                                                 </div>
@@ -492,7 +492,7 @@ include_once '../../temp.html';
                                                             class="fe fe-database icon-size float-right text-primary"></i><span
                                                             class="font-weight-bold"><?php echo $ref['countNotSuporter'] ?> </span>
                                                 </h2>
-                                                <p class="mb-0 mt-4 text-muted">نفر دوره </p>
+                                                <p class="mb-0 mt-4 text-muted">نفر پایه </p>
                                             </div>
                                         </div>
                                     </a>
@@ -657,7 +657,7 @@ include_once '../../temp.html';
                                                 <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
                                                         class="font-weight-bold">(<?php echo $rec->coreg ?>)<?php echo $id ?> </span>
                                             </h2>
-                                            <p class="mb-0 mt-4 text-muted">فرد (نفردوره)</p>
+                                            <p class="mb-0 mt-4 text-muted">فرد (نفرپایه)</p>
                                         </div>
                                     </div>
                                 </a>
@@ -771,7 +771,7 @@ include_once '../../temp.html';
                                                             ثبت قطعی امروز
                                                         </label>
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="در این بخش تعداد دانش آموزانی نمایش داده می‌شود که امروز ثبت‌نام آن‌ها در دوره‌ها به‌صورت قطعی انجام شده است. این آمار شامل ثبت‌نام‌هایی است که فرآیند خرید یا ثبت‌نام نهایی شده و وضعیت آن‌ها از حالت موقت به ثبت قطعی تغییر کرده است."
+                                                              data-tooltip="در این بخش تعداد دانش آموزانی نمایش داده می‌شود که امروز ثبت‌نام آن‌ها در پایه‌ها به‌صورت قطعی انجام شده است. این آمار شامل ثبت‌نام‌هایی است که فرآیند خرید یا ثبت‌نام نهایی شده و وضعیت آن‌ها از حالت موقت به ثبت قطعی تغییر کرده است."
                                                               aria-label="راهنمای ثبت قطعی امروز">
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
@@ -803,7 +803,7 @@ include_once '../../temp.html';
                                                         </label>
 
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="در این بخش تعداد کل دانش آموزانی نمایش داده می‌شود که ثبت‌نام آن‌ها در دوره‌ها به‌صورت قطعی انجام شده است. این آمار شامل تمامی ثبت‌نام‌های نهایی‌شده در سیستم است که وضعیت آن‌ها فعال بوده و دانش آموز امکان استفاده از دوره را دارد."
+                                                              data-tooltip="در این بخش تعداد کل دانش آموزانی نمایش داده می‌شود که ثبت‌نام آن‌ها در پایه‌ها به‌صورت قطعی انجام شده است. این آمار شامل تمامی ثبت‌نام‌های نهایی‌شده در سیستم است که وضعیت آن‌ها فعال بوده و دانش آموز امکان استفاده از پایه را دارد."
                                                               aria-label="راهنمای ثبت قطعی">
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
@@ -852,7 +852,7 @@ include_once '../../temp.html';
                             <!--                                                </label>-->
                             <!---->
                             <!--                                            </div>-->
-                            <!--                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> تاریخ های برنامه ریزی شده آتی- محاسبه بصورت نفر دوره </span>-->
+                            <!--                                            <span class="d-block tx-12 mt-2 mb-0 text-muted"> تاریخ های برنامه ریزی شده آتی- محاسبه بصورت نفر پایه </span>-->
                             <!--                                        </div>-->
                             <!--                                    </div>-->
                             <!--                                    <div class="card-body">-->
@@ -992,7 +992,7 @@ include_once '../../temp.html';
                                                 <div>
                                                     <div class="d-flex">
                                                         <label class="main-content-label my-auto pt-2">تعداد
-                                                            دانش آموزان هر دوره
+                                                            دانش آموزان هر پایه
                                                         </label>
 
                                                     </div>
@@ -1006,7 +1006,7 @@ include_once '../../temp.html';
                                                             <thead>
                                                             <tr>
                                                                 <th>ردیف</th>
-                                                                <th>دوره</th>
+                                                                <th>پایه</th>
                                                                 <th>تعداد</th>
                                                                 <th>اقدامات</th>
                                                             </tr>
@@ -1041,13 +1041,13 @@ include_once '../../temp.html';
                                                                                             </button>
                                                                                             <div class="dropdown-menu tx-8">
                                                                                                 <a class="dropdown-item text-success"
-                                                                                                   href="#" onclick="window.open('suportercourses.php?code='+'<?php /*echo $course->codecourse */?>','مشاهده دوره','width=1520,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=0,location=0' ); return false;">
+                                                                                                   href="#" onclick="window.open('suportercourses.php?code='+'<?php /*echo $course->codecourse */?>','مشاهده پایه','width=1520,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=0,location=0' ); return false;">
                                                                                                     <i class="fe fe-edit"></i>
                                                                                                     مشاهده دانش آموزان</a>
 
-                                                                                                <a class="dropdown-item text-danger" href="?code=<?/*= $course->codecourse */?>&delallcourse=true" onclick="return confirm('آیا با حذف تمامی پیام های دوره موافقید ؟')"><i class="fe fe-x-square"></i>
+                                                                                                <a class="dropdown-item text-danger" href="?code=<?/*= $course->codecourse */?>&delallcourse=true" onclick="return confirm('آیا با حذف تمامی پیام های پایه موافقید ؟')"><i class="fe fe-x-square"></i>
                                                                                                     حذف تمامی پیام های
-                                                                                                    دوره</a>
+                                                                                                    پایه</a>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>

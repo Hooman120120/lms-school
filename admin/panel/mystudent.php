@@ -88,7 +88,7 @@ include_once '../../temp.html';
                                             <th>پایه</th>
                                             <th>جنسیت</th>
                                             <th>وضعیت</th>
-                                            <th class="align-middle" style="max-width: 220px;">دوره ها</th>
+                                            <th class="align-middle" style="max-width: 220px;">پایه ها</th>
                                                                                     <th>رنگ</th>
                                             <th>اولین ورود</th>
                                             <th>آخرین پشتیبانی</th>
@@ -293,7 +293,7 @@ ORDER BY unseen DESC, dbcourse.username ASC
                                                 <td><?php echo $person->gender ?></td>
                                                 <td><?php echo $user_status[$num] ?? '' ?></td>
 
-                                                <!-- سلول دوره‌ها با قابلیت برش متن و هاور -->
+                                                <!-- سلول پایه‌ها با قابلیت برش متن و هاور -->
                                                 <td class="align-middle text-right"
                                                     style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;"
                                                     title="<?php echo htmlspecialchars($doreha[$num]); ?>">

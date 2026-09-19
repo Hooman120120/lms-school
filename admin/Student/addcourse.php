@@ -98,14 +98,14 @@ if (isset($_POST['sales-course'])) {
                 $model = isset($priceModels[$code]) ? trim((string)$priceModels[$code]) : '';
 
                 if (!in_array($model, ['with_supporter', 'without_supporter'], true)) {
-                    $salesCourseError = 'لطفاً مدل قیمت هر دوره انتخاب‌شده را مشخص کنید.';
+                    $salesCourseError = 'لطفاً مدل قیمت هر پایه انتخاب‌شده را مشخص کنید.';
                     break;
                 }
 
                 if ($model === 'with_supporter') {
                     $supporter = isset($supporters[$code]) ? trim((string)$supporters[$code]) : '';
                     if ($supporter === '') {
-                        $salesCourseError = 'برای هر دوره با مدل «با پشتیبان»، انتخاب پشتیبان الزامی است.';
+                        $salesCourseError = 'برای هر پایه با مدل «با پشتیبان»، انتخاب پشتیبان الزامی است.';
                         break;
                     }
 
@@ -126,7 +126,7 @@ if (isset($_POST['sales-course'])) {
                     $fee = $feeStmt->fetchColumn();
 
                     if ($fee === false) {
-                        $salesCourseError = 'دوره انتخاب‌شده معتبر نیست یا فعال نیست.';
+                        $salesCourseError = 'پایه انتخاب‌شده معتبر نیست یا فعال نیست.';
                         break;
                     }
 
@@ -134,7 +134,7 @@ if (isset($_POST['sales-course'])) {
 
                     // Without-supporter price must be greater than zero.
                     if ($fee <= 0) {
-                        $salesCourseError = 'قیمت بدون پشتیبان برای یکی از دوره‌های انتخاب‌شده تعریف نشده است.';
+                        $salesCourseError = 'قیمت بدون پشتیبان برای یکی از پایه‌های انتخاب‌شده تعریف نشده است.';
                         break;
                     }
 
@@ -226,7 +226,7 @@ if (isset($_POST['sales-course'])) {
                 exit;
             }
         } else {
-            $salesCourseError = 'لطفاً حداقل یک دوره را انتخاب کنید.';
+            $salesCourseError = 'لطفاً حداقل یک پایه را انتخاب کنید.';
         }
     }
 }
@@ -258,7 +258,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد دوره برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> ایجاد پایه برای دانش آموز | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -290,12 +290,12 @@ include_once '../../temp.html';
                                             <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                 <h6 class="main-content-label mb-0">
-                                                    ایجاد دوره برای دانش آموز
+                                                    ایجاد پایه برای دانش آموز
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موردنظر دوره جدید ثبت کنید و با انتخاب دوره، مبلغ و سایر اطلاعات لازم، فاکتور مربوط به ثبت‌نام او را صادر نمایید."
-                                                      aria-label="راهنمای ایجاد دوره و صدور فاکتور برای دانش آموز">
+                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موردنظر پایه جدید ثبت کنید و با انتخاب پایه، مبلغ و سایر اطلاعات لازم، فاکتور مربوط به ثبت‌نام او را صادر نمایید."
+                                                      aria-label="راهنمای ایجاد پایه و صدور فاکتور برای دانش آموز">
 
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -338,7 +338,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت دوره برایش فراهم نیست
+                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
 
                                     </div>
                                 <?php } ?>
@@ -413,11 +413,11 @@ include_once '../../temp.html';
                                                                      style="gap: 12px;">
                                                                     <label for="excel_file" class="form-label mb-0">
                                                                         ایجاد
-                                                                        دوره برای گروهی از دانش آموزان </label>
+                                                                        پایه برای گروهی از دانش آموزان </label>
                                                                     <span
                                                                             class="menu-info-trigger"
-                                                                            data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک یا چند دوره را برای گروهی از دانش آموزان ثبت کنید. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
-                                                                            aria-label="راهنمای ایجاد گروهی دوره برای دانش آموزان"> <i
+                                                                            data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک یا چند پایه را برای گروهی از دانش آموزان ثبت کنید. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
+                                                                            aria-label="راهنمای ایجاد گروهی پایه برای دانش آموزان"> <i
                                                                                 class="fe fe-info fs-4"></i> </span>
                                                                 </div>
                                                                 <div class="input-group file-browser mt-3">
@@ -434,7 +434,7 @@ include_once '../../temp.html';
                                                                 <button type="button" name="course_signup"
                                                                         class="btn btn-success w-25 align-self-center"
                                                                         id="openModalBtn">
-                                                                    ایجاد دوره برای گروهی از دانش آموزان
+                                                                    ایجاد پایه برای گروهی از دانش آموزان
                                                                 </button>
                                                                 <br>
                                                                 <p class="header-message">
@@ -446,7 +446,7 @@ include_once '../../temp.html';
                                                                     <li>دکمه <strong>OK</strong> را کلیک کنید و پنجره را ببندید.</li>
                                                                     <li>فایل اکسل را باز کنید و روی <strong>Enable Content</strong> کلیک نمایید</li>
                                                                     <li><strong>ALT+F8</strong> را بزنید و در پنجره ای که باز میشود روی اولین فایل دوبار کلیک نمایید</li>
-                                                                    <li>پیغام موفقیت ظاهر می شود و می توانید از کد دوره های فعال استفاده کنید</li>
+                                                                    <li>پیغام موفقیت ظاهر می شود و می توانید از کد پایه های فعال استفاده کنید</li>
                                                                 </ol>
                                                                 <p>
                                                                     <a href="<?php echo url('assets/doc/addcourse.xlsm') ?>" class="btn btn-info ripple"> دانلود فایل نمونه</a>
@@ -482,8 +482,8 @@ include_once '../../temp.html';
                                                 <div class="row row-sm">
                                                     <div class="col-xl-8">
                                                         <div class="card-header border-bottom-0 pb-1">
-                                                            <label class="main-content-label mb-2 pt-1">دوره های در حال ثبت نام</label>
-                                                            <p class="tx-12 mb-0 text-muted">دوره های مورد نظر برای دانش آموز را انتخاب کنید</p>
+                                                            <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت نام</label>
+                                                            <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را انتخاب کنید</p>
                                                         </div>
 
                                                         <?php
@@ -497,11 +497,11 @@ include_once '../../temp.html';
                                                         </label>
                                                         <hr>
 
-                                                        <!-- 🔎 فیلتر دوره‌ها بر اساس پایه -->
+                                                        <!-- 🔎 فیلتر پایه‌ها بر اساس پایه -->
                                                         <div class="row mb-3 align-items-center">
 
                                                             <div class="col-12 mb-2">
-                                                                <h6 class="main-content-label mb-1">فیلتر دوره های فعال</h6>
+                                                                <h6 class="main-content-label mb-1">فیلتر پایه های فعال</h6>
                                                             </div>
 
                                                             <div class="col-12 col-lg-1 mb-2">
@@ -619,7 +619,7 @@ include_once '../../temp.html';
                                                                 <label for="courseTypeFilter" class="form-label mb-1"></label>
                                                                 <select id="courseTypeFilter"
                                                                         class="form-control bg-primary text-white border-0">
-                                                                    <option value="all">همه دوره‌ها</option>
+                                                                    <option value="all">همه پایه‌ها</option>
                                                                     <option value="0">آموزشی</option>
                                                                     <option value="2">المپیاد</option>
                                                                     <option value="1">مهارتی</option>
@@ -699,7 +699,7 @@ include_once '../../temp.html';
                                                                             <div class="course-settings-container mt-2" id="course-settings-<?php echo htmlspecialchars($results->codecourse, ENT_QUOTES, 'UTF-8'); ?>" style="display: none;">
                                                                                 <div class="border rounded p-3 bg-light">
                                                                                     <div class="mb-2">
-                                                                                        <label class="form-label mb-2 fw-bold">مدل قیمت این دوره:</label>
+                                                                                        <label class="form-label mb-2 fw-bold">مدل قیمت این پایه:</label>
                                                                                         <div class="d-flex flex-wrap gap-3">
                                                                                             <div class="form-check">
                                                                                                 <input class="form-check-input price-model-radio"
@@ -790,7 +790,7 @@ include_once '../../temp.html';
                                                                 <tr>
                                                                     <th>ردیف</th>
                                                                     <th>پشتیبان</th>
-                                                                    <th>تعداد ( نفر دوره )</th>
+                                                                    <th>تعداد ( نفر پایه )</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -878,7 +878,7 @@ include_once '../../temp.html';
             const fileInput = excelForm.querySelector('input[type="file"]');
             const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
 
-            // 🚦 وقتی روی دکمه "ثبت دوره گروهی" کلیک شد
+            // 🚦 وقتی روی دکمه "ثبت پایه گروهی" کلیک شد
             openModalBtn.addEventListener("click", function() {
                 if (!fileInput.value) {
                     // اگر فایل انتخاب نشده بود
@@ -914,12 +914,12 @@ include_once '../../temp.html';
         });
         //here
         document.addEventListener("DOMContentLoaded", function() {
-            // ----- فیلتر دوره ها بر اساس پایه / رشته + نوع دوره -----
+            // ----- فیلتر پایه ها بر اساس پایه / رشته + نوع پایه -----
             const filterButtons = document.querySelectorAll(".btn-course-filter");
             const courseItems = document.querySelectorAll(".top-selling-products .product-item");
             const typeFilterSelect = document.getElementById("courseTypeFilter");
 
-            // اگر هنوز فیلتر یا لیست دوره‌ها روی صفحه نیست، کاری نکن
+            // اگر هنوز فیلتر یا لیست پایه‌ها روی صفحه نیست، کاری نکن
             if (!filterButtons.length || !courseItems.length) {
                 return;
             }
@@ -934,7 +934,7 @@ include_once '../../temp.html';
                 const field = (item.dataset.field || "").trim();
                 const type = (item.dataset.type || "").trim();
 
-                // ---- فیلتر نوع دوره (course_type) ----
+                // ---- فیلتر نوع پایه (course_type) ----
                 // typeFilter: "all" | "0" | "1" | "2"
                 if (typeFilter !== "all") {
                     if (type !== typeFilter) {
@@ -1010,7 +1010,7 @@ include_once '../../temp.html';
                 });
             });
 
-            // تغییر نوع دوره (course_type)
+            // تغییر نوع پایه (course_type)
             if (typeFilterSelect) {
                 typeFilterSelect.addEventListener("change", function() {
                     applyFilter();
@@ -1069,7 +1069,7 @@ include_once '../../temp.html';
                         },
                         success: function(response) {
                             let html = `
-                        <label class="form-label small text-primary mb-1">کلاس این دوره را انتخاب کنید:</label>
+                        <label class="form-label small text-primary mb-1">کلاس این پایه را انتخاب کنید:</label>
                         <select name="class_id[${code}]" class="form-control form-control-sm border-primary" required>
                             <option value="">(انتخاب کلاس الزامى است)</option>
                             ${response}
@@ -1104,7 +1104,7 @@ include_once '../../temp.html';
 
                     if (!model) {
                         valid = false;
-                        errorMessage = 'لطفاً مدل قیمت هر دوره انتخاب‌شده را مشخص کنید.';
+                        errorMessage = 'لطفاً مدل قیمت هر پایه انتخاب‌شده را مشخص کنید.';
                         settings.stop(true, true).slideDown();
                         return false;
                     }
@@ -1113,7 +1113,7 @@ include_once '../../temp.html';
                         const supporter = settings.find('.supporter-select').val();
                         if (!supporter) {
                             valid = false;
-                            errorMessage = 'برای دوره‌ای که «با پشتیبان» انتخاب شده، انتخاب پشتیبان الزامی است.';
+                            errorMessage = 'برای پایه‌ای که «با پشتیبان» انتخاب شده، انتخاب پشتیبان الزامی است.';
                             settings.find('.supporter-wrapper').stop(true, true).slideDown();
                             settings.find('.supporter-select').prop('required', true);
                             return false;

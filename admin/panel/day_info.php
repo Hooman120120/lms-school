@@ -156,7 +156,7 @@ function getEventTargetDetails($eventId, $targetType, $conn) {
                     }
                 }
             }
-            $courseSummary = !empty($courseNames) ? implode('، ', $courseNames) : (count($courses) . ' دوره انتخابی');
+            $courseSummary = !empty($courseNames) ? implode('، ', $courseNames) : (count($courses) . ' پایه انتخابی');
         }
     }
 
@@ -205,8 +205,8 @@ foreach ($events as $event) {
     // Short summary for the card badge
     $shortSummary = 'نامشخص';
     if ($permCalendar == 1) {
-        if ($targetType === 'user') $shortSummary = 'کاربران (دوره‌ها)';
-        elseif ($targetType === 'both') $shortSummary = 'ترکیبی (ادمین + دوره)';
+        if ($targetType === 'user') $shortSummary = 'کاربران (پایه‌ها)';
+        elseif ($targetType === 'both') $shortSummary = 'ترکیبی (ادمین + پایه)';
         else $shortSummary = 'ادمین‌ها';
     }
 
@@ -550,7 +550,7 @@ include_once '../../temp.html';
         let currentPage = 1;
         let rowsPerPage = parseInt(rowsPerPageSelect.value);
 
-        // آپدیت تابع فیلتر برای جستجو در داده‌های دوره‌ها و ادمین‌ها
+        // آپدیت تابع فیلتر برای جستجو در داده‌های پایه‌ها و ادمین‌ها
         function filterEvents() {
             const query = searchInput.value.trim().toLowerCase();
 
@@ -627,7 +627,7 @@ include_once '../../temp.html';
             paginationUl.appendChild(addPageItem('next', '<i class="fa fa-angle-left"></i>', false, currentPage === totalPages));
         }
 
-        // نمایش اطلاعات کشویی با جزئیات کامل ادمین‌ها و دوره‌ها
+        // نمایش اطلاعات کشویی با جزئیات کامل ادمین‌ها و پایه‌ها
         function showDetail(jsonString) {
             const ev = JSON.parse(jsonString);
             const drawerBody = document.getElementById('drawerBody');
@@ -651,7 +651,7 @@ include_once '../../temp.html';
     `;
             }
 
-            // قالب‌بندی هدف‌ها (ادمین‌ها و دوره‌ها)
+            // قالب‌بندی هدف‌ها (ادمین‌ها و پایه‌ها)
             let targetsHtml = '';
             if (ev.target_type === 'admin' || ev.target_type === 'both') {
                 targetsHtml += `
@@ -664,7 +664,7 @@ include_once '../../temp.html';
             if (ev.target_type === 'user' || ev.target_type === 'both') {
                 targetsHtml += `
                     <div class="detail-item mt-2">
-                        <span class="detail-item-label text-info"><i class="fa fa-graduation-cap"></i> مخاطبان کاربر (دوره‌ها):</span>
+                        <span class="detail-item-label text-info"><i class="fa fa-graduation-cap"></i> مخاطبان کاربر (پایه‌ها):</span>
                         <span class="detail-item-value text-muted small" style="line-height: 1.6;">${ev.course_targets || 'همه کاربران'}</span>
                     </div>
                 `;

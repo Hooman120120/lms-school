@@ -136,7 +136,7 @@ if (isset($_GET['verify'])) {
     foreach ($rew as $tbt) {
         $uid = GetUserIdByApi($tbt->username);
         // باز کردن فایل لاگ برای دیباگ
-        $logMsg = "\n--- بررسی فاکتور دوره: " . $tbt->id . " ---\n";
+        $logMsg = "\n--- بررسی فاکتور پایه: " . $tbt->id . " ---\n";
 
         // ۱. دریافت آیدی کلاس
         $class_id = isset($tbt->class_id) ? $tbt->class_id : null;
@@ -204,7 +204,7 @@ if (isset($_GET['verify'])) {
         // end send SMS
     }
 
-    $_SESSION['message'] = 'واریزی موردنظر تایید شد و دوره های مربوطه برای دانش آموز رزرو شدند';
+    $_SESSION['message'] = 'واریزی موردنظر تایید شد و پایه های مربوطه برای دانش آموز رزرو شدند';
     header('Location: verify_by_manager.php');
     die();
 }
@@ -222,7 +222,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 

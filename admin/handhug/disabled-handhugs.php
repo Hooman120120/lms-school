@@ -150,7 +150,7 @@ if (isset($_GET['schedule'])) {
         header('location: handhug-management.php?true');
         die();
     } else {
-        $_SESSION['message'] = "برنامه هفتگی برای این دوره تعریف نشده است";
+        $_SESSION['message'] = "برنامه هفتگی برای این پایه تعریف نشده است";
         header('location: handhug-management.php?true');
         die();
     }
@@ -177,7 +177,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -564,11 +564,11 @@ include_once '../../temp.html';
                                                                                     <?php if (Permision('permision_viewcourse')) { ?>
                                                                                         <hr>
                                                                                         <a class="dropdown-item text-success" href="add-handhug.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
-                                                                                            <i class="fe fe-edit"></i> ویرایش دوره
+                                                                                            <i class="fe fe-edit"></i> ویرایش پایه
                                                                                         </a>
                                                                                         <?php if (Permision('permision_deletcourse')) { ?>
-                                                                                            <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این دوره موافقید؟')">
-                                                                                                <i class="fe fe-x-square"></i> حذف دائم دوره
+                                                                                            <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
+                                                                                                <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                             </a>
                                                                                         <?php } ?>
                                                                                     <?php } ?>
@@ -631,7 +631,7 @@ include_once '../../temp.html';
                                                             </tr>
                                                         <?php }
                                                     } else {
-                                                        echo '<tr><td colspan="10" class="text-center">هیچ دوره‌ای یافت نشد.</td></tr>';
+                                                        echo '<tr><td colspan="10" class="text-center">هیچ پایه‌ای یافت نشد.</td></tr>';
                                                     }
                                                     ?>
                                                     </tbody>

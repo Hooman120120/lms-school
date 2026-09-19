@@ -182,7 +182,7 @@ include_once '../../temp.html';
                         <div class="card mb-3 p-3">
                             <form method="post" class="row g-3 align-items-end">
                                 <div class="col-xl-3">
-                                    <label>از تاریخ ثبت دوره: <span style="color:red">*</span></label>
+                                    <label>از تاریخ ثبت پایه: <span style="color:red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="fe fe-calendar"></i></div>

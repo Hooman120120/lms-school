@@ -33,7 +33,7 @@ if (!Permision('permision_viewcourse')) {
 // Ensure code parameter exists in URL
 $courseCode = isset($_GET['code']) ? intval($_GET['code']) : 0;
 if ($courseCode <= 0) {
-    die("کد دوره معتبر نیست.");
+    die("کد پایه معتبر نیست.");
 }
 
 // Fetch course information
@@ -42,7 +42,7 @@ $stmtCourse->execute([$courseCode]);
 $course = $stmtCourse->fetch(PDO::FETCH_OBJ);
 
 if (!$course) {
-    die("دوره مورد نظر یافت نشد.");
+    die("پایه مورد نظر یافت نشد.");
 }
 if (StaffCourseScopeRequired() && !StaffHasCourseAccess($courseCode)) {
     http_response_code(403);
@@ -235,7 +235,7 @@ include_once '../../temp.html';
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">تخصیص معلم به کلاس و درس</h2>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">دوره</a></li>
+                            <li class="breadcrumb-item"><a href="#">پایه</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($course->coursename); ?> </li>
                         </ol>
                     </div>
@@ -366,7 +366,7 @@ include_once '../../temp.html';
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="3" class="text-muted">هیچ کلاسی برای این کد دوره یافت نشد.</td>
+                                        <td colspan="3" class="text-muted">هیچ کلاسی برای این کد پایه یافت نشد.</td>
                                     </tr>
                                 <?php endif; ?>
                                 </tbody>

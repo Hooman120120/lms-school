@@ -239,7 +239,7 @@ include_once '../../temp.html';
                                         <div class="col-xl-12">
                                             <?php $course = returnCourse($_GET['code']); ?>
                                             <div>
-                                                <h6 class="main-content-label mb-1">ویرایش سرفصل برای دوره <span
+                                                <h6 class="main-content-label mb-1">ویرایش سرفصل برای پایه <span
                                                             class="text-warning"> <?php echo $course->coursename ?></span>
                                                 </h6>
                                             </div>
@@ -424,7 +424,7 @@ include_once '../../temp.html';
                                                                     <div class="dropdown-menu tx-8">
                                                                         <a class="dropdown-item"
                                                                            href="#"
-                                                                           onclick="window.open('sub-chapters.php?lesson='+'<?php echo $lesson->id ?>','مشاهده دوره'
+                                                                           onclick="window.open('sub-chapters.php?lesson='+'<?php echo $lesson->id ?>','مشاهده پایه'
                                                                                    ,'width=850,height=500,menubar=0,toolbar=0,resizable=0,left=0,top=0,status=0,scrollbars=0,location=0' ); return false;"
                                                                         >
                                                                             <i class="fe fe-layers"></i> مشاهده زیرفصل

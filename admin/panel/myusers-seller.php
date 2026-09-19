@@ -126,7 +126,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های فعال | <?php echo __TITLE ?></title>
+    <title> پایه های فعال | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -197,7 +197,7 @@ include_once '../../temp.html';
                         <div class="tab-pane fade show active" id="type1" role="tabpanel">
                             <?php if ($type==3) { ?>
                             <p class="fs-6 font-weight-bold">
-                                لیست نفر و نفر دوره کارشناس فروش
+                                لیست نفر و نفر پایه کارشناس فروش
                             </p>
                             <?php } ?>
                             <?php if ($type==1) { ?>
@@ -224,7 +224,7 @@ include_once '../../temp.html';
                                                     <th>وضعیت دانش آموز</th>
                                                     <?php if($type==3){  ?>
                                                         <th style="width:70px; max-width:70px; white-space:normal; overflow-wrap:anywhere; word-break:break-word;">
-                                                            دوره ها
+                                                            پایه ها
                                                         </th>
                                                         <th>اقدامات</th>
                                                     <?php } ?>

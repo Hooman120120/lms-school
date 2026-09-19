@@ -159,7 +159,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> افزودن فیلم به دوره | <?php echo __TITLE ?></title>
+    <title> افزودن فیلم به پایه | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -198,8 +198,8 @@ include_once '../../temp.html';
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید فیلم‌های آموزشی ثبت‌شده برای دوره انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر فیلم و گزینه‌های مربوط به ویرایش، حذف یا بررسی جزئیات آن از این قسمت در دسترس است."
-                                                  aria-label="راهنمای فیلم‌های آموزشی دوره">
+                                                  data-tooltip="در این بخش می‌توانید فیلم‌های آموزشی ثبت‌شده برای پایه انتخاب‌شده را مشاهده و مدیریت کنید. اطلاعات هر فیلم و گزینه‌های مربوط به ویرایش، حذف یا بررسی جزئیات آن از این قسمت در دسترس است."
+                                                  aria-label="راهنمای فیلم‌های آموزشی پایه">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -207,7 +207,7 @@ include_once '../../temp.html';
                                         </div>
 
                                         <p class="text-primary mb-0">
-                                            مشاهده و مدیریت فیلم‌های آموزشی دوره
+                                            مشاهده و مدیریت فیلم‌های آموزشی پایه
                                         </p>
                                     </div>
                                 </div>
@@ -319,7 +319,7 @@ include_once '../../temp.html';
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید فیلم آموزشی جدیدی برای دوره انتخاب‌شده ثبت کنید. فیلم پس از ثبت به درس و دوره مربوط متصل می‌شود و اطلاعاتی مانند عنوان، کلاس مربوطه، لینک فایل و سایر تنظیمات آن قابل تعیین است."
+                                                  data-tooltip="در این بخش می‌توانید فیلم آموزشی جدیدی برای پایه انتخاب‌شده ثبت کنید. فیلم پس از ثبت به درس و پایه مربوط متصل می‌شود و اطلاعاتی مانند عنوان، کلاس مربوطه، لینک فایل و سایر تنظیمات آن قابل تعیین است."
                                                   aria-label="راهنمای افزودن فیلم آموزشی جدید">
 
                                                     <i class="fe fe-info fs-4"></i>
@@ -505,7 +505,7 @@ include_once '../../temp.html';
                                 <div class="card-body">
                                     <div class="col-12">
                                         <div>
-                                            <h6 class="main-content-label mb-1">ویرایش فیلم دوره <span
+                                            <h6 class="main-content-label mb-1">ویرایش فیلم پایه <span
                                                         class="text-primary"> <?php echo $course->coursename ?></span>
                                             </h6>
                                             <p class="text-muted card-sub-title">

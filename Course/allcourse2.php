@@ -41,7 +41,7 @@ include_once '../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دوره های من | <?php echo __TITLE ?></title>
+    <title> پایه های من | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
 </head>
 
@@ -70,9 +70,9 @@ include_once '../temp.html';
                             <div class="card-header  border-bottom-0 pb-0">
                                 <div>
                                     <div class="d-flex">
-                                        <label class="main-content-label my-auto pt-2">دوره های ثبت نام شده</label>
+                                        <label class="main-content-label my-auto pt-2">پایه های ثبت نام شده</label>
                                     </div>
-                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">دوره های فعال برای شما </span>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">پایه های فعال برای شما </span>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -94,7 +94,7 @@ include_once '../temp.html';
                                                     <div class="d-flex">
 
                                                         <button class="btn btn-block btn-outline-secondary">ورود به
-                                                            دوره
+                                                            پایه
                                                         </button>
 
                                                     </div>

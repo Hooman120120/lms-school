@@ -77,7 +77,7 @@ if (isset($_POST['addquiz'])) {
                     $qss = $conn->prepare($insql);
                     $qss->execute([$code, $dars, $tasalsol, $namequiz, $datestart]);
                     $lastId = $conn->lastInsertId();
-                    //            $text = 'دوره با شناسه <strong>' . $lastId . '</strong> ایجاد شد';
+                    //            $text = 'پایه با شناسه <strong>' . $lastId . '</strong> ایجاد شد';
 
 
                     $target_dir = '../../assets/doc/';
@@ -572,7 +572,7 @@ include_once '../../temp.html';
                                 <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                این کد ملی (ها) به دلیل عدم ثبت نام در دوره کارنامه برایشان صادر نشد
+                                این کد ملی (ها) به دلیل عدم ثبت نام در پایه کارنامه برایشان صادر نشد
                                 <br>
                                 <?php
                                 $is = 1;

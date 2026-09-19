@@ -5,7 +5,7 @@ include_once '../../dbconfig.php';
 if (isset($_POST['codecourse'])) {
     $codecourse = $_POST['codecourse'];
     
-    // واکشی کلاس‌های فعال برای این کد دوره
+    // واکشی کلاس‌های فعال برای این کد پایه
     $sql = "SELECT id, name FROM classes WHERE codecourse = ? AND is_active = 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$codecourse]);
@@ -17,7 +17,7 @@ if (isset($_POST['codecourse'])) {
         }
     } else {
         // در صورتی که کلاسی تعریف نشده باشد
-        echo "<option value='' disabled>کلاسی برای این دوره تعریف نشده است</option>";
+        echo "<option value='' disabled>کلاسی برای این پایه تعریف نشده است</option>";
     }
 }
 ?>

@@ -87,7 +87,7 @@ include_once '../temp.html';
                                         <?= $course->coursemuted ?> </p>
                                 <?php } else { ?>
                                     <p class="text-black fs-6"> به نسخه آزمایشی بغل دستی خودش آمدید.<br>
-                                        جهت دسترسی کامل و استفاده از طرح "بغل دستی ها" ثبت نام خود را تکمیل کرده و دوره
+                                        جهت دسترسی کامل و استفاده از طرح "بغل دستی ها" ثبت نام خود را تکمیل کرده و پایه
                                         مربوطه را خریداری کنید. </p>
                                 <?php } ?>
                                 <br><br>
@@ -135,7 +135,7 @@ include_once '../temp.html';
                                 <?php // }
                                 //   } else {
                                 ?>
-                                <!--                                    <button class="btn btn-primary disabled">برای دسترسی به خدمات کلاس آنلاین، دوره موردنظر را خریداری نمایید</button>-->
+                                <!--                                    <button class="btn btn-primary disabled">برای دسترسی به خدمات کلاس آنلاین، پایه موردنظر را خریداری نمایید</button>-->
                                 <?php // }
                                 ?>
                             </div>
@@ -159,7 +159,7 @@ include_once '../temp.html';
                                 <a href="attendance.php?code=<?php // echo $course->codecourse
                                 ?>" target="_blank"
                                    class="btn btn-secondary">دریافت گزارش حضور غیاب
-                                    دوره</a>
+                                    پایه</a>
                                 <?php // } else {
                                 ?>
                                 <?php // }
@@ -176,7 +176,7 @@ include_once '../temp.html';
                                         <label class="main-content-label my-auto pt-2">جزوات و تکلیف ارائه شده</label>
                                     </div>
                                     <span class="d-block tx-12 mt-2 mb-0 fs-8">جزوات ، متون و تکالیف ارائه شده جهت
-                                            دانلود برای این دوره </span>
+                                            دانلود برای این پایه </span>
                                 </div>
                             </div>
                             <div class="card-body text-center">

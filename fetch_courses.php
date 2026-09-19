@@ -111,7 +111,7 @@ if (isset($_GET['grade'])) {
             }
             echo '</div>';
         } else {
-            echo "<div class='text-center w-100 p-5 text-muted'>در حال حاضر دوره‌ای برای این دسته ثبت نشده است.</div>";
+            echo "<div class='text-center w-100 p-5 text-muted'>در حال حاضر پایه‌ای برای این دسته ثبت نشده است.</div>";
         }
     } catch (PDOException $e) {
         echo "خطا: " . $e->getMessage();

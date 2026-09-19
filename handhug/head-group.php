@@ -50,7 +50,7 @@ if (isset($_POST['send-message'])) {
         if ($stmt->rowCount() > 0) {
             $_SESSION['message'] = 'پیام ها با موفقیت صادر شدند';
         } else {
-            $_SESSION['message'] = 'عملیات با شکست مواجه شد . دانش آموزی در این دوره برای شما ثبت نشده است';
+            $_SESSION['message'] = 'عملیات با شکست مواجه شد . دانش آموزی در این پایه برای شما ثبت نشده است';
         }
 
         header('Location: desktop.php');

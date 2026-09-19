@@ -3822,7 +3822,7 @@ function getEventAnswers(PDO $conn, array $studentCodes, array $eventIds): array
         if (!isset($courseNameCache[$courseId])) {
             $stmt = $conn->prepare("SELECT coursename FROM codtbl_course WHERE idcourse = ?");
             $stmt->execute([$courseId]);
-            $courseNameCache[$courseId] = $stmt->fetchColumn() ?: 'دوره نامشخص';
+            $courseNameCache[$courseId] = $stmt->fetchColumn() ?: 'پایه نامشخص';
         }
         return $courseNameCache[$courseId];
     };
@@ -3853,14 +3853,14 @@ function getEventAnswers(PDO $conn, array $studentCodes, array $eventIds): array
                 $intersect = array_intersect($selectedCourses, $eCourses);
                 if (!empty($intersect)) {
                     $names = array_map($getCourseName, $intersect);
-                    return "$conflictTitle با دوره‌های " . implode('، ', $names) . " تداخل دارد.";
+                    return "$conflictTitle با پایه‌های " . implode('، ', $names) . " تداخل دارد.";
                 }
             }
             if (empty($selectedCourses) && !empty($eCourses)) {
-                return "$conflictTitle برای دوره‌های مشخصی ثبت شده و با این رویداد (همه کاربران) تداخل دارد.";
+                return "$conflictTitle برای پایه‌های مشخصی ثبت شده و با این رویداد (همه کاربران) تداخل دارد.";
             }
             if (!empty($selectedCourses) && empty($eCourses)) {
-                return "$conflictTitle برای همه کاربران ثبت شده و با دوره‌های انتخابی شما تداخل دارد.";
+                return "$conflictTitle برای همه کاربران ثبت شده و با پایه‌های انتخابی شما تداخل دارد.";
             }
         }
 

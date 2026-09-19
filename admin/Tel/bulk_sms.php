@@ -104,7 +104,7 @@ try {
     error_log("Error getting tel groups: " . $e->getMessage());
 }
 
-// ===== دریافت دوره‌ها =====
+// ===== دریافت پایه‌ها =====
 $courses = [];
 try {
     $sql = 'SELECT codecourse, coursename FROM codtbl_course ORDER BY coursename ASC';
@@ -492,7 +492,7 @@ include_once '../../temp.html';
                                         <select class="form-control" name="send_type" id="sendTypeSelect" required>
                                             <option value="manual">📝 ورود دستی شماره‌ها</option>
                                             <option value="tel_group">👥 از گروه تماس</option>
-                                            <option value="course">🎓 از دانش آموزان دوره</option>
+                                            <option value="course">🎓 از دانش آموزان پایه</option>
                                         </select>
                                     </div>
 
@@ -559,9 +559,9 @@ include_once '../../temp.html';
 
                                     <div class="col-12" id="courseSection" style="display:none;">
                                         <div class="sms-card">
-                                            <h6>🎓 انتخاب دوره</h6>
+                                            <h6>🎓 انتخاب پایه</h6>
                                             <select class="form-control select2" name="codecourse" id="courseSelect">
-                                                <option value="">انتخاب دوره...</option>
+                                                <option value="">انتخاب پایه...</option>
                                                 <?php foreach ($courses as $course): ?>
                                                     <option value="<?php echo $course->codecourse; ?>">
                                                         <?php echo htmlspecialchars($course->coursename); ?>

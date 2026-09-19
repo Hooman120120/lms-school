@@ -54,7 +54,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> آمار و گزارشات دوره ها |<?php echo __TITLE ?></title>
+    <title> آمار و گزارشات پایه ها |<?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -98,12 +98,12 @@ include_once '../../temp.html';
                                         <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                             <h6 class="main-content-label mb-0">
-                                                آمار و گزارش‌های دوره‌ها
+                                                آمار و گزارش‌های پایه‌ها
                                             </h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید با وارد کردن اطلاعات و انتخاب فیلترهای موردنیاز، گزارش‌های آماری مربوط به دوره‌ها را تولید و بررسی کنید. نتایج گزارش بر اساس دوره‌ها و معیارهای انتخاب‌شده نمایش داده می‌شود."
-                                                  aria-label="راهنمای آمار و گزارش‌های دوره‌ها">
+                                                  data-tooltip="در این بخش می‌توانید با وارد کردن اطلاعات و انتخاب فیلترهای موردنیاز، گزارش‌های آماری مربوط به پایه‌ها را تولید و بررسی کنید. نتایج گزارش بر اساس پایه‌ها و معیارهای انتخاب‌شده نمایش داده می‌شود."
+                                                  aria-label="راهنمای آمار و گزارش‌های پایه‌ها">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -111,7 +111,7 @@ include_once '../../temp.html';
                                         </div>
 
                                         <p class="text-muted card-sub-title">
-                                            لطفاً اطلاعات و فیلترهای موردنیاز را برای تولید گزارش دوره‌ها وارد کنید.
+                                            لطفاً اطلاعات و فیلترهای موردنیاز را برای تولید گزارش پایه‌ها وارد کنید.
                                         </p>
                                     </div>
                                 </div>
@@ -126,15 +126,15 @@ include_once '../../temp.html';
                                                     aria-describedby="basic-addon2" required>
                                                 <option label="اقدام لازم">
                                                 </option>
-                                                <option value="1">1- نفر دوره</option>
-                                                <option value="2">2- نفر دوره تجمیعی</option>
+                                                <option value="1">1- نفر پایه</option>
+                                                <option value="2">2- نفر پایه تجمیعی</option>
                                                 <option value="3">3- گزارش وضعیت دانش آموز</option>
 
                                             </select>
                                         </div>
 
                                         <div class="col-xl-3">
-                                            <p>از تاریخ ثبت دوره :<span
+                                            <p>از تاریخ ثبت پایه :<span
                                                         style="color: red">*</span></p>
 
                                             <div class="input-group ">

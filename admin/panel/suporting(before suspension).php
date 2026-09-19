@@ -1343,7 +1343,7 @@ if ($codemeli === '') {
             $j = gregorian_to_jalali((int)$gy, (int)$gm, (int)$gd, '/');
             $msg .= 'آخرین زمان فعالیت این دانش‌آموز: <span dir="ltr">' . $j . '</span>';
             if ($lastCourseName) {
-                $msg .= ' — نام دوره: <strong>' . $lastCourseName . '</strong>';
+                $msg .= ' — نام پایه: <strong>' . $lastCourseName . '</strong>';
             }
         } else {
             $msg .= 'هیچ تاریخی برای آخرین فعالیت پیدا نشد.';
@@ -1353,7 +1353,7 @@ if ($codemeli === '') {
         if ($active > 0) {
             $statusAlert = '<div class="alert alert-success text-center" role="alert" style="direction:rtl">این دانش‌آموز <strong>فعال</strong> است.</div>';
         } else {
-            $statusAlert = '<div class="alert alert-info text-center" role="alert" style="direction:rtl">هیچ دوره‌ای برای این دانش‌آموز ثبت نشده است.</div>';
+            $statusAlert = '<div class="alert alert-info text-center" role="alert" style="direction:rtl">هیچ پایه‌ای برای این دانش‌آموز ثبت نشده است.</div>';
         }
     }
 }
@@ -2976,7 +2976,7 @@ include_once '../../temp.html';
                                     <thead>
                                         <tr class="bg-light">
                                             <th>#</th>
-                                            <th>دوره</th>
+                                            <th>پایه</th>
                                             <th>کلاس</th>
                                             <th>آزمون</th>
                                             <th>فیلم</th>
