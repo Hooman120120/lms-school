@@ -26,6 +26,10 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+if (!Permision('permision_viewwallet')) {
+    http_response_code(403);
+    exit('مجوز مشاهده تراکنش‌های کیف پول برای شما تعریف نشده است.');
+}
 if (!isset($_GET['id'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

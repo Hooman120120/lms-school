@@ -118,7 +118,7 @@ function getEventTargetDetails($eventId, $targetType, $conn) {
             $roleNames = [
                 0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => t('role_teacher'),
                 6 => 'کارشناس فروش', 51 => 'معاونت اجرایی', 52 => 'معاونت آموزشی',
-                53 => 'معاونت فروش', 54 => 'معاونت فنی'
+                53 => 'معاونت فروش', 54 => 'معاونت فنی', 55 => 'معاونت مالی'
             ];
             $roleText = !empty($roles) ? 'نقش‌ها: ' . implode('، ', array_map(function($r) use ($roleNames) {
                     return $roleNames[$r] ?? $r;

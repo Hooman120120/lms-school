@@ -7,7 +7,9 @@ INSERT INTO school_admin_roles (id, role_key, title, sort_order, is_active) VALU
     (10, 'executive_deputy', 'معاون اجرایی', 4, 1),
     (11, 'cultural_disciplinary_deputy', 'معاون فرهنگی انضباطی', 5, 1),
     (7, 'counselor', 'مشاور', 6, 1),
-    (8, 'teacher', 'معلم', 7, 1)
+    (5, 'technical_deputy', 'معاون فنی', 7, 1),
+    (6, 'financial_deputy', 'معاون مالی', 8, 1),
+    (8, 'teacher', 'معلم', 9, 1)
 ON DUPLICATE KEY UPDATE
     role_key = VALUES(role_key),
     title = VALUES(title),
@@ -15,12 +17,9 @@ ON DUPLICATE KEY UPDATE
     is_active = VALUES(is_active);
 
 -- The former disciplinary and cultural deputy roles are both represented by
--- the new combined role. Technology and financial deputy records have no
--- unambiguous replacement, so they are left unassigned for an administrator
--- to classify explicitly instead of being silently given the wrong role.
+-- the new combined role. Financial and technical deputy remain independent.
 UPDATE dbadmin SET school_role_id = 11 WHERE school_role_id IN (3, 4);
-UPDATE dbadmin SET school_role_id = NULL WHERE school_role_id IN (5, 6);
-UPDATE school_admin_roles SET is_active = 0 WHERE id IN (3, 4, 5, 6);
+UPDATE school_admin_roles SET is_active = 0 WHERE id IN (3, 4);
 
 CREATE TABLE IF NOT EXISTS school_staff_courses (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

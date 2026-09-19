@@ -27,6 +27,9 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+if (!Permision('permision_actfactor')) {
+    http_response_code(403); exit('مجوز بررسی و تأیید فاکتور برای شما تعریف نشده است.');
+}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;

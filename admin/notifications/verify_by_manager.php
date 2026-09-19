@@ -26,7 +26,8 @@ if (session_id() != $re['session_id']) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $schoolRoleKey = SchoolStaffRoleKey((string)$sessionUser);
-if (!Permision('permision_viewalert') && !in_array($schoolRoleKey, ['manager', 'general_deputy'], true)) {
+if (!Permision('permision_viewalert') && !Permision('permision_actfactor')
+    && !in_array($schoolRoleKey, ['manager', 'general_deputy'], true)) {
     http_response_code(403);
     exit('دسترسی بررسی فاکتورهای منتظر تأیید برای سمت شما تعریف نشده است.');
 }

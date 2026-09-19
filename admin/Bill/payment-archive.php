@@ -26,6 +26,10 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
+if (!Permision('permision_viewbill')) {
+    http_response_code(403);
+    exit('مجوز دسترسی به آرشیو اقساط برای شما تعریف نشده است.');
+}
 $username = $_SESSION['admin']['user'];
 
 $canViewAll = false;

@@ -25,16 +25,14 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-// if (!Permision('permision_actfactor')) {
-//     echo '<strong>403</strong>';
-//     echo '<script>window.close() </script>';
-//     die();
-// }
-// if (!isset($_GET['id'])) {
-//     echo '<strong>403</strong>';
-//     echo '<script>window.close() </script>';
-//     die();
-// }
+if (!Permision('permision_actfactor') && !Permision('permision_notpay') && !Permision('permision_bill')) {
+    http_response_code(403);
+    exit('مجوز ویرایش فاکتور برای شما تعریف نشده است.');
+}
+if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id']) || (int)$_GET['id'] <= 0) {
+    http_response_code(400);
+    exit('شناسه فاکتور معتبر نیست.');
+}
 // if (!CheckFactorNotSuccess($_GET['id'])) {
 //     echo '<strong>403</strong>';
 //     echo '<script>window.close() </script>';

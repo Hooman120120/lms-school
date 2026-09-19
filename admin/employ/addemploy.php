@@ -91,6 +91,45 @@ function syncStaffCourseAssignments(PDO $conn, string $username, ?int $schoolRol
     }
 }
 
+function schoolRoleKeyById(?int $schoolRoleId, array $schoolRoles): ?string
+{
+    foreach ($schoolRoles as $role) {
+        if ((int)$role->id === (int)$schoolRoleId) {
+            return (string)$role->role_key;
+        }
+    }
+    return null;
+}
+
+function syncExtendedStaffPermissions(PDO $conn, string $username, bool $isEdit, ?string $schoolRoleKey = null): void
+{
+    $prefix = $isEdit ? 'e' : '';
+    $permissionNames = [
+        'permission_staff_view' => $prefix . 'permission_staff_view',
+        'permission_staff_documents' => $prefix . 'permission_staff_documents',
+        'permission_insurance' => $prefix . 'permission_insurance',
+        'permission_monthly_payment' => $prefix . 'permission_monthly_payment',
+        'permission_assigned_tasks' => $prefix . 'permission_assigned_tasks',
+    ];
+    $values = [];
+    foreach ($permissionNames as $postName) {
+        $values[] = isset($_POST[$postName]) ? 1 : 0;
+    }
+    if ($schoolRoleKey === 'financial_deputy') {
+        $values[0] = $values[1] = $values[2] = $values[3] = 1;
+    } elseif ($schoolRoleKey === 'technical_deputy') {
+        $values[4] = 1;
+    } elseif ($schoolRoleKey === 'counselor') {
+        // مشاور حتی با ارسال دستی فرم نباید به عملیات واریز ماهانه دسترسی بگیرد.
+        $values[3] = 0;
+    }
+    $values[] = $username;
+    $stmt = $conn->prepare('UPDATE dbadmin SET
+        permission_staff_view=?, permission_staff_documents=?, permission_insurance=?,
+        permission_monthly_payment=?, permission_assigned_tasks=? WHERE username=?');
+    $stmt->execute($values);
+}
+
 /*
  * Permission labels and explanations are kept in one place so the create and
  * edit forms always describe the exact same capability.
@@ -113,6 +152,7 @@ $employeePermissionColumns = [
                 ['permission_calendar', 'permission_calendar', 'permission_calendar', 'مدیریت کامل تقویم و رویدادها', 'اجازه ورود به پنل تقویم و ایجاد، ویرایش و حذف رویدادهای مدرسه را می‌دهد.'],
                 ['register-class', 'eregister-class', 'register_class_permission', 'مدیریت کامل دفتر کلاسی', 'اجازه ویرایش و حذف ستون‌ها، نمرات، حضور و غیاب و موارد انضباطی دفتر کلاسی را می‌دهد. دامنه پایه برای معاون پایه و مشاور همچنان رعایت می‌شود.'],
                 ['permission_news_notif', 'permission_news_notif', 'permission_news_notif', 'مدیریت اخبار و اعلان‌های مدرسه', 'اجازه ایجاد، ویرایش و مدیریت اخبار و اعلان‌های روزانه سامانه را می‌دهد.'],
+                ['permission_assigned_tasks', 'epermission_assigned_tasks', 'permission_assigned_tasks', 'مدیریت کارهای محول‌شده', 'اجازه مشاهده، تعریف، تخصیص و تغییر وضعیت کارهای محول‌شده را می‌دهد. این مجوز برای معاون فنی به‌صورت پیش‌فرض پیشنهاد می‌شود.'],
             ],
         ],
         [
@@ -138,6 +178,9 @@ $employeePermissionColumns = [
                 ['menu-allert', 'emenu-allert', 'permision_viewalert', 'مدیریت اعلان‌ها و گفت‌وگوهای داخلی', 'امکان مشاهده و مدیریت اعلان‌ها، قواعد اعلان و گفت‌وگوهای داخلی سامانه را می‌دهد.'],
                 ['menu-doc', 'emenu-doc', 'permision_viewdocument', 'مدیریت مستندات مدرسه', 'اجازه جست‌وجو، ثبت و مدیریت مستندات داخلی مدرسه را می‌دهد.'],
                 ['menu-employ', 'emenu-employ', 'permision_viewemploy', m('perm.employ_title'), m('perm.employ_desc')],
+                ['permission_staff_view', 'epermission_staff_view', 'permission_staff_view', 'مشاهده فهرست همکاران', 'فقط فهرست و اطلاعات عمومی همکاران را نمایش می‌دهد و اجازه تعریف یا ویرایش حساب‌ها را نمی‌دهد.'],
+                ['permission_staff_documents', 'epermission_staff_documents', 'permission_staff_documents', 'مشاهده مستندات پرسنلی همکاران', 'اجازه مشاهده و دریافت مدارک، سوابق و فایل‌های شناسایی هویت همکاران و معلمان را می‌دهد.'],
+                ['permission_insurance', 'epermission_insurance', 'permission_insurance', 'مدیریت بیمه افراد', 'اجازه ثبت و ویرایش شرکت بیمه، شماره بیمه‌نامه، بازه اعتبار و وضعیت بیمه همکاران را می‌دهد.'],
                 ['menu-setting', 'emenu-setting', 'permision_viewsetting', 'مدیریت تنظیمات عمومی سامانه', 'اجازه ورود به تنظیمات عمومی، لیست سیاه و اطلاعات مالی پایه سامانه را می‌دهد.'],
             ],
         ],
@@ -165,7 +208,7 @@ $employeePermissionColumns = [
         [
             'title' => 'مالی، شهریه و کیف پول',
             'items' => [
-                ['menu-bill', 'emenu-bill', 'permision_viewbill', 'دسترسی به بخش مالی و شهریه', 'منوی حسابداری، فاکتورها، پرداخت‌ها، صورتحساب‌ها و اقساط را نمایش می‌دهد. برای عملیات حساس، مجوز جزئی مربوط نیز لازم است.'],
+                ['menu-bill', 'emenu-bill', 'permision_viewbill', 'دسترسی به امور مالی و شهریه', 'منوی امور مالی، فاکتورها، پرداخت‌ها، صورتحساب‌ها و اقساط را نمایش می‌دهد. برای عملیات حساس، مجوز جزئی مربوط نیز لازم است.'],
                 ['actbill', 'eactbill', 'permision_actfactor', 'بررسی و تأیید پرداخت‌های کارت‌به‌کارت', 'امکان بررسی فاکتورهای منتظر تأیید، تصویر رسید و مغایرت‌های واریز را می‌دهد.'],
                 ['notpay', 'enotpay', 'permision_notpay', 'مدیریت بدهی‌ها و پرداخت‌های ناموفق', 'اجازه مشاهده و رسیدگی به فاکتورهای پرداخت‌نشده، مستردشده و ثبت واریز مربوط را می‌دهد.'],
                 ['actwallet', 'eactwallet', 'permision_actwallet', 'بررسی و تأیید شارژ کیف پول', 'اجازه بررسی درخواست‌های شارژ کیف پول، تأیید آن‌ها و رسیدگی به مغایرت‌ها را می‌دهد.'],
@@ -173,6 +216,7 @@ $employeePermissionColumns = [
                 ['reportbill', 'ereportbill', 'permision_financial_export', 'خروجی گزارش‌های مالی (فعلاً غیرفعال)', 'این مجوز در نسخه فعلی سامانه هنوز به عملیات مستقلی متصل نیست و فعال‌کردن آن اثری در دسترسی فعلی ندارد.'],
                 ['manage-installment', 'manage-installment', 'installment_permission', 'مدیریت همه پرونده‌های اقساطی', 'به‌جای محدودبودن به اقساط ثبت‌شده توسط خود کاربر، مشاهده همه پرونده‌های اقساطی، معوقات و خروجی آن‌ها را فعال می‌کند.'],
                 ['menu-wallet', 'emenu-wallet', 'permision_viewwallet', 'مدیریت موجودی و تراکنش‌های کیف پول', 'دسترسی به داشبورد کیف پول، افزایش یا کاهش اعتبار، برداشت و گزارش تراکنش‌ها را می‌دهد.'],
+                ['permission_monthly_payment', 'epermission_monthly_payment', 'permission_monthly_payment', 'مدیریت واریز ماهانه همکاران', 'اجازه ثبت مبلغ، ماه، تاریخ پرداخت و شماره پیگیری واریزهای ماهانه پرسنل را می‌دهد.'],
             ],
         ],
     ],
@@ -440,10 +484,22 @@ if (isset($_POST['esave'])) {
 
         $skyroom = intval($_POST['skyroom']);
 
-        $adminrole = (isset($_POST['eadminrole']) && in_array((int)$_POST['eadminrole'], [0,51,52,53,54,2,6,1,3], true))
+        $adminrole = (isset($_POST['eadminrole']) && in_array((int)$_POST['eadminrole'], [0,51,52,53,54,55,2,6,1,3], true))
             ? (int)$_POST['eadminrole'] : NULL;
         $schoolRoleId = isset($_POST['eschool_role_id']) && in_array((int)$_POST['eschool_role_id'], $validSchoolRoleIds, true)
             ? (int)$_POST['eschool_role_id'] : NULL;
+        $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
+        if ($selectedSchoolRoleKey === 'counselor') {
+            // مشاور از نظر قالب پنل و رفتار قدیمی سامانه همان adminrole پشتیبان است.
+            $adminrole = 1;
+            $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
+            $manage_installment = 0;
+        } elseif ($selectedSchoolRoleKey === 'financial_deputy') {
+            $adminrole = 55;
+            $menubill = 1;
+        } elseif ($selectedSchoolRoleKey === 'technical_deputy') {
+            $adminrole = 54;
+        }
         $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['ecourse_codes'] ?? []);
 
         $uptv = 'UPDATE dbadmin SET password=?,fname=?,lname=?,adminactive=?,mobile=?,adminpic=?,gender=?,per_skyroom=?,permision_actfactor=?,permision_notpay=?,permision_actwallet=?,permision_bill=?,permision_financial_export=?,permision_viewcall=?,permision_viewstudent=?,permision_viewcollague=?,permision_reportcollague=?,permision_viewcourse=?,permision_viewbill=?,permision_viewwallet=?,permision_viewalert=?,permision_viewsupport=?,permision_viewdocument=?,permision_viewemploy=?,permision_viewsetting=?,permision_addstudent=?,permision_editstudent=?,permision_addcourse_student=?,permision_reportstudent=?,permision_refer=?,permision_allticket=?,permision_deletcourse=?,permision_discount=?,permision_addcall=?,permision_managecall=?,permision_viewtest=?,permision_suporter=?,permision_manage_suporter=?,excel_permission=?,skill_permission=?,reportcall_permission=?,installment_permission=?,olympiad_permission=?, adminrole=? ,administrator=?,history_permission=?,autodialer=?,permission_calendar=?,permission_news_notif=? WHERE username=?';
@@ -451,6 +507,7 @@ if (isset($_POST['esave'])) {
         $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar, $manage_news_notif,  $_GET['edit']]);
         $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
         $schoolRoleUpdate->execute([$schoolRoleId, $_GET['edit']]);
+        syncExtendedStaffPermissions($conn, (string)$_GET['edit'], true, $selectedSchoolRoleKey);
         $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
         $registerClassUpdate->execute([$registerClassPermission, $_GET['edit']]);
         syncStaffCourseAssignments($conn, (string)$_GET['edit'], $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
@@ -690,10 +747,22 @@ if (isset($_POST['save'])) {
 
                 $skyroom = intval($_POST['skyroom']);
                 // each number represents a role , for more info about the roles check menu.php in admin directory or the comment of adminrole column in dbadmin.
-                $adminrole = (isset($_POST['adminrole']) && in_array((int)$_POST['adminrole'], [0,51,52,53,54,2,6,1,3], true))
+                $adminrole = (isset($_POST['adminrole']) && in_array((int)$_POST['adminrole'], [0,51,52,53,54,55,2,6,1,3], true))
                     ? (int)$_POST['adminrole'] : NULL;
                 $schoolRoleId = isset($_POST['school_role_id']) && in_array((int)$_POST['school_role_id'], $validSchoolRoleIds, true)
                     ? (int)$_POST['school_role_id'] : NULL;
+                $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
+                if ($selectedSchoolRoleKey === 'counselor') {
+                    // مشاور با داشبورد و منطق پشتیبان قدیمی ایجاد می‌شود.
+                    $adminrole = 1;
+                    $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
+                    $manage_installment = 0;
+                } elseif ($selectedSchoolRoleKey === 'financial_deputy') {
+                    $adminrole = 55;
+                    $menubill = 1;
+                } elseif ($selectedSchoolRoleKey === 'technical_deputy') {
+                    $adminrole = 54;
+                }
                 $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['course_codes'] ?? []);
 
                 $addmin = 'INSERT INTO dbadmin (username,password,fname,lname,adminactive,mobile,dakheli,adminpic,gender,per_skyroom,permision_actfactor,permision_notpay,permision_actwallet,permision_bill,permision_financial_export,permision_viewcall,permision_viewstudent,permision_viewcollague,permision_reportcollague,permision_viewcourse,permision_viewbill,permision_viewwallet,permision_viewalert,permision_viewsupport,permision_viewdocument,permision_viewemploy,permision_viewsetting,permision_addstudent,permision_editstudent,permision_addcourse_student,permision_reportstudent,permision_refer,permision_allticket,permision_deletcourse,permision_discount,permision_addcall,permision_managecall,permision_viewtest,permision_suporter,permision_manage_suporter,excel_permission,skill_permission,reportcall_permission,installment_permission,olympiad_permission,adminrole,administrator,history_permission,autodialer,permission_calendar,permission_news_notif)
@@ -702,6 +771,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                 $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar,$manage_news_notif]);
                 $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
                 $schoolRoleUpdate->execute([$schoolRoleId, $username]);
+                syncExtendedStaffPermissions($conn, $username, false, $selectedSchoolRoleKey);
                 $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
                 $registerClassUpdate->execute([$registerClassPermission, $username]);
                 syncStaffCourseAssignments($conn, $username, $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
@@ -887,6 +957,7 @@ include_once '../../temp.html';
                                                     <option value="52">معاونت آموزشی</option>
                                                     <option value="53">معاونت فروش</option>
                                                     <option value="54">معاونت فنی</option>
+                                                    <option value="55">معاونت مالی</option>
                                                     <option value="6">کارشناس فروش</option>
                                                     <option value="1">پشتیبان</option>
                                                     <option value="2">معاونت میانی</option>
@@ -898,6 +969,7 @@ include_once '../../temp.html';
                                                     <option value="">— انتخاب سمت —</option>
                                                     <?php foreach ($schoolRoles as $schoolRole) { ?>
                                                         <option value="<?= (int)$schoolRole->id ?>"
+                                                                data-role-key="<?= htmlspecialchars($schoolRole->role_key) ?>"
                                                                 data-course-scope="<?= in_array((string)$schoolRole->role_key, $courseScopedRoleKeys, true) ? '1' : '0' ?>">
                                                             <?= htmlspecialchars($schoolRole->title) ?>
                                                         </option>
@@ -1099,6 +1171,7 @@ include_once '../../temp.html';
                                                     <option value="52" <?php if ($retadmin->adminrole == '52') { echo 'selected'; } ?>>معاونت آموزش</option>
                                                     <option value="53" <?php if ($retadmin->adminrole == '53') { echo 'selected'; } ?>>معاونت فروش</option>
                                                     <option value="54" <?php if ($retadmin->adminrole == '54') { echo 'selected'; } ?>>معاونت فنی</option>
+                                                    <option value="55" <?php if ($retadmin->adminrole == '55') { echo 'selected'; } ?>>معاونت مالی</option>
                                                     <option value="2" <?php if ($retadmin->adminrole == '2') { echo 'selected'; } ?>>معاونت میانی</option>
                                                     <option value="6" <?php if ($retadmin->adminrole == '6') { echo 'selected'; } ?>>کارشناس فروش</option>
                                                     <option value="1" <?php if ($retadmin->adminrole == '1') { echo 'selected'; } ?>>پشتیبان</option>
@@ -1110,6 +1183,7 @@ include_once '../../temp.html';
                                                     <option value="">— انتخاب سمت —</option>
                                                     <?php foreach ($schoolRoles as $schoolRole) { ?>
                                                         <option value="<?= (int)$schoolRole->id ?>"
+                                                                data-role-key="<?= htmlspecialchars($schoolRole->role_key) ?>"
                                                                 data-course-scope="<?= in_array((string)$schoolRole->role_key, $courseScopedRoleKeys, true) ? '1' : '0' ?>"
                                                             <?php if ((int)($retadmin->school_role_id ?? 0) === (int)$schoolRole->id) { echo 'selected'; } ?>>
                                                             <?= htmlspecialchars($schoolRole->title) ?>
@@ -1227,6 +1301,44 @@ include_once '../../temp.html';
 
             bindCourseScope('school_role_id', 'create');
             bindCourseScope('eschool_role_id', 'edit');
+
+            function bindSchoolRoleDefaults(roleSelectName, adminRoleName, isEdit) {
+                const roleSelect = document.querySelector('select[name="' + roleSelectName + '"]');
+                const adminRole = document.querySelector('select[name="' + adminRoleName + '"]');
+                if (!roleSelect) return;
+
+                roleSelect.addEventListener('change', function () {
+                    const option = roleSelect.options[roleSelect.selectedIndex];
+                    const roleKey = option ? option.dataset.roleKey : '';
+                    const prefix = isEdit ? 'e' : '';
+                    const setChecked = function (name, checked) {
+                        const input = document.querySelector('input[name="' + prefix + name + '"]');
+                        if (input) input.checked = checked;
+                    };
+
+                    if (roleKey === 'counselor') {
+                        if (adminRole) adminRole.value = '1';
+                        setChecked('menu-bill', false);
+                        setChecked('permission_monthly_payment', false);
+                    } else if (roleKey === 'technical_deputy') {
+                        if (adminRole) adminRole.value = '54';
+                        setChecked('permission_assigned_tasks', true);
+                    } else if (roleKey === 'financial_deputy') {
+                        if (adminRole) adminRole.value = '55';
+                        setChecked('menu-bill', true);
+                        setChecked('permission_staff_view', true);
+                        setChecked('permission_staff_documents', true);
+                        setChecked('permission_insurance', true);
+                        setChecked('permission_monthly_payment', true);
+                    }
+                    if (adminRole && window.jQuery) {
+                        jQuery(adminRole).trigger('change.select2');
+                    }
+                });
+            }
+
+            bindSchoolRoleDefaults('school_role_id', 'adminrole', false);
+            bindSchoolRoleDefaults('eschool_role_id', 'eadminrole', true);
         });
     </script>
 

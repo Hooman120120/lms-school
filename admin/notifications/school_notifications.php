@@ -85,7 +85,7 @@ $unreadCount = CountSchoolNotifications($currentUser, true);
                 <?php if (!SchoolNotificationsReady()): ?>
                     <div class="alert alert-warning">ساختار دیتابیس اعلان‌های مدرسه هنوز نصب نشده است. migration مربوط به اعلان‌ها را اجرا کنید.</div>
                 <?php else: ?>
-                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor'], true)): ?>
+                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mb-3">
                             <div class="card-header border-bottom-0">
                                 <h5 class="card-title mb-0">اعلان‌های عملیاتی سامانه</h5>
@@ -93,7 +93,8 @@ $unreadCount = CountSchoolNotifications($currentUser, true);
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)): ?>
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)
+                                        || ($schoolRoleKey === 'financial_deputy' && Permision('permision_actfactor'))): ?>
                                         <div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-warning btn-block text-right p-3" href="<?= url('admin/notifications/verify_by_manager.php') ?>">
                                                 <i class="fe fe-credit-card ml-2"></i> فاکتورهای منتظر تأیید
