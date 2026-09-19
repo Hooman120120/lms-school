@@ -938,7 +938,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (Permision('permision_viewemploy')) { ?>
+            <?php if (Permision('permision_viewemploy') || Permision('permission_staff_view')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="si si-people t sidemenu-icon"></i>
@@ -964,10 +964,15 @@ else                  $c = '#15233f';
                             class="angle fe fe-chevron-left"></i>
                     </a>
                     <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/employ/listadmin.php') ?>">مشاهده
-                                همکاران </a>
+                        <?php if (Permision('permission_staff_view')) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/employ/staff-directory.php') ?>">مشاهده همکاران</a>
+                            </li>
+                        <?php } ?>
 
+                        <?php if (Permision('permision_viewemploy')) { ?>
+                        <li class="nav-sub-item">
+                            <a class="nav-sub-link" href="<?php echo url('admin/employ/listadmin.php') ?>">مدیریت همکاران</a>
                         </li>
 
                         <li class="nav-sub-item">
@@ -985,10 +990,21 @@ else                  $c = '#15233f';
                             <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> <?php echo m('action.add_teacher') ?>
 جدید </a>
                         </li>
+                        <?php } ?>
 
                     </ul>
                 </li>
 
+            <?php } ?>
+
+            <?php if (Permision('permission_assigned_tasks')) { ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo url('admin/tasks/assigned-tasks.php') ?>">
+                        <span class="shape1"></span><span class="shape2"></span>
+                        <i class="fe fe-check-square sidemenu-icon"></i>
+                        <span class="sidemenu-label">کارهای محول‌شده</span>
+                    </a>
+                </li>
             <?php } ?>
 
             <?php if (Permision('permision_viewcollague')) { ?>
@@ -1188,7 +1204,7 @@ else                  $c = '#15233f';
                 </li>
 
             <?php endif ?>
-            <?php if (Permision('permision_viewbill')) { ?>
+            <?php if (Permision('permision_viewbill') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-database  sidemenu-icon"></i>
@@ -1198,11 +1214,11 @@ else                  $c = '#15233f';
                      align-items:center;
                      gap:12px;">
 
-            حسابداری
+            امور مالی
 
             <span class="menu-info-trigger"
                   data-tooltip="در این بخش می‌توانید فرآیندهای مالی سامانه را مدیریت و پیگیری کنید. امکاناتی مانند بررسی و تأیید فاکتورها، مشاهده فاکتورهای پرداخت‌نشده، مدیریت فاکتورهای مستردشده، تأیید تراکنش‌های کیف پول، مشاهده صورتحساب‌ها، گزارش‌های مالی و پیگیری موارد قسطی از طریق این قسمت انجام می‌شود."
-                  aria-label="راهنمای حسابداری"
+                  aria-label="راهنمای امور مالی"
                   onclick="event.preventDefault(); event.stopPropagation();">
 
                 <i class="fe fe-info fs-4"></i>
@@ -1210,18 +1226,22 @@ else                  $c = '#15233f';
 
         </span>
                         <i
-                            class="angle fe fe-chevron-left"></i><?php $count = countCheckfactor() + countCheckWallet();
+                            class="angle fe fe-chevron-left"></i><?php $count = Permision('permision_viewbill') ? countCheckfactor() + countCheckWallet() : 0;
                         if ($count > 0) { ?> <span
                             class="badge badge-warning side-badge "><?php echo $count; ?></span><?php } ?></a>
 
                     <ul class="nav-sub">
+                        <?php if (Permision('permision_viewbill')) { ?>
+                        <?php if (Permision('permision_actfactor')) { ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/Bill/active-factor.php') ?>">منتظر تایید
                                 فاکتور <?php if (countCheckfactor() > 0) { ?><span
                                     class="badge badge-warning mg-r-20"><?php echo countCheckfactor(); ?> </span><?php } ?>
                             </a>
                         </li>
+                        <?php } ?>
 
+                        <?php if (Permision('permision_notpay')) { ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/Bill/factor-notpay.php') ?>"> فاکتورهای
                                 پرداخت نشده </a>
@@ -1233,14 +1253,18 @@ else                  $c = '#15233f';
                                     شده </a>
                             </li>
                         <?php endif; ?>
+                        <?php } ?>
 
+                        <?php if (Permision('permision_actwallet')) { ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/Bill/waitingWallet.php') ?>">منتظر تایید
                                 کیف پول <?php if (countCheckWallet() > 0) { ?><span
                                     class="badge badge-warning mg-r-20 "><?php echo countCheckWallet(); ?> </span><?php } ?>
                             </a>
+                        </li>
+                        <?php } ?>
 
-                            <?php if ($adminRole !== 2): ?>
+                            <?php if ($adminRole !== 2 && Permision('permision_bill')): ?>
 
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/Bill/SearchBillView.php') ?>">صورتحساب
@@ -1256,6 +1280,25 @@ else                  $c = '#15233f';
                             <a class="nav-sub-link" href="<?php echo url('admin/Bill/payment.php') ?>"> موارد قسطی
                             </a>
                         </li>
+                        <?php } ?>
+
+                        <?php if (Permision('permission_monthly_payment')) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/finance/monthly-payments.php') ?>">واریز ماهانه همکاران</a>
+                            </li>
+                        <?php } ?>
+
+                        <?php if (Permision('permission_staff_documents')) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/employ/staff-documents.php') ?>">مستندات همکاران</a>
+                            </li>
+                        <?php } ?>
+
+                        <?php if (Permision('permission_insurance')) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/employ/insurance.php') ?>">بیمه افراد</a>
+                            </li>
+                        <?php } ?>
 
 
                     </ul>

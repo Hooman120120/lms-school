@@ -27,6 +27,10 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+if (!Permision('permision_viewbill')) {
+    http_response_code(403);
+    exit('مجوز دسترسی به سوابق اقساط برای شما تعریف نشده است.');
+}
 $username = $_SESSION['admin']['user'];
 
 $canViewAll = false;

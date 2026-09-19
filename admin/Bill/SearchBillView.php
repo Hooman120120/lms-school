@@ -26,6 +26,9 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
+if (!Permision('permision_bill')) {
+    http_response_code(403); exit('مجوز مشاهده صورتحساب‌ها برای شما تعریف نشده است.');
+}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;

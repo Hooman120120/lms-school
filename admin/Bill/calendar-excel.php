@@ -12,7 +12,19 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 if (!isset($_SESSION['admin'])) {
-    die('دسترسی غیرمجاز');
+    http_response_code(401);
+    exit('دسترسی غیرمجاز');
+}
+
+$sessionRow = sessionAdmin($_SESSION['admin']['user']);
+if (session_id() != ($sessionRow['session_id'] ?? null)) {
+    session_unset();
+    http_response_code(401);
+    exit('نشست کاربری معتبر نیست.');
+}
+if (!Permision('permission_calendar')) {
+    http_response_code(403);
+    exit('مجوز دریافت خروجی تقویم برای شما تعریف نشده است.');
 }
 
 $username = $_SESSION['admin']['user'];
@@ -49,7 +61,7 @@ function getEventTargetSummary($eventId, $conn) {
     $roleNames = [
         0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => t('role_teacher'),
         6 => 'کارشناس فروش', 51 => 'معاونت اجرایی', 52 => 'معاونت آموزشی',
-        53 => 'معاونت فروش', 54 => 'معاونت فنی'
+        53 => 'معاونت فروش', 54 => 'معاونت فنی', 55 => 'معاونت مالی'
     ];
     $roleText = !empty($roles) ? 'نقش‌ها: ' . implode(', ', array_map(function($r) use ($roleNames) {
             return $roleNames[$r] ?? $r;

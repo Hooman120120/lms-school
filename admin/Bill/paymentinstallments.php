@@ -24,6 +24,10 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
+if (!Permision('permision_viewbill')) {
+    http_response_code(403);
+    exit('مجوز دسترسی به پرونده‌های اقساطی برای شما تعریف نشده است.');
+}
 
 // PDO exceptions
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

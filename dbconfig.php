@@ -14,7 +14,7 @@ define('BASE_PATH', __DIR__);
 define('CURRENT_DOMAIN', currentDomain() . '/');
 define('DISPLAY_ERROR', true);
 define('PERMISION_FILE', '0600'); // سطح دسترسی فایل های بارگزاری شده
-define('DB_HOST', 'localhost');
+define('DB_HOST', '192.168.1.225');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'myhona_myhonar');

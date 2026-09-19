@@ -975,6 +975,10 @@ function SchoolNotificationAllowedTypes(?string $roleKey = null): array
             return ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
         case 'teacher':
             return ['attendance', 'new_student', 'exam', 'academic_calendar'];
+        case 'financial_deputy':
+            return ['pending_invoice', 'executive_calendar'];
+        case 'technical_deputy':
+            return ['executive_calendar', 'academic_calendar'];
         default:
             return [];
     }
@@ -1134,7 +1138,8 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
     ];
 
     try {
-        if (in_array($roleKey, ['manager', 'general_deputy'], true)) {
+        if (in_array($roleKey, ['manager', 'general_deputy'], true)
+            || ($roleKey === 'financial_deputy' && PermisionUser('permision_actfactor', $user))) {
             $counts['pending_invoice'] = (int)$conn->query("SELECT COUNT(*) FROM deposit_verifications WHERE status = 'pending'")->fetchColumn();
         }
         if (in_array($roleKey, ['manager', 'general_deputy', 'executive_deputy'], true)) {
@@ -3826,7 +3831,7 @@ function getEventAnswers(PDO $conn, array $studentCodes, array $eventIds): array
     $roleNames = [
         0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => t('role_teacher'),
         6 => 'کارشناس فروش', 51 => 'معاونت اجرایی', 52 => 'معاونت آموزشی',
-        53 => 'معاونت فروش', 54 => 'معاونت فنی'
+        53 => 'معاونت فروش', 54 => 'معاونت فنی', 55 => 'معاونت مالی'
     ];
     $adminNameCache = [];
     $getAdminName = function($adminId) use ($conn, &$adminNameCache) {

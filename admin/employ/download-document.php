@@ -18,7 +18,7 @@ if (session_id() != ($session['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if (!Permision('permision_viewemploy')) {
+if (!Permision('permision_viewemploy') && !Permision('permission_staff_documents')) {
     http_response_code(403);
     exit('شما مجوز مشاهده مدارک پرسنلی را ندارید.');
 }
