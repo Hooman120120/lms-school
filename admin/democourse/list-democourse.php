@@ -522,7 +522,7 @@ include_once '../../temp.html';
                                                         </tr>
                                                     <?php }
                                                 } else {
-                                                    echo '<tr><td colspan="10" class="text-center">هیچ پایه‌ آزمایشی یافت نشد.</td></tr>';
+                            echo '<tr><td colspan="10" class="text-center">هیچ دوره فوق برنامه‌ای یافت نشد.</td></tr>';
                                                 }
                                                 ?>
                                                 </tbody>

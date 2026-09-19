@@ -463,7 +463,7 @@ else                  $c = '#15233f';
                                 <?php } ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
-                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>">پایه‌های
+                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>">ثبت دوره
                                         فوق برنامه</a>
                                 </li>
                             <?php endif; ?>
