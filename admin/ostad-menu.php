@@ -76,13 +76,12 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
             <?php if (TeacherPermission('teacher_perm_courses')): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label">پایه ها</span><i
+                        class="si si-organization sidemenu-icon"></i><span class="sidemenu-label"><?php echo m('menu.courses') ?></span><i
                         class="angle fe fe-chevron-left"></i></a>
 
                 <ul class="nav-sub">
                     <li class="nav-sub-item">
-                        <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"> پایه‌های
-                            فعال</a>
+                        <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"> <?php echo m('menu.active_courses_short') ?></a>
                     </li>
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('admin/course/lesson-plans.php') ?>">طرح درس من</a>
@@ -97,7 +96,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                     <span class="shape1"></span><span class="shape2"></span>
                     <i class="fe fe-bell sidemenu-icon"></i>
-                    <span class="sidemenu-label">اعلان‌های مدرسه</span>
+                    <span class="sidemenu-label"><?php echo m('menu.school_notifications') ?></span>
                     <?php if ($schoolNotificationCount > 0): ?>
                         <span class="badge badge-warning side-badge mg-r-20"><?= (int)$schoolNotificationCount ?></span>
                     <?php endif; ?>

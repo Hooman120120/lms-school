@@ -217,13 +217,11 @@ else                  $c = '#15233f';
                         <span class="sidemenu-label"
                               style="display:inline-flex;
                                  align-items:center;
-                                 gap:12px;">
-
-                            دانش آموزان
+                                 gap:12px;">                            <?php echo m('menu.students') ?>
 
                             <span class="menu-info-trigger"
-                                  data-tooltip="در این بخش امکان ثبت نام دانش آموز به صورت قطعی و موقت و همچنین ثبت نام پایه آموزشی و ویرایش اطلاعات دانش آموز وجود دارد. همچنین امکان مشاهده گزارش‌های تفکیکی، دانش آموزان فردی و نفر پایه، افراد غیرفعال، انصرافی، تعلیقی و لغو پشتیبانی‌شده وجود دارد."
-                                  aria-label="راهنمای مدیریت دانش آموزان"
+                                  data-tooltip="<?php echo m('menu.students_tooltip') ?>"
+                                  aria-label="<?php echo m('menu.students_aria') ?>"
                                   onclick="event.preventDefault(); event.stopPropagation();">
 
                                 <i class="fe fe-info fs-4"></i>
@@ -240,7 +238,7 @@ else                  $c = '#15233f';
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
                                 <span class="sidemenu-label"
-                                      style="font-size:16px; color: #79f57d;">دانش آموزان قطعی</span>
+                                      style="font-size:16px; color: #79f57d;"><?php echo m('menu.students_definitive') ?></span>
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;"> <!-- فاصله زیرمنو -->
@@ -255,8 +253,7 @@ else                  $c = '#15233f';
                                     </li>
                                 <//?php endif; ?> -->
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
-                                    <a class="nav-sub-link" href="<?= url('admin/Student/addcourse.php') ?>">ثبت
-                                        پایه</a>
+                                    <a class="nav-sub-link" href="<?= url('admin/Student/addcourse.php') ?>"><?php echo m('menu.student_register_course') ?></a>
                                 </li>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/edit-absolute.php') ?>">ویرایش
@@ -268,28 +265,28 @@ else                  $c = '#15233f';
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                            href="<?= url('admin/panel/mystudent.php') ?>">
-                                            دانش آموزان فردی
+                                            <?php echo m('menu.students_individual') ?>
                                         </a>
                                     </li>
 
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                            href="<?= url('admin/panel/mypersonalcourse.php') ?>">
-                                            دانش آموزان نفر پایه
+                                            <?php echo m('menu.students_per_course') ?>
                                         </a>
                                     </li>
 
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                            href="<?= url('admin/panel/canceled_student_list.php') ?>">
-                                            دانش آموزان لغو پشتیبانی
+                                            <?php echo m('menu.students_canceled_support') ?>
                                         </a>
                                     </li>
 
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                            href="<?= url('admin/panel/suspension_list.php') ?>">
-                                            دانش آموزان تعلیقی
+                                            <?php echo m('menu.students_suspended_list') ?>
                                         </a>
                                     </li>
 
@@ -332,7 +329,7 @@ else                  $c = '#15233f';
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
                                 <span class="sidemenu-label"
-                                      style="font-size:16px; color: #79f57d;">دانش آموزان موقت</span>
+                                      style="font-size:16px; color: #79f57d;"><?php echo m('menu.students_temporary') ?></span>
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;">
@@ -344,8 +341,7 @@ else                  $c = '#15233f';
                                 </li>
                                 <?php if ($adminRole !== 2): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
-                                        <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>">ثبت
-                                            فوق برنامه</a>
+                                        <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>"><?php echo m('menu.register_democourse_student') ?></a>
                                     </li>
                                 <?php endif; ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
@@ -430,12 +426,10 @@ else                  $c = '#15233f';
                     <span class="sidemenu-label"
                           style="display:inline-flex;
                              align-items:center;
-                             gap:12px;">
-
-                           پایه ها
+                             gap:12px;">                           <?php echo m('menu.courses') ?>
 
                         <span class="menu-info-trigger"
-                              data-tooltip="مدیریت پایه‌ها و دوره‌های فوق برنامه؛ در این بخش می‌توانید پایه‌ها و دوره‌های فوق برنامه را ثبت و مدیریت کنید، پایه‌های در حال اجرا و بایگانی سال‌های قبل را مشاهده نمایید و کد تخفیف بسازید. همچنین امکان مدیریت محصولات «بغل دستی‌ها» شامل ساخت محصول و مشاهده گروه‌های فعال و غیرفعال وجود دارد."
+                              data-tooltip="<?php echo m('menu.courses_tooltip') ?>"
                               aria-label="راهنمای مدیریت محصولات"
                               onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -450,33 +444,29 @@ else                  $c = '#15233f';
                 <ul class="nav-sub ">
                     <li class="nav-item show">
                         <a class="nav with-sub" href="#"><span class="shape1"></span><span class="shape2"></span>
-                            <span class="sidemenu-label" style="font-size:16px; color: #79f57d;">پایه‌ها</span>
+                            <span class="sidemenu-label" style="font-size:16px; color: #79f57d;"><?php echo m('menu.courses_sub') ?></span>
                         </a>
 
                         <ul class="nav-sub">
                             <?php if ($adminRole !== 2): ?>
                                 <?php if (Permision('permision_viewcourse')) { ?>
                                     <li class="nav-sub-item">
-                                        <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>">ثبت
-                                            پایه</a>
+                                        <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>"><?php echo m('menu.course_create') ?></a>
                                     </li>
                                 <?php } ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
-                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>">ثبت دوره
-                                        فوق برنامه</a>
+                                       href="<?php echo url('admin/democourse/add-democourse.php') ?>"><?php echo m('menu.democourse_create') ?></a>
                                 </li>
                             <?php endif; ?>
 
                             <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>">
-                                    پایه‌های در حال اجرا</a>
+                                <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"><?php echo m('menu.active_courses') ?></a>
                             </li>
 
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link"
-                                   href="<?php echo url('admin/democourse/list-democourse.php?paye=all') ?>">
-                                    دوره‌های فوق برنامه در حال اجرا</a>
+                                   href="<?php echo url('admin/democourse/list-democourse.php?paye=all') ?>"><?php echo m('menu.active_democourses') ?></a>
                             </li>
                             <?php if ($adminRole !== 2): ?>
                                 <?php if (Permision('permision_viewcourse')) { ?>
@@ -509,8 +499,7 @@ else                  $c = '#15233f';
                             </li>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
-                                   href="<?php echo url('admin/handhug/handhug-management.php') ?>"> پایه های فعال "بغل
-                                    دستی ها"</a>
+                                   href="<?php echo url('admin/handhug/handhug-management.php') ?>"> <?php echo m('menu.handhug_active') ?></a>
                             </li>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
@@ -544,7 +533,7 @@ else                  $c = '#15233f';
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>
                         <i class="fe fe-bell sidemenu-icon"></i>
-                        <span class="sidemenu-label">اعلان‌های مدرسه</span>
+                        <span class="sidemenu-label"><?php echo m('menu.school_notifications') ?></span>
                         <?php if ($schoolNotificationCount > 0): ?>
                             <span class="badge badge-warning side-badge mg-r-20"><?= (int)$schoolNotificationCount ?></span>
                         <?php endif; ?>
@@ -908,7 +897,7 @@ else                  $c = '#15233f';
             مستندات
 
             <span class="menu-info-trigger"
-                  data-tooltip="در این بخش می‌توانید مدارک و فایل‌های ارسالی دانش آموزان را مدیریت کنید. از طریق این قسمت امکان مشاهده مستندات جدید، جستجو در میان مدارک ثبت‌شده و بررسی اطلاعات مربوط به هر دانش آموز فراهم شده است."
+                  data-tooltip="<?php echo m('menu.docs_tooltip') ?>"
                   aria-label="راهنمای مدیریت مستندات"
                   onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -1004,7 +993,7 @@ else                  $c = '#15233f';
                       معرفان
 
                         <span class="menu-info-trigger"
-                              data-tooltip="معرفان برون سازمانی: از طریق این بخش می‌توانید  معرفان برون‌سازمانی خود را سازماندهی کنید. هر معرف با یک کد اختصاصی شناسایی می‌شود که امکانِ پیگیری و گزارش‌گیری دقیق از عملکرد (تعداد ثبت‌نام‌های موفق دانش آموز)را فراهم می‌آورد."
+                              data-tooltip="<?php echo m('menu.referrer_tooltip') ?>"
                               aria-label="راهنمای مدیریت معرفان"
                               onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -1087,6 +1076,11 @@ else                  $c = '#15233f';
                         </li>
 
                         <li class="nav-sub-item">
+                            <a class="nav-sub-link" href="<?php echo url('admin/setting/levels.php') ?>">
+                                <?php echo m('levels.page_title') ?> </a>
+                        </li>
+
+                        <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/setting/blacklist.php') ?>">بلک لیست
                                 <span class="badge badge-light "></span></a>
                         </li>
@@ -1121,7 +1115,7 @@ else                  $c = '#15233f';
                         آمار و گزارشات
 
                         <span class="menu-info-trigger"
-                              data-tooltip="در این بخش می‌توانید گزارش‌ها و آمارهای مختلف سامانه را مشاهده و تهیه کنید. گزارش‌های مربوط به دانش آموزان و همکاران با استفاده از فیلترهای متنوع قابل استخراج هستند و می‌توان از آن‌ها برای تحلیل عملکرد، پیگیری وضعیت کاربران و تهیه گزارش‌های مدیریتی استفاده کرد."
+                              data-tooltip="<?php echo m('menu.reports_tooltip') ?>"
                               aria-label="راهنمای آمار و گزارشات"
                               onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -1134,7 +1128,7 @@ else                  $c = '#15233f';
                     </a>
                     <ul class="nav-sub">
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/report/students.php') ?>"> دانش آموزان
+                            <a class="nav-sub-link" href="<?php echo url('admin/report/students.php') ?>"> <?php echo m('menu.students') ?>
                             </a>
                         </li>
                         <li class="nav-sub-item">
@@ -1340,7 +1334,7 @@ else                  $c = '#15233f';
                     </div>
 
                     <span class="menu-info-trigger flex-shrink-0"
-                          data-tooltip="این بخش هسته مدیریت پشتیبانی و آموزش سامانه است و امکان پایش متمرکز عملکرد تیم پشتیبانی، وضعیت فعالیت دانش آموزان و نظارت بر فرآیندهای آموزشی را برای تضمین کیفیت خدمات آموزشی در اختیار مدیران قرار می‌دهد."
+                          data-tooltip="<?php echo m('menu.mysystem_tooltip') ?>"
                           aria-label="راهنمای سامانه من">
 
         <i class="fe fe-info fs-4"></i>

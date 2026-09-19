@@ -196,11 +196,12 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
         .grade-card:hover::before { width: 300px; height: 300px; border-radius: 0; }
 
         /* رنگ پایه‌ها */
-        .grade-5::before { background: #ff9800; } .grade-6::before { background: #ff5722; }
-        .grade-7::before { background: #e91e63; } .grade-8::before { background: #9c27b0; }
-        .grade-9::before { background: #673ab7; } .grade-10::before { background: #0d47a1; }
-        .grade-11::before { background: #03a9f4; } .grade-12::before { background: #00bcd4; }
-        .grade-13::before { background: #1d86db; }
+        /* رنگ کارت‌ها بر اساس جایگاه در فهرست، نه عدد پایه — تا فهرست‌های دلخواه هم رنگ بگیرند */
+        .grade-c1::before { background: #ff9800; } .grade-c2::before { background: #ff5722; }
+        .grade-c3::before { background: #e91e63; } .grade-c4::before { background: #9c27b0; }
+        .grade-c5::before { background: #673ab7; } .grade-c6::before { background: #0d47a1; }
+        .grade-c7::before { background: #03a9f4; } .grade-c8::before { background: #00bcd4; }
+        .grade-c9::before { background: #1d86db; }
         /* --- سیستم ردیفی (Grid) جدید --- */
         .results-area-style {
             display: flex;
@@ -501,33 +502,45 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
                     <div class="inner-body">
                         <div class="courses-wrapper w-100 pt-3" style="direction: rtl; text-align: right;">
 
-                            <h6 class="mb-3 text-muted" style="font-weight: bold;">۱. پایه تحصیلی خود را انتخاب کنید:</h6>
-                            <div class="top-nav-container">
-                                <div class="main-tabs">
-                                    <button class="btn-main" onclick="switchGroup('ebtedayi', this)">ابتدایی</button>
-                                    <button class="btn-main" onclick="switchGroup('motevasete1', this)">متوسطه اول</button>
-                                    <button class="btn-main" onclick="switchGroup('motevasete2', this)">متوسطه دوم</button>
+                            <?php
+                            $instGroups = inst_level_groups();
+                            $instMulti  = count($instGroups) > 1;
+                            $gi = 0;
+                            ?>
+                            <?php if ($instMulti) { ?>
+                                <h6 class="mb-3 text-muted" style="font-weight: bold;"><?php echo m('picker.step1') ?></h6>
+                                <div class="top-nav-container">
+                                    <div class="main-tabs">
+                                        <?php foreach ($instGroups as $gslug => $ginfo) { ?>
+                                            <button class="btn-main" onclick="switchGroup('grp<?php echo $gi ?>', this)"><?php echo htmlspecialchars($ginfo['label'], ENT_QUOTES, 'UTF-8') ?></button>
+                                            <?php $gi++;
+                                        } ?>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php } ?>
 
-                            <div id="grade-section" style="display: none; margin-top: 30px;">
-                                <h6 class="mb-3 text-muted" style="font-weight: bold;">۲. پایه تحصیلی خود را انتخاب کنید:</h6>
+                            <div id="grade-section" style="display: <?php echo $instMulti ? 'none' : 'block' ?>; margin-top: 30px;">
+                                <h6 class="mb-3 text-muted" style="font-weight: bold;"><?php echo $instMulti ? m('picker.step2') : m('picker.step1') ?></h6>
                                 <div id="grade-cards-container">
-                                    <div id="ebtedayi" class="grade-group">
-                                        <div class="grade-card grade-5" onclick="fetchCourses('پنجم')"><span>۵</span><small>پنجم</small></div>
-                                        <div class="grade-card grade-6" onclick="fetchCourses('ششم')"><span>۶</span><small>ششم</small></div>
-                                    </div>
-                                    <div id="motevasete1" class="grade-group">
-                                        <div class="grade-card grade-7" onclick="fetchCourses('هفتم')"><span>۷</span><small>هفتم</small></div>
-                                        <div class="grade-card grade-8" onclick="fetchCourses('هشتم')"><span>۸</span><small>هشتم</small></div>
-                                        <div class="grade-card grade-9" onclick="fetchCourses('نهم')"><span>۹</span><small>نهم</small></div>
-                                    </div>
-                                    <div id="motevasete2" class="grade-group">
-                                        <div class="grade-card grade-10" onclick="fetchCourses('دهم')"><span>۱۰</span><small>دهم</small></div>
-                                        <div class="grade-card grade-11" onclick="fetchCourses('یازدهم')"><span>۱۱</span><small>یازدهم</small></div>
-                                        <div class="grade-card grade-12" onclick="fetchCourses('دوازدهم')"><span>۱۲</span><small>دوازدهم</small></div>
-                                        <div class="grade-card grade-13" onclick="fetchCourses('المپیاد')"><span>المپیاد</span><small>المپیاد</small></div>
-                                    </div>
+                                    <?php $gi = 0;
+                                    foreach ($instGroups as $gslug => $ginfo) { ?>
+                                        <div id="grp<?php echo $gi ?>" class="grade-group<?php echo $instMulti ? '' : ' active' ?>">
+                                            <?php $ci = 0;
+                                            foreach ($ginfo['items'] as $item) {
+                                                $ci++;
+                                                $face = ($item['value'] !== null && $item['value'] !== '')
+                                                    ? inst_fa_digits($item['value'])
+                                                    : $item['label'];
+                                                ?>
+                                                <div class="grade-card grade-c<?php echo (($ci - 1) % 9) + 1 ?>"
+                                                     onclick="fetchCourses(<?php echo json_encode($item['slug'], JSON_UNESCAPED_UNICODE) ?>)">
+                                                    <span><?php echo htmlspecialchars($face, ENT_QUOTES, 'UTF-8') ?></span>
+                                                    <small><?php echo htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?></small>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                        <?php $gi++;
+                                    } ?>
                                 </div>
                             </div>
 
@@ -642,7 +655,7 @@ if (isset($_GET['del']) and $_GET['del'] != '') {
         $("#courses-section").show(); // نمایش بخش محصولات
 
         // تغییر متن تیتر سوم
-        $("#dynamic-course-title").text('پایه‌های پایه ' + gradeName);
+        $("#dynamic-course-title").text(<?php echo json_encode(m('picker.courses_of'), JSON_UNESCAPED_UNICODE) ?> + gradeName);
 
         // درخواست Ajax ساده و مستقیم
         $.ajax({
