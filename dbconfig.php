@@ -133,7 +133,7 @@ define('__MAINTENANCE', 'واحد فنی و توسعه زیرساخت');
 define('__BAZRESI', 'واحد بازرسی ، ثبت شکایت');
 define('__BOSS', 'حوزه مدیریت موسسه');
 
-define('__TITLE', 'موسسه هنرآموزش');
+define('__TITLE', 'موسسه هنرفناوری');
 
 //SMS Authentication
 define('__USERSMS', '09127945631');
