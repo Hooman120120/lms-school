@@ -512,6 +512,9 @@ return [
         /* --- منوی پنل مدیریت --- */
         'menu.active_courses_short' => 'پایه‌های فعال',
 
+        /* --- خروجی اکسل تقویم --- */
+        'excel.student_visibility' => 'نمایش برای دانش‌آموزان',
+
         /* @keys-end:school */
     ],
 
@@ -1011,6 +1014,9 @@ return [
 
         /* --- منوی پنل مدیریت --- */
         'menu.active_courses_short' => 'دوره‌های فعال',
+
+        /* --- خروجی اکسل تقویم --- */
+        'excel.student_visibility' => 'نمایش برای فراگیران',
 
         /* @keys-end:institute */
     ],

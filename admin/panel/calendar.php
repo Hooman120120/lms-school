@@ -3023,6 +3023,7 @@ function renderCalendar() {
         const doExportBtn = document.getElementById('doExportBtn');
         if (doExportBtn) {
             doExportBtn.addEventListener('click', function() {
+                updateExportSummary();
                 const startJalali = exportStart ? exportStart.value.trim() : '';
                 const endJalali = exportEnd ? exportEnd.value.trim() : '';
                 const selectedRoles = document.getElementById('exportSelectedRoles').value;
@@ -3047,14 +3048,27 @@ function renderCalendar() {
                     body: formData
                 })
                     .then(response => {
-                        if (!response.ok) throw new Error('Server error');
-                        return response.blob();
+                        if (!response.ok) {
+                            return response.text().then(t => { throw new Error(t || 'Server error'); });
+                        }
+                        const disposition = response.headers.get('Content-Disposition') || '';
+                        const match = disposition.match(/filename="?([^";]+)"?/);
+                        const rows = response.headers.get('X-Export-Rows');
+                        return response.blob().then(blob => ({
+                            blob: blob,
+                            name: match ? match[1] : 'calendar_events.xlsx',
+                            rows: rows
+                        }));
                     })
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
+                    .then(result => {
+                        if (result.rows === '0') {
+                            alert('رویدادی با این فیلترها پیدا نشد');
+                            return;
+                        }
+                        const url = window.URL.createObjectURL(result.blob);
                         const a = document.createElement('a');
                         a.href = url;
-                        a.download = 'calendar_events.xlsx';
+                        a.download = result.name;
                         document.body.appendChild(a);
                         a.click();
                         a.remove();
@@ -3063,7 +3077,7 @@ function renderCalendar() {
                     })
                     .catch(error => {
                         console.error(error);
-                        alert('خطا در تولید فایل اکسل');
+                        alert('خطا در تولید فایل اکسل: ' + error.message);
                     });
             });
         }
