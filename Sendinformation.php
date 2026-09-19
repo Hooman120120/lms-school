@@ -668,17 +668,9 @@ if (isset($_POST['submit-collague'])) {
                                                     <select class="form-control select2" required="" name="paye-student"
                                                             aria-describedby="basic-addon2" id="car"
                                                             onchange="ChangeCarList()">
-                                                        <option label="پایه تحصیلی ">
-                                                        </option>
-                                                        <option value="5">پنجم</option>
-                                                        <option value="6">ششم</option>
-                                                        <option value="7">هفتم</option>
-                                                        <option value="8">هشتم</option>
-                                                        <option value="9">نهم</option>
-                                                        <option value="10">دهم</option>
-                                                        <option value="11">یازدهم</option>
-                                                        <option value="12">دوازدهم</option>
-                                                    </select>
+<option label="<?php echo htmlspecialchars(m('form.grade_placeholder'), ENT_QUOTES, "UTF-8") ?>"></option>
+<?php echo inst_level_options() ?>
+</select>
                                                 </div>
                                             </div><!-- col-4 -->
                                             <div class="col-lg-4 mg-t-20 ">

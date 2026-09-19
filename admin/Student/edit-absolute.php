@@ -4075,65 +4075,9 @@ include_once '../../temp.html';
                                                                             <div class="col-xl-4">
                                                                                 <select class="form-control select2"
                                                                                         name="paye" required>
-                                                                                    <option label="پایه تحصیلی">
-                                                                                    </option>
-                                                                                    <option value="5" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '5') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        پنجم
-                                                                                    </option>
-                                                                                    <option value="6" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '6') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        ششم
-                                                                                    </option>
-                                                                                    <option value="7" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '7') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        هفتم
-                                                                                    </option>
-                                                                                    <option value="8" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '8') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        هشتم
-                                                                                    </option>
-                                                                                    <option value="9" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '9') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        نهم
-                                                                                    </option>
-                                                                                    <option value="10" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '10') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        دهم
-                                                                                    </option>
-                                                                                    <option value="11" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '11') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        یازدهم
-                                                                                    </option>
-                                                                                    <option value="12" <?php if ($data->paye != NULL) {
-                                                                                        if ($data->paye == '12') {
-                                                                                            echo 'selected';
-                                                                                        }
-                                                                                    } ?>>
-                                                                                        دوازدهم
-                                                                                    </option>
-                                                                                </select>
+<option label="<?php echo htmlspecialchars(m('form.grade_placeholder'), ENT_QUOTES, "UTF-8") ?>"></option>
+<?php echo inst_level_options($data->paye) ?>
+</select>
 
                                                                             </div>
                                                                         </div>

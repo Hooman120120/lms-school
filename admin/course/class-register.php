@@ -473,9 +473,10 @@ $currentWeekKey = registerClassWeekKeyFor($weeks, time());
 
 // هفته ی انتخاب شده از آدرس خوانده می شود؛ در غیر این صورت هفته ی جاری تقویم شمسی
 $selected_week_key = $_GET['week'] ?? '';
+$all_weeks_selected = ($selected_week_key === 'all');
 $selected_week = null;
 foreach ($weeks as $week) {
-    if ($week['key'] === $selected_week_key) {
+    if (!$all_weeks_selected && $week['key'] === $selected_week_key) {
         $selected_week = $week;
         break;
     }
@@ -492,6 +493,11 @@ if ($selected_week === null) {
     $selected_week = $weeks[0];
 }
 $selected_week_key = $selected_week['key'];
+$last_week = $weeks[count($weeks) - 1];
+$week_scope_label = $all_weeks_selected ? 'همه‌ی هفته‌ها' : $selected_week['label'];
+$week_scope_range = $all_weeks_selected
+    ? jdate('Y/m/d', strtotime($weeks[0]['start']), '', 'Asia/Tehran', 'fa') . ' تا ' . jdate('Y/m/d', strtotime($last_week['end']), '', 'Asia/Tehran', 'fa')
+    : $selected_week['range'];
 
 // تاریخ پیش فرض ستون جدید: امروز اگر داخل همین هفته باشد، وگرنه شنبه ی همان هفته
 $today_iso = date('Y-m-d');
@@ -516,9 +522,11 @@ if ($sees_all_columns) {
 
 // فقط ستون های همین هفته نمایش داده می شوند؛ قاعده ی تعیین هفته ی هر ستون
 // در registerClassEventWeekKey است تا خروجی اکسل هم دقیقاً همین را ببیند.
-$events = array_values(array_filter($events, function ($evt) use ($selected_week, $weeks) {
-    return registerClassEventWeekKey($evt, $weeks) === $selected_week['key'];
-}));
+if (!$all_weeks_selected) {
+    $events = array_values(array_filter($events, function ($evt) use ($selected_week, $weeks) {
+        return registerClassEventWeekKey($evt, $weeks) === $selected_week['key'];
+    }));
+}
 
 $eventTeacherIds = array_unique(array_column($events, 'teacher_id'));
 // در سربرگ ستون ها نام و نام خانوادگی استاد نمایش داده می شود، نه نام کاربری
@@ -835,7 +843,7 @@ include_once '../../temp.html';
         .rg-table tbody tr:nth-child(even) td { background: var(--rg-row-b); }
         .rg-table tbody tr:nth-child(even) td.rg-stripe { background: var(--rg-row-b-alt); }
 
-        .rg-table tbody tr:hover td { filter: brightness(1.04); }
+        .rg-table tbody tr:hover td:not(.rg-add-bar) { filter: brightness(1.04); }
 
         /* --- ستون شماره و نام، چسبیده به راست --- */
         .rg-col-num {
@@ -992,7 +1000,7 @@ include_once '../../temp.html';
         }
 
         .rg-table thead th.rg-add-head {
-            z-index: 9;
+            z-index: 130;
             background: var(--rg-primary) !important;
         }
 
@@ -1000,6 +1008,7 @@ include_once '../../temp.html';
         .rg-table tbody tr:nth-child(even) td.rg-add-bar {
             z-index: 3;
             background: var(--rg-primary) !important;
+            filter: none !important;
         }
 
         .rg-add-btn {
@@ -1105,7 +1114,7 @@ include_once '../../temp.html';
                 <div class="rg-toolbar">
                     <h4 class="rg-title">
                         دفتر کلاسی
-                        <small><?php echo htmlspecialchars($selected_week['label'] . ' ( ' . $selected_week['range'] . ' )'); ?></small>
+                        <small><?php echo htmlspecialchars($week_scope_label . ' ( ' . $week_scope_range . ' )'); ?></small>
                     </h4>
 
                     <div class="rg-tools">
@@ -1114,9 +1123,12 @@ include_once '../../temp.html';
                             <span class="rg-field-label">هفته</span>
                             <button type="button" class="rg-week-nav" id="weekPrev" title="هفته ی قبل">&#8250;</button>
                             <select class="rg-field-control" id="weekSelect" aria-label="انتخاب هفته">
+                                <option value="all" <?php echo $all_weeks_selected ? 'selected' : ''; ?>>
+                                    همه‌ی هفته‌ها
+                                </option>
                                 <?php foreach ($weeks as $week): ?>
                                     <option value="<?php echo htmlspecialchars($week['key']); ?>"
-                                        <?php echo ($week['key'] === $selected_week_key) ? 'selected' : ''; ?>>
+                                        <?php echo (!$all_weeks_selected && $week['key'] === $selected_week_key) ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($week['label']); ?>
                                         <?php echo ($week['key'] === $currentWeekKey) ? '(هفته ی جاری)' : ''; ?>
                                     </option>
@@ -1144,8 +1156,8 @@ include_once '../../temp.html';
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item"
-                                       href="class-register-excel.php?class=<?php echo $class_id; ?>&scope=week&week=<?php echo urlencode($selected_week_key); ?>">
-                                        <?php echo htmlspecialchars($selected_week['label']); ?>
+                                       href="class-register-excel.php?class=<?php echo $class_id; ?>&scope=<?php echo $all_weeks_selected ? 'all' : 'week'; ?>&week=<?php echo urlencode($selected_week_key); ?>">
+                                        <?php echo htmlspecialchars($week_scope_label); ?>
                                     </a>
                                 </li>
                                 <li>
@@ -1240,7 +1252,7 @@ include_once '../../temp.html';
 
                                 <?php if (empty($events)): ?>
                                     <th class="rg-empty-head">
-                                        برای این هفته هنوز ستونی ثبت نشده است
+                                        <?php echo $all_weeks_selected ? 'هنوز ستونی ثبت نشده است' : 'برای این هفته هنوز ستونی ثبت نشده است'; ?>
                                     </th>
                                 <?php endif; ?>
 
@@ -1641,17 +1653,19 @@ include_once '../../temp.html';
             const nextBtn = document.getElementById('weekNext');
             const idx = weekSelect.selectedIndex;
             const last = weekSelect.options.length - 1;
+            const first = weekSelect.options[0] && weekSelect.options[0].value === 'all' ? 1 : 0;
+            const onAll = (idx < first);
 
             if (prevBtn) {
-                prevBtn.disabled = (idx <= 0);
+                prevBtn.disabled = onAll || (idx <= first);
                 prevBtn.addEventListener('click', function () {
-                    if (idx > 0) gotoWeek(weekSelect.options[idx - 1].value);
+                    if (!onAll && idx > first) gotoWeek(weekSelect.options[idx - 1].value);
                 });
             }
             if (nextBtn) {
-                nextBtn.disabled = (idx >= last);
+                nextBtn.disabled = onAll || (idx >= last);
                 nextBtn.addEventListener('click', function () {
-                    if (idx < last) gotoWeek(weekSelect.options[idx + 1].value);
+                    if (!onAll && idx < last) gotoWeek(weekSelect.options[idx + 1].value);
                 });
             }
         }
