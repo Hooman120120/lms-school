@@ -821,9 +821,6 @@ include_once '../../temp.html';
                                                                                                 <i class="fe fe-more-vertical"></i> لیست دانش آموزان
                                                                                             </a>
                                                                                         <?php } ?>
-                                                                                        <a class="dropdown-item" href="add-quiz.php?id=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fa fa-qrcode"></i> مدیریت آزمون
-                                                                                        </a>
                                                                                         <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>
@@ -1099,9 +1096,6 @@ include_once '../../temp.html';
                                                                                                 <i class="fe fe-more-vertical"></i> لیست دانش آموزان
                                                                                             </a>
                                                                                         <?php } ?>
-                                                                                        <a class="dropdown-item" href="add-quiz.php?id=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fa fa-qrcode"></i> مدیریت آزمون
-                                                                                        </a>
                                                                                         <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>
@@ -1371,9 +1365,6 @@ include_once '../../temp.html';
                                                                                                 <i class="fe fe-more-vertical"></i> لیست دانش آموزان
                                                                                             </a>
                                                                                         <?php } ?>
-                                                                                        <a class="dropdown-item" href="add-quiz.php?id=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fa fa-qrcode"></i> مدیریت آزمون
-                                                                                        </a>
                                                                                         <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>

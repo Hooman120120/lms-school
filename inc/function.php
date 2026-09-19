@@ -1070,6 +1070,12 @@ function SchoolNotificationVisibility(string $user, ?string $eventType = null, b
     $adminId = (int)$adminStmt->fetchColumn();
     $where = ['n.event_type IN (' . implode(',', array_fill(0, count($types), '?')) . ')'];
     $args = $types;
+    // اعلان‌های نسخه قبلی برای هر دانش‌آموز جداگانه ذخیره می‌شدند.
+    // آن رکوردها نگه داشته می‌شوند، اما در شمارنده و فهرست نمایش داده نمی‌شوند
+    // تا از این پس هر جلسه فقط یک اعلان تجمیعی داشته باشد.
+    $where[] = '(n.source_type IS NULL OR n.source_type NOT IN (?, ?))';
+    $args[] = 'register_class_attendance';
+    $args[] = 'register_class_evaluation';
     $where[] = '(n.actor_username IS NULL OR n.actor_username <> ?)';
     $args[] = $user;
     if ($adminId > 0) {
@@ -1205,7 +1211,22 @@ function GetSchoolNotifications(?string $user = null, ?string $eventType = null,
             ORDER BY n.created_at DESC, n.id DESC LIMIT {$limit}";
     $stmt = $conn->prepare($sql);
     $stmt->execute(array_merge([$user], $args));
-    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    // اعلان‌های ایجاد تقویم که پیش از اضافه‌شدن لینک عمیق ساخته شده‌اند نیز
+    // در صورت داشتن شناسه رویداد، مستقیماً همان رویداد را باز کنند.
+    foreach ($notifications as &$notification) {
+        if (in_array($notification['event_type'] ?? '', ['executive_calendar', 'academic_calendar'], true)
+            && ctype_digit((string)($notification['source_id'] ?? ''))
+            && !empty($notification['target_url'])
+            && strpos((string)($notification['target_url'] ?? ''), 'event=') === false) {
+            $separator = strpos((string)$notification['target_url'], '?') === false ? '?' : '&';
+            $notification['target_url'] .= $separator . 'event=' . (int)$notification['source_id'];
+        }
+    }
+    unset($notification);
+
+    return $notifications;
 }
 
 function MarkSchoolNotificationRead(int $notificationId, ?string $user = null): bool
@@ -4405,45 +4426,54 @@ function saveStudentRegisterClassEntry(
         }
     }
 
-    $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name, p.fname, p.lname
-        FROM classes c
-        LEFT JOIN dbpersonal p ON p.codemeli = ?
-        WHERE c.id = ? LIMIT 1');
-    $contextStmt->execute([$studentUsername, $classId]);
+    $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name,
+            ev.title AS event_title, ev.event_date, ev.type AS event_type
+        FROM register_class_events ev
+        INNER JOIN classes c ON c.id = ev.class_id
+        WHERE ev.id = ? AND ev.class_id = ? LIMIT 1');
+    $contextStmt->execute([$eventId, $classId]);
     $context = $contextStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-    $studentName = trim((string)($context['fname'] ?? '') . ' ' . (string)($context['lname'] ?? ''));
     $className = (string)($context['class_name'] ?? '');
+    $eventTitle = trim((string)($context['event_title'] ?? ''));
+    $eventDate = trim((string)($context['event_date'] ?? ''));
+    $eventDescription = ($className !== '' ? 'کلاس: ' . $className : '');
+    if ($eventTitle !== '') {
+        $eventDescription .= ($eventDescription !== '' ? ' - ' : '') . 'جلسه: ' . $eventTitle;
+    }
+    if ($eventDate !== '') {
+        $eventDescription .= ($eventDescription !== '' ? ' - ' : '') . 'تاریخ: ' . $eventDate;
+    }
     $actorAdminId = ctype_digit((string)$createdBy) ? (int)$createdBy : null;
     $actorUsername = $actorAdminId ? null : $createdBy;
 
-    if ($score !== null) {
+    if ($score !== null || $quality !== null) {
         CreateSchoolNotification(
             'exam',
-            'ثبت نمره جدید' . ($studentName !== '' ? ' برای ' . $studentName : ''),
-            ($className !== '' ? 'کلاس: ' . $className . ' - ' : '') . 'نمره ثبت‌شده: ' . $score,
+            'ثبت آزمون و نمره جدید' . ($className !== '' ? ' - ' . $className : ''),
+            $eventDescription,
             $actorAdminId,
             $actorUsername,
             isset($context['codecourse']) ? (int)$context['codecourse'] : null,
             $classId,
-            $studentUsername,
-            'admin/course/class-register.php?class=' . $classId,
-            'register_class_evaluation',
-            $eventId . ':' . $studentUsername
+            null,
+            'admin/course/class-register-notification.php?event=' . $eventId,
+            'register_class_exam_event',
+            (string)$eventId
         );
     }
     if ($statusCode !== null) {
         CreateSchoolNotification(
             'attendance',
-            'ثبت حضور و غیاب جدید' . ($studentName !== '' ? ' برای ' . $studentName : ''),
-            ($className !== '' ? 'کلاس: ' . $className . ' - ' : '') . (($statusCode == 1) ? 'حاضر' : 'غایب'),
+            'ثبت حضور و غیاب جدید' . ($className !== '' ? ' - ' . $className : ''),
+            $eventDescription,
             $actorAdminId,
             $actorUsername,
             isset($context['codecourse']) ? (int)$context['codecourse'] : null,
             $classId,
-            $studentUsername,
-            'admin/course/class-register.php?class=' . $classId,
-            'register_class_attendance',
-            $eventId . ':' . $studentUsername
+            null,
+            'admin/course/class-register-notification.php?event=' . $eventId,
+            'register_class_attendance_event',
+            (string)$eventId
         );
     }
 

@@ -243,6 +243,7 @@ include_once '../temp.html';
     <?php
     include_once '../menu.php';
     include_once '../header.php';
+    $studentCourseHeaderColor = $studentMenuColor ?? null;
     ?>
 
     <!-- Main Content-->
@@ -253,9 +254,12 @@ include_once '../temp.html';
                 <div class="row row-sm">
                     <div class="col-xl-12 ">
                         <div class="card custom-card">
-                            <div class="card-header p-3 tx-medium my-auto tx-white bg-secondary">
-                                <?php echo $course->coursename ?> <br><br>
-                                <?php echo isset($_GET['demo']) ? '' : $class->name ?>
+                            <div class="card-header p-3 tx-medium my-auto tx-white <?= $studentCourseHeaderColor === null ? 'bg-secondary' : '' ?>"
+                                 <?= $studentCourseHeaderColor !== null ? 'style="background-color: ' . htmlspecialchars($studentCourseHeaderColor, ENT_QUOTES, 'UTF-8') . ' !important;"' : '' ?>>
+                                <div><?php echo htmlspecialchars((string)$course->coursename, ENT_QUOTES, 'UTF-8') ?></div>
+                                <?php if (!isset($_GET['demo'])): ?>
+                                    <div class="mt-2"><?php echo htmlspecialchars((string)$class->name, ENT_QUOTES, 'UTF-8') ?></div>
+                                <?php endif; ?>
                             </div>
                             <div class="card-body">
                                 <p class="mg-b-0"> <?php echo $course->coursemuted ?></p>

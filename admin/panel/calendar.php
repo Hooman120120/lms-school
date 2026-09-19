@@ -129,8 +129,42 @@ if (isset($_GET['get_events']) && $_GET['get_events'] == 1) {
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
     }
+    $eventRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    // ممکن است سیاست مخاطبان قدیمی تقویم با سیاست نقش‌های مدرسه یکسان نباشد.
+    // اگر کاربر اعلان مجازِ همین رویداد را دریافت کرده باشد، لینک اعلان باید
+    // بتواند همان رویداد را نمایش دهد؛ بدون اعلان مجاز، واردکردن دستی شناسه
+    // باعث دورزدن سطح دسترسی تقویم نمی‌شود.
+    $focusEventId = isset($_GET['event']) ? (int)$_GET['event'] : 0;
+    if ($focusEventId > 0 && !in_array($focusEventId, array_map('intval', array_column($eventRows, 'id')), true)) {
+        $focusAllowed = false;
+        foreach (GetSchoolNotifications((string)($_SESSION['admin']['user'] ?? ''), null, 300) as $notification) {
+            if (!in_array($notification['event_type'] ?? '', ['executive_calendar', 'academic_calendar'], true)) {
+                continue;
+            }
+            $query = parse_url((string)($notification['target_url'] ?? ''), PHP_URL_QUERY);
+            $targetParams = [];
+            parse_str((string)$query, $targetParams);
+            if ((int)($targetParams['event'] ?? 0) === $focusEventId) {
+                $focusAllowed = true;
+                break;
+            }
+        }
+        if ($focusAllowed) {
+            $focusStmt = $conn->prepare("SELECT e.*, COALESCE(g.color, '#B5B5B5') AS event_color, g.title AS group_title
+                FROM calendar_events e
+                LEFT JOIN calendar_groups g ON e.calendar_groups_id = g.id
+                WHERE e.id = ? LIMIT 1");
+            $focusStmt->execute([$focusEventId]);
+            $focusRow = $focusStmt->fetch(PDO::FETCH_ASSOC);
+            if ($focusRow) {
+                $eventRows[] = $focusRow;
+            }
+        }
+    }
+
     $events = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    foreach ($eventRows as $row) {
         $start_j = gregorian_to_jalali(substr($row['start_date'],0,4), substr($row['start_date'],5,2), substr($row['start_date'],8,2));
         $jalali_start = sprintf("%04d/%02d/%02d %s", $start_j[0], $start_j[1], $start_j[2], date('H:i', strtotime($row['start_date'])));
         $jalali_end = '';
@@ -409,7 +443,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $notificationCourse ? (int)$notificationCourse : null,
                 null,
                 null,
-                $isAcademic ? 'admin/panel/academic-calendar.php' : 'admin/panel/calendar_panel.php',
+                ($isAcademic ? 'admin/panel/academic-calendar.php' : 'admin/panel/calendar_panel.php')
+                    . '?event=' . (int)$notificationSourceId,
                 'calendar_events',
                 $notificationSourceId ? (string)$notificationSourceId : null
             );
@@ -620,7 +655,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $notificationCourse ? (int)$notificationCourse : null,
                 null,
                 null,
-                $isAcademic ? 'admin/panel/academic-calendar.php' : 'admin/panel/calendar_panel.php',
+                ($isAcademic ? 'admin/panel/academic-calendar.php' : 'admin/panel/calendar_panel.php')
+                    . '?event=' . (int)$eventId,
                 'calendar_events_update',
                 null
             );
@@ -675,6 +711,18 @@ function renderCalendar() {
             background: linear-gradient(45deg, #d49c85, #2b9587, #1a2d57);
             border-radius: 12px;
             padding: 8px;
+        }
+        #calendar .calendar-event-focus {
+            position: relative;
+            z-index: 5;
+            outline: 3px solid #ff2d55 !important;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 5px rgba(255,45,85,.22), 0 0 18px rgba(255,45,85,.8) !important;
+            animation: calendarEventFocusPulse 1s ease-in-out 4;
+        }
+        @keyframes calendarEventFocusPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.035); }
         }
         #calendar .fc-button {
             background-color: #298680;
@@ -1412,6 +1460,8 @@ function renderCalendar() {
         const hasCalendarPermission = <?php echo $permission_calendar == 1 ? 'true' : 'false'; ?>;
         const selectedCoursesInput = document.getElementById('selectedCourses');
         const selectedCoursesSummary = document.getElementById('selectedCoursesSummary');
+        const requestedEventId = new URLSearchParams(window.location.search).get('event');
+        let requestedEventHandled = false;
         let courseSelect = null;
         var courseNameMap = {};
         // Active event options handling
@@ -2364,6 +2414,23 @@ function renderCalendar() {
             return end ? (title + ' — ' + start + ' تا ' + end) : (title + ' — ' + start);
         }
 
+        // ورود از اعلان: تقویم روی تاریخ همان رویداد قرار می‌گیرد، رویداد
+        // برجسته می‌شود و پنجره جزئیات آن به‌صورت خودکار باز می‌شود.
+        function focusRequestedEvent() {
+            if (!requestedEventId || requestedEventHandled || !calendar) return;
+            const requestedEvent = calendar.getEventById(String(requestedEventId));
+            if (!requestedEvent) return;
+
+            requestedEventHandled = true;
+            if (requestedEvent.start) {
+                calendar.gotoDate(requestedEvent.start);
+            }
+            setTimeout(function () {
+                calendarEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                showEventDetail(requestedEvent);
+            }, 180);
+        }
+
         window.editEvent   = editEvent;
         window.deleteEvent = deleteEvent;
         // ------------------------------ Calendar initialisation ------------------------------
@@ -2418,7 +2485,9 @@ function renderCalendar() {
             editable: hasCalendarPermission,
             selectable: true,
             events: function(fetchInfo, successCallback, failureCallback) {
-                fetch(window.location.href + '?get_events=1')
+                const eventsUrl = new URL(window.location.href);
+                eventsUrl.searchParams.set('get_events', '1');
+                fetch(eventsUrl.toString())
                     .then(response => response.json())
                     .then(events => {
                         events.forEach(ev => {
@@ -2460,6 +2529,10 @@ function renderCalendar() {
             eventDidMount: function(info) {
                 const el = info.el;
 
+                if (requestedEventId && String(info.event.id) === String(requestedEventId)) {
+                    el.classList.add('calendar-event-focus');
+                }
+
                 // رویدادهای نقطه ای نمای ماه پس زمینه رنگی ندارند
                 if (el.classList.contains('fc-daygrid-dot-event')) {
                     el.setAttribute('title', buildEventTooltip(info.event));
@@ -2494,6 +2567,7 @@ function renderCalendar() {
                 if (v && (v.type === 'timeGridWeek' || v.type === 'timeGridDay')) {
                     renderTransposed(v.activeStart, v.activeEnd, visibleCalendarEvents());
                 }
+                focusRequestedEvent();
             },
             eventClick: function(info) { showEventDetail(info.event); },
             eventDrop: function(info) {

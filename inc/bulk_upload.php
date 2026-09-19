@@ -709,15 +709,7 @@ if (isset($_POST['confirm_invoice'])) {
                         $c_id = $class_info ? $class_info->id : null;
                         $success = $stmt->execute([$username, $code, $c_id, $factorId, $supporter, $firstAssignedAt]);
                         if (!$success) throw new PDOException("خطا در ثبت جدول dbcourse برای پایه $code");
-                        $newCourseRecordId = (string)$conn->lastInsertId();
-                        CreateSchoolNotification(
-                            'new_student', 'ثبت‌نام دانش‌آموز جدید: ' . $username,
-                            'دانش‌آموز از طریق ثبت‌نام گروهی در پایه جدید ثبت شد.',
-                            (int)($_SESSION['admin']['idadmin'] ?? 0), (string)$_SESSION['admin']['user'],
-                            (int)$code, $c_id ? (int)$c_id : null, $username,
-                            'admin/panel/suporting.php?user=' . rawurlencode($username) . '&course=' . rawurlencode((string)$code),
-                            'dbcourse', $newCourseRecordId
-                        );
+                        // برای فاکتور تأییدنشده، اعلان ثبت‌نام فقط پس از تأیید نهایی مدیر ساخته می‌شود.
                     }
 
                 } else {

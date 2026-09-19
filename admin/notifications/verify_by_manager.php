@@ -122,6 +122,27 @@ if (isset($_GET['verify'])) {
     $qpo = $conn->prepare($cou);
     $qpo->execute([$factor->idfactor]);
     $rew = $qpo->fetchAll(PDO::FETCH_OBJ);
+
+    $studentInfo = retPerson($factor->username);
+    $studentFullName = $studentInfo
+        ? trim((string)$studentInfo->fname . ' ' . (string)$studentInfo->lname)
+        : (string)$factor->username;
+    foreach ($rew as $activatedCourse) {
+        CreateSchoolNotification(
+            'new_student',
+            'ثبت‌نام دانش‌آموز جدید: ' . $studentFullName,
+            'ثبت‌نام دانش‌آموز پس از تأیید نهایی فاکتور در پایه «' . (string)$activatedCourse->coursename . '» فعال شد.',
+            (int)($_SESSION['admin']['idadmin'] ?? 0),
+            (string)($_SESSION['admin']['user'] ?? ''),
+            (int)$activatedCourse->codecourse,
+            !empty($activatedCourse->class_id) ? (int)$activatedCourse->class_id : null,
+            (string)$factor->username,
+            'admin/panel/suporting.php?user=' . rawurlencode((string)$factor->username)
+                . '&course=' . rawurlencode((string)$activatedCourse->codecourse),
+            'dbcourse_activation',
+            $factor->idfactor . ':' . $factor->username . ':' . $activatedCourse->codecourse
+        );
+    }
 //    foreach ($rew as $tbt) {
 //        $existingUgumid = checkGroupAddByApi($tbt->codecourse, $tbt->username);
 //        if (!$existingUgumid) {

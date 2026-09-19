@@ -194,30 +194,15 @@ if (isset($_POST['sales-course'])) {
                             $courseSupporters[$code],
                             $firstAssignedAt
                         ]);
-                        $newCourseRecordId = (string)$conn->lastInsertId();
                     } else {
                         // Course WITHOUT supporter.
                         $inc = 'INSERT INTO dbcourse (username, codecourse, class_id, numfactor, has_operator)
                                 VALUES (?,?,?,?,?)';
                         $inp = $conn->prepare($inc);
                         $inp->execute([$username, $code, $class_id, $factorId, 0]);
-                        $newCourseRecordId = (string)$conn->lastInsertId();
                     }
-                    $studentInfo = retPerson($username);
-                    $studentFullName = $studentInfo ? trim($studentInfo->fname . ' ' . $studentInfo->lname) : $username;
-                    CreateSchoolNotification(
-                        'new_student',
-                        'ثبت‌نام دانش‌آموز جدید: ' . $studentFullName,
-                        'دانش‌آموز در پایه جدید ثبت‌نام شد.',
-                        (int)($_SESSION['admin']['idadmin'] ?? 0),
-                        (string)$_SESSION['admin']['user'],
-                        (int)$code,
-                        $class_id ? (int)$class_id : null,
-                        $username,
-                        'admin/panel/suporting.php?user=' . rawurlencode($username) . '&course=' . rawurlencode((string)$code),
-                        'dbcourse',
-                        $newCourseRecordId
-                    );
+                    // اعلان ثبت‌نام پس از فعال‌شدن نهایی فاکتور ساخته می‌شود؛
+                    // صرف ایجاد رکورد غیرفعال dbcourse به معنی ثبت‌نام قطعی نیست.
                 }
 
                 unset($_SESSION['add-course']);
