@@ -1,0 +1,1236 @@
+<?php
+include_once '../../dbconfig.php';
+include_once '../../inc/function_login.php';
+include_once '../../inc/function.php';
+include_once '../../inc/jdf.php';
+if (CheckBlacklist_ip(GetIp())) {
+    include_once '../../blackList.html';
+    exit;
+}
+if (!isset($_SESSION['admin'])) {
+    header('location: ' . url('admin/login.php'));
+    die();
+}
+//Protecting against SESSION HIJACKING
+if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()) {
+    session_unset();
+    header('location: ' . url('admin/login.php'));
+    die();
+}
+//* Start Check Session JUST ONE Session
+$re = sessionAdmin($_SESSION['admin']['user']);
+if (session_id() != $re['session_id']) {
+    session_unset();
+    header('location: ' . url('admin/login.php'));
+    die();
+}
+if (!Permision('permision_viewemploy')) {
+    header('location:' . url("admin/index.php"));
+    die();
+}
+
+$schoolRoles = $conn->query(
+    "SELECT id, role_key, title FROM school_admin_roles WHERE is_active = 1 AND role_key <> 'teacher' ORDER BY sort_order ASC, id ASC"
+)->fetchAll(PDO::FETCH_OBJ);
+$validSchoolRoleIds = array_map('intval', array_column(array_map(function ($role) {
+    return (array)$role;
+}, $schoolRoles), 'id'));
+$courseScopedRoleKeys = ['grade_deputy', 'counselor'];
+$assignableCourses = $conn->query('
+    SELECT codecourse, coursename
+    FROM codtbl_course
+    WHERE activecourse = 1
+    ORDER BY idcourse DESC
+')->fetchAll(PDO::FETCH_OBJ);
+$editAssignedCourseCodes = [];
+if (!empty($_GET['edit'])) {
+    $assignedCourseStmt = $conn->prepare('SELECT codecourse FROM school_staff_courses WHERE admin_username = ?');
+    $assignedCourseStmt->execute([(string)$_GET['edit']]);
+    $editAssignedCourseCodes = array_map('intval', $assignedCourseStmt->fetchAll(PDO::FETCH_COLUMN));
+}
+$documentUploadErrors = $_SESSION['admin_document_flash_errors'] ?? [];
+unset($_SESSION['admin_document_flash_errors']);
+
+function normalizeStaffCourseCodes(PDO $conn, $rawCourseCodes): array
+{
+    if (!is_array($rawCourseCodes)) {
+        return [];
+    }
+    $courseCodes = array_values(array_unique(array_filter(array_map('intval', $rawCourseCodes), function ($code) {
+        return $code > 0;
+    })));
+    if (!$courseCodes) {
+        return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count($courseCodes), '?'));
+    $stmt = $conn->prepare("SELECT codecourse FROM codtbl_course WHERE activecourse = 1 AND codecourse IN ($placeholders)");
+    $stmt->execute($courseCodes);
+    return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+}
+
+function syncStaffCourseAssignments(PDO $conn, string $username, ?int $schoolRoleId, array $courseCodes, array $schoolRoles, array $scopedRoleKeys): void
+{
+    $roleKey = null;
+    foreach ($schoolRoles as $role) {
+        if ((int)$role->id === (int)$schoolRoleId) {
+            $roleKey = (string)$role->role_key;
+            break;
+        }
+    }
+
+    $delete = $conn->prepare('DELETE FROM school_staff_courses WHERE admin_username = ?');
+    $delete->execute([$username]);
+    if (!in_array($roleKey, $scopedRoleKeys, true)) {
+        return;
+    }
+
+    $insert = $conn->prepare('INSERT INTO school_staff_courses (admin_username, codecourse) VALUES (?, ?)');
+    foreach ($courseCodes as $codecourse) {
+        $insert->execute([$username, $codecourse]);
+    }
+}
+
+/*
+ * Permission labels and explanations are kept in one place so the create and
+ * edit forms always describe the exact same capability.
+ */
+$employeePermissionColumns = [
+    [
+        [
+            'title' => 'عمومی و ارتباطات',
+            'items' => [
+                ['menu-call', 'emenu-call', 'permision_viewcall', 'دسترسی به تماس و پیامک مدرسه', 'منو و صفحات تماس امن، پیامک امن، وضعیت تماس‌ها و گزارش‌های ارتباطی را در اختیار همکار می‌گذارد.', true],
+                ['add-call', 'eadd-call', 'permision_addcall', 'ثبت مخاطب و گروه تماس', 'امکان ورود مخاطبان، ایمپورت لیست تماس و ایجاد گروه‌های تماس را فعال می‌کند.'],
+                ['manage-call', 'emanage-call', 'permision_managecall', 'مدیریت و تخصیص تماس‌ها', 'امکان تخصیص شماره، ویرایش رکوردهای تماس، مدیریت مرکز تماس و خروجی اطلاعات را می‌دهد.'],
+                ['manage-excel', 'manage-excel', 'excel_permission', 'گزارش‌گیری و ورود/خروجی Excel', 'منوی آمار و گزارشات و دکمه‌های ورود یا خروجی اکسل دانش‌آموزان و گزارش‌ها را فعال می‌کند.'],
+                ['manage-skill', 'manage-skill', 'skill_permission', 'دسترسی به دوره‌های مهارتی و فوق‌برنامه', 'تب و فهرست دوره‌های مهارتی و فوق‌برنامه را در بخش پایه‌ها نمایش می‌دهد.'],
+                ['manage-reportcall', 'manage-reportcall', 'reportcall_permission', 'مشاهده گزارش تماس‌ها و فایل‌های صوتی', 'امکان ورود به گزارش تماس‌ها و شنیدن فایل‌های صوتی ضبط‌شده را می‌دهد. دسترسی عمومی تماس نیز باید فعال باشد.'],
+                ['manage-olympiad', 'manage-olympiad', 'olympiad_permission', 'دسترسی به دوره‌های المپیاد', 'تب و فهرست دوره‌های المپیاد را در مدیریت پایه‌ها نمایش می‌دهد.'],
+                ['administrator', 'administrator', 'administrator', 'سرپرست اجرایی سامانه', 'دسترسی مدیریتی گسترده به تأیید تکالیف، پیگیری‌ها، اعلان‌ها و برخی سوابق حساس می‌دهد. این گزینه فقط برای مسئول مجاز فعال شود.'],
+                ['manage-history', 'manage-history', 'history_permission', 'مشاهده و ویرایش پرونده و سوابق دانش‌آموز', 'امکان مشاهده سوابق کامل، رویدادها، پاسخ‌ها و ویرایش بخش‌های حساس پرونده دانش‌آموز را می‌دهد.'],
+                ['manage-autodialer', 'manage-autodialer', 'autodialer', 'مدیریت تماس‌های خودکار', 'امکان مدیریت مخاطبان، لیست سیاه، گروه‌ها، فایل‌های صوتی و کمپین‌های تماس خودکار را می‌دهد.'],
+                ['permission_calendar', 'permission_calendar', 'permission_calendar', 'مدیریت کامل تقویم و رویدادها', 'اجازه ورود به پنل تقویم و ایجاد، ویرایش و حذف رویدادهای مدرسه را می‌دهد.'],
+                ['register-class', 'eregister-class', 'register_class_permission', 'مدیریت کامل دفتر کلاسی', 'اجازه ویرایش و حذف ستون‌ها، نمرات، حضور و غیاب و موارد انضباطی دفتر کلاسی را می‌دهد. دامنه پایه برای معاون پایه و مشاور همچنان رعایت می‌شود.'],
+                ['permission_news_notif', 'permission_news_notif', 'permission_news_notif', 'مدیریت اخبار و اعلان‌های مدرسه', 'اجازه ایجاد، ویرایش و مدیریت اخبار و اعلان‌های روزانه سامانه را می‌دهد.'],
+            ],
+        ],
+        [
+            'title' => 'دانش‌آموزان',
+            'items' => [
+                ['menu-student', 'emenu-student', 'permision_viewstudent', 'دسترسی به بخش مدیریت دانش‌آموزان', 'منوی دانش‌آموزان و صفحات ثبت‌نام، ویرایش، ثبت پایه و گزارش‌ها را نمایش می‌دهد. برای انجام عملیات، مجوز جزئی مربوط نیز لازم است.'],
+                ['add-student', 'eadd-student', 'permision_addstudent', 'ثبت دانش‌آموز جدید', 'اجازه ذخیره ثبت‌نام قطعی، موقت و گروهی دانش‌آموزان را می‌دهد.'],
+                ['edit-student', 'eedit-student', 'permision_editstudent', 'ویرایش اطلاعات و وضعیت دانش‌آموز', 'امکان ویرایش پروفایل، اطلاعات قطعی و موقت و بررسی دانش‌آموزان غیرفعال یا انصرافی را می‌دهد.'],
+                ['course-student', 'ecourse-student', 'permision_addcourse_student', 'ثبت دانش‌آموز در پایه و مشاهده ریزفعالیت‌ها', 'امکان ثبت دانش‌آموز در پایه/کلاس و مشاهده لاگ حضور، آزمون، تکلیف، فیلم و مستندات آموزشی را می‌دهد.'],
+                ['report-student', 'ereport-student', 'permision_reportstudent', 'گزارش‌گیری و خروجی دانش‌آموزان', 'گزارش‌های تفکیکی، فهرست‌های وضعیتی و خروجی دانش‌آموزان را فعال می‌کند. برخی گزارش‌ها به مجوز ثبت پایه نیز نیاز دارند.'],
+            ],
+        ],
+        [
+            'title' => 'معرفان برون‌سازمانی',
+            'items' => [
+                ['menu-collague', 'emenu-collague', 'permision_viewcollague', 'مدیریت معرفان برون‌سازمانی', 'اجازه ثبت، ویرایش، غیرفعال‌سازی و مشاهده زیرمجموعه‌های معرفان برون‌سازمانی را می‌دهد.'],
+                ['report-collague', 'ereport-collague', 'permision_reportcollague', 'گزارش‌گیری و خروجی معرفان', 'اجازه مشاهده گزارش عملکرد و دریافت خروجی اطلاعات معرفان را می‌دهد.'],
+            ],
+        ],
+        [
+            'title' => 'اعلان‌ها، مستندات و تنظیمات',
+            'items' => [
+                ['menu-allert', 'emenu-allert', 'permision_viewalert', 'مدیریت اعلان‌ها و گفت‌وگوهای داخلی', 'امکان مشاهده و مدیریت اعلان‌ها، قواعد اعلان و گفت‌وگوهای داخلی سامانه را می‌دهد.'],
+                ['menu-doc', 'emenu-doc', 'permision_viewdocument', 'مدیریت مستندات مدرسه', 'اجازه جست‌وجو، ثبت و مدیریت مستندات داخلی مدرسه را می‌دهد.'],
+                ['menu-employ', 'emenu-employ', 'permision_viewemploy', 'مدیریت حساب همکاران و معلمان', 'امکان مشاهده، ثبت، ویرایش و فعال/غیرفعال‌سازی حساب همکاران و معلمان را می‌دهد.'],
+                ['menu-setting', 'emenu-setting', 'permision_viewsetting', 'مدیریت تنظیمات عمومی سامانه', 'اجازه ورود به تنظیمات عمومی، لیست سیاه و اطلاعات مالی پایه سامانه را می‌دهد.'],
+            ],
+        ],
+    ],
+    [
+        [
+            'title' => 'پایه‌ها، کلاس‌ها و آزمون',
+            'items' => [
+                ['menu-course', 'emenu-course', 'permision_viewcourse', 'مدیریت پایه‌ها، کلاس‌ها و محتوای آموزشی', 'دسترسی گسترده به ایجاد و ویرایش پایه/دوره، کلاس، محتوا، حضوروغیاب، تخصیص معلم و گزارش‌های آموزشی می‌دهد.'],
+                ['del-course', 'edel-course', 'permision_deletcourse', 'حذف و تغییر وضعیت پایه‌ها و کلاس‌ها', 'اجازه حذف، فعال/غیرفعال‌کردن پایه‌ها و در برخی صفحات حذف کلاس یا محتوا را می‌دهد.'],
+                ['discount', 'ediscount', 'permision_discount', 'مدیریت کدهای تخفیف', 'اجازه ایجاد و مدیریت کدهای تخفیف ثبت‌نام را می‌دهد.'],
+                ['menu-quiz', 'emenu-quiz', 'permision_viewtest', 'مدیریت آزمون‌ها و نتایج', 'اجازه مشاهده، ایجاد و مدیریت آزمون، پاسخ‌نامه، غایبان و نتایج را می‌دهد. مجوز حذف آزمون جداست.'],
+            ],
+        ],
+        [
+            'title' => 'پیگیری دانش‌آموز و درخواست‌ها',
+            'items' => [
+                ['suporter', 'esuporter', 'permision_suporter', 'مسئول پیگیری دانش‌آموزان', 'کاربر را در فهرست مسئولان قابل تخصیص به دانش‌آموز قرار می‌دهد و در اعلان‌ها به‌عنوان اپراتور پیگیری شناسایی می‌شود.'],
+                ['manage_suporter', 'manage_suporter', 'permision_manage_suporter', 'مدیریت مسئولان پیگیری', 'دسترسی به تخصیص دانش‌آموز، گزارش عملکرد مسئولان، دانش‌آموزان بدون مسئول و گزارش‌های مدیریتی را می‌دهد.'],
+                ['menu-support', 'emenu-support', 'permision_viewsupport', 'مشاهده و پاسخ به درخواست‌ها', 'اجازه مشاهده صندوق درخواست‌ها، موارد باز و اضطراری و پاسخ‌دادن به آن‌ها را می‌دهد.'],
+                ['support-refer', 'esupport-refer', 'permision_refer', 'ارجاع درخواست به همکار', 'امکان ارجاع یک درخواست یا تیکت به همکار دیگر را فعال می‌کند.'],
+                ['support-admin', 'esupport-admin', 'permision_allticket', 'مشاهده و مدیریت همه درخواست‌ها', 'اجازه مشاهده و مدیریت تمام تیکت‌ها، نه فقط موارد مربوط به خود کاربر، را می‌دهد.'],
+            ],
+        ],
+        [
+            'title' => 'مالی، شهریه و کیف پول',
+            'items' => [
+                ['menu-bill', 'emenu-bill', 'permision_viewbill', 'دسترسی به بخش مالی و شهریه', 'منوی حسابداری، فاکتورها، پرداخت‌ها، صورتحساب‌ها و اقساط را نمایش می‌دهد. برای عملیات حساس، مجوز جزئی مربوط نیز لازم است.'],
+                ['actbill', 'eactbill', 'permision_actfactor', 'بررسی و تأیید پرداخت‌های کارت‌به‌کارت', 'امکان بررسی فاکتورهای منتظر تأیید، تصویر رسید و مغایرت‌های واریز را می‌دهد.'],
+                ['notpay', 'enotpay', 'permision_notpay', 'مدیریت بدهی‌ها و پرداخت‌های ناموفق', 'اجازه مشاهده و رسیدگی به فاکتورهای پرداخت‌نشده، مستردشده و ثبت واریز مربوط را می‌دهد.'],
+                ['actwallet', 'eactwallet', 'permision_actwallet', 'بررسی و تأیید شارژ کیف پول', 'اجازه بررسی درخواست‌های شارژ کیف پول، تأیید آن‌ها و رسیدگی به مغایرت‌ها را می‌دهد.'],
+                ['bill', 'ebill', 'permision_bill', 'مشاهده صورتحساب‌ها و گزارش‌های مالی', 'اجازه مشاهده صورتحساب‌ها، انتقال‌ها، گزارش مالی پیشرفته و برخی خروجی‌های مالی را می‌دهد.'],
+                ['reportbill', 'ereportbill', 'permision_financial_export', 'خروجی گزارش‌های مالی (فعلاً غیرفعال)', 'این مجوز در نسخه فعلی سامانه هنوز به عملیات مستقلی متصل نیست و فعال‌کردن آن اثری در دسترسی فعلی ندارد.'],
+                ['manage-installment', 'manage-installment', 'installment_permission', 'مدیریت همه پرونده‌های اقساطی', 'به‌جای محدودبودن به اقساط ثبت‌شده توسط خود کاربر، مشاهده همه پرونده‌های اقساطی، معوقات و خروجی آن‌ها را فعال می‌کند.'],
+                ['menu-wallet', 'emenu-wallet', 'permision_viewwallet', 'مدیریت موجودی و تراکنش‌های کیف پول', 'دسترسی به داشبورد کیف پول، افزایش یا کاهش اعتبار، برداشت و گزارش تراکنش‌ها را می‌دهد.'],
+            ],
+        ],
+    ],
+];
+
+function renderEmployeePermissionColumns(array $columns, $admin = null): void
+{
+    $isEdit = is_object($admin);
+    foreach ($columns as $groups) { ?>
+        <div class="col-md-6">
+            <?php foreach ($groups as $groupIndex => $group) { ?>
+                <h6 class="text-primary font-weight-bold mb-2 <?= $groupIndex > 0 ? 'mt-3' : '' ?>">
+                    <?= htmlspecialchars($group['title']) ?>
+                </h6>
+                <div class="form-group">
+                    <?php foreach ($group['items'] as $permission) {
+                        [$createName, $editName, $column, $label, $help] = $permission;
+                        $defaultChecked = !empty($permission[5]);
+                        $checked = $isEdit
+                            ? (int)($admin->{$column} ?? 0) === 1
+                            : $defaultChecked;
+                        ?>
+                        <div class="permission-option">
+                            <label class="mb-0">
+                                <input name="<?= htmlspecialchars($isEdit ? $editName : $createName) ?>"
+                                       type="checkbox" <?= $checked ? 'checked' : '' ?>>
+                                <?= htmlspecialchars($label) ?>
+                            </label>
+                            <span class="menu-info-trigger permission-info"
+                                  data-tooltip="<?= htmlspecialchars($help) ?>"
+                                  aria-label="راهنمای <?= htmlspecialchars($label) ?>"
+                                  onclick="event.preventDefault(); event.stopPropagation();">
+                                <i class="fe fe-info"></i>
+                            </span>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+        </div>
+    <?php }
+}
+
+if (isset($_POST['esave'])) {
+    if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
+        $name = trim($_POST['ename']);
+        $famili = trim($_POST['efamili']);
+        $gender = $_POST['egender'];
+        $password = $_POST['epassword'];
+        if (isset($_POST['emob'])) {
+            $mob = $_POST['emob'];
+        } else {
+            $mob = NULL;
+        }
+        if (isset($_POST['epic'])) {
+            $pic = $_POST['epic'];
+        } else {
+            $pic = NULL;
+        }
+        if (isset($_POST['eactivate'])) {
+            $activate = 1;
+        } else {
+            $activate = 0;
+        }
+        if (isset($_POST['emenu-call'])) {
+            $menucall = 1;
+        } else {
+            $menucall = 0;
+        }
+        if (isset($_POST['eadd-call'])) {
+            $addcall = 1;
+        } else {
+            $addcall = 0;
+        }
+        if (isset($_POST['emanage-call'])) {
+            $managecall = 1;
+        } else {
+            $managecall = 0;
+        }
+        if (isset($_POST['emenu-student'])) {
+            $menustudent = 1;
+        } else {
+            $menustudent = 0;
+        }
+        if (isset($_POST['eadd-student'])) {
+            $addstudent = 1;
+        } else {
+            $addstudent = 0;
+        }
+        if (isset($_POST['eedit-student'])) {
+            $editstudent = 1;
+        } else {
+            $editstudent = 0;
+        }
+        if (isset($_POST['ecourse-student'])) {
+            $coursestudent = 1;
+        } else {
+            $coursestudent = 0;
+        }
+        if (isset($_POST['ereport-student'])) {
+            $reportstudent = 1;
+        } else {
+            $reportstudent = 0;
+        }
+        if (isset($_POST['emenu-collague'])) {
+            $menucollague = 1;
+        } else {
+            $menucollague = 0;
+        }
+        if (isset($_POST['ereport-collague'])) {
+            $reportcollague = 1;
+        } else {
+            $reportcollague = 0;
+        }
+        if (isset($_POST['emenu-course'])) {
+            $menucourse = 1;
+        } else {
+            $menucourse = 0;
+        }
+        if (isset($_POST['edel-course'])) {
+            $delcourse = 1;
+        } else {
+            $delcourse = 0;
+        }
+        if (isset($_POST['ediscount'])) {
+            $discount = 1;
+        } else {
+            $discount = 0;
+        }
+        if (isset($_POST['emenu-bill'])) {
+            $menubill = 1;
+        } else {
+            $menubill = 0;
+        }
+        if (isset($_POST['eactbill'])) {
+            $actbill = 1;
+        } else {
+            $actbill = 0;
+        }
+        if (isset($_POST['enotpay'])) {
+            $notpay = 1;
+        } else {
+            $notpay = 0;
+        }
+        if (isset($_POST['esuporter'])) {
+            $suporter = 1;
+        } else {
+            $suporter = 0;
+        }
+        if (isset($_POST['manage_suporter'])) {
+            $manage_suporter = 1;
+        } else {
+            $manage_suporter = 0;
+        }
+        if (isset($_POST['eactwallet'])) {
+            $actwallet = 1;
+        } else {
+            $actwallet = 0;
+        }
+        if (isset($_POST['ebill'])) {
+            $bill = 1;
+        } else {
+            $bill = 0;
+        }
+        if (isset($_POST['ereportbill'])) {
+            $reportbill = 1;
+        } else {
+            $reportbill = 0;
+        }
+        if (isset($_POST['emenu-wallet'])) {
+            $menuwallet = 1;
+        } else {
+            $menuwallet = 0;
+        }
+        if (isset($_POST['emenu-allert'])) {
+            $menuallert = 1;
+        } else {
+            $menuallert = 0;
+        }
+        if (isset($_POST['emenu-support'])) {
+            $menusupport = 1;
+        } else {
+            $menusupport = 0;
+        }
+        if (isset($_POST['esupport-refer'])) {
+            $supportrefer = 1;
+        } else {
+            $supportrefer = 0;
+        }
+        if (isset($_POST['esupport-admin'])) {
+            $supportadmin = 1;
+        } else {
+            $supportadmin = 0;
+        }
+        if (isset($_POST['emenu-doc'])) {
+            $menudoc = 1;
+        } else {
+            $menudoc = 0;
+        }
+        if (isset($_POST['emenu-employ'])) {
+            $menuemploy = 1;
+        } else {
+            $menuemploy = 0;
+        }
+        if (isset($_POST['emenu-setting'])) {
+            $menusetting = 1;
+        } else {
+            $menusetting = 0;
+        }
+        if (isset($_POST['emenu-quiz'])) {
+            $menuquiz = 1;
+        } else {
+            $menuquiz = 0;
+        }
+        if (isset($_POST['manage-excel'])) {
+            $manageexcel = 1;
+        } else {
+            $manageexcel = 0;
+        }
+        if (isset($_POST['manage-skill'])) {
+            $manage_skill = 1;
+        } else {
+            $manage_skill = 0;
+        }
+        if (isset($_POST['manage-reportcall'])) {
+            $manage_reportcall = 1;
+        } else {
+            $manage_reportcall = 0;
+        }
+        if (isset($_POST['manage-installment'])) {
+            $manage_installment = 1;
+        } else {
+            $manage_installment = 0;
+        }
+        if (isset($_POST['manage-olympiad'])) {
+            $manage_olympiad = 1;
+        } else {
+            $manage_olympiad = 0;
+        }
+        if (isset($_POST['administrator'])) {
+            $administrator = 1;
+        } else {
+            $administrator = 0;
+        }
+        if (isset($_POST['manage-history'])) {
+            $manage_history = 1;
+        } else {
+            $manage_history = 0;
+        }
+        if (isset($_POST['manage-autodialer'])) {
+            $manage_autodialer = 1;
+        } else {
+            $manage_autodialer = 0;
+        }
+        if (isset($_POST['permission_calendar'])) {
+            $manage_calendar = 1;
+        } else {
+            $manage_calendar = 0;
+        }
+        if (isset($_POST['permission_news_notif'])) {
+            $manage_news_notif = 1;
+        } else {
+            $manage_news_notif = 0;
+        }
+        $registerClassPermission = isset($_POST['eregister-class']) ? 1 : 0;
+
+        $skyroom = intval($_POST['skyroom']);
+
+        $adminrole = (isset($_POST['eadminrole']) && in_array((int)$_POST['eadminrole'], [0,51,52,53,54,2,6,1,3], true))
+            ? (int)$_POST['eadminrole'] : NULL;
+        $schoolRoleId = isset($_POST['eschool_role_id']) && in_array((int)$_POST['eschool_role_id'], $validSchoolRoleIds, true)
+            ? (int)$_POST['eschool_role_id'] : NULL;
+        $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['ecourse_codes'] ?? []);
+
+        $uptv = 'UPDATE dbadmin SET password=?,fname=?,lname=?,adminactive=?,mobile=?,adminpic=?,gender=?,per_skyroom=?,permision_actfactor=?,permision_notpay=?,permision_actwallet=?,permision_bill=?,permision_financial_export=?,permision_viewcall=?,permision_viewstudent=?,permision_viewcollague=?,permision_reportcollague=?,permision_viewcourse=?,permision_viewbill=?,permision_viewwallet=?,permision_viewalert=?,permision_viewsupport=?,permision_viewdocument=?,permision_viewemploy=?,permision_viewsetting=?,permision_addstudent=?,permision_editstudent=?,permision_addcourse_student=?,permision_reportstudent=?,permision_refer=?,permision_allticket=?,permision_deletcourse=?,permision_discount=?,permision_addcall=?,permision_managecall=?,permision_viewtest=?,permision_suporter=?,permision_manage_suporter=?,excel_permission=?,skill_permission=?,reportcall_permission=?,installment_permission=?,olympiad_permission=?, adminrole=? ,administrator=?,history_permission=?,autodialer=?,permission_calendar=?,permission_news_notif=? WHERE username=?';
+        $exup = $conn->prepare($uptv);
+        $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar, $manage_news_notif,  $_GET['edit']]);
+        $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
+        $schoolRoleUpdate->execute([$schoolRoleId, $_GET['edit']]);
+        $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
+        $registerClassUpdate->execute([$registerClassPermission, $_GET['edit']]);
+        syncStaffCourseAssignments($conn, (string)$_GET['edit'], $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
+        $documentUploadErrors = SaveAdminDocumentUploads((string)$_GET['edit']);
+        $accept = 'بروز رسانی با موفقیت انجام شد';
+    }
+}
+if (isset($_POST['save'])) {
+    if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
+        if (GetAdminUsername($_POST['username'])) {
+            $eror = 'نام کاربری از قبل وجود دارد';
+        } else {
+            if (checkDakheli($_POST['dakheli'])) {
+                $name = trim($_POST['name']);
+                $famili = trim($_POST['famili']);
+                $dakheli = $_POST['dakheli'];
+                $gender = $_POST['gender'];
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+                if (isset($_POST['mob'])) {
+                    $mob = $_POST['mob'];
+                } else {
+                    $mob = NULL;
+                }
+                if (isset($_POST['pic'])) {
+                    $pic = $_POST['pic'];
+                } else {
+                    $pic = NULL;
+                }
+                if (isset($_POST['activate'])) {
+                    $activate = 1;
+                } else {
+                    $activate = 0;
+                }
+                if (isset($_POST['menu-call'])) {
+                    $menucall = 1;
+                } else {
+                    $menucall = 0;
+                }
+                if (isset($_POST['add-call'])) {
+                    $addcall = 1;
+                } else {
+                    $addcall = 0;
+                }
+                if (isset($_POST['manage-call'])) {
+                    $managecall = 1;
+                } else {
+                    $managecall = 0;
+                }
+                if (isset($_POST['menu-student'])) {
+                    $menustudent = 1;
+                } else {
+                    $menustudent = 0;
+                }
+                if (isset($_POST['add-student'])) {
+                    $addstudent = 1;
+                } else {
+                    $addstudent = 0;
+                }
+                if (isset($_POST['edit-student'])) {
+                    $editstudent = 1;
+                } else {
+                    $editstudent = 0;
+                }
+                if (isset($_POST['course-student'])) {
+                    $coursestudent = 1;
+                } else {
+                    $coursestudent = 0;
+                }
+                if (isset($_POST['report-student'])) {
+                    $reportstudent = 1;
+                } else {
+                    $reportstudent = 0;
+                }
+                if (isset($_POST['menu-collague'])) {
+                    $menucollague = 1;
+                } else {
+                    $menucollague = 0;
+                }
+                if (isset($_POST['report-collague'])) {
+                    $reportcollague = 1;
+                } else {
+                    $reportcollague = 0;
+                }
+                if (isset($_POST['menu-course'])) {
+                    $menucourse = 1;
+                } else {
+                    $menucourse = 0;
+                }
+                if (isset($_POST['del-course'])) {
+                    $delcourse = 1;
+                } else {
+                    $delcourse = 0;
+                }
+                if (isset($_POST['discount'])) {
+                    $discount = 1;
+                } else {
+                    $discount = 0;
+                }
+                if (isset($_POST['menu-bill'])) {
+                    $menubill = 1;
+                } else {
+                    $menubill = 0;
+                }
+                if (isset($_POST['actbill'])) {
+                    $actbill = 1;
+                } else {
+                    $actbill = 0;
+                }
+                if (isset($_POST['notpay'])) {
+                    $notpay = 1;
+                } else {
+                    $notpay = 0;
+                }
+                if (isset($_POST['actwallet'])) {
+                    $actwallet = 1;
+                } else {
+                    $actwallet = 0;
+                }
+                if (isset($_POST['bill'])) {
+                    $bill = 1;
+                } else {
+                    $bill = 0;
+                }
+                if (isset($_POST['reportbill'])) {
+                    $reportbill = 1;
+                } else {
+                    $reportbill = 0;
+                }
+                if (isset($_POST['suporter'])) {
+                    $suporter = 1;
+                } else {
+                    $suporter = 0;
+                }
+                if (isset($_POST['manage_suporter'])) {
+                    $manage_suporter = 1;
+                } else {
+                    $manage_suporter = 0;
+                }
+                if (isset($_POST['menu-wallet'])) {
+                    $menuwallet = 1;
+                } else {
+                    $menuwallet = 0;
+                }
+                if (isset($_POST['menu-allert'])) {
+                    $menuallert = 1;
+                } else {
+                    $menuallert = 0;
+                }
+                if (isset($_POST['menu-support'])) {
+                    $menusupport = 1;
+                } else {
+                    $menusupport = 0;
+                }
+                if (isset($_POST['support-refer'])) {
+                    $supportrefer = 1;
+                } else {
+                    $supportrefer = 0;
+                }
+                if (isset($_POST['support-admin'])) {
+                    $supportadmin = 1;
+                } else {
+                    $supportadmin = 0;
+                }
+                if (isset($_POST['menu-doc'])) {
+                    $menudoc = 1;
+                } else {
+                    $menudoc = 0;
+                }
+                if (isset($_POST['menu-employ'])) {
+                    $menuemploy = 1;
+                } else {
+                    $menuemploy = 0;
+                }
+                if (isset($_POST['menu-setting'])) {
+                    $menusetting = 1;
+                } else {
+                    $menusetting = 0;
+                }
+                if (isset($_POST['menu-quiz'])) {
+                    $menuquiz = 1;
+                } else {
+                    $menuquiz = 0;
+                }
+                if (isset($_POST['manage-excel'])) {
+                    $manageexcel = 1;
+                } else {
+                    $manageexcel = 0;
+                }
+                if (isset($_POST['manage-skill'])) {
+                    $manage_skill = 1;
+                } else {
+                    $manage_skill = 0;
+                }
+                if (isset($_POST['manage-reportcall'])) {
+                    $manage_reportcall = 1;
+                } else {
+                    $manage_reportcall = 0;
+                }
+                if (isset($_POST['manage-installment'])) {
+                    $manage_installment = 1;
+                } else {
+                    $manage_installment = 0;
+                }
+                if (isset($_POST['manage-olympiad'])) {
+                    $manage_olympiad = 1;
+                } else {
+                    $manage_olympiad = 0;
+                }
+                if (isset($_POST['administrator'])) {
+                    $administrator = 1;
+                } else {
+                    $administrator = 0;
+                }
+                if (isset($_POST['manage-history'])) {
+                    $manage_history = 1;
+                } else {
+                    $manage_history = 0;
+                }
+                if (isset($_POST['manage-autodialer'])) {
+                    $manage_autodialer = 1;
+                } else {
+                    $manage_autodialer = 0;
+                }
+                if (isset($_POST['permission_calendar'])) {
+                    $manage_calendar = 1;
+                } else {
+                    $manage_calendar = 0;
+                }
+                if (isset($_POST['permission_news_notif'])) {
+                    $manage_news_notif = 1;
+                } else {
+                    $manage_news_notif = 0;
+                }
+                $registerClassPermission = isset($_POST['register-class']) ? 1 : 0;
+
+
+                $skyroom = intval($_POST['skyroom']);
+                // each number represents a role , for more info about the roles check menu.php in admin directory or the comment of adminrole column in dbadmin.
+                $adminrole = (isset($_POST['adminrole']) && in_array((int)$_POST['adminrole'], [0,51,52,53,54,2,6,1,3], true))
+                    ? (int)$_POST['adminrole'] : NULL;
+                $schoolRoleId = isset($_POST['school_role_id']) && in_array((int)$_POST['school_role_id'], $validSchoolRoleIds, true)
+                    ? (int)$_POST['school_role_id'] : NULL;
+                $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['course_codes'] ?? []);
+
+                $addmin = 'INSERT INTO dbadmin (username,password,fname,lname,adminactive,mobile,dakheli,adminpic,gender,per_skyroom,permision_actfactor,permision_notpay,permision_actwallet,permision_bill,permision_financial_export,permision_viewcall,permision_viewstudent,permision_viewcollague,permision_reportcollague,permision_viewcourse,permision_viewbill,permision_viewwallet,permision_viewalert,permision_viewsupport,permision_viewdocument,permision_viewemploy,permision_viewsetting,permision_addstudent,permision_editstudent,permision_addcourse_student,permision_reportstudent,permision_refer,permision_allticket,permision_deletcourse,permision_discount,permision_addcall,permision_managecall,permision_viewtest,permision_suporter,permision_manage_suporter,excel_permission,skill_permission,reportcall_permission,installment_permission,olympiad_permission,adminrole,administrator,history_permission,autodialer,permission_calendar,permission_news_notif)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+                $ins = $conn->prepare($addmin);
+                $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar,$manage_news_notif]);
+                $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
+                $schoolRoleUpdate->execute([$schoolRoleId, $username]);
+                $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
+                $registerClassUpdate->execute([$registerClassPermission, $username]);
+                syncStaffCourseAssignments($conn, $username, $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
+                $documentUploadErrors = SaveAdminDocumentUploads($username);
+                if ($documentUploadErrors) {
+                    $_SESSION['admin_document_flash_errors'] = $documentUploadErrors;
+                    header('location: addemploy.php?edit=' . rawurlencode($username));
+                    exit;
+                }
+                header('location: listadmin.php');
+
+            } else {
+                $eror = 'داخلی وارد شده از قبل وجود دارد';
+            }
+        }
+
+
+    }
+}
+include_once '../../temp.html';
+?>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="description" content="e">
+    <meta name="author" content="hamsepar.ir">
+    <!-- Title -->
+    <title> افزودن کارمند جدید | <?php echo __TITLE ?></title>
+    <?php include_once '../link.php'; ?>
+    <style>
+        .permission-option {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 7px 9px;
+            margin-bottom: 5px;
+            border: 1px solid #edf0f5;
+            border-radius: 7px;
+            background: #fafbfc;
+        }
+
+        .permission-option label {
+            flex: 1;
+            line-height: 1.7;
+            cursor: pointer;
+        }
+
+        .permission-option input {
+            margin-left: 6px;
+        }
+
+        .permission-info {
+            flex: 0 0 auto;
+            color: #5965db;
+            cursor: help;
+            font-size: 17px;
+            margin-top: 1px;
+        }
+    </style>
+</head>
+<body class="main-body leftmenu">
+<!-- Loader -->
+<div id="global-loader">
+    <img src="<?php echo url('assets/img/media/loader.gif') ?>" class="loader-img" alt="درحال بارگذاری">
+</div>
+<!-- End Loader -->
+<!-- Page -->
+<div class="page">
+    <?php
+    include_once '../menu.php';
+    include_once '../header.php';
+
+    ?>
+    <?php if (!isset($_GET['edit'])) { ?>
+        <div class="main-content side-content pt-0" dir="rtl">
+            <div class="container-fluid">
+                <div class="inner-body">
+
+                    <!-- Error Alert Block -->
+                    <?php if (isset($eror)) { ?>
+                        <div class="alert alert-danger" role="alert">
+                            <span class="alert-inner--icon"><i class="mdi mdi-asterisk"></i></span>
+                            <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <?php echo $eror ?>
+                        </div>
+                    <?php } ?>
+
+                    <!-- CSRF Token Generation -->
+                    <?php
+                    $hash = bin2hex(random_bytes(32));
+                    $_SESSION['token'] = $hash;
+                    ?>
+
+                    <form method="post" enctype="multipart/form-data" data-parsley-validate="">
+                        <!-- Hidden CSRF Token Input -->
+                        <input class="form-control" name="token" type="hidden" value="<?php echo $hash ?>">
+
+                        <div class="row row-sm">
+
+                            <!-- RIGHT COLUMN: General Information (اطلاعات عمومی) -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                    <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #5c6bc0;">
+                                        اطلاعات عمومی
+                                        <span class="menu-info-trigger" style="color: white;"
+                                              data-tooltip="در این بخش می‌توانید با ثبت اطلاعات عمومی، تعیین نقش، سطوح دسترسی و سایر تنظیمات، حساب کاربری کارمند جدید را در سامانه ایجاد کنید تا امکان ورود و استفاده از بخش‌های مجاز برای او فراهم شود. همچنین در همین قسمت، اطلاعات ورود شامل نام کاربری و رمز عبور مشخص می‌گردد؛ لطفاً توجه داشته باشید که این اطلاعات به‌درستی ثبت شده و به صورت امن تنها در اختیار شخص مجاز قرار گیرد."
+                                              aria-label="راهنمای کامل ایجاد کارمند و اطلاعات ورود"
+                                              onclick="event.preventDefault(); event.stopPropagation();">
+                                            <i class="fe fe-info fs-4"></i>
+                                    </span>
+
+                                    </div>
+                                    <div class="card-body">
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="name" aria-describedby="basic-addon2" type="text" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام خانوادگی <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="famili" aria-describedby="basic-addon2" type="text" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام کاربری <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="username" aria-describedby="basic-addon2" type="text" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">رمزعبور <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="password" aria-describedby="basic-addon2" type="password" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">داخلی <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="dakheli" aria-describedby="basic-addon2" type="number" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">شماره موبایل</label>
+                                                <input class="form-control" name="mob" aria-describedby="basic-addon2" type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">جنسیت <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2" name="gender" required>
+                                                    <option value="خانم">خانم</option>
+                                                    <option value="آقای">آقا</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">نوع دسترسی اتاق مجازی <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2" name="skyroom" required>
+                                                    <option value="1">شرکت کننده</option>
+                                                    <option value="2">ارائه دهنده</option>
+                                                    <option value="3">اپراتور</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">سطح دسترسی سامانه</label>
+                                                <select class="form-control select2" name="adminrole">
+                                                    <option value="">— بدون نقش —</option>
+                                                    <?php if ($_SESSION['admin']['adminrole'] == 0) { ?>
+                                                        <option value="0">مدیر</option>
+                                                    <?php } ?>
+                                                    <?php if ($_SESSION['admin']['adminrole'] == 0) { ?>
+                                                        <option value="51">معاونت اجرایی</option>
+                                                    <?php } ?>
+                                                    <option value="52">معاونت آموزشی</option>
+                                                    <option value="53">معاونت فروش</option>
+                                                    <option value="54">معاونت فنی</option>
+                                                    <option value="6">کارشناس فروش</option>
+                                                    <option value="1">پشتیبان</option>
+                                                    <option value="2">معاونت میانی</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">سمت سازمانی مدرسه <span class="tx-danger">*</span></label>
+                                                <select class="form-control" name="school_role_id" required>
+                                                    <option value="">— انتخاب سمت —</option>
+                                                    <?php foreach ($schoolRoles as $schoolRole) { ?>
+                                                        <option value="<?= (int)$schoolRole->id ?>"
+                                                                data-course-scope="<?= in_array((string)$schoolRole->role_key, $courseScopedRoleKeys, true) ? '1' : '0' ?>">
+                                                            <?= htmlspecialchars($schoolRole->title) ?>
+                                                        </option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 staff-course-scope d-none" data-mode="create">
+                                            <div class="col-12">
+                                                <label class="form-label">پایه‌های قابل دسترسی <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2 staff-course-select" name="course_codes[]" multiple>
+                                                    <?php foreach ($assignableCourses as $course) { ?>
+                                                        <option value="<?= (int)$course->codecourse ?>"><?= htmlspecialchars($course->coursename) ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <small class="text-muted">برای معاون پایه یا مشاور، فقط پایه‌های انتخاب‌شده در بخش پایه‌ها نمایش داده می‌شوند.</small>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 d-flex align-items-center pt-3">
+                                                <label class="ckbox">
+                                                    <input name="activate" type="checkbox" checked>
+                                                    <span>فعالسازی حساب</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">آدرس عکس</label>
+                                            <input class="form-control" name="pic" aria-describedby="basic-addon2" type="text" placeholder="http://yourdomain.ir/wp-content/uploads/3.jpg">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LEFT COLUMN: Permissions (دسترسى‌ها و نقش‌ها) -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                    <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
+                                        دسترسی‌ها و نقش‌ها
+                                        <span class="menu-info-trigger" style="color: white;"
+                                              data-tooltip="در این بخش می‌توانید مجوزها و سطح دسترسی کارمند را تعیین کنید.با فعال کردن و یا غیرفعال کردن هر بخش،مجوز دسترسی و یا عدم دسترسی کارمندان به آن بخش داده می شود."
+                                              aria-label="راهنمای مجوزات"
+                                              onclick="event.preventDefault(); event.stopPropagation();">
+
+                                                <i class="fe fe-info fs-4"></i>
+                                            </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-right">
+                                            <?php renderEmployeePermissionColumns($employeePermissionColumns); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card custom-card border-0 shadow-sm" id="personnel-documents">
+                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;">مدارک و سوابق همکار</div>
+                                    <div class="card-body">
+                                        <div class="alert alert-light border">فرمت‌های مجاز: PDF، تصویر، Word — حداکثر حجم هر فایل ۱۰ مگابایت</div>
+                                        <?php RenderAdminDocumentUploadFields(); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons -->
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex justify-content-start gap-2">
+                                <button type="submit" class="btn btn-success px-4" name="save">
+                                    <i class="fa fa-save"></i> ذخیره تنظیمات و ایجاد کارمند
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php } else {
+        $user = $_GET['edit'];
+        $retadmin = retAdmin($user);
+        if ($retadmin == NULL) {
+            echo '<script>window.location.href="listadmin.php" </script>';
+        }
+        ?>
+
+        <div class="main-content side-content pt-0" dir="rtl">
+            <div class="container-fluid">
+                <div class="inner-body">
+
+                    <!-- Success Alert Block -->
+                    <?php if (isset($accept)) { ?>
+                        <div class="alert alert-success" role="alert">
+                            <span class="alert-inner--icon"><i class="mdi mdi-asterisk"></i></span>
+                            <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <?php echo $accept ?>
+                        </div>
+                    <?php } ?>
+
+                    <!-- CSRF Token Generation -->
+                    <?php
+                    $hash = bin2hex(random_bytes(32));
+                    $_SESSION['token'] = $hash;
+                    ?>
+
+                    <form method="post" enctype="multipart/form-data" data-parsley-validate="">
+                        <!-- Hidden CSRF Token Input -->
+                        <input class="form-control" name="token" type="hidden" value="<?php echo $hash ?>">
+
+                        <div class="row row-sm">
+
+                            <!-- RIGHT COLUMN: General Information (اطلاعات عمومی) -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                    <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex justify-content-between align-items-center" style="background-color: #5c6bc0;">
+                                        <span class="d-flex justify-content-between align-items-center">اطلاعات عمومی
+                                           <span class="menu-info-trigger " style="color: white;"
+                                                 data-tooltip="در این بخش می‌توانید با ویرایش اطلاعات عمومی، تعیین نقش، سطوح دسترسی و سایر تنظیمات، حساب کاربری کارمند جدید را در سامانه ایجاد کنید تا امکان ورود و استفاده از بخش‌های مجاز برای او فراهم شود. همچنین در همین قسمت، اطلاعات ورود شامل نام کاربری و رمز عبور مشخص می‌گردد؛ لطفاً توجه داشته باشید که این اطلاعات به‌درستی ثبت شده و به صورت امن تنها در اختیار شخص مجاز قرار گیرد."
+                                                 aria-label="راهنمای کامل ایجاد کارمند و اطلاعات ورود"
+                                                 onclick="event.preventDefault(); event.stopPropagation();">
+                                            <i class="fe fe-info fs-4"></i>
+                                    </span>
+
+                                        </span>
+                                        <span class="badge badge-warning p-2" style="font-size: 0.9rem;">
+                                    <?php echo $retadmin->fname . ' ' . $retadmin->lname ?>
+                                </span>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="ename" aria-describedby="basic-addon2" type="text" required value="<?php echo $retadmin->fname ?>">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام خانوادگی <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="efamili" aria-describedby="basic-addon2" type="text" required value="<?php echo $retadmin->lname ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">نام کاربری <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="eusername" aria-describedby="basic-addon2" type="text" required disabled value="<?php echo $retadmin->username ?>">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">رمزعبور <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="epassword" aria-describedby="basic-addon2" type="password" required value="<?php echo $retadmin->password ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">داخلی <span class="tx-danger">*</span></label>
+                                                <input class="form-control" name="edakheli" aria-describedby="basic-addon2" type="number" required disabled value="<?php echo $retadmin->dakheli ?>">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">شماره موبایل</label>
+                                                <input class="form-control" name="emob" aria-describedby="basic-addon2" type="text" value="<?php echo $retadmin->mobile ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">جنسیت <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2" name="egender" required>
+                                                    <option <?php if ($retadmin->gender == 'خانم') { echo 'selected'; } ?> value="خانم">خانم</option>
+                                                    <option <?php if ($retadmin->gender == 'آقای') { echo 'selected'; } ?> value="آقای">آقا</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">نوع دسترسی اتاق مجازی <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2" name="skyroom" required>
+                                                    <option value="1" <?php if ($retadmin->per_skyroom == '1') { echo 'selected'; } ?>>شرکت کننده</option>
+                                                    <option value="2" <?php if ($retadmin->per_skyroom == '2') { echo 'selected'; } ?>>ارائه دهنده</option>
+                                                    <option value="3" <?php if ($retadmin->per_skyroom == '3') { echo 'selected'; } ?>>اپراتور</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">سطح دسترسی سامانه</label>
+                                                <select class="form-control select2" name="eadminrole">
+                                                    <option value="" <?php if (empty($retadmin->adminrole)) { echo 'selected'; } ?>>— بدون نقش —</option>
+                                                    <?php if ($_SESSION['admin']['adminrole'] == 0) { ?>
+                                                        <option value="0" <?php if ($retadmin->adminrole == '0') { echo 'selected'; } ?>>مدیر</option>
+                                                        <option value="51" <?php if ($retadmin->adminrole == '51') { echo 'selected'; } ?>>معاونت اجرایی</option>
+                                                    <?php } ?>
+                                                    <option value="52" <?php if ($retadmin->adminrole == '52') { echo 'selected'; } ?>>معاونت آموزش</option>
+                                                    <option value="53" <?php if ($retadmin->adminrole == '53') { echo 'selected'; } ?>>معاونت فروش</option>
+                                                    <option value="54" <?php if ($retadmin->adminrole == '54') { echo 'selected'; } ?>>معاونت فنی</option>
+                                                    <option value="2" <?php if ($retadmin->adminrole == '2') { echo 'selected'; } ?>>معاونت میانی</option>
+                                                    <option value="6" <?php if ($retadmin->adminrole == '6') { echo 'selected'; } ?>>کارشناس فروش</option>
+                                                    <option value="1" <?php if ($retadmin->adminrole == '1') { echo 'selected'; } ?>>پشتیبان</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">سمت سازمانی مدرسه <span class="tx-danger">*</span></label>
+                                                <select class="form-control" name="eschool_role_id" required>
+                                                    <option value="">— انتخاب سمت —</option>
+                                                    <?php foreach ($schoolRoles as $schoolRole) { ?>
+                                                        <option value="<?= (int)$schoolRole->id ?>"
+                                                                data-course-scope="<?= in_array((string)$schoolRole->role_key, $courseScopedRoleKeys, true) ? '1' : '0' ?>"
+                                                            <?php if ((int)($retadmin->school_role_id ?? 0) === (int)$schoolRole->id) { echo 'selected'; } ?>>
+                                                            <?= htmlspecialchars($schoolRole->title) ?>
+                                                        </option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3 staff-course-scope d-none" data-mode="edit">
+                                            <div class="col-12">
+                                                <label class="form-label">پایه‌های قابل دسترسی <span class="tx-danger">*</span></label>
+                                                <select class="form-control select2 staff-course-select" name="ecourse_codes[]" multiple>
+                                                    <?php foreach ($assignableCourses as $course) { ?>
+                                                        <option value="<?= (int)$course->codecourse ?>" <?= in_array((int)$course->codecourse, $editAssignedCourseCodes, true) ? 'selected' : '' ?>>
+                                                            <?= htmlspecialchars($course->coursename) ?>
+                                                        </option>
+                                                    <?php } ?>
+                                                </select>
+                                                <small class="text-muted">دسترسی معاون پایه و مشاور به بخش پایه‌ها، فقط به موارد انتخاب‌شده محدود می‌شود.</small>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 d-flex align-items-center pt-3">
+                                                <label class="ckbox">
+                                                    <input name="eactivate" type="checkbox" <?php if ($retadmin->adminactive == 1) { echo 'checked'; } ?>>
+                                                    <span>فعالسازی حساب</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">آدرس عکس</label>
+                                            <input class="form-control" name="epic" aria-describedby="basic-addon2" type="text" value="<?php echo $retadmin->adminpic ?>" placeholder="http://yourdomain.ir/wp-content/uploads/3.jpg">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LEFT COLUMN: Permissions (دسترسى‌ها و نقش‌ها) -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                    <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
+                                        دسترسی‌ها و نقش‌ها
+                                        <span class="menu-info-trigger" style="color: white;"
+                                              data-tooltip="در این بخش می‌توانید مجوزها و سطح دسترسی کارمند را تعیین کنید.با فعال کردن و یا غیرفعال کردن هر بخش،مجوز دسترسی و یا عدم دسترسی کارمندان به آن بخش داده می شود."
+                                              aria-label="راهنمای مجوزات"
+                                              onclick="event.preventDefault(); event.stopPropagation();">
+
+                                                <i class="fe fe-info fs-4"></i>
+                                            </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-right">
+                                            <?php renderEmployeePermissionColumns($employeePermissionColumns, $retadmin); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card custom-card border-0 shadow-sm" id="personnel-documents">
+                                    <div class="card-header text-white font-weight-bold" style="background-color:#00897b;">مدارک و سوابق همکار</div>
+                                    <div class="card-body">
+                                        <?php if ($documentUploadErrors): ?>
+                                            <div class="alert alert-danger"><?= htmlspecialchars(implode(' ', $documentUploadErrors)) ?></div>
+                                        <?php endif; ?>
+                                        <div class="alert alert-light border">فایل جدید فقط همان مدرک قبلی را جایگزین می‌کند. فرمت‌های مجاز: PDF، تصویر، Word</div>
+                                        <?php RenderAdminDocumentUploadFields($retadmin); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons -->
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex justify-content-start gap-2">
+                                <button type="submit" class="btn btn-warning px-4" name="esave">
+                                    <i class="fa fa-save"></i> ذخیره تنظیمات و ویرایش کارمند
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+    <?php include '../../footers.php'; ?>
+    <!--End Footer-->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function bindCourseScope(roleSelectName, mode) {
+                const roleSelect = document.querySelector('select[name="' + roleSelectName + '"]');
+                const wrapper = document.querySelector('.staff-course-scope[data-mode="' + mode + '"]');
+                if (!roleSelect || !wrapper) return;
+                const courseSelect = wrapper.querySelector('.staff-course-select');
+
+                function updateVisibility() {
+                    const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+                    const requiresCourses = selectedOption && selectedOption.dataset.courseScope === '1';
+                    wrapper.classList.toggle('d-none', !requiresCourses);
+                    if (courseSelect) {
+                        courseSelect.required = requiresCourses;
+                    }
+                }
+
+                roleSelect.addEventListener('change', updateVisibility);
+                updateVisibility();
+            }
+
+            bindCourseScope('school_role_id', 'create');
+            bindCourseScope('eschool_role_id', 'edit');
+        });
+    </script>
+
+
+</body>
+</html>
+

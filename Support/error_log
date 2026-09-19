@@ -1,0 +1,295 @@
+[04-Jul-2025 22:58:20 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[04-Jul-2025 22:58:20 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[09-Jul-2025 12:20:00 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[09-Jul-2025 12:20:00 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[12-Aug-2025 18:25:50 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[12-Aug-2025 18:25:50 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[16-Aug-2025 21:02:22 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[16-Aug-2025 21:02:22 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[25-Aug-2025 19:03:59 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[25-Aug-2025 19:03:59 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[03-Dec-2025 15:23:55 Europe/London] PHP Warning:  mime_content_type(): Can only process string or stream arguments in /home/myhona/public_html/Support/attachments.php on line 16
+[10-Dec-2025 19:21:07 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[10-Dec-2025 19:21:07 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[19-Dec-2025 10:58:04 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[19-Dec-2025 10:58:04 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-Jan-2026 15:11:54 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[17-Jan-2026 13:52:45 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[17-Jan-2026 13:52:45 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[21-Jan-2026 13:36:05 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[21-Jan-2026 13:36:05 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[11-Feb-2026 11:11:53 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[13-Feb-2026 14:19:35 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[13-Feb-2026 14:22:21 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 308
+[13-Feb-2026 14:22:31 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[13-Feb-2026 14:22:39 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[13-Feb-2026 14:22:41 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 308
+[14-Feb-2026 16:49:18 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[17-Feb-2026 18:23:05 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[17-Feb-2026 18:23:05 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[17-Feb-2026 14:56:48 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[17-Feb-2026 14:56:48 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[23-Feb-2026 15:56:24 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.232.42.52')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[23-Feb-2026 15:56:26 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.232.42.52')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[23-Feb-2026 16:59:32 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('89.196.213.103')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[23-Feb-2026 17:53:54 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/SendTicket.php(6): CheckBlacklist_ip('37.129.217.175')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 03:46:31 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.115.69.237')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 03:46:32 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.115.69.237')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 03:46:35 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.115.69.237')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 03:46:37 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.115.69.237')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 14:44:35 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('151.238.52.41')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[03-Mar-2026 05:57:07 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[03-Mar-2026 05:57:07 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[03-Mar-2026 05:57:07 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[03-Mar-2026 05:57:07 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[06-Mar-2026 02:58:03 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[06-Mar-2026 02:58:03 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[06-Mar-2026 02:58:05 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[06-Mar-2026 02:58:05 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[06-Mar-2026 06:28:06 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[06-Mar-2026 06:28:08 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[06-Mar-2026 02:58:08 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[06-Mar-2026 02:58:08 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[10-Mar-2026 15:38:38 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[10-Mar-2026 15:38:38 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[10-Mar-2026 15:38:38 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[10-Mar-2026 15:38:38 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[18-Mar-2026 10:15:11 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[19-Mar-2026 11:23:59 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[19-Mar-2026 11:23:59 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[19-Mar-2026 11:24:31 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[19-Mar-2026 11:24:31 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[19-Mar-2026 11:26:30 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[19-Mar-2026 11:26:30 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[19-Mar-2026 11:30:43 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[19-Mar-2026 11:30:43 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 19:32:47 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 19:32:47 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 19:33:10 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 19:33:10 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 19:34:46 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 19:34:46 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 19:58:54 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 19:58:54 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 20:00:39 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 20:00:39 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 20:01:13 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 20:01:13 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 20:01:21 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 20:01:21 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 20:01:22 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 20:01:22 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[23-Mar-2026 20:22:03 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[23-Mar-2026 20:22:03 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[24-Mar-2026 20:07:29 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[24-Mar-2026 20:07:29 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[24-Mar-2026 23:04:00 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[24-Mar-2026 23:04:00 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[24-Mar-2026 23:04:00 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[24-Mar-2026 23:04:00 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[28-Mar-2026 14:12:04 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[28-Mar-2026 14:12:04 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[29-Mar-2026 20:42:45 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[29-Mar-2026 20:42:45 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[29-Mar-2026 20:49:39 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[01-Apr-2026 18:57:26 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[01-Apr-2026 18:57:26 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[11-Apr-2026 11:53:14 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[15-Apr-2026 10:16:26 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[15-Apr-2026 10:16:26 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[19-Apr-2026 00:37:06 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[19-Apr-2026 00:37:06 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[22-Apr-2026 16:03:21 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[22-Apr-2026 16:03:21 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[25-Apr-2026 16:34:42 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[25-Apr-2026 16:34:42 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[25-Apr-2026 16:34:42 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[25-Apr-2026 16:34:42 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[29-Apr-2026 17:50:18 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[29-Apr-2026 17:50:18 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[02-May-2026 12:32:39 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[08S01]: Communication link failure: 1053 Server shutdown in progress in /home/myhona/public_html/Support/Message.php:328
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(328): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/Support/Message.php on line 328
+[02-May-2026 10:02:39 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('217.218.38.88')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-May-2026 08:50:18 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:18 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:25 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:25 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:27 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:27 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:33 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:33 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:35 Europe/London] PHP Notice:  Trying to get property 'message_date' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[15-May-2026 08:50:35 Europe/London] PHP Notice:  Trying to get property 'message_time' of non-object in /home/myhona/public_html/Support/Message.php on line 183
+[20-May-2026 17:42:37 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[22-May-2026 15:23:25 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[22-May-2026 15:23:25 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/Support/AllTicket.php on line 341
+[24-May-2026 16:35:36 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('178.131.20.2')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[28-May-2026 16:15:17 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[31-May-2026 14:18:31 Asia/Tehran] PHP Notice:  Trying to get property 'message_text' of non-object in /home/myhona/public_html/Support/Message.php on line 308
+[01-Jun-2026 15:27:15 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[01-Jun-2026 15:37:56 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[04-Jun-2026 12:23:12 Europe/London] PHP Warning:  Packets out of order. Expected 1 received 0. Packet size=145 in /home/myhona/public_html/menu.php on line 6
+[04-Jun-2026 12:23:12 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in /home/myhona/public_html/menu.php:6
+Stack trace:
+#0 /home/myhona/public_html/menu.php(6): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/Support/FreeCall.php(64): include_once('/home/myhona/pu...')
+#2 {main}
+  thrown in /home/myhona/public_html/menu.php on line 6
+[04-Jun-2026 13:12:08 Europe/London] PHP Warning:  Packets out of order. Expected 1 received 0. Packet size=145 in /home/myhona/public_html/menu.php on line 6
+[04-Jun-2026 13:12:08 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in /home/myhona/public_html/menu.php:6
+Stack trace:
+#0 /home/myhona/public_html/menu.php(6): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/Support/FreeCall.php(64): include_once('/home/myhona/pu...')
+#2 {main}
+  thrown in /home/myhona/public_html/menu.php on line 6
+[13-Jun-2026 16:40:53 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[13-Jun-2026 16:41:15 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[15-Jun-2026 12:28:46 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('86.55.78.176')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:28:48 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('86.55.78.176')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:28:49 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('86.55.78.176')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:28:49 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('86.55.78.176')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:32:37 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('5.116.243.245')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:37:06 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('2.188.34.99')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[15-Jun-2026 12:37:11 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/Support/Message.php(9): CheckBlacklist_ip('2.188.34.99')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[16-Jun-2026 10:24:16 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[16-Jun-2026 10:24:16 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[16-Jun-2026 10:24:25 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[16-Jun-2026 10:24:25 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[16-Jun-2026 10:31:57 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[16-Jun-2026 10:31:57 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 347
+[03-Jul-2026 12:04:53 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/Support/Message.php on line 360
+[03-Jul-2026 12:06:25 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[03-Jul-2026 12:06:25 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[03-Jul-2026 12:06:36 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170
+[03-Jul-2026 12:06:36 Asia/Tehran] PHP Notice:  Undefined variable: section in /home/myhona/public_html/Support/AllTicket.php on line 170

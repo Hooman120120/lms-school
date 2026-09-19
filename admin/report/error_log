@@ -1,0 +1,276 @@
+[12-Jan-2026 08:36:45 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UNION SELECT * FROM dbcourse_demo INNER JOIN dbpersonal ON dbcourse_demo.usernam' at line 1 in /home/myhona/public_html/admin/report/students.php:96
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(96): PDOStatement->execute()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 96
+[12-Jan-2026 08:39:05 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UNION ALL SELECT * FROM dbcourse_demo INNER JOIN dbpersonal ON dbcourse_demo.use' at line 1 in /home/myhona/public_html/admin/report/students.php:96
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(96): PDOStatement->execute()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 96
+[12-Jan-2026 08:59:43 Europe/London] PHP Notice:  Undefined variable: wer in /home/myhona/public_html/admin/report/students.php on line 85
+[12-Jan-2026 08:59:43 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function fetchAll() on null in /home/myhona/public_html/admin/report/students.php:85
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 85
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/report/students.php on line 620
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 631
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 637
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/report/students.php on line 620
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 631
+[12-Jan-2026 12:41:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 637
+[12-Jan-2026 12:50:16 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'coursename' in 'field list' in /home/myhona/public_html/admin/report/students.php:625
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(625): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 625
+[12-Jan-2026 12:50:23 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'coursename' in 'field list' in /home/myhona/public_html/admin/report/students.php:625
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(625): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 625
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:50:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:55:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined variable: course in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/report/students.php on line 640
+[12-Jan-2026 12:56:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 12:57:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:00:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 646
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:01:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:02:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:04:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$suporter in /home/myhona/public_html/admin/report/students.php on line 650
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:17:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:19:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:19:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 600
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$activityuser in /home/myhona/public_html/admin/report/students.php on line 608
+[12-Jan-2026 13:20:16 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/report/students.php on line 610
+[12-Jan-2026 10:24:37 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UNION ALL SELECT * FROM dbcourse_demo INNER JOIN dbpersonal ON dbcourse_demo.use' at line 1 in /home/myhona/public_html/admin/report/students.php:107
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(107): PDOStatement->execute()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/report/students.php on line 107
+[12-Jan-2026 16:00:36 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(235): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[12-Jan-2026 16:00:44 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(235): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[12-Jan-2026 16:00:58 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(235): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[12-Jan-2026 16:01:22 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(235): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[12-Jan-2026 16:01:38 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/report/students.php(235): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[18-Feb-2026 15:21:46 Europe/London] PHP Parse error:  syntax error, unexpected end of file in /home/myhona/public_html/inc/function.php on line 1773

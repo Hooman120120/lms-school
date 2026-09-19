@@ -1,0 +1,8 @@
+[09-Jun-2026 08:55:07 Europe/London] PHP Warning:  Packets out of order. Expected 1 received 0. Packet size=145 in /home/myhona/public_html/admin/autodialer/admin-menu.php on line 24
+[09-Jun-2026 08:55:07 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in /home/myhona/public_html/admin/autodialer/admin-menu.php:24
+Stack trace:
+#0 /home/myhona/public_html/admin/autodialer/admin-menu.php(24): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/menu.php(5): include_once('/home/myhona/pu...')
+#2 /home/myhona/public_html/admin/autodialer/campaign-management.php(248): include_once('/home/myhona/pu...')
+#3 {main}
+  thrown in /home/myhona/public_html/admin/autodialer/admin-menu.php on line 24

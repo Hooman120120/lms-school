@@ -1,0 +1,22 @@
+2026-06-22 16:44:06 [IP: 93.114.106.208] [User: op200] POST data: Array
+(
+    [edit_answer_id] => 29
+    [edit_event_id] => 29
+    [action] => edit_answer
+    [edit_option_id] => 24
+    [edit_reason] => tested
+)
+
+2026-06-22 16:44:06 [IP: 93.114.106.208] [User: op200] Inputs: answerId=29, optionId=24, studentId='0202071480', reason='tested'
+2026-06-22 16:44:06 [IP: 93.114.106.208] [User: op200] FAIL: Ownership mismatch: answer belongs to '0023789182', but studentId is '0202071480'
+2026-06-22 16:44:08 [IP: 93.114.106.208] [User: op200] POST data: Array
+(
+    [edit_answer_id] => 29
+    [edit_event_id] => 29
+    [action] => edit_answer
+    [edit_option_id] => 24
+    [edit_reason] => tested
+)
+
+2026-06-22 16:44:08 [IP: 93.114.106.208] [User: op200] Inputs: answerId=29, optionId=24, studentId='0202071480', reason='tested'
+2026-06-22 16:44:08 [IP: 93.114.106.208] [User: op200] FAIL: Ownership mismatch: answer belongs to '0023789182', but studentId is '0202071480'

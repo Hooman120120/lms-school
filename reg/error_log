@@ -1,0 +1,95 @@
+[10-Jul-2025 14:19:42 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4432433541')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:19:56 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422260911')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:21:40 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:21:53 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:22:15 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:22:34 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:22:57 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:23:31 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:27:25 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 14:31:30 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 15:21:31 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 15:22:07 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 15:22:11 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[10-Jul-2025 17:57:38 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[11-Jul-2025 11:35:32 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[11-Jul-2025 11:35:42 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[26-Jul-2025 23:05:19 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4422309226')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[01-Aug-2025 18:57:05 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('4670552481')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67
+[12-Oct-2025 02:35:34 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/reg/index.php:67
+Stack trace:
+#0 /home/myhona/public_html/reg/index.php(28): chuser('0481713417')
+#1 {main}
+  thrown in /home/myhona/public_html/reg/index.php on line 67

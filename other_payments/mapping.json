@@ -1,0 +1,52 @@
+{
+    "1787577172663": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 10000
+    },
+    "1788418689616": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 10000
+    },
+    "1788418799689": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 15000000
+    },
+    "1788418812894": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 15000000
+    },
+    "1788860650806": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 47000000
+    },
+    "1788860660859": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 15000000
+    },
+    "1788871254428": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 1000
+    },
+    "1788871410383": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 1000
+    },
+    "1788871519998": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 10000
+    },
+    "1788871572635": {
+        "source": "system_b",
+        "type": "purchase",
+        "amount": 1000
+    }
+}

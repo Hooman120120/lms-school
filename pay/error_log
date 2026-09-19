@@ -1,0 +1,73 @@
+[08-Jul-2025 15:19:56 Europe/London] PHP Notice:  Undefined index: SaleReferenceId in /home/myhona/public_html/pay/verification.php on line 64
+[08-Jul-2025 15:19:57 Europe/London] PHP Notice:  Array to string conversion in /home/myhona/public_html/pay/verification.php on line 163
+[08-Jul-2025 15:20:17 Europe/London] PHP Notice:  Undefined index: SaleReferenceId in /home/myhona/public_html/pay/verification.php on line 64
+[08-Jul-2025 15:20:17 Europe/London] PHP Notice:  Array to string conversion in /home/myhona/public_html/pay/verification.php on line 163
+[11-Jan-2026 13:21:43 Asia/Tehran] PHP Notice:  Trying to get property 'Value' of non-object in /home/myhona/public_html/inc/function.php on line 468
+[22-Jun-2026 16:14:17 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'ugid_parent' cannot be null in /home/myhona/public_html/pay/verification.php:148
+Stack trace:
+#0 /home/myhona/public_html/pay/verification.php(148): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/pay/verification.php on line 148
+[22-Jun-2026 16:19:06 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'ugid_parent' cannot be null in /home/myhona/public_html/pay/verification.php:148
+Stack trace:
+#0 /home/myhona/public_html/pay/verification.php(148): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/pay/verification.php on line 148
+[23-Jun-2026 13:54:35 Europe/London] PHP Notice:  Undefined index: SaleReferenceId in /home/myhona/public_html/pay/verification.php on line 64
+[23-Jun-2026 13:54:35 Europe/London] PHP Notice:  Array to string conversion in /home/myhona/public_html/pay/verification.php on line 163
+[23-Jun-2026 13:55:00 Europe/London] PHP Notice:  Undefined index: SaleReferenceId in /home/myhona/public_html/pay/verification.php on line 64
+[23-Jun-2026 13:55:00 Europe/London] PHP Notice:  Array to string conversion in /home/myhona/public_html/pay/verification.php on line 163
+[23-Jun-2026 13:55:20 Europe/London] PHP Notice:  Undefined index: SaleReferenceId in /home/myhona/public_html/pay/verification.php on line 64
+[23-Jun-2026 13:55:20 Europe/London] PHP Notice:  Array to string conversion in /home/myhona/public_html/pay/verification.php on line 163
+[08-Jul-2026 15:51:35 Iran] PHP Warning:  include_once(../../quizconfig.php): failed to open stream: No such file or directory in /home/myhona/public_html/pay/verification.php on line 129
+[08-Jul-2026 15:51:35 Iran] PHP Warning:  include_once(): Failed opening '../../quizconfig.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/pay/verification.php on line 129
+[08-Jul-2026 15:51:35 Iran] PHP Warning:  include_once(../../inc/function-quiz.php): failed to open stream: No such file or directory in /home/myhona/public_html/pay/verification.php on line 130
+[08-Jul-2026 15:51:35 Iran] PHP Warning:  include_once(): Failed opening '../../inc/function-quiz.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/pay/verification.php on line 130
+[08-Jul-2026 15:51:35 Iran] PHP Fatal error:  Uncaught Error: Call to undefined function checkUserquizByApi() in /home/myhona/public_html/pay/verification.php:131
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/pay/verification.php on line 131
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 131
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 131
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 133
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 133
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 134
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 134
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'password' of non-object in /home/myhona/public_html/inc/function.php on line 882
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 135
+[08-Jul-2026 15:56:37 Iran] PHP Notice:  Trying to get property 'password' of non-object in /home/myhona/public_html/inc/function.php on line 882
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 139
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'idfactor' of non-object in /home/myhona/public_html/pay/verification.php on line 139
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Undefined variable: deposit in /home/myhona/public_html/pay/verification.php on line 195
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 195
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 196
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'factorfee' of non-object in /home/myhona/public_html/pay/verification.php on line 196
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Undefined variable: factor in /home/myhona/public_html/pay/verification.php on line 196
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'idfactor' of non-object in /home/myhona/public_html/pay/verification.php on line 196
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'tel1' of non-object in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Undefined variable: deposit in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 15:56:37 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 15:56:37 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tel' cannot be null in /home/myhona/public_html/inc/function.php:502
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(502): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/pay/verification.php(197): SendSms(NULL, '0;', 171702, NULL)
+#2 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 502
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/pay/verification.php on line 144
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 392
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Undefined variable: deposit in /home/myhona/public_html/pay/verification.php on line 195
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 195
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Trying to get property 'tel1' of non-object in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Undefined variable: deposit in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 16:02:03 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/pay/verification.php on line 197
+[08-Jul-2026 16:02:03 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tel' cannot be null in /home/myhona/public_html/inc/function.php:502
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(502): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/pay/verification.php(197): SendSms(NULL, '1,000;9076', 171702, NULL)
+#2 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 502

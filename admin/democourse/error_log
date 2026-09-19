@@ -1,0 +1,372 @@
+[03-Nov-2025 11:54:26 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:54:26 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:54:35 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:54:35 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:57:49 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:417
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(417): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(421): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 417
+[03-Nov-2025 11:57:55 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:417
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(417): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(421): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 417
+[03-Nov-2025 11:57:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:57:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:57:59 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:417
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(417): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(421): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 417
+[03-Nov-2025 11:58:03 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:58:03 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:59:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 11:59:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$idcourse in /home/myhona/public_html/admin/democourse/list-democourse.php on line 440
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 393
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 410
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'coursemuted' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 432
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'paye' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 439
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'piclink' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 525
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'detail_link' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 533
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'coursefee' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 547
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'link_class' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 559
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'link_eita' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 567
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'link_general' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 578
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'coursemeta' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 584
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'courseactive' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 601
+[03-Nov-2025 12:01:11 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 612
+[03-Nov-2025 08:45:38 Europe/London] PHP Notice:  Undefined variable: meta in /home/myhona/public_html/admin/democourse/add-democourse.php on line 64
+[03-Nov-2025 08:45:38 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/add-democourse.php:64
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/add-democourse.php(64): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/add-democourse.php on line 64
+[03-Nov-2025 08:46:07 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id' in 'where clause' in /home/myhona/public_html/admin/democourse/add-democourse.php:64
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/add-democourse.php(64): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/add-democourse.php on line 64
+[03-Nov-2025 12:16:32 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 370
+[03-Nov-2025 12:16:32 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 387
+[03-Nov-2025 12:16:32 Asia/Tehran] PHP Notice:  Trying to get property 'coursemuted' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 409
+[03-Nov-2025 12:16:32 Asia/Tehran] PHP Notice:  Trying to get property 'paye' of non-object in /home/myhona/public_html/admin/democourse/add-democourse.php on line 416
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Trying to get property 'id' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 12:28:39 Asia/Tehran] PHP Notice:  Trying to get property 'id' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 12:29:33 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:29:33 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 455
+[03-Nov-2025 12:29:33 Asia/Tehran] PHP Notice:  Undefined variable: dars in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 12:29:33 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-democourse.php on line 460
+[03-Nov-2025 13:04:58 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/movie.php on line 174
+[03-Nov-2025 13:04:58 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/movie.php on line 197
+[03-Nov-2025 13:04:58 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/movie.php on line 279
+[03-Nov-2025 13:04:58 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/movie.php on line 404
+[03-Nov-2025 13:06:38 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/movie.php on line 202
+[03-Nov-2025 13:06:38 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/movie.php on line 409
+[03-Nov-2025 13:22:56 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/movie.php on line 375
+[03-Nov-2025 13:22:56 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/movie.php on line 391
+[03-Nov-2025 13:22:56 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/movie.php on line 411
+[03-Nov-2025 13:22:56 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/movie.php on line 434
+[03-Nov-2025 13:39:17 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 209
+[03-Nov-2025 13:39:17 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 232
+[03-Nov-2025 13:39:17 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 313
+[03-Nov-2025 13:39:17 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 445
+[03-Nov-2025 13:39:27 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 209
+[03-Nov-2025 13:39:27 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 232
+[03-Nov-2025 13:39:27 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 313
+[03-Nov-2025 13:39:27 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 445
+[03-Nov-2025 13:40:59 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 209
+[03-Nov-2025 13:40:59 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 232
+[03-Nov-2025 13:40:59 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/democourse/addon-doc.php on line 313
+[03-Nov-2025 13:40:59 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 445
+[03-Nov-2025 13:41:16 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 232
+[03-Nov-2025 13:41:16 Asia/Tehran] PHP Notice:  Undefined index: dars in /home/myhona/public_html/admin/democourse/addon-doc.php on line 445
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 380
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 396
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 416
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 421
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 426
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 431
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 436
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 441
+[03-Nov-2025 13:54:31 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/admin/democourse/addon-doc.php on line 455
+[03-Nov-2025 13:55:17 Iran] PHP Notice:  Undefined variable: format in /home/myhona/public_html/admin/democourse/addon-doc.php on line 104
+[03-Nov-2025 13:56:19 Iran] PHP Notice:  Undefined variable: format in /home/myhona/public_html/admin/democourse/addon-doc.php on line 104
+[03-Nov-2025 16:38:56 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[03-Nov-2025 17:09:26 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 13:12:35 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 15:09:24 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 15:09:26 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 15:09:27 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 15:09:32 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 15:14:30 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:11 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:04:35 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Undefined variable: res in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:05:46 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 141
+[04-Nov-2025 18:17:23 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$tel1 in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 134
+[04-Nov-2025 18:17:23 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$tel1 in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 134
+[04-Nov-2025 18:17:23 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$tel1 in /home/myhona/public_html/admin/democourse/list-demo-student.php on line 134
+[04-Nov-2025 18:32:57 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 18:33:49 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 18:33:51 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 18:35:31 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/democourse/list-democourse.php:433
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/list-democourse.php(433): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/democourse/list-democourse.php(437): filter_paye(Object(PDO))
+#2 {main}
+  thrown in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[04-Nov-2025 18:42:27 Asia/Tehran] PHP Notice:  Undefined variable: params in /home/myhona/public_html/admin/democourse/list-democourse.php on line 433
+[07-Jan-2026 10:01:39 Europe/London] PHP Notice:  Undefined index: add-course in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:01:39 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:01:39 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:01:58 Europe/London] PHP Notice:  Undefined index: add-course in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:01:58 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:01:58 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:02:02 Europe/London] PHP Notice:  Undefined index: add-course in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:02:02 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[07-Jan-2026 10:02:02 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 09:36:07 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:07 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 06:06:15 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`dbcourse_demo`, CONSTRAINT `dbcourse_demo_ibfk_1` FOREIGN KEY (`username`) REFERENCES `dbpersonal` (`codemeli`) ON DELETE CASCADE ON UPDATE CASCADE) in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 09:36:18 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:18 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:27 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:27 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:56 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 09:36:56 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 11:56:23 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 11:56:23 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 08:28:17 Europe/London] PHP Notice:  Undefined index: add-course in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 08:28:17 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 08:28:17 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 08:28:34 Europe/London] PHP Notice:  Undefined index: add-course in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 08:28:34 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 08:28:34 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[08-Jan-2026 12:36:11 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[08-Jan-2026 12:36:11 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[12-Jan-2026 12:30:22 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function countNewStudent() in /home/myhona/public_html/admin/menu.php:166
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(108): include_once()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/menu.php on line 166
+[15-Jan-2026 08:48:26 Europe/London] PHP Notice:  Undefined variable: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 47
+[15-Jan-2026 12:19:57 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:19:57 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:08 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:08 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:24 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:24 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:56 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:20:56 Asia/Tehran] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 08:51:01 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:01 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:27 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:27 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:33 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:33 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:49 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:51:49 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:52:38 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 08:52:38 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:74
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 74
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 223
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:24:49 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 290
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 223
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:27:16 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 290
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 223
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:32:05 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 290
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 223
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/democourse/addstudent.php on line 227
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 242
+[15-Jan-2026 12:32:33 Asia/Tehran] PHP Notice:  Undefined index: tel in /home/myhona/public_html/admin/democourse/addstudent.php on line 290
+[29-Jan-2026 12:05:41 Asia/Tehran] PHP Notice:  Undefined variable: bulk_records in /home/myhona/public_html/admin/democourse/addstudent.php on line 245
+[29-Jan-2026 12:05:41 Asia/Tehran] PHP Notice:  Undefined variable: bulk_inserted in /home/myhona/public_html/admin/democourse/addstudent.php on line 245
+[29-Jan-2026 12:05:41 Asia/Tehran] PHP Notice:  Undefined variable: bulk_skipped in /home/myhona/public_html/admin/democourse/addstudent.php on line 245
+[04-Feb-2026 08:56:39 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[04-Feb-2026 08:56:39 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[04-Feb-2026 08:56:39 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:51 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:51 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:51 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:56 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:56 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[23-Feb-2026 14:43:56 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:04 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:04 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:04 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:10 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:10 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Jul-2026 12:38:10 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Sep-2026 14:00:55 Europe/London] PHP Notice:  Undefined index: add-course2 in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Sep-2026 14:00:55 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[01-Sep-2026 14:00:55 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/democourse/addstudent.php:76
+Stack trace:
+#0 /home/myhona/public_html/admin/democourse/addstudent.php(76): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/democourse/addstudent.php on line 76
+[09-Sep-2026 09:41:29 Europe/London] PHP Warning:  include_once(../blackList.html): failed to open stream: No such file or directory in /home/myhona/public_html/inc/bulk_upload.php on line 17
+[09-Sep-2026 09:41:29 Europe/London] PHP Warning:  include_once(): Failed opening '../blackList.html' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/inc/bulk_upload.php on line 17
+[09-Sep-2026 09:41:43 Europe/London] PHP Warning:  include_once(../blackList.html): failed to open stream: No such file or directory in /home/myhona/public_html/inc/bulk_upload.php on line 17
+[09-Sep-2026 09:41:43 Europe/London] PHP Warning:  include_once(): Failed opening '../blackList.html' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/inc/bulk_upload.php on line 17

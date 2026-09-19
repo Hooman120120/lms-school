@@ -1,0 +1,16 @@
+[12-Jul-2025 14:52:21 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`ticket_topic`, CONSTRAINT `ticket_topic_ibfk_2` FOREIGN KEY (`responser`) REFERENCES `dbadmin` (`username`) ON UPDATE CASCADE) in /home/myhona/public_html/admin/Tickets/Refer-forward.php:45
+Stack trace:
+#0 /home/myhona/public_html/admin/Tickets/Refer-forward.php(45): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Tickets/Refer-forward.php on line 45
+[19-Nov-2025 07:29:07 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`ticket_topic`, CONSTRAINT `ticket_topic_ibfk_2` FOREIGN KEY (`responser`) REFERENCES `dbadmin` (`username`) ON UPDATE CASCADE) in /home/myhona/public_html/admin/Tickets/Refer-forward.php:45
+Stack trace:
+#0 /home/myhona/public_html/admin/Tickets/Refer-forward.php(45): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Tickets/Refer-forward.php on line 45
+[21-Feb-2026 14:01:29 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`ticket_topic`, CONSTRAINT `ticket_topic_ibfk_2` FOREIGN KEY (`responser`) REFERENCES `dbadmin` (`username`) ON UPDATE CASCADE) in /home/myhona/public_html/admin/Tickets/Refer-forward.php:45
+Stack trace:
+#0 /home/myhona/public_html/admin/Tickets/Refer-forward.php(45): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Tickets/Refer-forward.php on line 45
+[25-Feb-2026 14:40:04 Europe/London] PHP Notice:  Undefined variable: section in /home/myhona/public_html/admin/Tickets/response.php on line 154

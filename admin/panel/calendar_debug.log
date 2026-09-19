@@ -1,0 +1,2511 @@
+[2026-06-14 13:16:58] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کلاس خلاقیت جلسه 12 ( استاد هادیان )
+    [color] => #36bbc4
+    [description] => 
+    [start_date] => 1405/03/16 16:00
+    [end_date] => 1405/03/16 17:30
+    [target_group] => user
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-15 09:31:21] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => دریافت کارت ورود به جلسه آزمون سمپاد
+    [color] => #eeb668
+    [description] => 
+    [start_date] => 1405/03/25 10:00
+    [end_date] => 1405/03/28 17:00
+    [target_group] => admin
+    [admin_roles] => []
+    [admin_users] => ["14","2","4","8"]
+    [is_all_admins] => 0
+    [selected_courses] => []
+)
+
+[2026-06-15 10:12:41] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => دریافت کارن ورود به جلسه آزمون سمپاد
+    [color] => #f9bf1f
+    [description] => 
+    [start_date] => 1405/03/25 12:41
+    [end_date] => 1405/03/28 12:41
+    [target_group] => admin
+    [admin_roles] => []
+    [admin_users] => ["14","2","4","8"]
+    [is_all_admins] => 0
+    [selected_courses] => []
+)
+
+[2026-06-15 14:02:11] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => دریافت کارن ورود به جلسه آزمون سمپاد
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/03/25 16:31
+    [end_date] => 1405/03/28 16:31
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [admin_roles] => ["0","1","52"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","68","69","147","148"]
+)
+
+[2026-06-15 14:28:11] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کلاس 1
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/03/16 16:54
+    [end_date] => 1405/03/16 16:54
+    [target_group] => user
+    [visibility] => 0
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","68"]
+)
+
+[2026-06-15 14:28:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کلاس 2
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/03/16 16:58
+    [end_date] => 1405/03/16 16:58
+    [target_group] => user
+    [visibility] => 0
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","68"]
+)
+
+[2026-06-20 09:15:18] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع آمادگی نوروز شماره 1 + تحلیل آفلاین
+    [color] => #d1eff0
+    [description] => دوره یک گام تا موفقیت ویژه نوروز 1405
+    [start_date] => 1404/12/25 11:42
+    [end_date] => 1404/12/25 11:42
+    [target_group] => admin
+    [visibility] => 0
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+)
+
+[2026-06-20 09:20:08] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع آمادگی نوروز شماره 1 + تحلیل آفلاین ( ساعت 8:00 تا 20:00 )										
+    [color] => #bef9f8
+    [description] => دوره یک گام تا موفقیت 2 ویژه نوروز 1405
+    [start_date] => 1404/12/25 11:48
+    [end_date] => 1404/12/25 11:48
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => ["8"]
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:23:13] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 1										
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/04 11:51
+    [end_date] => 1405/01/04 11:51
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:24:45] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 1(استاد هادیان)
+    [color] => #3788d8
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/04 11:53
+    [end_date] => 1405/01/04 11:53
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:30:26] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد هادیان)	
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 12:45 ( استودیو )
+    [start_date] => 1405/01/05 11:59
+    [end_date] => 1405/01/05 11:59
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:31:30] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 2 											
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/05 12:00
+    [end_date] => 1405/01/05 12:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:32:26] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد هادیان)
+    [color] => #3788d8
+    [description] => ساعت 10:00 تا 12:45 ( استودیو )
+    [start_date] => 1405/01/05 12:01
+    [end_date] => 1405/01/05 12:01
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:33:23] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 2(استاد ستاری)
+    [color] => #0075eb
+    [description] => ساعت 20:15
+    [start_date] => 1405/01/05 12:02
+    [end_date] => 1405/01/05 12:02
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:34:53] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 3 											                     	
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/06 12:03
+    [end_date] => 1405/01/06 12:03
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:36:34] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد هادیان)
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 14:15 ( استودیو )
+    [start_date] => 1405/01/06 12:05
+    [end_date] => 1405/01/06 12:05
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:38:48] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 3(استاد فتوت)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/06 12:08
+    [end_date] => 1405/01/06 12:08
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:39:52] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  تحلیل آزمون جامع نوروز 2(استاد ستاری)
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/05 12:09
+    [end_date] => 1405/01/05 12:09
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:40:59] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 4 						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/07 12:10
+    [end_date] => 1405/01/07 12:10
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:42:05] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد ستاری)	
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 12:45 ( ضبط از منزل )
+    [start_date] => 1405/01/07 12:11
+    [end_date] => 1405/01/07 12:11
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:42:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 4(استاد آقالو)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/07 12:12
+    [end_date] => 1405/01/07 12:12
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:44:03] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 5 						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 
+    [start_date] => 1405/01/08 12:13
+    [end_date] => 1405/01/08 12:13
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:45:28] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد آقالو)	
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 14:15 ( در برنامه ذکر شده ولی استاد تا 12:15 درس دادند) ( استودیو)
+    [start_date] => 1405/01/08 12:14
+    [end_date] => 1405/01/08 12:14
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:46:50] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 5(استاد ستاری)		
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/08 12:15
+    [end_date] => 1405/01/08 12:15
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:48:46] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 6 						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/09 12:17
+    [end_date] => 1405/01/09 12:17
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:49:54] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد ستاری)
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 12:45 ( استودیو )
+    [start_date] => 1405/01/09 12:18
+    [end_date] => 1405/01/09 12:18
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:50:55] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 6(استاد هادیان)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/09 12:20
+    [end_date] => 1405/01/09 12:20
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:51:50] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 7 					
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/10 12:21
+    [end_date] => 1405/01/10 12:21
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:53:37] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد هادیان)	
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 14:15 ( استودیو )
+    [start_date] => 1405/01/10 12:22
+    [end_date] => 1405/01/10 12:22
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:56:47] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 7(استاد آقالو)			
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/10 12:25
+    [end_date] => 1405/01/10 12:25
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:58:34] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 8 				
+    [color] => #d73737
+    [description] => ساعت 8:00 تا 20:00 ( کنسل شدن آزمون جامع شماره 8 و کلاس تحلیل به دلیل مشکل فنی در دیتا سنترها)
+
+
+    [start_date] => 1405/01/11 12:27
+    [end_date] => 1405/01/11 12:27
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 09:59:49] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جمع بندی هوش نوروز(استاد فتوت)	
+    [color] => #f01981
+    [description] => ساعت 10:00 تا 12:45 ( ضبط از منزل )
+    [start_date] => 1405/01/11 12:28
+    [end_date] => 1405/01/11 12:28
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:01:08] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 8(استاد هادیان)		
+    [color] => #d73737
+    [description] => ساعت 20:15 ( ضبط از منزل )کنسل شدن آزمون جامع شماره 8 و کلاس تحلیل به دلیل مشکل فنی در دیتا سنترها
+
+
+
+
+    [start_date] => 
+    [end_date] => 
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:01:08] Validation failed - Array
+(
+    [title] => تحلیل آزمون جامع نوروز 8(استاد هادیان)
+    [start_greg] => 
+)
+
+[2026-06-20 10:08:11] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 8(استاد هادیان)		
+    [color] => #d73737
+    [description] => ساعت 20:15 ( ضبط از منزل ) کنسل شدن آزمون جامع شماره 8 و کلاس تحلیل به دلیل مشکل فنی در دیتا سنترها
+
+
+    [start_date] => 1405/01/11 12:31
+    [end_date] => 1405/01/11 12:31
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:09:51] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 8  + تحلیل آفلاین ( استاد هادیان )										
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00( تحلیل آفلاین ( استاد هادیان ))
+    [start_date] => 1405/01/12 12:38
+    [end_date] => 1405/01/12 12:38
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:11:12] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع  نوروز شماره 9 					
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/12 12:40
+    [end_date] => 1405/01/12 12:40
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:12:12] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون جامع نوروز 9(استاد ستاری)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/12 12:41
+    [end_date] => 1405/01/12 12:41
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","133"]
+)
+
+[2026-06-20 10:17:03] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => جلسه خانم دکتر کیوان، خانم دکتر مهدوی با تیم استاد هادیان
+    [color] => #ffd500
+    [description] => جهت هماهنگی و برنامه ریزی نحوه ی برگزاری کلاس ها و آزمون ها برای دوره ی یک گام تا موفقیت 2 ویژه اردیبهشت تا خرداد 1405
+    [start_date] => 1405/01/20 12:42
+    [end_date] => 1405/01/21 12:42
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135","147","148"]
+)
+
+[2026-06-20 10:18:55] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت شماره 1 		
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 ( ویژه پایه ششم )
+    [start_date] => 1405/01/22 12:47
+    [end_date] => 1405/01/22 12:47
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:20:46] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 1					
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/23 12:49
+    [end_date] => 1405/01/23 12:49
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:21:55] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت 		
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00( ویژه پایه ششم )
+    [start_date] => 1405/01/23 12:50
+    [end_date] => 1405/01/23 12:50
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:23:07] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  1(استاد هادیان)				
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/23 12:52
+    [end_date] => 1405/01/23 12:52
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:25:15] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره 1(استاد هادیان)
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/23 12:54
+    [end_date] => 1405/01/23 12:54
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:29:18] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 2 											
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/24 12:56
+    [end_date] => 1405/01/24 12:56
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:29:58] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت( دفترچه دوم آزمونک 2 )
+    [color] => #3788d8
+    [description] => ساعت 8:00 تا 20:15 ( ویژه پایه ششم )
+    [start_date] => 1405/01/24 12:59
+    [end_date] => 1405/01/24 12:59
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:31:06] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  2(استاد فتوت)						
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/24 13:00
+    [end_date] => 1405/01/24 13:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:31:51] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 3 											
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/25 13:01
+    [end_date] => 1405/01/25 13:01
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:32:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  آزمون سرعت و دقت( دفترچه دوم آزمونک 3 )
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 ( ویژه پایه ششم )
+    [start_date] => 1405/01/25 13:02
+    [end_date] => 1405/01/25 13:02
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:33:48] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  3(استاد ستاری)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/25 13:03
+    [end_date] => 1405/01/25 13:03
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:34:44] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 4 											
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/26 13:04
+    [end_date] => 1405/01/26 13:04
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:35:44] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت( دفترچه دوم آزمونک 4 )
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 (ویژه پایه ششم)
+    [start_date] => 1405/01/26 13:04
+    [end_date] => 1405/01/26 13:04
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:38:32] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  4(استاد آقالو				
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/26 13:20
+    [end_date] => 1405/01/26 13:20
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:50:26] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 5 						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 
+    [start_date] => 1405/01/27 13:17
+    [end_date] => 1405/01/27 13:17
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:51:26] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت( دفترچه دوم آزمونک 5 )
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/27 13:20
+    [end_date] => 1405/01/27 13:20
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134"]
+)
+
+[2026-06-20 10:53:00] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  5(استاد هادیان)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/27 13:22
+    [end_date] => 1405/01/27 13:22
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:54:45] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون جامع شماره 1 + تحلیل آفلاین							
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/28 13:23
+    [end_date] => 1405/01/28 13:23
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["134","135"]
+)
+
+[2026-06-20 10:58:33] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کمپین فروش
+    [color] => #a037d7
+    [description] => دوره یک گام تا موفقیت 2 ویژه اردیبهشت ( هفته دوم تا خرداد ) 1405
+    [start_date] => 1405/01/22 10:26
+    [end_date] => 1405/01/27 17:26
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","68","69","134","135"]
+)
+
+[2026-06-20 10:59:54] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 6						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 
+    [start_date] => 1405/01/29 08:29
+    [end_date] => 1405/01/29 08:29
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-20 11:01:16] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت( دفترچه دوم آزمونک 6)
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 ( ویژه پایه ششم )
+    [start_date] => 1405/01/29 10:30
+    [end_date] => 1405/01/29 10:30
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147"]
+)
+
+[2026-06-20 11:02:18] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره 6 (استاد آقالو)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/29 14:31
+    [end_date] => 1405/01/29 14:31
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-20 11:03:38] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 7						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/30 08:32
+    [end_date] => 1405/01/30 08:32
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-20 11:04:59] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  آزمون سرعت و دقت( دفترچه دوم آزمونک 7) 
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 ( ویژه پایه ششم )
+    [start_date] => 1405/01/30 08:33
+    [end_date] => 1405/01/30 08:56
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147"]
+)
+
+[2026-06-20 11:06:19] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  7(استاد هادیان)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/30 16:00
+    [end_date] => 1405/01/30 18:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-20 11:07:33] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک شماره 8 						
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00
+    [start_date] => 1405/01/31 08:00
+    [end_date] => 1405/01/31 08:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-20 11:08:39] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون سرعت و دقت( دفترچه دوم آزمونک 8)
+    [color] => #37d73a
+    [description] => ساعت 8:00 تا 20:00 ( ویژه پایه ششم )
+    [start_date] => 1405/01/31 08:05
+    [end_date] => 1405/01/31 08:05
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147"]
+)
+
+[2026-06-20 11:09:45] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمونک شماره  8(استاد فتوت)							
+    [color] => #0075eb
+    [description] => ساعت 20:15 ( ضبط از منزل )
+    [start_date] => 1405/01/31 11:00
+    [end_date] => 1405/01/31 11:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147","148"]
+)
+
+[2026-06-21 10:05:22] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نام آزمون ورودی مدارس تیزهوشان و نمونه دولتی
+    [color] => #d73737
+    [description] => 
+    [start_date] => 1405/02/08 11:00
+    [end_date] => 1405/02/23 19:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["63","64","68","69","147","148"]
+    [active_options] => [{"text":"ثبت نام آزمون تیزهوشان","needs_reason":0},{"text":"عدم ثبت نام آزمون تیزهوشان","needs_reason":1},{"text":"ثبت نام آزمون نمونه دولتی","needs_reason":0},{"text":"عدم ثبت نام آزمون نمونه دولتی","needs_reason":1}]
+)
+
+[2026-06-21 10:07:20] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => شرکت در آزمون ورودی مدارس تیزهوشان و نمونه دولتی
+    [color] => #ff0000
+    [description] => 
+    [start_date] => 1405/03/30 10:00
+    [end_date] => 1405/04/01 18:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["63","64","68","69","147","148"]
+    [active_options] => [{"text":"آزمون شرکت کرده","needs_reason":0},{"text":"آزمون شرکت نکرده","needs_reason":1}]
+)
+
+[2026-06-21 10:17:01] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نام آزمون ورودی مدارس نمونه دولتی
+    [color] => #ff0000
+    [description] => 
+    [start_date] => 1405/02/08 11:00
+    [end_date] => 1405/02/23 19:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["63","64","68","69","147","148"]
+    [active_options] => [{"text":"ثبت نام آزمون نمونه دولتی","needs_reason":0},{"text":"عدم ثبت نام آزمون نمونه دولتی","needs_reason":1}]
+)
+
+[2026-06-21 11:06:17] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمون
+    [color] => #3ad737
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/05/01 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => ["0"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["64","69","147","148"]
+    [active_options] => []
+)
+
+[2026-06-21 11:07:05] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => قهرمان نهم
+    [color] => #37cdd7
+    [description] => 
+    [start_date] => 1405/05/01 15:00
+    [end_date] => 1405/05/01 17:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["68"]
+    [active_options] => []
+)
+
+[2026-06-21 11:07:57] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => برنده شو دهم انسانی
+    [color] => #87d737
+    [description] => 
+    [start_date] => 1405/05/01 15:00
+    [end_date] => 
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132"]
+    [active_options] => []
+)
+
+[2026-06-21 11:08:27] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => برنده شو دهم ریاضی
+    [color] => #d7ad37
+    [description] => 
+    [start_date] => 1405/05/01 16:00
+    [end_date] => 
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["148"]
+    [active_options] => []
+)
+
+[2026-06-21 11:09:15] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش و استعداد تحلیلی
+    [color] => #d737ca
+    [description] => 
+    [start_date] => 1405/05/01 19:00
+    [end_date] => 1405/05/01 20:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["64","69"]
+    [active_options] => []
+)
+
+[2026-06-21 11:10:04] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => تحلیل آزمون
+    [color] => #3752d7
+    [description] => 
+    [start_date] => 1405/05/01 20:00
+    [end_date] => 1405/05/01 21:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["64","69"]
+    [active_options] => []
+)
+
+[2026-06-21 11:44:43] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => برنده شو یازدهم انسانی
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/05/01 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["135"]
+    [active_options] => []
+)
+
+[2026-06-21 11:45:06] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => برنده شو یازدهم تجربی
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/05/01 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["69"]
+    [active_options] => []
+)
+
+[2026-06-21 11:45:26] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => برنده شو یازدهم ریاضی
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/05/01 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["147"]
+    [active_options] => []
+)
+
+[2026-06-21 11:46:14] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => علوم پنجم
+    [color] => #3788d8
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/05/01 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["135"]
+    [active_options] => []
+)
+
+[2026-06-21 11:47:21] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نام
+    [color] => #ff0000
+    [description] => 
+    [start_date] => 1405/05/01 00:00
+    [end_date] => 1405/03/02 00:00
+    [target_group] => user
+    [visibility] => 1
+    [event_type] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["132","134"]
+    [active_options] => []
+)
+
+[2026-06-27 10:04:01] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آمادگی ثبت نام های جدید برای همه ی پایه ها
+    [color] => #ff0000
+    [description] => 
+    [start_date] => 1405/04/06 10:00
+    [end_date] => 1405/04/11 17:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["63","64","68","69","147","148"]
+    [active_options] => [{"text":"ثبت نام نشد","needs_reason":1},{"text":"عدم پاسخ","needs_reason":0}]
+)
+
+[2026-07-20 09:48:54] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => unit testing
+    [calendar_groups_id] => 
+    [description] => unit testing
+    [start_date] => 1405/04/25 00:00
+    [end_date] => 1405/04/31 00:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [overlap] => 1
+    [admin_roles] => []
+    [admin_users] => ["18"]
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","68","69","132","133","134","135"]
+    [active_options] => [{"text":"1","needs_reason":0},{"text":"2","needs_reason":1},{"text":"3","needs_reason":1}]
+)
+
+[2026-08-01 09:44:31] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ابتدایی دخترانه دولتی
+    [calendar_groups_id] => 6
+    [description] => 
+    [start_date] => 1405/05/10 10:00
+    [end_date] => 1405/08/02 10:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["0","52"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-03 14:04:35] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کلاس مشاوره جلسه 1( استاد سمیعیان )
+    [calendar_groups_id] => 7
+    [description] => 
+    [start_date] => 1405/05/15 00:00
+    [end_date] => 1405/05/15 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","185","186","187","188","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:02:19] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 1( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => آفلاین-تابستان( هوش تصویری)
+    [start_date] => 1405/05/19 00:00
+    [end_date] => 1405/05/19 00:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:03:44] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 2( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => آفلاین-تابستان ( هوش تصویری)
+    [start_date] => 1405/05/22 00:00
+    [end_date] => 1405/05/22 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:13:52] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 1( استاد هادیان)
+    [calendar_groups_id] => 9
+    [description] => آفلاین-تابستان( عدد نویسی)
+    [start_date] => 1405/05/19 11:00
+    [end_date] => 1405/05/19 00:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:14:51] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 2
+    [calendar_groups_id] => 9
+    [description] => آفلاین-تابستان (عدد نویسی)
+    [start_date] => 1405/05/22 11:00
+    [end_date] => 1405/05/22 00:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:34:20] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 3 ( استاد هادیان)
+    [calendar_groups_id] => 8
+    [description] => آفلاین-تابستان( هوش تصویری)
+    [start_date] => 1405/05/26 12:00
+    [end_date] => 1405/05/26 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:35:16] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 4 ( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => آفلاین-تابستان( هوش تصویری)
+    [start_date] => 1405/05/29 12:00
+    [end_date] => 1405/05/29 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:36:37] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 3( استاد هادیان)
+    [calendar_groups_id] => 9
+    [description] => آفلاین-تابستان( عدد نویسی)
+    [start_date] => 1405/05/26 11:00
+    [end_date] => 1405/05/26 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:37:37] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 4( استاد هادیان )
+    [calendar_groups_id] => 9
+    [description] => آفلاین-تابستان( عدد نویسی)
+    [start_date] => 1405/05/29 11:00
+    [end_date] => 1405/05/29 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:39:58] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 5 ( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => آفلاین-تابستان( هوش تصویری)
+    [start_date] => 1405/06/05 12:00
+    [end_date] => 1405/06/05 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:41:09] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 5 ( استاد هادیان ) 
+    [calendar_groups_id] => 9
+    [description] => آفلاین-تابستان( عدد نویسی)
+    [start_date] => 1405/06/05 11:00
+    [end_date] => 1405/06/05 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:45:23] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک کلاسی هوش شماره 1
+    [calendar_groups_id] => 10
+    [description] => هوش تصویری از تیپ 1 تا تیپ 33
+    [start_date] => 1405/06/12 12:00
+    [end_date] => 1405/06/12 14:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-08-08 09:48:46] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک کلاسی ریاضی ششم شماره 1
+    [calendar_groups_id] => 10
+    [description] => فصل اول عدد و الگوهای عددی ( از صفحه ی 1 جزوه تا صفحه 19 )
+    [start_date] => 1405/06/12 11:00
+    [end_date] => 1405/06/12 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:52:31] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک کلاسی ریاضی ششم شماره 1
+    [calendar_groups_id] => 10
+    [description] => فصل اول عدد و الگوهای عدد ( از صفحه 1 جزوه تا صفحه 19 )
+    [start_date] => 1405/06/12 11:00
+    [end_date] => 1405/06/12 13:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 09:54:57] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => آزمونک کلاسی ریاضی ششم شماره 1
+    [calendar_groups_id] => 10
+    [description] => فصل اول الگوهای عددی از صفحه 1 تا 19 جزوه
+    [start_date] => 1405/06/12 10:00
+    [end_date] => 1405/06/12 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-08-08 10:05:34] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نتایج آزمون سمپاد ششم 1405
+    [calendar_groups_id] => 11
+    [description] => 
+    [start_date] => 1405/05/17 10:00
+    [end_date] => 1405/05/22 10:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 1
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => [{"text":"قبول شده","needs_reason":0},{"text":"قبول نشده","needs_reason":1}]
+)
+
+[2026-08-08 10:07:28] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نتایج آزمون سمپاد ششم 1405
+    [calendar_groups_id] => 11
+    [description] => 
+    [start_date] => 1405/05/17 10:00
+    [end_date] => 1405/05/22 10:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 1
+    [overlap] => 1
+    [admin_roles] => ["0","1"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => []
+    [active_options] => [{"text":"قبول شده","needs_reason":0},{"text":"قبول نشده","needs_reason":1}]
+)
+
+[2026-08-08 10:12:57] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نتایج آزمون سمپاد ششم 1405
+    [calendar_groups_id] => 11
+    [description] => 
+    [start_date] => 1405/05/17 10:00
+    [end_date] => 1405/05/22 10:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [overlap] => 0
+    [admin_roles] => ["0","1"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => ["63","64","132","134","147"]
+    [active_options] => [{"text":"قبول شده","needs_reason":0},{"text":"قبول نشده","needs_reason":1}]
+)
+
+[2026-08-10 12:48:14] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ثبت نتایج آزمون نهم
+    [calendar_groups_id] => 12
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/05/19 15:00
+    [end_date] => 1405/05/22 10:00
+    [target_group] => both
+    [visibility] => 1
+    [event_type] => 1
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["68","69","133","135","148"]
+    [active_options] => [{"text":"قبول شده","needs_reason":0},{"text":"قبول نشده","needs_reason":1}]
+)
+
+[2026-08-23 10:59:46] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => کلاس مشاوره جلسه 1( استاد سمیعیان )
+    [calendar_groups_id] => 7
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/05/15 11:00
+    [end_date] => 
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","185","186","187","188","189","190"]
+    [active_options] => []
+)
+
+[2026-08-24 14:59:00] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی ششم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/02 00:00
+    [end_date] => 1405/06/02 13:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-24 14:59:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی هوش جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/02 13:15
+    [end_date] => 1405/06/02 14:15
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-24 15:00:40] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/02 14:30
+    [end_date] => 1405/06/02 15:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-26 11:11:10] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی ششم جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/05 11:00
+    [end_date] => 1405/06/05 12:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-26 11:12:13] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/05 12:15
+    [end_date] => 1405/06/05 13:15
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-26 11:12:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  پویا نمایی هوش جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/05 13:30
+    [end_date] => 1405/06/05 14:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-29 09:38:53] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => شیمی نهم استاد ابراهیم زاده
+    [calendar_groups_id] => 13
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/07 18:00
+    [end_date] => 1405/06/07 19:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-08-29 09:39:33] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => فیزیک رضایی
+    [calendar_groups_id] => 13
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/07 19:00
+    [end_date] => 1405/06/07 02:00
+    [target_group] => admin
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-06 11:59:50] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی ششم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/16 11:00
+    [end_date] => 1405/06/16 12:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-06 12:00:34] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی هوش جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/16 12:15
+    [end_date] => 1405/06/16 13:15
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-06 12:01:20] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/16 13:30
+    [end_date] => 1405/06/16 14:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 10:38:56] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  پویا نمایی ریاضی ششم جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/19 12:00
+    [end_date] => 1405/06/19 13:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 10:39:37] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  پویا نمایی ریاضی هوش جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/19 13:15
+    [end_date] => 1405/06/19 14:15
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 10:42:28] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  پویا نمایی ریاضی نهم جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/19 14:30
+    [end_date] => 1405/06/19 15:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 10:43:59] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 6 ( استاد هادیان )
+    [calendar_groups_id] => 9
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/19 11:00
+    [end_date] => 1405/06/19 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-09-07 10:44:54] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 6 ( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/19 12:15
+    [end_date] => 1405/06/19 13:15
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-09-07 12:35:36] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی ششم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/23 12:00
+    [end_date] => 
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 12:36:15] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی هوش جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/23 13:15
+    [end_date] => 
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-07 12:36:58] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/23 14:30
+    [end_date] => 1405/06/23 15:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:12:37] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] =>  پویا نمایی ریاضی ششم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 12:00
+    [end_date] => 1405/06/26 13:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:13:38] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی هوش جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 13:15
+    [end_date] => 
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:14:23] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 2(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 14:30
+    [end_date] => 1405/06/26 15:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:15:39] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ریاضی ششم جلسه 7 ( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 11:00
+    [end_date] => 1405/06/26 12:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","189","190"]
+    [active_options] => []
+)
+
+[2026-09-09 08:16:50] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => هوش جلسه 6 ( استاد هادیان )
+    [calendar_groups_id] => 8
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 12:15
+    [end_date] => 1405/06/26 13:15
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","185","186"]
+    [active_options] => []
+)
+
+[2026-09-09 08:18:15] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => ورود به سامانه آزمون ( آزمون آزمایشی )
+    [calendar_groups_id] => 10
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/26 15:00
+    [end_date] => 1405/06/26 17:00
+    [target_group] => both
+    [visibility] => 0
+    [event_type] => 0
+    [overlap] => 1
+    [admin_roles] => ["all"]
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => ["181","182","183","184","185","186","187","188","189","190"]
+    [active_options] => []
+)
+
+[2026-09-09 08:20:35] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی ششم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/30 12:00
+    [end_date] => 1405/06/30 13:00
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:21:08] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی هوش جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/30 13:15
+    [end_date] => 1405/06/30 14:15
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+
+[2026-09-09 08:21:43] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => پویا نمایی ریاضی نهم جلسه 1(جذب)
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [start_date] => 1405/06/30 14:30
+    [end_date] => 1405/06/30 15:30
+    [target_group] => admin
+    [visibility] => 1
+    [event_type] => 0
+    [overlap] => 0
+    [admin_roles] => []
+    [admin_users] => []
+    [is_all_admins] => 1
+    [selected_courses] => []
+    [active_options] => []
+)
+

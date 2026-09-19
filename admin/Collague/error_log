@@ -1,0 +1,35 @@
+[10-Aug-2026 11:04:53 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'fathername' cannot be null in /home/myhona/public_html/admin/Collague/add-collague.php:127
+Stack trace:
+#0 /home/myhona/public_html/admin/Collague/add-collague.php(127): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:06:28 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`dblogin`, CONSTRAINT `dblogin_ibfk_1` FOREIGN KEY (`username`) REFERENCES `dbpersonal` (`codemeli`) ON DELETE CASCADE ON UPDATE CASCADE) in /home/myhona/public_html/admin/Collague/add-collague.php:161
+Stack trace:
+#0 /home/myhona/public_html/admin/Collague/add-collague.php(161): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Collague/add-collague.php on line 161
+[10-Aug-2026 11:09:14 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`dblogin`, CONSTRAINT `dblogin_ibfk_1` FOREIGN KEY (`username`) REFERENCES `dbpersonal` (`codemeli`) ON DELETE CASCADE ON UPDATE CASCADE) in /home/myhona/public_html/admin/Collague/add-collague.php:161
+Stack trace:
+#0 /home/myhona/public_html/admin/Collague/add-collague.php(161): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Collague/add-collague.php on line 161
+[10-Aug-2026 11:11:47 Asia/Tehran] PHP Notice:  Undefined index: add-collague in /home/myhona/public_html/admin/Collague/add-collague.php on line 241
+[10-Aug-2026 11:11:47 Asia/Tehran] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/Collague/add-collague.php on line 241
+[10-Aug-2026 11:16:10 Iran] PHP Notice:  Undefined index: add-collague in /home/myhona/public_html/admin/Collague/add-collague.php on line 117
+[10-Aug-2026 11:16:10 Iran] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/Collague/add-collague.php on line 117
+[10-Aug-2026 11:16:10 Iran] PHP Notice:  Undefined index: add-collague in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:16:10 Iran] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:16:10 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'codemeli' cannot be null in /home/myhona/public_html/admin/Collague/add-collague.php:127
+Stack trace:
+#0 /home/myhona/public_html/admin/Collague/add-collague.php(127): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:28:57 Iran] PHP Notice:  Undefined index: add-collague in /home/myhona/public_html/admin/Collague/add-collague.php on line 117
+[10-Aug-2026 11:28:57 Iran] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/Collague/add-collague.php on line 117
+[10-Aug-2026 11:28:57 Iran] PHP Notice:  Undefined index: add-collague in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:28:57 Iran] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/Collague/add-collague.php on line 127
+[10-Aug-2026 11:28:57 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'codemeli' cannot be null in /home/myhona/public_html/admin/Collague/add-collague.php:127
+Stack trace:
+#0 /home/myhona/public_html/admin/Collague/add-collague.php(127): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/Collague/add-collague.php on line 127

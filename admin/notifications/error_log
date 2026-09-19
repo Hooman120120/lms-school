@@ -1,0 +1,783 @@
+[15-Nov-2025 13:35:29 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.seen_by_manager' in 'where clause' in /home/myhona/public_html/admin/notifications/thread_list.php:162
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/thread_list.php(162): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_list.php on line 162
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[17-Dec-2025 16:50:22 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/thread_list.php on line 385
+[14-Jan-2026 13:11:33 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[14-Jan-2026 13:11:33 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[14-Jan-2026 13:11:33 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[14-Jan-2026 13:11:33 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[14-Jan-2026 13:11:33 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:10:12 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:10:12 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:10:12 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:10:12 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:10:12 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:14:42 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:42 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:42 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:42 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:14:42 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:14:49 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:49 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:49 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:14:49 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:14:49 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:16:15 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:16:15 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:16:15 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:16:15 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:16:15 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:17:14 Europe/London] PHP Notice:  Undefined variable: file in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:17:14 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:17:14 Europe/London] PHP Notice:  Undefined variable: uploadPath in /home/myhona/public_html/admin/notifications/thread_view.php on line 643
+[15-Jan-2026 06:17:14 Europe/London] PHP Notice:  Undefined variable: ins in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[15-Jan-2026 06:17:14 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/myhona/public_html/admin/notifications/thread_view.php:649
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/thread_view.php on line 649
+[05-Feb-2026 13:39:30 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 247
+[08-Feb-2026 18:20:20 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 247
+[09-Feb-2026 15:16:28 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[10-Feb-2026 08:11:38 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1051 Unknown table 'dbattendance' in /home/myhona/public_html/admin/notifications/high-priority-temp-students.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/high-priority-temp-students.php(78): PDOStatement->execute()
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/high-priority-temp-students.php on line 78
+[24-Feb-2026 07:31:49 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:41:43 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:42:25 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:42:30 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:46:18 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:46:20 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:46:23 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[24-Feb-2026 07:46:23 Europe/London] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/myhona/public_html/inc/function_login.php:78
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/notifications.php(7): CheckBlacklist_ip('5.202.253.246')
+#1 {main}
+  thrown in /home/myhona/public_html/inc/function_login.php on line 78
+[26-Feb-2026 11:07:45 Asia/Tehran] PHP Notice:  Undefined variable: suspReviewed7dCount in /home/myhona/public_html/admin/notifications/operator_notif.php on line 245
+[26-Feb-2026 11:07:45 Asia/Tehran] PHP Notice:  Undefined variable: noOpReviewed7dCount in /home/myhona/public_html/admin/notifications/operator_notif.php on line 257
+[04-Mar-2026 15:11:35 Asia/Tehran] PHP Notice:  Undefined variable: countInstallmentOverdue in /home/myhona/public_html/admin/notifications/operator_notif.php on line 307
+[04-Mar-2026 17:14:58 Europe/London] PHP Notice:  Trying to get property 'created_at' of non-object in /home/myhona/public_html/admin/notifications/thread_view.php on line 742
+[11-Mar-2026 16:03:06 Asia/Tehran] PHP Notice:  Trying to get property 'uid' of non-object in /home/myhona/public_html/inc/function-quiz.php on line 68
+[11-Mar-2026 13:20:36 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/inc/function.php:2424
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(2424): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/admin-menu.php(46): countNewStudent('op204', 0)
+#2 /home/myhona/public_html/admin/menu.php(5): include_once('/home/myhona/pu...')
+#3 /home/myhona/public_html/admin/notifications/operator_notif.php(139): include_once('/home/myhona/pu...')
+#4 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 2424
+[11-Mar-2026 13:37:49 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/inc/function.php:2424
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(2424): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/admin-menu.php(46): countNewStudent('op204', 0)
+#2 /home/myhona/public_html/admin/menu.php(5): include_once('/home/myhona/pu...')
+#3 /home/myhona/public_html/admin/notifications/new_students.php(240): include_once('/home/myhona/pu...')
+#4 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 2424
+[11-Mar-2026 13:40:50 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?
+                GROUP BY d.username, d.suporter
+            ) s
+            WH' at line 10 in /home/myhona/public_html/inc/function.php:2424
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(2424): PDOStatement->execute()
+#1 /home/myhona/public_html/admin/admin-menu.php(46): countNewStudent('op204', 0)
+#2 /home/myhona/public_html/admin/menu.php(5): include_once('/home/myhona/pu...')
+#3 /home/myhona/public_html/admin/notifications/operator_notif.php(139): include_once('/home/myhona/pu...')
+#4 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 2424
+[11-Mar-2026 13:47:17 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/inc/function.php:2424
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(2424): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/admin-menu.php(46): countNewStudent('op204', 0)
+#2 /home/myhona/public_html/admin/menu.php(5): include_once('/home/myhona/pu...')
+#3 /home/myhona/public_html/admin/notifications/operator_notif.php(139): include_once('/home/myhona/pu...')
+#4 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 2424
+[23-Mar-2026 13:09:17 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '800863248' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:87
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(87): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 87
+[23-Mar-2026 13:10:57 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '800863248' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:87
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(87): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 87
+[23-Mar-2026 13:15:47 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '800863248' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:87
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(87): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 87
+[23-Mar-2026 13:26:20 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '800863248' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:87
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(87): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 87
+[24-Mar-2026 08:24:55 Europe/London] PHP Notice:  Trying to get property 'factor_id' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 73
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'payment_method' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 82
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'idfactor' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 82
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'factorfee' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'idfactor' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'ref_id' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Notice:  Trying to get property 'requested_by' of non-object in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[24-Mar-2026 11:54:55 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'username' cannot be null in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Apr-2026 15:09:02 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 109
+[14-Apr-2026 15:20:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[14-Apr-2026 15:20:49 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[14-Apr-2026 15:23:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[14-Apr-2026 15:23:49 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 13:36:25 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 13:36:25 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 13:54:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 13:54:18 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:25:27 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:25:29 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '040381143111' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[15-Apr-2026 15:25:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:25:41 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:25:48 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:25:49 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:25:53 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:25:55 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:02 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:02 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:10 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:11 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:20 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:27 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:27 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:33 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '040381143111' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[15-Apr-2026 15:26:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 15:26:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 15:26:45 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[15-Apr-2026 17:11:43 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[15-Apr-2026 17:11:43 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[16-Apr-2026 10:29:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[16-Apr-2026 10:30:09 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[16-Apr-2026 10:30:09 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 109
+[16-Apr-2026 10:30:26 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[16-Apr-2026 10:30:36 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[16-Apr-2026 10:30:36 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 109
+[16-Apr-2026 10:31:31 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[16-Apr-2026 10:31:35 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[16-Apr-2026 14:37:14 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[16-Apr-2026 14:37:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[16-Apr-2026 14:37:27 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[16-Apr-2026 14:37:27 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:09 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:09 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:14 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:21 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:33 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:33 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:42 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:07:54 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:07:59 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:01 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:08:01 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:06 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:08:06 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:08:28 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:08:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:48 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:08:52 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:08:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:00 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:08 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:08 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:14 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:26 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:26 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:29 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:30 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:36 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:36 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:09:46 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:09:46 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:10:08 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:10:09 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 12:10:17 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 12:10:19 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:03 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:04 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:13 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:15 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:15 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:19 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:25 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:25 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:28 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:31 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:32 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:32 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 13:22:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 13:22:35 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 15:31:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 15:32:03 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 15:32:43 Asia/Tehran] PHP Notice:  Trying to get property 'Value' of non-object in /home/myhona/public_html/inc/function.php on line 494
+[18-Apr-2026 15:32:53 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '610716842638' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[18-Apr-2026 16:56:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 16:56:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 16:56:44 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 16:56:44 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 17:34:55 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 17:34:56 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 17:35:08 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 17:35:08 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 17:41:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 17:41:30 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 19:13:24 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 19:13:24 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[18-Apr-2026 19:13:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[18-Apr-2026 19:13:28 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[19-Apr-2026 12:01:04 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[19-Apr-2026 12:01:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[19-Apr-2026 12:01:14 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 109
+[19-Apr-2026 12:21:04 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[19-Apr-2026 12:21:05 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[19-Apr-2026 13:31:06 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '040381143111' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[19-Apr-2026 13:31:44 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '040381143111' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[19-Apr-2026 15:01:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[19-Apr-2026 15:01:30 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 16:13:31 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 16:13:31 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 16:13:31 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 16:13:48 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 16:13:48 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 16:13:48 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 16:34:48 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 16:34:48 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 16:34:48 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 16:35:00 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 16:35:04 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 16:35:04 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 18:03:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 18:03:45 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 18:03:45 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 18:03:57 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 18:03:57 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 18:03:57 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[20-Apr-2026 18:05:55 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[20-Apr-2026 18:05:56 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[20-Apr-2026 18:05:56 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[21-Apr-2026 17:25:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 17:25:13 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 17:25:17 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 17:25:18 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 17:25:22 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '776621940356' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[21-Apr-2026 17:25:25 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '776621940356' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[21-Apr-2026 17:25:26 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '776621940356' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[21-Apr-2026 17:25:32 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 17:25:32 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 17:25:47 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 17:25:48 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 17:39:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 17:39:19 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 19:06:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[21-Apr-2026 19:06:57 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[21-Apr-2026 19:06:57 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[22-Apr-2026 14:57:01 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[22-Apr-2026 14:57:01 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[22-Apr-2026 16:47:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[22-Apr-2026 16:48:00 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[23-Apr-2026 13:45:31 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[23-Apr-2026 13:45:31 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[23-Apr-2026 13:49:07 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[23-Apr-2026 13:49:10 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[23-Apr-2026 14:03:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[23-Apr-2026 14:03:37 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[23-Apr-2026 14:03:37 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[25-Apr-2026 17:18:13 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[25-Apr-2026 17:18:23 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[25-Apr-2026 17:18:23 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[26-Apr-2026 16:42:20 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[26-Apr-2026 16:42:20 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[26-Apr-2026 16:42:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[26-Apr-2026 16:42:23 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[02-May-2026 14:05:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[02-May-2026 14:05:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[03-May-2026 15:29:53 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[03-May-2026 15:29:53 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[03-May-2026 15:30:08 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[03-May-2026 15:30:08 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[06-May-2026 17:58:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[06-May-2026 17:58:28 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[07-May-2026 11:22:37 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[07-May-2026 11:22:37 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[09-May-2026 14:27:55 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[09-May-2026 14:27:55 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[11-May-2026 13:33:30 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[11-May-2026 13:33:30 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[27-May-2026 12:46:08 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[27-May-2026 12:46:08 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[27-May-2026 12:46:08 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[04-Jun-2026 12:53:46 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 133
+[04-Jun-2026 12:53:46 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 153
+[04-Jun-2026 12:53:46 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[13-Jun-2026 13:28:36 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'permission_news_notif' in 'field list' in /home/myhona/public_html/inc/function.php:778
+Stack trace:
+#0 /home/myhona/public_html/inc/function.php(778): PDOStatement->execute(Array)
+#1 /home/myhona/public_html/admin/notifications/news_panel.php(28): Permision('permission_news...')
+#2 {main}
+  thrown in /home/myhona/public_html/inc/function.php on line 778
+[08-Jul-2026 13:39:21 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1051 Unknown table 'codtbl_coursre' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:118
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(118): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 118
+[08-Jul-2026 13:40:07 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'awqdddfgga' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[08-Jul-2026 13:43:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:14 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:22:27 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:27 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:22:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:34 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:22:44 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:44 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:22:44 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:22:44 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:21 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:21 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:28 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:28 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:38 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:45 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:52 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:52 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Jul-2026 15:23:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Jul-2026 15:23:59 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 12:58:19 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 12:58:19 Asia/Tehran] PHP Notice:  Undefined variable: crmCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 483
+[03-Aug-2026 12:58:39 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 12:58:39 Asia/Tehran] PHP Notice:  Undefined variable: crmCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 483
+[03-Aug-2026 12:58:51 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 12:58:51 Asia/Tehran] PHP Notice:  Undefined variable: crmCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 483
+[03-Aug-2026 12:58:56 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 15:22:31 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 15:26:58 Asia/Tehran] PHP Notice:  Undefined variable: changeCount in /home/myhona/public_html/admin/notifications/administrator_notif.php on line 460
+[03-Aug-2026 15:47:18 Asia/Tehran] PHP Notice:  Undefined variable: ticketTypes in /home/myhona/public_html/admin/notifications/unread_sms.php on line 200
+[03-Aug-2026 15:47:18 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/admin/notifications/unread_sms.php on line 200
+[03-Aug-2026 13:18:44 Europe/London] PHP Fatal error:  Uncaught Error: Class 'Melipayamak\MelipayamakApi' not found in /home/myhona/public_html/admin/notifications/unread_sms.php:158
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/unread_sms.php on line 158
+[03-Aug-2026 13:21:11 Europe/London] PHP Fatal error:  Uncaught Error: Class 'Melipayamak\MelipayamakApi' not found in /home/myhona/public_html/admin/notifications/unread_sms.php:158
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/unread_sms.php on line 158
+[03-Aug-2026 16:09:05 Asia/Tehran] PHP Notice:  Undefined variable: ticketTypes in /home/myhona/public_html/admin/notifications/unread_sms.php on line 238
+[03-Aug-2026 16:09:05 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/admin/notifications/unread_sms.php on line 238
+[03-Aug-2026 16:09:35 Asia/Tehran] PHP Notice:  Undefined variable: ticketTypes in /home/myhona/public_html/admin/notifications/unread_sms.php on line 238
+[03-Aug-2026 16:09:35 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/admin/notifications/unread_sms.php on line 238
+[03-Aug-2026 16:11:44 Asia/Tehran] PHP Notice:  Undefined variable: label in /home/myhona/public_html/admin/notifications/unread_sms.php on line 240
+[03-Aug-2026 16:11:44 Asia/Tehran] PHP Notice:  Undefined variable: label in /home/myhona/public_html/admin/notifications/unread_sms.php on line 240
+[03-Aug-2026 16:44:54 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 16:44:54 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 16:44:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 16:44:58 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 16:45:02 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 16:45:02 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 16:45:06 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 16:45:06 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 16:45:10 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 16:45:10 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Aug-2026 18:06:08 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Aug-2026 18:06:08 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Aug-2026 13:30:41 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Aug-2026 13:30:41 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Aug-2026 13:30:41 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[10-Aug-2026 09:42:37 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function toGregorian() in /home/myhona/public_html/admin/notifications/daily_notifications.php:112
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/notifications/daily_notifications.php on line 112
+[10-Aug-2026 12:24:12 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Aug-2026 12:24:12 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Aug-2026 12:24:12 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[10-Aug-2026 12:24:14 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Aug-2026 12:24:14 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[15-Aug-2026 13:11:58 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[16-Aug-2026 17:22:18 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[16-Aug-2026 17:22:18 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[19-Aug-2026 17:21:38 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[19-Aug-2026 17:21:38 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[19-Aug-2026 17:21:38 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[19-Aug-2026 18:33:22 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[19-Aug-2026 18:33:22 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[19-Aug-2026 18:33:22 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[23-Aug-2026 13:19:29 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[23-Aug-2026 13:19:29 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[23-Aug-2026 16:17:29 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[23-Aug-2026 16:17:29 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[24-Aug-2026 17:40:54 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[24-Aug-2026 17:40:54 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[24-Aug-2026 17:40:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[24-Aug-2026 17:40:59 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[24-Aug-2026 17:41:00 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[24-Aug-2026 17:41:00 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[25-Aug-2026 12:41:56 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[25-Aug-2026 12:41:56 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[25-Aug-2026 13:33:24 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[25-Aug-2026 13:33:24 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[26-Aug-2026 14:17:11 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[26-Aug-2026 17:25:31 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[26-Aug-2026 17:25:31 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[26-Aug-2026 17:50:05 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[26-Aug-2026 17:50:05 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Aug-2026 13:15:47 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Aug-2026 13:15:47 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Aug-2026 17:42:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[29-Aug-2026 17:42:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[29-Aug-2026 17:42:40 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[31-Aug-2026 11:06:52 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[31-Aug-2026 17:57:50 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[31-Aug-2026 17:57:50 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[01-Sep-2026 11:38:34 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[01-Sep-2026 12:22:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[01-Sep-2026 12:22:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[03-Sep-2026 13:50:44 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[03-Sep-2026 13:50:44 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[05-Sep-2026 10:15:04 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[05-Sep-2026 10:15:06 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[05-Sep-2026 10:15:12 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[05-Sep-2026 10:18:32 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/notifications/reactivate_tickets.php:217
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/reactivate_tickets.php(217): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/reactivate_tickets.php on line 217
+[06-Sep-2026 17:03:03 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[06-Sep-2026 17:03:03 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[07-Sep-2026 17:14:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[07-Sep-2026 17:14:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[07-Sep-2026 17:14:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[07-Sep-2026 17:14:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Sep-2026 12:12:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Sep-2026 12:12:42 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Sep-2026 14:57:33 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Sep-2026 14:57:33 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Sep-2026 14:58:41 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Sep-2026 14:58:41 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Sep-2026 14:58:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Sep-2026 14:58:45 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[08-Sep-2026 14:58:51 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[08-Sep-2026 14:58:51 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Sep-2026 14:05:56 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Sep-2026 14:05:56 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Sep-2026 14:05:58 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Sep-2026 14:05:58 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Sep-2026 15:03:27 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Sep-2026 15:03:27 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Sep-2026 16:02:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Sep-2026 16:02:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[10-Sep-2026 17:04:26 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[10-Sep-2026 17:04:26 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[12-Sep-2026 11:26:43 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[12-Sep-2026 11:26:43 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[12-Sep-2026 11:26:43 Asia/Tehran] PHP Notice:  Undefined index: uid in /home/myhona/public_html/inc/function-quiz.php on line 326
+[13-Sep-2026 10:19:51 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[13-Sep-2026 10:19:53 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[13-Sep-2026 16:18:12 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[13-Sep-2026 16:18:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[13-Sep-2026 16:18:19 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[13-Sep-2026 16:31:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[13-Sep-2026 16:31:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[14-Sep-2026 13:10:40 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 13:10:40 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[14-Sep-2026 13:10:42 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '130087598233' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 13:30:19 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 13:30:29 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 13:30:35 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '140506220162702987' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 13:59:37 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '130087598233' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 14:00:13 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '140506220162702987' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 14:00:15 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '140506220162702987' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 14:01:12 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '140506220162702987' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 14:01:13 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '140506220162702987' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[14-Sep-2026 14:11:39 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 14:11:39 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[14-Sep-2026 18:45:35 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 18:45:35 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[14-Sep-2026 18:45:42 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 18:45:42 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[14-Sep-2026 18:45:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[14-Sep-2026 18:45:49 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[15-Sep-2026 11:31:17 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 11:31:17 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[15-Sep-2026 11:46:14 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '130087598233' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[15-Sep-2026 12:00:37 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 12:00:37 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[15-Sep-2026 12:00:37 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 12:00:37 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154
+[15-Sep-2026 17:41:45 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 17:41:47 Asia/Tehran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1649181962' for key 'db_wallet.ref_id' in /home/myhona/public_html/admin/notifications/verify_by_manager.php:86
+Stack trace:
+#0 /home/myhona/public_html/admin/notifications/verify_by_manager.php(86): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 86
+[15-Sep-2026 17:41:47 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 17:41:49 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 17:41:55 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$id in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 134
+[15-Sep-2026 17:41:55 Asia/Tehran] PHP Notice:  Array to string conversion in /home/myhona/public_html/admin/notifications/verify_by_manager.php on line 154

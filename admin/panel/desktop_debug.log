@@ -1,0 +1,693 @@
+[2026-05-30 09:42:15] ========== PAGE START ==========
+[2026-05-30 09:42:15] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 09:42:15] Admin user: not set yet
+[2026-05-30 09:42:15] Includes loaded successfully
+[2026-05-30 09:42:15] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 09:42:15] Session admin found: kianoosh
+[2026-05-30 09:42:15] Session check passed for user: kianoosh
+[2026-05-30 09:42:15] Starting HTML output generation
+[2026-05-30 09:42:15] temp.html included
+[2026-05-30 09:42:15] link.php included
+[2026-05-30 09:42:15] Before include menu.php
+[2026-05-30 09:42:15] After include menu.php, before header.php
+[2026-05-30 12:12:15] header.php included
+[2026-05-30 12:12:15] Starting main content rendering
+[2026-05-30 12:12:15] Rendering statistics cards
+[2026-05-30 12:12:45] Starting color section rendering
+[2026-05-30 12:12:45] Color section: preparing query
+[2026-05-30 12:12:45] Color section: query returned 0 rows
+[2026-05-30 12:12:45] Color section: wait count = 0
+[2026-05-30 12:12:45] All rendering completed successfully
+[2026-05-30 12:12:45] Before include footers.php
+[2026-05-30 12:12:45] footers.php included
+[2026-05-30 12:12:45] ========== PAGE END ==========
+[2026-05-30 09:43:21] ========== PAGE START ==========
+[2026-05-30 09:43:21] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 09:43:21] Admin user: not set yet
+[2026-05-30 09:43:21] Includes loaded successfully
+[2026-05-30 09:43:21] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 09:43:21] Session admin found: kianoosh
+[2026-05-30 09:43:21] Session check passed for user: kianoosh
+[2026-05-30 09:43:21] Starting HTML output generation
+[2026-05-30 09:43:21] temp.html included
+[2026-05-30 09:43:21] link.php included
+[2026-05-30 09:43:21] Before include menu.php
+[2026-05-30 09:43:21] After include menu.php, before header.php
+[2026-05-30 12:13:21] header.php included
+[2026-05-30 12:13:21] Starting main content rendering
+[2026-05-30 12:13:21] Rendering statistics cards
+[2026-05-30 12:13:51] Starting color section rendering
+[2026-05-30 12:13:51] Color section: preparing query
+[2026-05-30 12:13:51] Color section: query returned 0 rows
+[2026-05-30 12:13:51] Color section: wait count = 0
+[2026-05-30 12:13:51] All rendering completed successfully
+[2026-05-30 12:13:51] Before include footers.php
+[2026-05-30 12:13:51] footers.php included
+[2026-05-30 12:13:51] ========== PAGE END ==========
+[2026-05-30 09:51:27] ========== PAGE START ==========
+[2026-05-30 09:51:27] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 09:51:27] Admin user: not set yet
+[2026-05-30 09:51:27] Includes loaded successfully
+[2026-05-30 09:51:27] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 09:51:27] Session admin found: kianoosh
+[2026-05-30 09:51:27] Session check passed for user: kianoosh
+[2026-05-30 09:51:27] Starting HTML output generation
+[2026-05-30 09:51:27] temp.html included
+[2026-05-30 09:51:27] link.php included
+[2026-05-30 09:51:27] Before include menu.php
+[2026-05-30 09:51:27] After include menu.php, before header.php
+[2026-05-30 12:21:27] header.php included
+[2026-05-30 12:21:27] Starting main content rendering
+[2026-05-30 12:21:27] Rendering statistics cards
+[2026-05-30 12:21:58] Starting color section rendering
+[2026-05-30 12:21:58] Color section: query returned 0 rows
+[2026-05-30 12:21:58] Still 0 rows, testing without GROUP BY
+[2026-05-30 12:21:58] Raw data test: found 0 records for this suporter
+[2026-05-30 12:21:58] No data to display in color table
+[2026-05-30 12:21:58] All rendering completed successfully
+[2026-05-30 12:21:58] Before include footers.php
+[2026-05-30 12:21:58] footers.php included
+[2026-05-30 12:21:58] ========== PAGE END ==========
+[2026-05-30 09:53:02] ========== PAGE START ==========
+[2026-05-30 09:53:02] Request URI: /admin/panel/desktop-undercover.php?logoutadmin
+[2026-05-30 09:53:02] Admin user: not set yet
+[2026-05-30 09:53:21] ========== PAGE START ==========
+[2026-05-30 09:53:21] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 09:53:21] Admin user: not set yet
+[2026-05-30 09:53:21] Includes loaded successfully
+[2026-05-30 09:53:21] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 09:53:21] Session admin found: op204
+[2026-05-30 09:53:21] Session check passed for user: op204
+[2026-05-30 09:53:21] Starting HTML output generation
+[2026-05-30 09:53:21] temp.html included
+[2026-05-30 09:53:21] link.php included
+[2026-05-30 09:53:21] Before include menu.php
+[2026-05-30 09:53:21] After include menu.php, before header.php
+[2026-05-30 12:23:21] header.php included
+[2026-05-30 12:23:21] Starting main content rendering
+[2026-05-30 12:23:21] Rendering statistics cards
+[2026-05-30 12:23:21] Rendering 'faragiran man' card
+[2026-05-30 12:23:21] Excluded users count: 282
+[2026-05-30 12:23:52] Starting color section rendering
+[2026-05-30 12:23:52] Color section: query returned 96 rows
+[2026-05-30 12:23:52] All rendering completed successfully
+[2026-05-30 12:23:52] Before include footers.php
+[2026-05-30 12:23:52] footers.php included
+[2026-05-30 12:23:52] ========== PAGE END ==========
+[2026-05-30 10:02:11] ========== PAGE START ==========
+[2026-05-30 10:02:11] Request URI: /admin/panel/desktop-undercover.php?logoutadmin
+[2026-05-30 10:02:11] Admin user: not set yet
+[2026-05-30 10:02:52] ========== PAGE START ==========
+[2026-05-30 10:02:52] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:02:52] Admin user: not set yet
+[2026-05-30 10:02:52] Includes loaded successfully
+[2026-05-30 10:02:52] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:02:52] Session admin found: op208
+[2026-05-30 10:02:52] Session check passed for user: op208
+[2026-05-30 10:02:52] Starting HTML output generation
+[2026-05-30 10:02:52] temp.html included
+[2026-05-30 10:02:52] link.php included
+[2026-05-30 10:02:52] Before include menu.php
+[2026-05-30 10:02:52] After include menu.php, before header.php
+[2026-05-30 12:32:52] header.php included
+[2026-05-30 12:32:52] Starting main content rendering
+[2026-05-30 12:32:52] Rendering statistics cards
+[2026-05-30 12:33:22] Starting color section rendering
+[2026-05-30 12:33:22] Total records for this suporter: 128
+[2026-05-30 12:33:22] Color section: query returned 8 rows in 30.113856077194 seconds
+[2026-05-30 12:33:22] All rendering completed successfully
+[2026-05-30 12:33:22] Before include footers.php
+[2026-05-30 12:33:22] footers.php included
+[2026-05-30 12:33:22] ========== PAGE END ==========
+[2026-05-30 10:06:07] ========== PAGE START ==========
+[2026-05-30 10:06:07] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:06:07] Admin user: not set yet
+[2026-05-30 10:06:07] Includes loaded successfully
+[2026-05-30 10:06:07] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:06:07] Session admin found: op208
+[2026-05-30 10:06:07] Session check passed for user: op208
+[2026-05-30 10:06:07] Starting HTML output generation
+[2026-05-30 10:06:07] temp.html included
+[2026-05-30 10:06:07] link.php included
+[2026-05-30 10:06:07] Before include menu.php
+[2026-05-30 10:06:07] After include menu.php, before header.php
+[2026-05-30 12:36:07] header.php included
+[2026-05-30 12:36:07] Starting main content rendering
+[2026-05-30 12:36:07] Rendering statistics cards
+[2026-05-30 12:36:37] Starting color section rendering
+[2026-05-30 12:36:37] Total records for this suporter: 128
+[2026-05-30 12:36:37] Color section: query returned 8 rows in 30.161561965942 seconds
+[2026-05-30 12:36:37] All rendering completed successfully
+[2026-05-30 12:36:37] Before include footers.php
+[2026-05-30 12:36:37] footers.php included
+[2026-05-30 12:36:37] ========== PAGE END ==========
+[2026-05-30 10:07:11] ========== PAGE START ==========
+[2026-05-30 10:07:11] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:07:11] Admin user: not set yet
+[2026-05-30 10:07:11] Includes loaded successfully
+[2026-05-30 10:07:11] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:07:11] Session admin found: op208
+[2026-05-30 10:07:11] Session check passed for user: op208
+[2026-05-30 10:07:11] Starting HTML output generation
+[2026-05-30 10:07:11] temp.html included
+[2026-05-30 10:07:11] link.php included
+[2026-05-30 10:07:11] Before include menu.php
+[2026-05-30 10:07:11] After include menu.php, before header.php
+[2026-05-30 12:37:11] header.php included
+[2026-05-30 12:37:11] Starting main content rendering
+[2026-05-30 12:37:11] Rendering statistics cards
+[2026-05-30 12:37:41] Starting color section rendering
+[2026-05-30 12:37:41] Total records for this suporter: 128
+[2026-05-30 12:37:41] Color section: query returned 8 rows in 30.103920221329 seconds
+[2026-05-30 12:37:41] All rendering completed successfully
+[2026-05-30 12:37:41] Before include footers.php
+[2026-05-30 12:37:41] footers.php included
+[2026-05-30 12:37:41] ========== PAGE END ==========
+[2026-05-30 10:08:29] ========== PAGE START ==========
+[2026-05-30 10:08:29] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:08:29] Admin user: not set yet
+[2026-05-30 10:08:29] Includes loaded successfully
+[2026-05-30 10:08:29] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:08:29] Session admin found: op208
+[2026-05-30 10:08:29] Session check passed for user: op208
+[2026-05-30 10:08:29] Starting HTML output generation
+[2026-05-30 10:08:29] temp.html included
+[2026-05-30 10:08:29] link.php included
+[2026-05-30 10:08:29] Before include menu.php
+[2026-05-30 10:08:29] After include menu.php, before header.php
+[2026-05-30 12:38:29] header.php included
+[2026-05-30 12:38:29] Starting main content rendering
+[2026-05-30 12:38:29] Rendering statistics cards
+[2026-05-30 12:38:59] Starting color section rendering
+[2026-05-30 12:38:59] Total records for this suporter: 128
+[2026-05-30 12:38:59] Color section: query returned 8 rows in 30.098582029343 seconds
+[2026-05-30 12:38:59] All rendering completed successfully
+[2026-05-30 12:38:59] Before include footers.php
+[2026-05-30 12:38:59] footers.php included
+[2026-05-30 12:38:59] ========== PAGE END ==========
+[2026-05-30 10:09:11] ========== PAGE START ==========
+[2026-05-30 10:09:11] Request URI: /admin/panel/desktop-undercover.php?logoutadmin
+[2026-05-30 10:09:11] Admin user: not set yet
+[2026-05-30 10:09:45] ========== PAGE START ==========
+[2026-05-30 10:09:45] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:09:45] Admin user: not set yet
+[2026-05-30 10:09:45] Includes loaded successfully
+[2026-05-30 10:09:45] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:09:45] Session admin found: op204
+[2026-05-30 10:09:45] Session check passed for user: op204
+[2026-05-30 10:09:45] Starting HTML output generation
+[2026-05-30 10:09:45] temp.html included
+[2026-05-30 10:09:45] link.php included
+[2026-05-30 10:09:45] Before include menu.php
+[2026-05-30 10:09:45] After include menu.php, before header.php
+[2026-05-30 12:39:45] header.php included
+[2026-05-30 12:39:45] Starting main content rendering
+[2026-05-30 12:39:45] Rendering statistics cards
+[2026-05-30 12:39:45] Rendering 'faragiran man' card
+[2026-05-30 12:39:45] Excluded users count: 282
+[2026-05-30 12:40:15] Starting color section rendering
+[2026-05-30 12:40:15] Total records for this suporter: 3264
+[2026-05-30 12:40:15] Color section: query returned 96 rows in 30.250798940659 seconds
+[2026-05-30 12:40:15] All rendering completed successfully
+[2026-05-30 12:40:15] Before include footers.php
+[2026-05-30 12:40:15] footers.php included
+[2026-05-30 12:40:15] ========== PAGE END ==========
+[2026-05-30 10:10:27] ========== PAGE START ==========
+[2026-05-30 10:10:27] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:10:27] Admin user: not set yet
+[2026-05-30 10:10:27] Includes loaded successfully
+[2026-05-30 10:10:27] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:10:27] Session admin found: op204
+[2026-05-30 10:10:27] Session check passed for user: op204
+[2026-05-30 10:10:27] Starting HTML output generation
+[2026-05-30 10:10:27] temp.html included
+[2026-05-30 10:10:27] link.php included
+[2026-05-30 10:10:27] Before include menu.php
+[2026-05-30 10:10:27] After include menu.php, before header.php
+[2026-05-30 12:40:27] header.php included
+[2026-05-30 12:40:27] Starting main content rendering
+[2026-05-30 12:40:27] Rendering statistics cards
+[2026-05-30 12:40:27] Rendering 'faragiran man' card
+[2026-05-30 12:40:27] Excluded users count: 282
+[2026-05-30 12:40:57] Starting color section rendering
+[2026-05-30 12:40:57] Total records for this suporter: 3264
+[2026-05-30 12:40:57] Color section: query returned 96 rows in 30.253872871399 seconds
+[2026-05-30 12:40:57] All rendering completed successfully
+[2026-05-30 12:40:57] Before include footers.php
+[2026-05-30 12:40:57] footers.php included
+[2026-05-30 12:40:57] ========== PAGE END ==========
+[2026-05-30 10:17:49] ========== PAGE START ==========
+[2026-05-30 10:17:49] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:17:49] Admin user: not set yet
+[2026-05-30 10:17:49] Includes loaded successfully
+[2026-05-30 10:17:49] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:17:49] Session admin found: op204
+[2026-05-30 10:17:49] Session check passed for user: op204
+[2026-05-30 10:17:49] Starting HTML output generation
+[2026-05-30 10:17:49] temp.html included
+[2026-05-30 10:17:49] link.php included
+[2026-05-30 10:17:49] Before include menu.php
+[2026-05-30 10:17:49] After include menu.php, before header.php
+[2026-05-30 12:47:49] header.php included
+[2026-05-30 12:47:49] Starting main content rendering
+[2026-05-30 12:47:49] Rendering statistics cards
+[2026-05-30 12:47:49] Rendering 'faragiran man' card
+[2026-05-30 12:47:49] Excluded users count: 282
+[2026-05-30 12:48:20] Starting color section rendering
+[2026-05-30 12:48:20] !!! COLOR SECTION ERROR: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dbcourse.codecourse' in 'on clause'
+[2026-05-30 12:48:20] All rendering completed successfully
+[2026-05-30 12:48:20] Before include footers.php
+[2026-05-30 12:48:20] footers.php included
+[2026-05-30 12:48:20] ========== PAGE END ==========
+[2026-05-30 10:18:49] ========== PAGE START ==========
+[2026-05-30 10:18:49] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:18:49] Admin user: not set yet
+[2026-05-30 10:18:49] Includes loaded successfully
+[2026-05-30 10:18:49] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:18:49] Session admin found: op204
+[2026-05-30 10:18:49] Session check passed for user: op204
+[2026-05-30 10:18:49] Starting HTML output generation
+[2026-05-30 10:18:49] temp.html included
+[2026-05-30 10:18:49] link.php included
+[2026-05-30 10:18:49] Before include menu.php
+[2026-05-30 10:18:49] After include menu.php, before header.php
+[2026-05-30 12:48:49] header.php included
+[2026-05-30 12:48:49] Starting main content rendering
+[2026-05-30 12:48:49] Rendering statistics cards
+[2026-05-30 12:48:49] Rendering 'faragiran man' card
+[2026-05-30 12:48:49] Excluded users count: 282
+[2026-05-30 12:49:19] Starting color section rendering
+[2026-05-30 12:49:19] Total records for this suporter: 886
+[2026-05-30 12:49:19] Color section: query returned 96 rows in 30.261029005051 seconds
+[2026-05-30 12:49:19] All rendering completed successfully
+[2026-05-30 12:49:19] Before include footers.php
+[2026-05-30 12:49:19] footers.php included
+[2026-05-30 12:49:19] ========== PAGE END ==========
+[2026-05-30 10:21:56] ========== PAGE START ==========
+[2026-05-30 10:21:56] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:21:56] Admin user: not set yet
+[2026-05-30 10:21:56] Includes loaded successfully
+[2026-05-30 10:21:56] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:21:56] Session admin found: op204
+[2026-05-30 10:21:56] Session check passed for user: op204
+[2026-05-30 10:21:56] Starting HTML output generation
+[2026-05-30 10:21:56] temp.html included
+[2026-05-30 10:21:56] link.php included
+[2026-05-30 10:21:56] Before include menu.php
+[2026-05-30 10:21:56] After include menu.php, before header.php
+[2026-05-30 12:51:56] header.php included
+[2026-05-30 12:51:56] Starting main content rendering
+[2026-05-30 12:51:56] Rendering statistics cards
+[2026-05-30 12:51:56] Rendering 'faragiran man' card
+[2026-05-30 12:51:56] Excluded users count: 282
+[2026-05-30 12:52:26] Starting color section rendering
+[2026-05-30 12:52:26] Total records for this suporter: 886
+[2026-05-30 12:52:26] Color section: query returned 96 rows in 30.302803039551 seconds
+[2026-05-30 12:52:26] All rendering completed successfully
+[2026-05-30 12:52:26] Before include footers.php
+[2026-05-30 12:52:26] footers.php included
+[2026-05-30 12:52:26] ========== PAGE END ==========
+[2026-05-30 10:23:49] ========== PAGE START ==========
+[2026-05-30 10:23:49] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:23:49] Admin user: not set yet
+[2026-05-30 10:23:49] Includes loaded successfully
+[2026-05-30 10:23:49] Could not set DB session variables: SQLSTATE[HY000]: General error: 1621 SESSION variable 'max_allowed_packet' is read-only. Use SET GLOBAL to assign the value
+[2026-05-30 10:23:49] Session admin found: op204
+[2026-05-30 10:23:49] Session check passed for user: op204
+[2026-05-30 10:23:49] Starting HTML output generation
+[2026-05-30 10:23:49] temp.html included
+[2026-05-30 10:23:49] link.php included
+[2026-05-30 10:23:49] Before include menu.php
+[2026-05-30 10:23:49] After include menu.php, before header.php
+[2026-05-30 12:53:49] header.php included
+[2026-05-30 12:53:49] Starting main content rendering
+[2026-05-30 12:53:49] Rendering statistics cards
+[2026-05-30 12:53:49] Rendering 'faragiran man' card
+[2026-05-30 12:53:49] Excluded users count: 282
+[2026-05-30 12:54:19] Starting color section rendering
+[2026-05-30 12:54:19] Total records for this suporter: 3264
+[2026-05-30 12:54:19] Color section: query returned 34 rows in 30.269161224365 seconds
+[2026-05-30 12:54:19] All rendering completed successfully
+[2026-05-30 12:54:19] Before include footers.php
+[2026-05-30 12:54:19] footers.php included
+[2026-05-30 12:54:19] ========== PAGE END ==========
+[2026-05-30 10:31:00] ========== PAGE START ==========
+[2026-05-30 10:31:00] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:31:00] Admin user: not set yet
+[2026-05-30 10:31:00] Includes loaded successfully
+[2026-05-30 10:31:00] DB session variables set successfully
+[2026-05-30 10:31:00] Session admin found: op204
+[2026-05-30 10:31:00] Session check passed for user: op204
+[2026-05-30 10:31:00] Starting HTML output generation
+[2026-05-30 10:31:00] temp.html included
+[2026-05-30 10:31:00] link.php included
+[2026-05-30 10:31:00] Before include menu.php
+[2026-05-30 10:31:00] After include menu.php, before header.php
+[2026-05-30 13:01:00] header.php included
+[2026-05-30 13:01:00] Starting main content rendering
+[2026-05-30 13:01:00] Rendering statistics cards
+[2026-05-30 13:01:00] Rendering 'faragiran man' card
+[2026-05-30 13:01:00] Excluded users count: 282
+[2026-05-30 13:01:31] Starting color section rendering with pagination
+[2026-05-30 13:01:31] Total distinct color-course groups: 96
+[2026-05-30 13:01:31] Color section: query returned 15 rows for page 1
+[2026-05-30 13:01:31] All rendering completed successfully
+[2026-05-30 13:01:31] Before include footers.php
+[2026-05-30 13:01:31] footers.php included
+[2026-05-30 13:01:31] ========== PAGE END ==========
+[2026-05-30 10:31:39] ========== PAGE START ==========
+[2026-05-30 10:31:39] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:31:39] Admin user: not set yet
+[2026-05-30 10:31:39] Includes loaded successfully
+[2026-05-30 10:31:39] DB session variables set successfully
+[2026-05-30 10:31:39] Session admin found: op204
+[2026-05-30 10:31:39] Session check passed for user: op204
+[2026-05-30 10:31:39] Starting HTML output generation
+[2026-05-30 10:31:39] temp.html included
+[2026-05-30 10:31:39] link.php included
+[2026-05-30 10:31:39] Before include menu.php
+[2026-05-30 10:31:39] After include menu.php, before header.php
+[2026-05-30 13:01:39] header.php included
+[2026-05-30 13:01:39] Starting main content rendering
+[2026-05-30 13:01:39] Rendering statistics cards
+[2026-05-30 13:01:39] Rendering 'faragiran man' card
+[2026-05-30 13:01:39] Excluded users count: 282
+[2026-05-30 13:02:09] Starting color section rendering with pagination
+[2026-05-30 13:02:09] Total distinct color-course groups: 96
+[2026-05-30 13:02:09] Color section: query returned 15 rows for page 2
+[2026-05-30 13:02:09] All rendering completed successfully
+[2026-05-30 13:02:09] Before include footers.php
+[2026-05-30 13:02:09] footers.php included
+[2026-05-30 13:02:09] ========== PAGE END ==========
+[2026-05-30 10:32:35] ========== PAGE START ==========
+[2026-05-30 10:32:35] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:32:35] Admin user: not set yet
+[2026-05-30 10:32:35] Includes loaded successfully
+[2026-05-30 10:32:35] DB session variables set successfully
+[2026-05-30 10:32:35] Session admin found: op204
+[2026-05-30 10:32:35] Session check passed for user: op204
+[2026-05-30 10:32:35] Starting HTML output generation
+[2026-05-30 10:32:35] temp.html included
+[2026-05-30 10:32:35] link.php included
+[2026-05-30 10:32:35] Before include menu.php
+[2026-05-30 10:32:35] After include menu.php, before header.php
+[2026-05-30 13:02:35] header.php included
+[2026-05-30 13:02:35] Starting main content rendering
+[2026-05-30 13:02:35] Rendering statistics cards
+[2026-05-30 13:02:35] Rendering 'faragiran man' card
+[2026-05-30 13:02:35] Excluded users count: 282
+[2026-05-30 13:03:05] Starting color section rendering with pagination
+[2026-05-30 13:03:05] Total distinct color-course groups: 96
+[2026-05-30 13:03:05] Color section: query returned 15 rows for page 1
+[2026-05-30 13:03:05] All rendering completed successfully
+[2026-05-30 13:03:05] Before include footers.php
+[2026-05-30 13:03:05] footers.php included
+[2026-05-30 13:03:05] ========== PAGE END ==========
+[2026-05-30 10:33:23] ========== PAGE START ==========
+[2026-05-30 10:33:23] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:33:23] Admin user: not set yet
+[2026-05-30 10:33:23] Includes loaded successfully
+[2026-05-30 10:33:23] DB session variables set successfully
+[2026-05-30 10:33:23] Session admin found: op204
+[2026-05-30 10:33:23] Session check passed for user: op204
+[2026-05-30 10:33:23] Starting HTML output generation
+[2026-05-30 10:33:23] temp.html included
+[2026-05-30 10:33:23] link.php included
+[2026-05-30 10:33:23] Before include menu.php
+[2026-05-30 10:33:23] After include menu.php, before header.php
+[2026-05-30 13:03:23] header.php included
+[2026-05-30 13:03:23] Starting main content rendering
+[2026-05-30 13:03:23] Rendering statistics cards
+[2026-05-30 13:03:23] Rendering 'faragiran man' card
+[2026-05-30 13:03:23] Excluded users count: 282
+[2026-05-30 13:03:53] Starting color section rendering with pagination
+[2026-05-30 13:03:53] Total distinct color-course groups: 96
+[2026-05-30 13:03:53] Color section: query returned 15 rows for page 2
+[2026-05-30 13:03:53] All rendering completed successfully
+[2026-05-30 13:03:53] Before include footers.php
+[2026-05-30 13:03:53] footers.php included
+[2026-05-30 13:03:53] ========== PAGE END ==========
+[2026-05-30 10:34:05] ========== PAGE START ==========
+[2026-05-30 10:34:05] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:34:05] Admin user: not set yet
+[2026-05-30 10:34:05] Includes loaded successfully
+[2026-05-30 10:34:05] DB session variables set successfully
+[2026-05-30 10:34:05] Session admin found: op204
+[2026-05-30 10:34:05] Session check passed for user: op204
+[2026-05-30 10:34:05] Starting HTML output generation
+[2026-05-30 10:34:05] temp.html included
+[2026-05-30 10:34:05] link.php included
+[2026-05-30 10:34:05] Before include menu.php
+[2026-05-30 10:34:05] After include menu.php, before header.php
+[2026-05-30 13:04:05] header.php included
+[2026-05-30 13:04:05] Starting main content rendering
+[2026-05-30 13:04:05] Rendering statistics cards
+[2026-05-30 13:04:05] Rendering 'faragiran man' card
+[2026-05-30 13:04:05] Excluded users count: 282
+[2026-05-30 13:04:35] Starting color section rendering with pagination
+[2026-05-30 13:04:35] Total distinct color-course groups: 96
+[2026-05-30 13:04:35] Color section: query returned 15 rows for page 1
+[2026-05-30 13:04:35] All rendering completed successfully
+[2026-05-30 13:04:35] Before include footers.php
+[2026-05-30 13:04:35] footers.php included
+[2026-05-30 13:04:35] ========== PAGE END ==========
+[2026-05-30 10:36:44] ========== PAGE START ==========
+[2026-05-30 10:36:44] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:36:44] Admin user: not set yet
+[2026-05-30 10:36:44] Includes loaded successfully
+[2026-05-30 10:36:44] DB session variables set successfully
+[2026-05-30 10:36:44] Session admin found: op204
+[2026-05-30 10:36:44] Session check passed for user: op204
+[2026-05-30 10:36:44] Starting HTML output generation
+[2026-05-30 10:36:44] temp.html included
+[2026-05-30 10:36:44] link.php included
+[2026-05-30 10:36:44] Before include menu.php
+[2026-05-30 10:36:44] After include menu.php, before header.php
+[2026-05-30 13:06:44] header.php included
+[2026-05-30 13:06:44] Starting main content rendering
+[2026-05-30 13:06:44] Rendering statistics cards
+[2026-05-30 13:06:44] Rendering 'faragiran man' card
+[2026-05-30 13:06:44] Excluded users count: 282
+[2026-05-30 13:07:14] Starting color section rendering with pagination
+[2026-05-30 13:07:14] Total distinct color-course groups: 96
+[2026-05-30 13:07:14] Color section: query returned 15 rows for page 2
+[2026-05-30 13:07:14] All rendering completed successfully
+[2026-05-30 13:07:14] Before include footers.php
+[2026-05-30 13:07:14] footers.php included
+[2026-05-30 13:07:14] ========== PAGE END ==========
+[2026-05-30 10:37:54] ========== PAGE START ==========
+[2026-05-30 10:37:54] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:37:54] Admin user: not set yet
+[2026-05-30 10:37:54] Includes loaded successfully
+[2026-05-30 10:37:54] DB session variables set successfully
+[2026-05-30 10:37:54] Session admin found: op204
+[2026-05-30 10:37:54] Session check passed for user: op204
+[2026-05-30 10:37:54] Starting HTML output generation
+[2026-05-30 10:37:54] temp.html included
+[2026-05-30 10:37:54] link.php included
+[2026-05-30 10:37:54] Before include menu.php
+[2026-05-30 10:37:54] After include menu.php, before header.php
+[2026-05-30 13:07:54] header.php included
+[2026-05-30 13:07:54] Starting main content rendering
+[2026-05-30 13:07:54] Rendering statistics cards
+[2026-05-30 13:07:54] Rendering 'faragiran man' card
+[2026-05-30 13:07:54] Excluded users count: 282
+[2026-05-30 10:38:15] ========== PAGE START ==========
+[2026-05-30 10:38:15] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:38:15] Admin user: not set yet
+[2026-05-30 13:08:24] Starting color section rendering with pagination
+[2026-05-30 13:08:24] Total distinct color-course groups: 96
+[2026-05-30 13:08:24] Color section: query returned 15 rows for page 2
+[2026-05-30 13:08:24] All rendering completed successfully
+[2026-05-30 13:08:24] Before include footers.php
+[2026-05-30 13:08:24] footers.php included
+[2026-05-30 13:08:24] ========== PAGE END ==========
+[2026-05-30 10:38:24] Includes loaded successfully
+[2026-05-30 10:38:24] DB session variables set successfully
+[2026-05-30 10:38:24] Session admin found: op204
+[2026-05-30 10:38:24] Session check passed for user: op204
+[2026-05-30 10:38:24] Starting HTML output generation
+[2026-05-30 10:38:24] temp.html included
+[2026-05-30 10:38:24] link.php included
+[2026-05-30 10:38:24] Before include menu.php
+[2026-05-30 10:38:24] After include menu.php, before header.php
+[2026-05-30 13:08:24] header.php included
+[2026-05-30 13:08:24] Starting main content rendering
+[2026-05-30 13:08:24] Rendering statistics cards
+[2026-05-30 13:08:24] Rendering 'faragiran man' card
+[2026-05-30 13:08:24] Excluded users count: 282
+[2026-05-30 10:38:43] ========== PAGE START ==========
+[2026-05-30 10:38:43] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:38:43] Admin user: not set yet
+[2026-05-30 13:08:54] Starting color section rendering with pagination
+[2026-05-30 13:08:54] Total distinct color-course groups: 96
+[2026-05-30 13:08:54] Color section: query returned 15 rows for page 2
+[2026-05-30 13:08:54] All rendering completed successfully
+[2026-05-30 13:08:54] Before include footers.php
+[2026-05-30 13:08:54] footers.php included
+[2026-05-30 13:08:54] ========== PAGE END ==========
+[2026-05-30 10:38:55] Includes loaded successfully
+[2026-05-30 10:38:55] DB session variables set successfully
+[2026-05-30 10:38:55] Session admin found: op204
+[2026-05-30 10:38:55] Session check passed for user: op204
+[2026-05-30 10:38:55] Starting HTML output generation
+[2026-05-30 10:38:55] temp.html included
+[2026-05-30 10:38:55] link.php included
+[2026-05-30 10:38:55] Before include menu.php
+[2026-05-30 10:38:55] After include menu.php, before header.php
+[2026-05-30 13:08:55] header.php included
+[2026-05-30 13:08:55] Starting main content rendering
+[2026-05-30 13:08:55] Rendering statistics cards
+[2026-05-30 13:08:55] Rendering 'faragiran man' card
+[2026-05-30 13:08:55] Excluded users count: 282
+[2026-05-30 13:09:25] Starting color section rendering with pagination
+[2026-05-30 13:09:25] Total distinct color-course groups: 96
+[2026-05-30 13:09:25] Color section: query returned 15 rows for page 2
+[2026-05-30 13:09:25] All rendering completed successfully
+[2026-05-30 13:09:25] Before include footers.php
+[2026-05-30 13:09:25] footers.php included
+[2026-05-30 13:09:25] ========== PAGE END ==========
+[2026-05-30 10:42:39] ========== PAGE START ==========
+[2026-05-30 10:42:39] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:42:39] Admin user: not set yet
+[2026-05-30 10:42:39] Includes loaded successfully
+[2026-05-30 10:42:39] DB session variables set successfully
+[2026-05-30 10:42:39] Session admin found: op205
+[2026-05-30 10:42:39] Session check passed for user: op205
+[2026-05-30 10:42:39] Starting HTML output generation
+[2026-05-30 10:42:39] temp.html included
+[2026-05-30 10:42:39] link.php included
+[2026-05-30 10:42:39] Before include menu.php
+[2026-05-30 10:42:39] After include menu.php, before header.php
+[2026-05-30 13:12:39] header.php included
+[2026-05-30 13:12:39] Starting main content rendering
+[2026-05-30 13:12:39] Rendering statistics cards
+[2026-05-30 13:12:39] Rendering 'faragiran man' card
+[2026-05-30 13:12:39] Excluded users count: 282
+[2026-05-30 10:42:51] ========== PAGE START ==========
+[2026-05-30 10:42:51] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:42:51] Admin user: not set yet
+[2026-05-30 13:13:10] Starting color section rendering with pagination
+[2026-05-30 13:13:10] Total distinct color-course groups: 73
+[2026-05-30 13:13:10] Color section: query returned 15 rows for page 1
+[2026-05-30 13:13:10] All rendering completed successfully
+[2026-05-30 13:13:10] Before include footers.php
+[2026-05-30 13:13:10] footers.php included
+[2026-05-30 13:13:10] ========== PAGE END ==========
+[2026-05-30 10:43:10] Includes loaded successfully
+[2026-05-30 10:43:10] DB session variables set successfully
+[2026-05-30 10:43:10] Session admin found: op205
+[2026-05-30 10:43:10] Session check passed for user: op205
+[2026-05-30 10:43:10] Starting HTML output generation
+[2026-05-30 10:43:10] temp.html included
+[2026-05-30 10:43:10] link.php included
+[2026-05-30 10:43:10] Before include menu.php
+[2026-05-30 10:43:10] After include menu.php, before header.php
+[2026-05-30 13:13:10] header.php included
+[2026-05-30 13:13:10] Starting main content rendering
+[2026-05-30 13:13:10] Rendering statistics cards
+[2026-05-30 13:13:10] Rendering 'faragiran man' card
+[2026-05-30 13:13:10] Excluded users count: 282
+[2026-05-30 13:13:40] Starting color section rendering with pagination
+[2026-05-30 13:13:40] Total distinct color-course groups: 73
+[2026-05-30 13:13:40] Color section: query returned 15 rows for page 1
+[2026-05-30 13:13:40] All rendering completed successfully
+[2026-05-30 13:13:40] Before include footers.php
+[2026-05-30 13:13:40] footers.php included
+[2026-05-30 13:13:40] ========== PAGE END ==========
+[2026-05-30 10:43:40] ========== PAGE START ==========
+[2026-05-30 10:43:40] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:43:40] Admin user: not set yet
+[2026-05-30 10:43:40] Includes loaded successfully
+[2026-05-30 10:43:40] DB session variables set successfully
+[2026-05-30 10:43:40] Session admin found: kianoosh
+[2026-05-30 10:43:40] Session check passed for user: kianoosh
+[2026-05-30 10:43:40] Starting HTML output generation
+[2026-05-30 10:43:40] temp.html included
+[2026-05-30 10:43:40] link.php included
+[2026-05-30 10:43:40] Before include menu.php
+[2026-05-30 10:43:40] After include menu.php, before header.php
+[2026-05-30 13:13:40] header.php included
+[2026-05-30 13:13:40] Starting main content rendering
+[2026-05-30 13:13:40] Rendering statistics cards
+[2026-05-30 13:13:40] Rendering 'faragiran man' card
+[2026-05-30 13:13:40] Excluded users count: 282
+[2026-05-30 10:43:58] ========== PAGE START ==========
+[2026-05-30 10:43:58] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:43:58] Admin user: not set yet
+[2026-05-30 10:43:59] ========== PAGE START ==========
+[2026-05-30 10:43:59] Request URI: /admin/panel/desktop-undercover.php?color_page=2
+[2026-05-30 10:43:59] Admin user: not set yet
+[2026-05-30 13:14:10] Starting color section rendering with pagination
+[2026-05-30 13:14:10] Total distinct color-course groups: 0
+[2026-05-30 13:14:10] All rendering completed successfully
+[2026-05-30 13:14:10] Before include footers.php
+[2026-05-30 13:14:10] footers.php included
+[2026-05-30 13:14:10] ========== PAGE END ==========
+[2026-05-30 10:44:10] Includes loaded successfully
+[2026-05-30 10:44:10] DB session variables set successfully
+[2026-05-30 10:44:10] Session admin found: kianoosh
+[2026-05-30 10:44:10] Session check passed for user: kianoosh
+[2026-05-30 10:44:10] Starting HTML output generation
+[2026-05-30 10:44:10] temp.html included
+[2026-05-30 10:44:10] link.php included
+[2026-05-30 10:44:10] Before include menu.php
+[2026-05-30 10:44:10] After include menu.php, before header.php
+[2026-05-30 13:14:10] header.php included
+[2026-05-30 13:14:10] Starting main content rendering
+[2026-05-30 13:14:10] Rendering statistics cards
+[2026-05-30 13:14:10] Rendering 'faragiran man' card
+[2026-05-30 13:14:10] Excluded users count: 282
+[2026-05-30 13:14:41] Starting color section rendering with pagination
+[2026-05-30 13:14:41] Total distinct color-course groups: 0
+[2026-05-30 13:14:41] All rendering completed successfully
+[2026-05-30 13:14:41] Before include footers.php
+[2026-05-30 13:14:41] footers.php included
+[2026-05-30 13:14:41] ========== PAGE END ==========
+[2026-05-30 10:44:41] Includes loaded successfully
+[2026-05-30 10:44:41] DB session variables set successfully
+[2026-05-30 10:44:41] Session admin found: kianoosh
+[2026-05-30 10:44:41] Session check passed for user: kianoosh
+[2026-05-30 10:44:41] Starting HTML output generation
+[2026-05-30 10:44:41] temp.html included
+[2026-05-30 10:44:41] link.php included
+[2026-05-30 10:44:41] Before include menu.php
+[2026-05-30 10:44:41] After include menu.php, before header.php
+[2026-05-30 13:14:41] header.php included
+[2026-05-30 13:14:41] Starting main content rendering
+[2026-05-30 13:14:41] Rendering statistics cards
+[2026-05-30 13:14:41] Rendering 'faragiran man' card
+[2026-05-30 13:14:41] Excluded users count: 282
+[2026-05-30 13:15:11] Starting color section rendering with pagination
+[2026-05-30 13:15:11] Total distinct color-course groups: 0
+[2026-05-30 13:15:11] All rendering completed successfully
+[2026-05-30 13:15:11] Before include footers.php
+[2026-05-30 13:15:11] footers.php included
+[2026-05-30 13:15:11] ========== PAGE END ==========
+[2026-05-30 10:45:46] ========== PAGE START ==========
+[2026-05-30 10:45:46] Request URI: /admin/panel/desktop-undercover.php?logoutadmin
+[2026-05-30 10:45:46] Admin user: not set yet
+[2026-05-30 10:51:29] ========== PAGE START ==========
+[2026-05-30 10:51:29] Request URI: /admin/panel/desktop-undercover.php
+[2026-05-30 10:51:29] Admin user: not set yet
+[2026-05-30 10:51:29] Includes loaded successfully
+[2026-05-30 10:51:29] DB session variables set successfully
+[2026-05-30 10:51:29] Session admin found: op205
+[2026-05-30 10:51:29] Session check passed for user: op205
+[2026-05-30 10:51:29] Starting HTML output generation
+[2026-05-30 10:51:29] temp.html included
+[2026-05-30 10:51:29] link.php included
+[2026-05-30 10:51:29] Before include menu.php
+[2026-05-30 10:51:29] After include menu.php, before header.php
+[2026-05-30 13:21:29] header.php included
+[2026-05-30 13:21:29] Starting main content rendering
+[2026-05-30 13:21:29] Rendering statistics cards
+[2026-05-30 13:21:29] Rendering 'faragiran man' card
+[2026-05-30 13:21:29] Excluded users count: 282
+[2026-05-30 13:21:59] Starting color section rendering with pagination
+[2026-05-30 13:21:59] Total distinct color-course groups: 73
+[2026-05-30 13:21:59] Color section: query returned 15 rows for page 1
+[2026-05-30 13:21:59] All rendering completed successfully
+[2026-05-30 13:21:59] Before include footers.php
+[2026-05-30 13:21:59] footers.php included
+[2026-05-30 13:21:59] ========== PAGE END ==========

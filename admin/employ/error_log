@@ -1,0 +1,116 @@
+[08-Nov-2025 15:23:59 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$reportcall_olympiad in /home/myhona/public_html/admin/employ/addemploy.php on line 1052
+[08-Nov-2025 15:24:35 Asia/Tehran] PHP Notice:  Undefined property: stdClass::$reportcall_olympiad in /home/myhona/public_html/admin/employ/addemploy.php on line 1052
+[08-Nov-2025 11:57:02 Europe/London] PHP Notice:  Undefined variable: manage_olympiad in /home/myhona/public_html/admin/employ/addemploy.php on line 230
+[08-Nov-2025 11:57:02 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE username='whatever'' at line 1 in /home/myhona/public_html/admin/employ/addemploy.php:230
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(230): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 230
+[08-Nov-2025 11:57:47 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE username='whatever'' at line 1 in /home/myhona/public_html/admin/employ/addemploy.php:230
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(230): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 230
+[08-Nov-2025 11:57:56 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE username='whatever'' at line 1 in /home/myhona/public_html/admin/employ/addemploy.php:230
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(230): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 230
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 878
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 878
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'fname' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 897
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'lname' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 912
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'dakheli' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 933
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 945
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 950
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'mobile' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 962
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'adminpic' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 968
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'username' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 983
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'password' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 991
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'per_skyroom' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 999
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'per_skyroom' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1004
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'per_skyroom' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1009
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'adminrole' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1022
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'adminrole' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1023
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'adminrole' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1024
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'adminactive' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1030
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewcall' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1041
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_addcall' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1047
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_managecall' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1053
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'excel_permission' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1060
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'skill_permission' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1066
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'reportcall_permission' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1073
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'olympiad_permission' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1080
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewstudent' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1093
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_addstudent' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1099
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_editstudent' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1105
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_addcourse_student' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1111
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_reportstudent' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1117
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewcollague' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1129
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_reportcollague' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1135
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewcourse' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1147
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_deletcourse' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1154
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_discount' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1160
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewtest' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1167
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_suporter' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1180
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_manage_suporter' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1185
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewbill' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1199
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_actfactor' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1205
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_notpay' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1211
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_actwallet' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1217
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_bill' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1223
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_financial_export' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1229
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'installment_permission' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1235
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewwallet' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1248
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewalert' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1261
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewsupport' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1273
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_refer' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1279
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_allticket' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1285
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewdocument' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1296
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewemploy' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1308
+[09-Nov-2025 12:21:42 Asia/Tehran] PHP Notice:  Trying to get property 'permision_viewsetting' of non-object in /home/myhona/public_html/admin/employ/addemploy.php on line 1320
+[11-Dec-2025 06:12:53 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[11-Dec-2025 06:13:16 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[11-Dec-2025 06:14:05 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[11-Dec-2025 08:49:56 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[11-Dec-2025 08:52:33 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1 in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[11-Dec-2025 08:52:37 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1 in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[16-Jan-2026 08:45:32 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Mohandeskakh' for key 'dbadmin.username' in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[16-Jan-2026 08:45:57 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Mohandeskakh' for key 'dbadmin.username' in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469
+[16-Jan-2026 08:48:46 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Mohandeskakh' for key 'dbadmin.username' in /home/myhona/public_html/admin/employ/addemploy.php:469
+Stack trace:
+#0 /home/myhona/public_html/admin/employ/addemploy.php(469): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/employ/addemploy.php on line 469

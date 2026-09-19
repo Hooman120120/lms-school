@@ -1,0 +1,360 @@
+==================================================
+TIMESTAMP:    2026-07-13 09:02:41
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:44
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:47
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:50
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:53
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:56
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:02:59
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:02
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:05
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:08
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/Tel/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:11
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:14
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:17
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=204
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:17
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:20
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:23
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:39
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=200
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:03:44
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:04:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:04:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/Tel/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:04:17
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=204
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:04:39
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=200
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:05:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:05:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/Tel/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:05:17
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=204
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:05:39
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=200
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:06:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/Tel/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:06:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:06:17
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=204
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:06:39
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=200
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:07:10
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/Tel/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:07:10
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:07:17
+REMOTE IP:    93.114.106.208
+HTTP METHOD:  GET
+REQUEST URI:  /admin/course/call_popup.php?action=poll&exten=204
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:08:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+
+==================================================
+TIMESTAMP:    2026-07-13 09:09:09
+REMOTE IP:    51.195.242.240
+HTTP METHOD:  GET
+REQUEST URI:  /admin/call_popup.php?action=poll&exten=601
+CONTENT TYPE: NONE
+RAW BODY:
+[EMPTY BODY]
+==================================================
+

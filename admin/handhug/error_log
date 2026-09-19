@@ -1,0 +1,91 @@
+[25-Jan-2026 12:12:23 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[25-Jan-2026 12:24:44 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[25-Jan-2026 12:32:41 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/handhug/add-handhug.php:91
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(91): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 91
+[25-Jan-2026 17:42:10 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[26-Jan-2026 14:47:59 Europe/London] PHP Fatal error:  Uncaught Error: Call to undefined function getUngroupedStudents() in /home/myhona/public_html/admin/handhug/add-handhug-users.php:52
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug-users.php on line 52
+[27-Jan-2026 12:24:12 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:24:16 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:28:03 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:33:50 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:36:34 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:36:38 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:37:18 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'operator' in 'field list' in /home/myhona/public_html/admin/handhug/add-handhug.php:92
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(92): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 92
+[27-Jan-2026 12:39:06 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in /home/myhona/public_html/admin/handhug/add-handhug.php:91
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(91): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 91
+[27-Jan-2026 12:39:56 Iran] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '2147483647' for key 'codtbl_course.codecourse' in /home/myhona/public_html/admin/handhug/add-handhug.php:91
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/add-handhug.php(91): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/add-handhug.php on line 91
+[27-Jan-2026 09:12:27 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`myhona_myhonar`.`dbcourse`, CONSTRAINT `dbcourse_ibfk_3` FOREIGN KEY (`codecourse`) REFERENCES `codtbl_course` (`codecourse`) ON UPDATE CASCADE) in /home/myhona/public_html/admin/handhug/handhug-management.php:73
+Stack trace:
+#0 /home/myhona/public_html/admin/handhug/handhug-management.php(73): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/admin/handhug/handhug-management.php on line 73
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'codecourse' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 599
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'coursename' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 616
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'coursemuted' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 638
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'paye' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 645
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'piclink' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 731
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'detail_link' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 739
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'coursefee' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 753
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'link_class' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 765
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'link_general' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 773
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'coursemeta' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 783
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'course_type' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 788
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'course_type' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 789
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'course_type' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 790
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 797
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'gender' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 798
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'courseactive' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 810
+[27-Jan-2026 13:25:56 Asia/Tehran] PHP Notice:  Trying to get property 'activecourse' of non-object in /home/myhona/public_html/admin/handhug/add-handhug.php on line 821

@@ -1,0 +1,130 @@
+[08-Jan-2026 12:32:55 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 12:47:59 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 12:56:14 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:08:52 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:09:01 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:09:39 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:09:43 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:11:59 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:12:01 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:15:08 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:15:23 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:17:15 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:17:45 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:18:35 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[08-Jan-2026 13:35:07 Asia/Tehran] PHP Notice:  Undefined offset: -1 in /home/myhona/public_html/inc/jdf.php on line 598
+[11-Jan-2026 13:44:45 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 13:44:45 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:30:02 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:30:02 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:32:17 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:32:17 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:33:31 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 733
+[11-Jan-2026 15:33:31 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 733
+[11-Jan-2026 15:33:50 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 733
+[11-Jan-2026 15:33:50 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 733
+[11-Jan-2026 15:34:38 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:34:38 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:36:09 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[11-Jan-2026 15:36:09 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[12-Jan-2026 17:58:37 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[12-Jan-2026 17:58:37 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[14-Jan-2026 10:38:38 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 732
+[14-Jan-2026 10:38:38 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 732
+[22-Jan-2026 09:05:25 Europe/London] PHP Notice:  Undefined index: school in /home/myhona/public_html/Profile/user.php on line 37
+[22-Jan-2026 09:07:20 Europe/London] PHP Notice:  Undefined index: school in /home/myhona/public_html/Profile/user.php on line 37
+[22-Jan-2026 09:34:01 Europe/London] PHP Parse error:  syntax error, unexpected end of file in /home/myhona/public_html/Profile/user.php on line 3301
+[22-Jan-2026 09:34:44 Europe/London] PHP Parse error:  syntax error, unexpected end of file in /home/myhona/public_html/Profile/user.php on line 3301
+[22-Jan-2026 09:35:14 Europe/London] PHP Parse error:  syntax error, unexpected end of file in /home/myhona/public_html/Profile/user.php on line 3301
+[22-Jan-2026 09:50:03 Europe/London] PHP Notice:  Undefined index: main-tel in /home/myhona/public_html/Profile/user.php on line 40
+[22-Jan-2026 11:47:15 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 11:58:08 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 12:11:36 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 12:34:51 Europe/London] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`myhona_myhonar`.`dblogin`, CONSTRAINT `dblogin_ibfk_1` FOREIGN KEY (`username`) REFERENCES `dbpersonal` (`codemeli`) ON DELETE CASCADE ON UPDATE CASCADE) in /home/myhona/public_html/Profile/user.php:117
+Stack trace:
+#0 /home/myhona/public_html/Profile/user.php(117): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/myhona/public_html/Profile/user.php on line 117
+[22-Jan-2026 12:38:14 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 12:48:24 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 12:55:44 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 13:11:42 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 13:24:11 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[22-Jan-2026 13:36:14 Europe/London] PHP Notice:  Trying to access array offset on value of type bool in /home/myhona/public_html/Profile/user.php on line 27
+[23-Jan-2026 22:00:53 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 829
+[23-Jan-2026 22:00:53 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 829
+[23-Jan-2026 22:02:56 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 829
+[23-Jan-2026 22:02:56 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 829
+[23-Jan-2026 22:04:03 Asia/Tehran] PHP Notice:  Undefined variable: states in /home/myhona/public_html/Profile/user.php on line 829
+[23-Jan-2026 22:04:03 Asia/Tehran] PHP Warning:  Invalid argument supplied for foreach() in /home/myhona/public_html/Profile/user.php on line 829
+[29-Jan-2026 05:37:36 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 05:38:09 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 07:29:16 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 08:34:53 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 08:36:16 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 09:22:46 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[29-Jan-2026 09:23:26 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-Feb-2026 07:54:43 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[09-Feb-2026 15:25:16 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[12-Feb-2026 08:45:51 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[12-Feb-2026 08:46:26 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[12-Feb-2026 08:47:28 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[12-Feb-2026 08:49:10 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[13-Feb-2026 06:25:00 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[14-Feb-2026 15:48:38 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[17-Feb-2026 15:28:54 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[22-Feb-2026 14:02:39 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[25-Feb-2026 13:01:00 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 08:28:18 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 08:37:09 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 08:44:59 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 08:45:31 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 08:49:03 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 09:00:42 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 09:04:35 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Feb-2026 09:07:32 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[04-Mar-2026 13:35:40 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[04-Mar-2026 13:39:07 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[06-Mar-2026 10:51:58 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Mar-2026 13:00:58 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Mar-2026 13:05:24 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[17-Mar-2026 13:42:45 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[17-Mar-2026 13:46:41 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[20-Mar-2026 10:59:39 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[25-Mar-2026 12:15:55 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[31-Mar-2026 08:31:24 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[31-Mar-2026 08:37:10 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[31-Mar-2026 08:37:38 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-Apr-2026 15:06:03 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-Apr-2026 15:07:34 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-Apr-2026 18:05:25 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Apr-2026 17:31:21 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[20-Apr-2026 20:35:37 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[20-Apr-2026 20:54:40 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[25-Apr-2026 16:23:23 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[28-Apr-2026 13:23:05 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[28-Apr-2026 13:24:00 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[03-May-2026 20:58:24 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[03-May-2026 21:00:24 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-May-2026 13:26:23 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[07-May-2026 09:28:53 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[07-May-2026 09:30:58 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[11-May-2026 15:28:59 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[21-May-2026 19:12:18 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[21-May-2026 19:13:25 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[21-May-2026 19:14:37 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[21-May-2026 19:15:24 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[22-May-2026 10:21:59 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[22-May-2026 10:23:13 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[22-May-2026 10:30:05 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[22-May-2026 10:33:23 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[23-May-2026 12:44:32 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[01-Jun-2026 08:48:47 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[03-Jun-2026 11:29:45 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Jun-2026 05:47:50 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Aug-2026 17:23:20 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[16-Aug-2026 20:00:51 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[27-Aug-2026 09:23:21 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[31-Aug-2026 09:53:26 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[05-Sep-2026 17:49:44 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153
+[14-Sep-2026 04:54:00 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/Profile/user.php on line 153

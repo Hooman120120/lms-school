@@ -1,0 +1,12 @@
+[22-Aug-2026 14:23:45 Europe/London] PHP Warning:  include_once(nusoap.php): failed to open stream: No such file or directory in /home/myhona/public_html/other_payments/initiate_payment.php on line 40
+[22-Aug-2026 14:23:45 Europe/London] PHP Warning:  include_once(): Failed opening 'nusoap.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/other_payments/initiate_payment.php on line 40
+[22-Aug-2026 14:23:45 Europe/London] PHP Fatal error:  Uncaught Error: Class 'nusoap_client' not found in /home/myhona/public_html/other_payments/initiate_payment.php:41
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/other_payments/initiate_payment.php on line 41
+[22-Aug-2026 14:25:38 Europe/London] PHP Warning:  include_once(inc/mellat/nusoap.php): failed to open stream: No such file or directory in /home/myhona/public_html/other_payments/initiate_payment.php on line 40
+[22-Aug-2026 14:25:38 Europe/London] PHP Warning:  include_once(): Failed opening 'inc/mellat/nusoap.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/other_payments/initiate_payment.php on line 40
+[22-Aug-2026 14:25:38 Europe/London] PHP Fatal error:  Uncaught Error: Class 'nusoap_client' not found in /home/myhona/public_html/other_payments/initiate_payment.php:41
+Stack trace:
+#0 {main}
+  thrown in /home/myhona/public_html/other_payments/initiate_payment.php on line 41

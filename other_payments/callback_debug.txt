@@ -1,0 +1,352 @@
+2026-08-22 12:51:21 - Full GET: Array
+(
+    [orderId] => 1787399398842
+    [source] => system_b
+)
+
+2026-08-22 12:56:10 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:56:47 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:56:50 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:56:51 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:56:51 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:56:52 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:01 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:10 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:11 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:23 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:24 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 12:57:36 - Full GET: Array
+(
+    [orderId] => 1787399734971
+    [source] => system_b
+)
+
+2026-08-22 13:04:47 - Full POST: Array
+(
+    [RefId] => 61C05CE5C8F24841
+    [ResCode] => 0
+    [SaleOrderId] => 1787399734971
+    [SaleReferenceId] => 356114396317
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-22 13:06:01 - Full POST: Array
+(
+    [RefId] => FC4EB6771ED6706D
+    [ResCode] => 0
+    [SaleOrderId] => 1787400327157
+    [SaleReferenceId] => 356115169179
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-22 13:29:50 - Full POST: Array
+(
+    [RefId] => E594D5D77AE84524
+    [ResCode] => 0
+    [SaleOrderId] => 1787401750370
+    [SaleReferenceId] => 356117068952
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-22 13:39:59 - Full POST: Array
+(
+    [RefId] => 3536EF709A87DBF5
+    [ResCode] => 0
+    [SaleOrderId] => 1787402365220
+    [SaleReferenceId] => 356117926603
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-22 13:51:20 - Full POST: Array
+(
+    [RefId] => 46DF98091532E02F
+    [ResCode] => 0
+    [SaleOrderId] => 1787403043537
+    [SaleReferenceId] => 356118929884
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-22 14:31:25 - Full POST: Array
+(
+    [RefId] => 202000D004C6CF74
+    [ResCode] => 17
+    [SaleOrderId] => 1787405296
+)
+
+2026-08-22 14:34:51 - Full POST: Array
+(
+    [RefId] => 91F5D2CCB55367CB
+    [ResCode] => 17
+    [SaleOrderId] => 1787405504
+)
+
+2026-08-22 14:36:37 - Full POST: Array
+(
+    [RefId] => 70696ECD2E378800
+    [ResCode] => 17
+    [SaleOrderId] => 1787405704
+)
+
+2026-08-22 14:37:31 - Full POST: Array
+(
+    [RefId] => 55F451C8B51F057E
+    [ResCode] => 0
+    [SaleOrderId] => 1787405805
+    [SaleReferenceId] => 356123546427
+    [CardHolderInfo] => 97A8977DEA34F7CE66A9E710525076BDADB8DCE353ED212B1B2E4B59D85AF98E
+    [CardHolderPan] => 504172******2243
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:03:05 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:05:57 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:06:19 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:06:36 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:06:49 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:07:04 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:07:26 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 13:07:35 - Full POST: Array
+(
+    [RefId] => 65BCA322240FE60E
+    [ResCode] => 0
+    [SaleOrderId] => 1787572935961
+    [SaleReferenceId] => 356361955119
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:05:09 - Full POST: Array
+(
+    [RefId] => 67C28D0E29DA6CF1
+    [ResCode] => 0
+    [SaleOrderId] => 1787576677939
+    [SaleReferenceId] => 356367417803
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:08:07 - Full POST: Array
+(
+    [RefId] => C00D1B2093344AA5
+    [ResCode] => 0
+    [SaleOrderId] => 1787576849609
+    [SaleReferenceId] => 356367703078
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:13:41 - Full POST: Array
+(
+    [RefId] => 939D43370981015E
+    [ResCode] => 0
+    [SaleOrderId] => 1787577172663
+    [SaleReferenceId] => 356368270393
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:24:50 - Full POST: Array
+(
+    [RefId] => 16A5C6C1814253EB
+    [ResCode] => 0
+    [SaleOrderId] => 1787577734538
+    [SaleReferenceId] => 356369462421
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:33:08 - Full POST: Array
+(
+    [RefId] => AB044C54BE5210B0
+    [ResCode] => 0
+    [SaleOrderId] => 1787578357541
+    [SaleReferenceId] => 356370363591
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:34:48 - Full POST: Array
+(
+    [RefId] => 8401E686A7AC80C2
+    [ResCode] => 0
+    [SaleOrderId] => 1787578413563
+    [SaleReferenceId] => 356370558269
+    [CardHolderInfo] => 97A8977DEA34F7CE66A9E710525076BDADB8DCE353ED212B1B2E4B59D85AF98E
+    [CardHolderPan] => 504172******2243
+    [FinalAmount] => 10000
+)
+
+2026-08-24 14:43:43 - Full POST: Array
+(
+    [RefId] => A8CD8EDD2423EAE7
+    [ResCode] => 0
+    [SaleOrderId] => 1787578981932
+    [SaleReferenceId] => 356371588992
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-09-08 10:52:41 - Full POST: Array
+(
+    [RefId] => 78527DAC4082CA2E
+    [ResCode] => 0
+    [SaleOrderId] => 1788860994453
+    [SaleReferenceId] => 358023561952
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+
+2026-09-08 13:48:21 - Full POST: Array
+(
+    [RefId] => 5897D3C792F2BBDD
+    [ResCode] => 0
+    [SaleOrderId] => 1788871660961
+    [SaleReferenceId] => 358038577113
+    [CardHolderInfo] => 4F34DCEB42702FE0E374288738D353B1557517029DA1156CC44A27B319162E83
+    [CardHolderPan] => 502229******9260
+    [FinalAmount] => 10000
+)
+

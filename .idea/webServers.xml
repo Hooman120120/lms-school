@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="fedc83e7-9dbf-401e-9796-abe8c81483cd" name="quiz.honar" url="http://764087126.cloudylink.com">
+        <fileTransfer host="764087126.cloudylink.com" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="37cf6d6c-f1bf-46e3-9ace-af339d06d6ef" name="my.honar" url="http://2193182015.cloudylink.com">
+        <fileTransfer host="2193182015.cloudylink.com" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
