@@ -971,8 +971,7 @@ else                  $c = '#15233f';
                         </li>
 
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> <?php echo m('action.add_teacher') ?>
-جدید </a>
+                            <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> <?php echo m('page.add_teacher') ?> </a>
                         </li>
 
                     </ul>
