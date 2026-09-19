@@ -89,7 +89,7 @@ include_once '../../temp.html';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>معلمان درس <?php echo htmlspecialchars($dars->dars); ?> | <?php echo __TITLE; ?></title>
+    <title><?php echo m('page.lesson_teachers_prefix') ?><?php echo htmlspecialchars($dars->dars); ?> | <?php echo __TITLE; ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 <body class="main-body leftmenu">
@@ -100,7 +100,7 @@ include_once '../../temp.html';
             <div class="inner-body">
                 <div class="page-header my-3">
                     <div>
-                        <h2 class="main-content-title tx-24 mg-b-5">معلمان درس <?php echo htmlspecialchars($dars->dars); ?></h2>
+                        <h2 class="main-content-title tx-24 mg-b-5"><?php echo m('page.lesson_teachers_prefix') ?><?php echo htmlspecialchars($dars->dars); ?></h2>
                         <p class="text-muted mb-0">پایه: <?php echo htmlspecialchars($dars->coursename); ?></p>
                     </div>
                     <a class="btn btn-outline-secondary" href="dars.php?code=<?php echo (int)$courseCode; ?>">بازگشت به درس‌ها</a>
@@ -114,7 +114,7 @@ include_once '../../temp.html';
                                 <tr>
                                     <th>#</th>
                                     <th>کلاس</th>
-                                    <th>معلمان این درس</th>
+                                    <th><?php echo m('col.teachers_of_lesson') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -134,7 +134,7 @@ include_once '../../temp.html';
                                                     </span>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
-                                                <span class="text-muted">برای این کلاس معلمی تعیین نشده است.</span>
+                                                <span class="text-muted"><?php echo m('msg.no_teacher_for_class') ?></span>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

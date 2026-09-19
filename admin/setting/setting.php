@@ -66,6 +66,25 @@ if(isset($_POST['darsad'])){
     $qwage->execute([$_POST['darsad'],1]);
     $message='تنظیمات بروز رسانی شد';
 }
+
+// نوع مؤسسه: مدرسه یا آموزشگاه
+if (isset($_POST['save-institution-type'])) {
+    $newtype = (isset($_POST['institution_type']) && $_POST['institution_type'] === 'institute') ? 'institute' : 'school';
+    $upinst  = 'UPDATE setting_public SET institution_type=? WHERE id=?';
+    $qinst   = $conn->prepare($upinst);
+    $qinst->execute([$newtype, 1]);
+    $message = 'نوع مؤسسه تغییر کرد. برای اعمال کامل واژه‌ها صفحه را تازه کنید.';
+}
+
+// مقدار فعلی نوع مؤسسه برای نمایش در فرم
+$current_inst_type = 'school';
+try {
+    $qct = $conn->query('SELECT institution_type FROM setting_public ORDER BY id LIMIT 1');
+    $vct = $qct ? $qct->fetchColumn() : false;
+    if ($vct === 'institute') { $current_inst_type = 'institute'; }
+} catch (PDOException $e) {
+    // ستون هنوز ساخته نشده → حالت مدرسه
+}
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>
@@ -108,6 +127,46 @@ include_once '../../temp.html';
                             <?php echo $message ?>
                         </div>
                     <?php } ?>
+                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <form method="post">
+                                    <div class="col-10">
+                                        <div>
+                                            <div style="display:flex; align-items:center; gap:12px;">
+                                                <h6 class="main-content-label mb-1">نوع مؤسسه</h6>
+                                                <span class="menu-info-trigger"
+                                                      data-tooltip="نوع مؤسسه تعیین می‌کند که سامانه با چه واژه‌هایی صحبت کند. در حالت مدرسه از «دانش‌آموز» و «پایه» و در حالت آموزشگاه از «فراگیر» و «دوره» استفاده می‌شود. ماژول‌هایی مثل کارنامه و ولی دانش‌آموز هم فقط در حالت مدرسه فعال هستند. این تنظیم هیچ داده‌ای را حذف یا تغییر نمی‌دهد."
+                                                      aria-label="راهنمای نوع مؤسسه"
+                                                      onclick="event.preventDefault(); event.stopPropagation();">
+                                                <i class="fe fe-info fs-4"></i>
+                                            </span>
+                                            </div>
+                                            <p class="text-muted card-sub-title">
+                                                واژه‌نامهٔ سامانه بر اساس این گزینه انتخاب می‌شود
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <select name="institution_type" class="form-control">
+                                            <option value="school"<?php if ($current_inst_type === 'school') { echo ' selected'; } ?>>
+                                                مدرسه &mdash; دانش‌آموز / پایه
+                                            </option>
+                                            <option value="institute"<?php if ($current_inst_type === 'institute') { echo ' selected'; } ?>>
+                                                آموزشگاه &mdash; فراگیر / دوره
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="text-left mg-10">
+                                        <button type="submit" class="btn btn-primary"
+                                                name="save-institution-type"><i class="fa fa-save"></i>
+                                            ذخیره نوع مؤسسه
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
                         <div class="card custom-card">
                             <div class="card-body">

@@ -243,17 +243,17 @@ if (!function_exists('countNewStudent')) {
                             <div class="card-header border-bottom-0">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">
-                                        بخش اساتید
-                                    </h5>
+                                        <?php echo m('label.teachers_section') ?>
+</h5>
                                 </div>
                             </div>
 
                             <div class="card-body row justify-content-around">
                                 <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                                     <a href="<?= url('admin/notifications/teachers_notif.php') ?>" class="safe-call-card">
-                                        <div class="safe-call-card-title">تیکت اساتید</div>
+                                        <div class="safe-call-card-title"><?php echo m('label.teacher_tickets_section') ?></div>
                                         <div class="safe-call-card-desc">
-                                            تیکت هایی که اساتید به شما فرستاده اند
+                                            <?php echo m('label.tickets_sent_by_teachers') ?>
                                         </div>
                                         <?php if ($teacherNotifCount > 0): ?>
                                             <span class="badge pr-2 fs-5" style="background-color: #6259CB"><?= (int)$teacherNotifCount ?></span>

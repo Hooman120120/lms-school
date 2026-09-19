@@ -130,7 +130,7 @@ if (isset($_POST['validation-collague'])) {
     <html lang="fa" dir="rtl">
 
     <head>
-        <title>عضویت دانش آموز | <?php echo __TITLE ?></title>
+        <title><?php echo m('register.title') ?> | <?php echo __TITLE ?></title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
@@ -215,7 +215,7 @@ if (isset($_POST['validation-collague'])) {
                                 </div>
                                 <form method="post" data-parsley-validate="">
                                     <div class="form-group mb-3">
-                                        <label for="tel-student">شماره همراه دانش آموز:</label>
+                                        <label for="tel-student"><?php echo m('register.student_mobile') ?></label>
                                         <input type="number" name="tel-student" class="form-control" placeholder="11 رقم کامل"
                                             pattern="^(?:9)?(0\d{10})$" required>
                                     </div>
@@ -390,8 +390,7 @@ if (isset($_GET['op']) and $_GET['op'] == 'colleague' and $_GET['op'] != 'studen
                                             </div>
                                         </div>
                                     </form>
-                                    <p class="text-center">دانش آموز هستید؟ <a href="<?php echo url('register.php?op=student') ?>">عضویت
-                                            بصورت دانش آموز</a></p>
+                                    <p class="text-center"><?php echo m('register.are_you_student') ?> <a href="<?php echo url('register.php?op=student') ?>"><?php echo m('register.signup_as_student') ?></a></p>
                                 </div>
 
                             </div>

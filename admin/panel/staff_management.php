@@ -204,7 +204,7 @@ include_once '../../temp.html';
                         <div class="card custom-card mb-3">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="mb-1">همکاران و معلمان مدرسه</h6>
+                                    <h6 class="mb-1"><?php echo m('label.staff_and_teachers') ?></h6>
                                     <small class="text-muted">فیلتر بر اساس سمت سازمانی در مدرسه</small>
                                 </div>
                                 <span class="badge badge-primary"><?= number_format($totalStaff) ?> نفر</span>
@@ -215,10 +215,10 @@ include_once '../../temp.html';
                                         تاریخ امروز: <?= htmlspecialchars(jdate('Y/m/d')) ?>
                                     </span>
                                     <a href="staff_management.php?type=teachers" class="badge badge-info p-2">
-                                        بازدید معلمان امروز:
+                                        <?php echo m('label.teacher_visits_today') ?>
                                         <?= number_format((int)($todayGroups->teacher_logins ?? 0)) ?> ورود از
-                                        <?= number_format((int)($todayGroups->visited_teachers ?? 0)) ?> معلم
-                                    </a>
+                                        <?= number_format((int)($todayGroups->visited_teachers ?? 0)) ?> <?php echo t('teacher') ?>
+</a>
                                     <a href="staff_management.php?type=staff" class="badge badge-success p-2">
                                         بازدید همکاران امروز:
                                         <?= number_format((int)($todayGroups->staff_logins ?? 0)) ?> ورود از
@@ -238,7 +238,7 @@ include_once '../../temp.html';
                                     </a>
                                     <a href="staff_management.php?type=teachers"
                                        class="btn btn-outline-secondary role-filter <?= $selectedRole === 0 && !$showAllDeputies && $staffType === 'teachers' ? 'active' : '' ?>">
-                                        معلمان <span class="badge badge-light mr-1"><?= number_format($totalTeachers) ?></span>
+                                        <?php echo t('teacher_pl') ?> <span class="badge badge-light mr-1"><?= number_format($totalTeachers) ?></span>
                                     </a>
                                     <a href="staff_management.php?type=staff"
                                        class="btn btn-outline-secondary role-filter <?= $selectedRole === 0 && !$showAllDeputies && $staffType === 'staff' ? 'active' : '' ?>">
@@ -299,7 +299,7 @@ include_once '../../temp.html';
                                         </thead>
                                         <tbody>
                                         <?php if (empty($staffMembers)) { ?>
-                                            <tr><td colspan="10">همکار یا معلمی با این سمت یافت نشد.</td></tr>
+                                            <tr><td colspan="10"><?php echo m('msg.no_staff_with_role') ?></td></tr>
                                         <?php } else { ?>
                                             <?php foreach ($staffMembers as $index => $staff) { ?>
                                                 <tr>

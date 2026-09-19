@@ -234,7 +234,7 @@ if (isset($_POST['subtotal']) and $_POST['pay'][0] != '') {
                     <div class="col-lg-12 col-xl-9 col-md-12">
                         <div class="card custom-card">
                             <div class="card-header">
-                                <h5 class="mb-3 font-weight-bold tx-14">سبد خرید دانش آموز : <span
+                                <h5 class="mb-3 font-weight-bold tx-14"><?php echo m('label.student_cart') ?> <span
                                             class="text-warning">  <?php echo $rest->fname . ' ' . $rest->lname ?> </span></label>
                                 </h5>
                             </div>
@@ -262,7 +262,7 @@ if (isset($_POST['subtotal']) and $_POST['pay'][0] != '') {
                                     <table class="table border table-hover text-nowrap table-shopping-cart mb-0">
                                         <thead class="text-muted">
                                         <tr class="small text-uppercase">
-                                            <th scope="col">طرح - پایه</th>
+                                            <th scope="col"><?php echo m('col.plan_course') ?></th>
                                             <th scope="col" class="text-center ">حذف</th>
                                         </tr>
                                         </thead>

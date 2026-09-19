@@ -122,7 +122,7 @@ if (isset($_POST['deposit'])) {
                                             class="tx-20 text-danger"> <?php echo $_SESSION['Card']['factorid']; ?># </span>از
                                     طریق کارت به کارت </h5>
 
-                                <h5 class="mb-3 font-weight-bold tx-14 ">این فاکتور متعلق به دانش آموز: <span
+                                <h5 class="mb-3 font-weight-bold tx-14 "><?php echo m('label.invoice_belongs_to_student') ?> <span
                                             class="tx-20 text-danger"><?php $result = retPerson($_SESSION['Card']['student']);
                                         echo $result->fname . ' ' . $result->lname; ?> </span> می باشد.</h5>
                             </div>

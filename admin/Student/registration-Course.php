@@ -88,7 +88,7 @@ if (isset($_GET['disable'])) {
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
     $qu->execute([0, $disable]);
-    $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز غیرفعال شد';
+    $_SESSION['massege'] = m('grade.access_disabled');
     header('location: registration-Course.php');
     die();
 }
@@ -104,11 +104,11 @@ if (isset($_GET['enable'])) {
         $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
         $qu = $conn->prepare($update);
         $qu->execute([1, $disable]);
-        $_SESSION['massege'] = 'دسترسی به پایه برای دانش آموز فعال شد';
+        $_SESSION['massege'] = m('grade.access_enabled');
         header('location: registration-Course.php');
         die();
     } else {
-        $_SESSION['massege'] = 'فاکتور هزینه دانش آموز برای این پایه هنوز پرداخت / تایید نشده است';
+        $_SESSION['massege'] = m('invoice.unpaid_for_course');
         header('location: registration-Course.php');
         die();
     }
@@ -116,7 +116,7 @@ if (isset($_GET['enable'])) {
 if (isset($_GET['call-student'])) {
     $ret = retPerson($_GET['call-student']);
     $tel = $ret->tel1;
-    $name = ' دانش آموز ' . $ret->fname . ' ' . $ret->lname;
+    $name = m('name.prefix_student') . $ret->fname . ' ' . $ret->lname;
     Call($tel, $_SESSION['admin']['dakheli'], $name);
     $_SESSION['call'] = array(
         "name" => $name
@@ -127,7 +127,7 @@ if (isset($_GET['call-student'])) {
 if (isset($_GET['call-mother'])) {
     $ret = retPerson($_GET['call-mother']);
     $tel = $ret->tel2;
-    $name = '  مادر دانش آموز   ' . $ret->fname . ' ' . $ret->lname;
+    $name = m('name.prefix_mother') . $ret->fname . ' ' . $ret->lname;
     Call($tel, $_SESSION['admin']['dakheli'], $name);
     $_SESSION['call'] = array(
         "name" => $name
@@ -138,7 +138,7 @@ if (isset($_GET['call-mother'])) {
 if (isset($_GET['call-father'])) {
     $ret = retPerson($_GET['call-father']);
     $tel = $ret->tel3;
-    $name = ' پدر دانش آموز  ' . $ret->fname . ' ' . $ret->lname;
+    $name = m('name.prefix_father') . $ret->fname . ' ' . $ret->lname;
     Call($tel, $_SESSION['admin']['dakheli'], $name);
     $_SESSION['call'] = array(
         "name" => $name
@@ -158,7 +158,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> مشاهده پایه های دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.view_student_courses') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -184,10 +184,8 @@ include_once '../../temp.html';
                             <div class="card-body d-flex ">
                                 <div class="col-6">
                                     <div>
-                                        <h6 class="main-content-label mb-1">جستجوی دانش آموز</h6>
-                                        <p class="text-muted card-sub-title"> در صورت ثبت نام فعال و یا غیر فعال در یکی
-                                            از پایه ها
-                                        </p>
+                                        <h6 class="main-content-label mb-1"><?php echo m('action.search_student') ?></h6>
+                                        <p class="text-muted card-sub-title"> <?php echo m('search.subtitle_enrolled_any') ?></p>
                                     </div>
 
                                     <form method="post" data-parsley-validate="">
@@ -199,7 +197,7 @@ include_once '../../temp.html';
                                                         <option label="دسته بندی ها">
                                                         </option>
                                                         <option value="one">
-                                                            کد ملی دانش آموز
+                                                            <?php echo m('label.student_nid') ?>
                                                         </option>
                                                         <option value="two">
                                                             نام
@@ -215,7 +213,7 @@ include_once '../../temp.html';
                                                         foreach ($vips as $vip) {
                                                             ?>
                                                             <option value="<?= $vip->id ?>">
-                                                                دانش آموزان <?= $vip->name ?>
+                                                                <?php echo m('label.students_of') ?> <?= $vip->name ?>
                                                             </option>
                                                         <?php } ?>
                                                     </select>
@@ -227,7 +225,7 @@ include_once '../../temp.html';
                                                 <!-- <input class="form-control" name="token" type="hidden"
                                                     value="<//?php echo $hash ?>"> -->
                                                 <input type="text" name="txt" class="form-control"
-                                                    placeholder="جستجوی دانش آموز" required>
+                                                    placeholder="<?php echo m('action.search_student') ?>" required>
                                                 <button type="submit" name="search" class="btn search-btn"><i
                                                         class="fe fe-search"></i></button>
                                             </div>
@@ -246,7 +244,7 @@ include_once '../../temp.html';
                                 <div class="col-6 my-auto mx-auto">
                                     <div>
                                         <h6 class="main-content-label mb-1">گزارش کل</h6>
-                                        <p class="text-muted card-sub-title">بر اساس پایه های فعال</p>
+                                        <p class="text-muted card-sub-title"><?php echo m('label.by_active_courses') ?></p>
                                     </div>
                                     <form method="post" data-parsley-validate="">
                                         <div class="d-flex align-items-center flex-nowrap" style="gap: 10px;">
@@ -261,7 +259,7 @@ include_once '../../temp.html';
                                                     $courses = $stmt->fetchAll(PDO::FETCH_OBJ);
                                                     foreach ($courses as $course):
                                                         ?>
-                                                        <option value="<?= $course->codecourse ?>">پایه
+                                                        <option value="<?= $course->codecourse ?>"><?php echo t('grade') ?>
                                                             <?= $course->coursename ?>
                                                         </option>
                                                     <?php endforeach; ?>
@@ -280,10 +278,10 @@ include_once '../../temp.html';
                                                     foreach ($vips as $vip) {
                                                         ?>
                                                         <option value="<?= $vip->id ?>">
-                                                            دانش آموزان <?= $vip->name ?>
+                                                            <?php echo m('label.students_of') ?> <?= $vip->name ?>
                                                         </option>
                                                     <?php } ?>
-                                                    <option value="all">همه دانش آموزان</option>
+                                                    <option value="all"><?php echo m('filter.all_students') ?></option>
                                                 </select>
                                             </div>
 
@@ -338,14 +336,14 @@ include_once '../../temp.html';
                                             <tr>
                                                 <th class="wd-30">اقدامات</th>
                                                 <th class="wd-100">نام و نام خانوادگی</th>
-                                                <th>پایه</th>
+                                                <th><?php echo t('grade') ?></th>
                                                 <th class="wd-30">وضعیت فردی</th>
-                                                <th class="wd-30">وضعیت پایه</th>
+                                                <th class="wd-30"><?php echo m('col.course_status') ?></th>
                                                 <th class="wd-30">پشتیبان</th>
                                                 <th class="wd-30">اولین ورود</th>
                                                 <th class="wd-30">همکارآموزشی</th>
-                                                <th class="wd-30">نوع دانش آموز</th>
-                                                <th class="wd-30">شیفت دانش آموز</th>
+                                                <th class="wd-30"><?php echo m('col.student_type') ?></th>
+                                                <th class="wd-30"><?php echo m('col.student_shift') ?></th>
 
 
                                             </tr>
@@ -378,9 +376,7 @@ include_once '../../temp.html';
                                                                                 </div>
                                                                                 <a class="dropdown-item"
                                                                                     href="?call-student=<?php echo $ret->username ?>"><i
-                                                                                        class="fe fe-phone-outgoing"></i> تماس
-                                                                                    با
-                                                                                    دانش آموز
+                                                                                        class="fe fe-phone-outgoing"></i> <?php echo m('action.call_student') ?>
                                                                                 </a>
                                                                                 <a class="dropdown-item"
                                                                                     href="?call-mother=<?php echo $ret->username ?>"><i
@@ -547,7 +543,7 @@ include_once '../../temp.html';
 
         <script>
             $(document).ready(function () {
-                const inputHtml = '<input type="text" name="txt" class="form-control" placeholder="جستجوی دانش آموز" required>';
+                const inputHtml = '<input type="text" name="txt" class="form-control" placeholder="<?php echo m('action.search_student') ?>" required>';
                 const selectHtml = `
         <select name="txt" class="form-control select2" required>
             <option value="" disabled selected hidden>انتخاب زمان</option>

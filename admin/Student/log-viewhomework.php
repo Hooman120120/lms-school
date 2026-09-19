@@ -300,13 +300,13 @@ include_once '../../temp.html';
                             <h5 class="mb-3">گزارش تکالیف</h5>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>دانش آموز:</strong>
+                                    <p><strong><?php echo m('label.student_colon2') ?></strong>
                                         <?= htmlspecialchars($user->fname . ' ' . $user->lname, ENT_QUOTES, 'UTF-8') ?>
                                         (<?= htmlspecialchars($student_username, ENT_QUOTES, 'UTF-8') ?>)
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong>پایه:</strong>
+                                    <p><strong><?php echo m('label.grade_colon') ?></strong>
                                         <?= htmlspecialchars($course->coursename ?? 'نامشخص', ENT_QUOTES, 'UTF-8') ?>
                                         (کد: <?= htmlspecialchars($codecourse, ENT_QUOTES, 'UTF-8') ?>)
                                     </p>
@@ -318,7 +318,7 @@ include_once '../../temp.html';
                     <!-- Homeworks by Class -->
                     <?php if (empty($homeworksByClass)): ?>
                         <div class="alert alert-info text-center">
-                            هیچ تکلیفی برای کلاس‌های این پایه تعریف نشده است.
+                            <?php echo m('msg.no_homework_for_grade') ?>
                         </div>
                     <?php else: ?>
                         <?php
@@ -354,9 +354,9 @@ include_once '../../temp.html';
                                                                 <span class="fw-bold"><?= htmlspecialchars($hw->title ?? '', ENT_QUOTES, 'UTF-8') ?></span>
 
                                                                 <?php if ($isPrivate): ?>
-                                                                    <span class="badge bg-info me-2" title="تکلیف اختصاصی - فقط برای دانش آموزان انتخاب شده">🔒 اختصاصی</span>
+                                                                    <span class="badge bg-info me-2" title="<?php echo m('title.homework_private') ?>">🔒 اختصاصی</span>
                                                                 <?php else: ?>
-                                                                    <span class="badge bg-light text-dark me-2" title="تکلیف عمومی - برای همه دانش آموزان کلاس">🌐 عمومی</span>
+                                                                    <span class="badge bg-light text-dark me-2" title="<?php echo m('title.homework_public') ?>">🌐 عمومی</span>
                                                                 <?php endif; ?>
 
                                                                 <?php if ($hasSubmitted): ?>

@@ -107,7 +107,7 @@ include_once '../temp.html';
                 <img src="<?php echo url('assets/img/pngs/work4.png') ?>" class="float-sm-right wd-40p wd-sm-150"
                     alt="موسسه هنر آموزش">
             </div>
-            <div class="title">کارنامه تفصیلی دانش آموز</div>
+            <div class="title"><?php echo m('label.detailed_report_card') ?></div>
             <div class="meta">
 
                 <div>شماره: <strong><?= $quiz->dars != 21 ? $req->idresult : $req->id ?> </strong></div>

@@ -70,7 +70,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> گزارش حضورغیاب پایه | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.attendance_report') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -94,7 +94,7 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">گزارش حضورغیاب : <span
                                                     class="text-primary"><?php echo $user->fname . ' ' . $user->lname ?></span>
                                         </h6>
-                                        <p class="text-muted card-sub-title"> نام پایه :<span
+                                        <p class="text-muted card-sub-title"> <?php echo m('label.course_name_colon') ?><span
                                                     class="text-primary"><?php echo $course->coursename ?></span>
                                         </p>
                                     </div>

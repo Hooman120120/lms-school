@@ -38,7 +38,7 @@ function getEventTargetSummary($eventId, $conn) {
     }
 
     $roleNames = [
-        0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => 'استاد',
+        0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => t('role_teacher'),
         6 => 'کارشناس فروش', 51 => 'معاونت اجرایی', 52 => 'معاونت آموزشی',
         53 => 'معاونت فروش', 54 => 'معاونت فنی'
     ];
@@ -1226,7 +1226,7 @@ function renderCalendar() {
                                         <option value="0">مدیریت</option>
                                         <option value="1">پشتیبان</option>
                                         <option value="2">مدیرمیانی</option>
-                                        <option value="3">استاد</option>
+                                        <option value="3"><?php echo t('role_teacher') ?></option>
                                         <option value="6">کارشناس فروش</option>
                                         <option value="51">معاونت اجرایی</option>
                                         <option value="52">معاونت آموزشی</option>
@@ -1244,7 +1244,7 @@ function renderCalendar() {
                                             0  => 'مدیریت',
                                             1  => 'پشتیبان',
                                             2  => 'مدیرمیانی',
-                                            3  => 'استاد',
+                                            3 => t('role_teacher'),
                                             6  => 'کارشناس فروش',
                                             51 => 'معاونت اجرایی',
                                             52 => 'معاونت آموزشی',
@@ -1278,7 +1278,7 @@ function renderCalendar() {
                                         <option value="<?= (int)$tg['id'] ?>"><?= htmlspecialchars($tg['title']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <small class="text-muted">در صورت انتخاب، فقط معلم‌های عضو این گروه‌ها این رویداد را می‌بینند. خالی یعنی بدون محدودیت گروهی.</small>
+                                <small class="text-muted"><?php echo m('help.teacher_group_filter') ?></small>
                             </div>
 
                             <div id="userTargetsContainer" style="display:none;">
@@ -1361,7 +1361,7 @@ function renderCalendar() {
                                             <option value="0">مدیریت</option>
                                             <option value="1">پشتیبان</option>
                                             <option value="2">مدیرمیانی</option>
-                                            <option value="3">استاد</option>
+                                            <option value="3"><?php echo t('role_teacher') ?></option>
                                             <option value="6">کارشناس فروش</option>
                                             <option value="51">معاونت اجرایی</option>
                                             <option value="52">معاونت آموزشی</option>
@@ -1376,7 +1376,7 @@ function renderCalendar() {
                                                 data-placeholder="انتخاب ادمین‌ها ...">
                                             <?php
                                             $roleNames = [
-                                                0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => 'استاد',
+                                                0 => 'مدیریت', 1 => 'پشتیبان', 2 => 'مدیرمیانی', 3 => t('role_teacher'),
                                                 6 => 'کارشناس فروش', 51 => 'معاونت اجرایی', 52 => 'معاونت آموزشی',
                                                 53 => 'معاونت فروش', 54 => 'معاونت فنی'
                                             ];

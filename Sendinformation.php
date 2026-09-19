@@ -306,7 +306,7 @@ if (isset($_POST['submit-collague'])) {
                                     <div class="row align-items-center">
                                         <div class="col-xl-8 col-sm-6 col-12 img-bg ">
                                             <h4 class="d-flex  mb-3">
-                                                <span class="font-weight-bold text-white ">دانش آموز گرامی!</span>
+                                                <span class="font-weight-bold text-white "><?php echo m('label.dear_student') ?></span>
                                             </h4>
                                             <p class="tx-white mb-1"> اطلاعات خواسته شده را بصورت فارسی تکمیل نمایید
                                             </p></div>
@@ -385,13 +385,13 @@ if (isset($_POST['submit-collague'])) {
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 ">
-                                                <label class="form-label">شماره همراه دانش آموز: </label>
+                                                <label class="form-label"><?php echo m('form.student_mobile_label') ?> </label>
                                                 <div class="input-group mb-3">
 
                                                     <input type="text" style="text-align: center" name="tel1"
 
                                                            aria-describedby="basic-addon2"
-                                                           aria-label="شماره همراه دانش آموز" class="form-control"
+                                                           aria-label="<?php echo m('aria.student_mobile') ?>" class="form-control"
                                                            value="<?php echo $_SESSION['personal']['tel1']; ?>"
                                                            disabled>
 
@@ -1192,7 +1192,7 @@ if (isset($_POST['submit-collague'])) {
                                                     </div>
                                                     <input class="form-control" name="location"
                                                            aria-describedby="basic-addon2"
-                                                           type="text" placeholder="مدرسه نمونه دولتی هدف">
+                                                           type="text" placeholder="<?php echo m('placeholder.target_school') ?>">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 mg-t-20  ">
@@ -1204,7 +1204,7 @@ if (isset($_POST['submit-collague'])) {
                                                     <input class="form-control" name="semat"
                                                            aria-describedby="basic-addon2"
                                                            type="text"
-                                                           placeholder="مدیر مدرسه | معلم ریاضی | مشاور آموزشی و ...">
+                                                           placeholder="<?php echo m('placeholder.job_title') ?>">
 
 
                                                 </div>

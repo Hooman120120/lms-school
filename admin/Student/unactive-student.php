@@ -46,7 +46,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> دانش آموزان قفل شده |<?php echo __TITLE ?></title>
+    <title> <?php echo m('page.locked_students') ?> |<?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -74,12 +74,12 @@ include_once '../../temp.html';
                                     <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                         <h6 class="main-content-label mb-0">
-                                            لیست دانش آموزان غیرفعال‌شده
+                                            <?php echo m('label.deactivated_students') ?>
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip=" در این بخش می توانید لیست دانش آموزانی که دسترسی آن ها برای ورود به پنل کاربری خود به دلیل تکرار بیش از حد رمز عبور اشتباه مسدود و غیرفعال شده را مشاهده نمایید و در صورت نیاز اقدامات لازم جهت فعال سازی مجدد را انجام دهید."
-                                              aria-label="راهنمای دانش‌آموزان غیرفعال‌شده">
+                                              data-tooltip=" <?php echo m('tooltip.deactivated_students') ?>"
+                                              aria-label="<?php echo m('aria.deactivated_students_help') ?>">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>

@@ -40,7 +40,7 @@ RequireTeacherPermission('teacher_perm_courses', url('admin/index.php'));
 
 if ($adminRole === 3 && isset($_GET['login'])) {
     http_response_code(403);
-    exit('ورود مستقیم معلم به کلاس آنلاین از پنل غیرفعال است.');
+    exit(m('perm.teacher_no_online_class'));
 }
 
 if ($adminRole === 3) {
@@ -52,7 +52,7 @@ if ($adminRole === 3) {
     foreach ($teacherBlockedActions as $blockedAction) {
         if (isset($_GET[$blockedAction])) {
             http_response_code(403);
-            exit('معلم مجوز تغییر تنظیمات پایه را ندارد.');
+            exit(m('perm.teacher_no_course_settings'));
         }
     }
 }
@@ -99,7 +99,7 @@ if (isset($_GET['login']) && isset($_GET['code'])) {
 
     // 2) Check class activity using professor's function
     if (!function_exists('act_ostadSkyroom') || act_ostadSkyroom($code) != 1) {
-        $_SESSION['message'] = 'کلاس آنلاین برای اساتید فعال نیست.';
+        $_SESSION['message'] = m('msg.online_class_off_for_teachers');
         header('location: ' . url('admin/course/Active-course.php'));
         exit;
     }
@@ -758,7 +758,7 @@ include_once '../../temp.html';
                                                                                     اقدام <i
                                                                                             class="fas fa-caret-down mr-1"></i>
                                                                                     <span class="menu-info-trigger"
-                                                                                          data-tooltip="مدیریت پایه‌های آموزشی: در این منو تمامی ابزارهای موردنیاز برای مدیریت پایه و کلاس در اختیار شما قرار دارد. از طریق گزینه‌های این بخش می‌توانید دسترسی ورود استاد و دانش آموز به کلاس آنلاین، لیست دانش آموزان، مدیریت کلاس، ویرایش یا حذف پایه را انجام دهید. همچنین امکان فعال یا غیرفعال کردن وضعیت پایه و مدیریت وضعیت ثبت‌نام دانش آموزان در یک یا چند پایه نیز فراهم است. برای آشنایی بیشتر با عملکرد هر گزینه، روی آیتم موردنظر در منوی «اقدام» کلیک کنید."
+                                                                                          data-tooltip="<?php echo m('tooltip.course_management_menu') ?>"
                                                                                           aria-label="راهنمای منوی اقدام"
                                                                                           onclick="event.preventDefault(); event.stopPropagation();">
                                                                                         <i class="fe fe-info fs-4"></i>
@@ -786,11 +786,11 @@ include_once '../../temp.html';
 
                                                                                             <?php if (act_ostadSkyroom($res->codecourse) == 0) { ?>
                                                                                                 <a class="dropdown-item text-info" href="?act_ostadclass=<?php echo $res->codecourse ?>">
-                                                                                                    <i class="fe fe-video"></i> فعالسازی کلاس برای استاد
+                                                                                                    <i class="fe fe-video"></i> <?php echo m('action.activate_class_for_teacher') ?>
                                                                                                 </a>
                                                                                             <?php } else { ?>
                                                                                                 <a class="dropdown-item text-warning" href="?expire_ostadclass=<?php echo $res->codecourse ?>">
-                                                                                                    <i class="fe fe-video-off"></i>  قطع کلاس برای استاد
+                                                                                                    <i class="fe fe-video-off"></i>  <?php echo m('action.stop_class_for_teacher') ?>
                                                                                                 </a>
                                                                                             <?php } ?>
 
@@ -825,10 +825,10 @@ include_once '../../temp.html';
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-airplay"></i> تخصیص استاد
+                                                                                            <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-book-open"></i> طرح درس معلمان
+                                                                                            <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
                                                                                         </a>
                                                                                         <!-- <a class="dropdown-item" href="attendance.php?id=<//?php echo $res->codecourse ?>">
                                                                                             <i class="fe fe-check-square"></i> افزودن حضور و غیاب
@@ -1100,10 +1100,10 @@ include_once '../../temp.html';
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-airplay"></i> تخصیص استاد
+                                                                                            <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-book-open"></i> طرح درس معلمان
+                                                                                            <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
                                                                                         </a>
                                                                                         <?php if (Permision('permision_viewcourse')) { ?>
                                                                                             <hr>
@@ -1369,10 +1369,10 @@ include_once '../../temp.html';
                                                                                             <i class="fe fe-calendar"></i> مدیریت کلاس ها
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-airplay"></i> تخصیص استاد
+                                                                                            <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
                                                                                         </a>
                                                                                         <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
-                                                                                            <i class="fe fe-book-open"></i> طرح درس معلمان
+                                                                                            <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
                                                                                         </a>
                                                                                         <?php if (Permision('permision_viewcourse')) { ?>
                                                                                             <hr>

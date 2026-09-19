@@ -45,7 +45,7 @@ if ((int)$adminRole === 3) {
     foreach (['act_class', 'act_general', 'act_quiz', 'expire_class', 'expire_general', 'expire_quiz', 'unactive'] as $blockedAction) {
         if (isset($_GET[$blockedAction])) {
             http_response_code(403);
-            exit('معلم مجوز تغییر تنظیمات کلاس را ندارد.');
+            exit(m('perm.teacher_no_class_settings'));
         }
     }
 } elseif (StaffCourseScopeRequired() && !StaffHasClassAccess($requestedClassId)) {
@@ -1245,7 +1245,7 @@ include_once '../../temp.html';
         <div class="modal-dialog">
             <form method="post" class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">ثبت جواب استاد</h5>
+                    <h5 class="modal-title"><?php echo m('label.teacher_answer') ?></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
 

@@ -27,7 +27,7 @@ if (session_id() != $re['session_id']) {
 //* End Check Session JUST ONE Session
 if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3) {
     http_response_code(403);
-    exit('ورود مستقیم معلم به کلاس آنلاین از پنل غیرفعال است.');
+    exit(m('perm.teacher_no_online_class'));
 }
 if (!Permision('permision_viewcourse')) {
     header('location: ' . url('admin/index.php'));

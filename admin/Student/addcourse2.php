@@ -115,7 +115,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ایجاد پایه برای دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.create_course_for_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -144,8 +144,8 @@ include_once '../../temp.html';
                                 <div class="row">
                                     <div class="col-9">
                                         <div>
-                                            <h6 class="main-content-label mb-1">ایجاد پایه برای دانش آموز </h6>
-                                            <p class="text-muted card-sub-title">صدور فاکتور جدید برای دانش آموز
+                                            <h6 class="main-content-label mb-1"><?php echo m('page.create_course_for_student') ?> </h6>
+                                            <p class="text-muted card-sub-title"><?php echo m('page.new_invoice_for_student') ?>
                                             </p>
                                         </div>
                                     </div>
@@ -168,9 +168,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                          فاکتور شماره : <?php echo $idf ?> با موفقیت صادر شد. دانش آموز
-                                        و یا حسابدار
-                                        می بایست فاکتور را پرداخت نمایند
+                                          <?php echo m('invoice.issued_success', [':n' => $idf]) ?>
 
                                     </div>
                                 <?php } ?>
@@ -181,7 +179,7 @@ include_once '../../temp.html';
                                                 type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
+                                        <?php echo m('error.nid_is_collague') ?>
 
                                     </div>
                                 <?php } ?>
@@ -213,9 +211,7 @@ include_once '../../temp.html';
                                                 <form method="post" data-parsley-validate="">
                                                     <div class="row">
                                                         <div class="col-xl-6 mb-2">
-                                                            <label for="sens" class="form-label mg-t-15">کدملی
-                                                                دانش آموز: <span
-                                                                        style="color: red">*</span></label>
+                                                            <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span style="color: red">*</span></label>
                                                             <input class="form-control" name="codemeli"
                                                                    type="text"
                                                                    placeholder="با اعداد انگلیسی وارد شود"
@@ -235,7 +231,7 @@ include_once '../../temp.html';
                                                         <button type="submit" class="btn btn-success "
                                                                 name="search-melli"><i
                                                                     class="fa fa-search"></i>
-                                                            جستجوی دانش آموز
+                                                            <?php echo m('action.search_student') ?>
                                                         </button>
                                                     </div>
                                                 </form>
@@ -246,15 +242,13 @@ include_once '../../temp.html';
       <div class="row row-sm">
                                                     <div class="col-xl-8">
                                                 <div class="card-header border-bottom-0 pb-1">
-                                                    <label class="main-content-label mb-2 pt-1">پایه های در حال ثبت
-                                                        نام</label>
-                                                    <p class="tx-12 mb-0 text-muted">پایه های مورد نظر برای دانش آموز را
-                                                        انتخاب کنید</p>
+                                                    <label class="main-content-label mb-2 pt-1"><?php echo m('label.enrolling_courses') ?></label>
+                                                    <p class="tx-12 mb-0 text-muted"><?php echo m('label.select_courses_for_student') ?></p>
                                                 </div>
                                                 <?php
                                                 $rest = retPerson($_SESSION['add-course']['codemeli']);
                                                 ?>
-                                                <label class="main-content-label mb-2 pt-1">نام دانش آموز: <span
+                                                <label class="main-content-label mb-2 pt-1"><?php echo m('label.student_name') ?> <span
                                                             class="text-warning">    <?php echo $rest->fname . ' ' . $rest->lname ?> </span></label>
                                                 <hr>
                                                 <div class="card-body pt-0">
@@ -359,7 +353,7 @@ include_once '../../temp.html';
                                                             <tr>
                                                                 <th>ردیف</th>
                                                                 <th>پشتیبان</th>
-                                                                <th>تعداد ( نفر پایه )</th>
+                                                                <th><?php echo m('label.count_person_course') ?></th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>

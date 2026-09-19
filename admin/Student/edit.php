@@ -318,7 +318,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ویرایش اطلاعات دانش آموز |<?php echo __TITLE ?></title>
+    <title> <?php echo m('page.edit_student') ?> |<?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -351,7 +351,7 @@ include_once '../../temp.html';
                                             <div class="row">
                                                 <div class="col-9">
                                                     <div>
-                                                        <h6 class="main-content-label mb-1">ویرایش اطلاعات دانش آموز </h6>
+                                                        <h6 class="main-content-label mb-1"><?php echo m('page.edit_student') ?> </h6>
                                                         <p class="text-muted card-sub-title">ویرایش اطلاعات حساب کاربری دانش
                                                             آموز
                                                         </p>
@@ -407,8 +407,7 @@ include_once '../../temp.html';
                                                             <form method="post" data-parsley-validate="">
                                                                 <div class="row">
                                                                     <div class="col-xl-6 mb-2">
-                                                                        <label for="sens" class="form-label mg-t-15">کدملی
-                                                                            دانش آموز: <span style="color: red">*</span></label>
+                                                                        <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span style="color: red">*</span></label>
                                                                         <input class="form-control" name="codemeli" type="text"
                                                                             placeholder="با اعداد انگلیسی وارد شود" required>
                                                                     </div>
@@ -424,7 +423,7 @@ include_once '../../temp.html';
                                                                 <div class="text-center mg-10">
                                                                     <button type="submit" class="btn btn-success "
                                                                         name="search-melli"><i class="fe fe-search"></i>
-                                                                        جستجو دانش آموز
+                                                                        <?php echo m('action.search_student') ?>
                                                                     </button>
                                                                 </div>
                                                             </form>
@@ -1458,8 +1457,7 @@ include_once '../../temp.html';
                                                                                                         <div class="row row-sm">
                                                                                                             <div class="col-xl-3">
                                                                                                                 <label
-                                                                                                                    class="form-label">نوع
-                                                                                                                    دانش آموز<span
+                                                                                                                    class="form-label"><?php echo m('col.student_type') ?><span
                                                                                                                         style="color: red">*</span></label>
                                                                                                             </div>
                                                                                                             <div class="col-xl-3">
@@ -1469,7 +1467,7 @@ include_once '../../temp.html';
                                                                                                                     multiple
                                                                                                                     required>
                                                                                                                     <option
-                                                                                                                        label="نوع دانش آموز">
+                                                                                                                        label="<?php echo m('col.student_type') ?>">
                                                                                                                     </option>
                                                                                                                     <?php
                                                                                                                     $sql = "SELECT * FROM type_vip";
@@ -1504,8 +1502,7 @@ include_once '../../temp.html';
                                                                                                         <div class="row row-sm">
                                                                                                             <div class="col-xl-3">
                                                                                                                 <label
-                                                                                                                    class="form-label">شیفت
-                                                                                                                    دانش آموز<span
+                                                                                                                    class="form-label"><?php echo m('col.student_shift') ?><span
                                                                                                                         style="color: red">*</span></label>
                                                                                                             </div>
                                                                                                             <div class="col-xl-3">
@@ -1514,7 +1511,7 @@ include_once '../../temp.html';
                                                                                                                     name="shift"
                                                                                                                     required>
                                                                                                                     <option
-                                                                                                                        label="نوع دانش آموز">
+                                                                                                                        label="<?php echo m('col.student_type') ?>">
                                                                                                                     </option>
                                                                                                                     <option <?php if ($data->shift != NULL and $data->shift == 0) {
                                                                                                                                 echo 'selected';

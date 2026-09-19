@@ -29,7 +29,7 @@ $adminRole = (int)($_SESSION['admin']['adminrole'] ?? 0);
 RequireTeacherPermission('teacher_perm_content', url('admin/course/Active-course.php'));
 if ($adminRole === 3) {
     http_response_code(403);
-    exit('مدیریت درس‌ها برای حساب معلم قابل دسترسی نیست. محتوای کلاس را از صفحه فیلم‌ها و جزوه‌ها مشاهده کنید.');
+    exit(m('perm.teacher_no_dars'));
 }
 $staffCourseCode = isset($_GET['code']) ? (int)$_GET['code'] : (int)($_POST['codecourse'] ?? 0);
 if (StaffCourseScopeRequired() && !StaffHasCourseAccess($staffCourseCode)) {
@@ -493,7 +493,7 @@ include_once '../../temp.html';
                                                                             <div class="dropdown-menu tx-8">
                                                                                 <a class="dropdown-item"
                                                                                     href="dars-teachers.php?code=<?php echo (int)$dars->codecourse ?>&dars=<?php echo (int)$dars->id ?>">
-                                                                                    <i class="fe fe-users"></i> مشاهده معلمان
+                                                                                    <i class="fe fe-users"></i> <?php echo m('action.view_teachers') ?>
                                                                                 </a>
                                                                                 <a class="dropdown-item"
                                                                                     href="lesson.php?code=<?php echo $dars->codecourse ?>&dars=<?= $dars->id ?>">

@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_teacher'])) {
                 }
             }
             $conn->commit();
-            $_SESSION['flash_message'] = "معلم با موفقیت به کلاس‌ها و درس‌های انتخابی تخصیص داده شد.";
+            $_SESSION['flash_message'] = m('msg.teacher_assigned');
             $_SESSION['flash_type'] = "success";
         } catch (Throwable $exception) {
             if ($conn->inTransaction()) {
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_teacher'])) {
             $_SESSION['flash_type'] = "danger";
         }
     } elseif (!$validTeacher) {
-        $_SESSION['flash_message'] = "لطفاً یک معلم فعال و معتبر انتخاب نمایید.";
+        $_SESSION['flash_message'] = m('msg.choose_valid_teacher');
         $_SESSION['flash_type'] = "danger";
     } else {
         $_SESSION['flash_message'] = "لطفاً حداقل یک درس را انتخاب نمایید.";
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_assignment']))
         ");
         $delStmt->execute([$assignmentId, $courseCode]);
         if ($delStmt->rowCount() > 0) {
-            $_SESSION['flash_message'] = "تخصیص معلم با موفقیت حذف گردید.";
+            $_SESSION['flash_message'] = m('msg.teacher_assignment_removed');
             $_SESSION['flash_type'] = "info";
         }
     }
@@ -211,9 +211,9 @@ include_once '../../temp.html';
     <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <meta name="description" content="تخصیص معلم به پایه، کلاس و درس">
+    <meta name="description" content="<?php echo m('meta.assign_teacher') ?>">
     <meta name="author" content="hamsepar.ir">
-    <title> تخصیص معلم | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.assign_teacher') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -233,7 +233,7 @@ include_once '../../temp.html';
                 <!-- Page Header -->
                 <div class="page-header my-3">
                     <div>
-                        <h2 class="main-content-title tx-24 mg-b-5">تخصیص معلم به کلاس و درس</h2>
+                        <h2 class="main-content-title tx-24 mg-b-5"><?php echo m('label.assign_teacher_to_class') ?></h2>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">پایه</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($course->coursename); ?> </li>
@@ -254,16 +254,16 @@ include_once '../../temp.html';
                 <!-- Form Card -->
                 <div class="card custom-card mb-4">
                     <div class="card-header border-bottom">
-                        <h6 class="main-content-label mb-0">فرم تخصیص معلم</h6>
+                        <h6 class="main-content-label mb-0"><?php echo m('label.assign_teacher_form') ?></h6>
                     </div>
                     <div class="card-body">
                         <form method="post" action="">
                             <div class="form-row">
                                 <!-- Dropdown 1: Teachers -->
                                 <div class="form-group col-md-4">
-                                    <label for="teacher_username" class="font-weight-bold">انتخاب معلم:</label>
+                                    <label for="teacher_username" class="font-weight-bold"><?php echo m('label.choose_teacher_colon') ?></label>
                                     <select name="teacher_username" id="teacher_username" class="form-control" required>
-                                        <option value="">-- معلم مورد نظر را انتخاب کنید --</option>
+                                        <option value=""><?php echo m('label.choose_teacher_option') ?></option>
                                         <?php foreach ($teacherList as $teacher): ?>
                                             <option value="<?php echo htmlspecialchars($teacher->username); ?>">
                                                 <?php echo htmlspecialchars($teacher->fname . ' ' . $teacher->lname . ' (' . $teacher->username . ')'); ?>
@@ -318,7 +318,7 @@ include_once '../../temp.html';
                 <!-- Classes & Assigned Teachers Table -->
                 <div class="card custom-card">
                     <div class="card-header border-bottom">
-                        <h6 class="main-content-label mb-0">لیست کلاس‌ها، معلمان و درس‌های تخصیص داده شده</h6>
+                        <h6 class="main-content-label mb-0"><?php echo m('label.assigned_classes_teachers') ?></h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -327,7 +327,7 @@ include_once '../../temp.html';
                                 <tr>
                                     <th style="width: 80px;">#</th>
                                     <th>نام کلاس</th>
-                                    <th>معلمان و درس‌های تخصیص داده شده</th>
+                                    <th><?php echo m('col.assigned_teachers_lessons') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -351,7 +351,7 @@ include_once '../../temp.html';
                                                                     </span>
                                                                     <form method="post" action="" class="d-inline mb-0 ml-1">
                                                                         <input type="hidden" name="assignment_id" value="<?php echo $t['assignment_id']; ?>">
-                                                                        <button type="submit" name="remove_assignment" class="close text-danger border-0 bg-transparent p-0" style="font-size: 1.2rem; line-height: 1;" onclick="return confirm('آیا از حذف این استاد مطمئن هستید؟');">
+                                                                        <button type="submit" name="remove_assignment" class="close text-danger border-0 bg-transparent p-0" style="font-size: 1.2rem; line-height: 1;" onclick="return confirm(<?php echo json_encode(m('confirm.remove_teacher'), JSON_UNESCAPED_UNICODE) ?>);">
                                                                             &times;
                                                                         </button>
                                                                     </form>
@@ -359,7 +359,7 @@ include_once '../../temp.html';
                                                         <?php endforeach; ?>
                                                     </div>
                                                 <?php else: ?>
-                                                <span class="text-muted small">معلمی تخصیص داده نشده است</span>
+                                                <span class="text-muted small"><?php echo m('msg.no_teacher_assigned') ?></span>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>

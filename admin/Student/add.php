@@ -308,7 +308,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.add_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -344,20 +344,18 @@ include_once '../../temp.html';
                                                 <i class="fe fe-alert-triangle fs-4 me-2"></i>
                                                 <div>
                                                     <strong>توجه:</strong>
-                                                    مدیر محترم، برای ثبت‌نام موقت یا قطعی دانش آموز، لطفاً از شماره تماسی
-                                                    استفاده نمایید که به پیامک‌های ارسالی آن دسترسی دارید؛ زیرا کدهای
-                                                    تأیید و اطلاع‌رسانی به همین شماره ارسال خواهند شد.
+                                                    <?php echo m('msg.phone_notice') ?>
                                                 </div>
                                             </div>
                                             <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                 <h6 class="main-content-label mb-0">
-                                                    افزودن دانش آموز جدید
+                                                    <?php echo m('action.add_new_student') ?>
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید اطلاعات دانش آموز جدید را ثبت کرده و برای او حساب کاربری ایجاد کنید. اطلاعات هویتی، تماس و سایر مشخصات موردنیاز دانش آموز از این قسمت ثبت و ذخیره می‌شود."
-                                                      aria-label="راهنمای افزودن دانش آموز جدید">
+                                                      data-tooltip="<?php echo m('tooltip.add_new_student') ?>"
+                                                      aria-label="<?php echo m('aria.add_new_student_help') ?>">
 
                                                                 <i class="fe fe-info fs-4"></i>
                                                             </span>
@@ -372,7 +370,7 @@ include_once '../../temp.html';
                                                         type="button">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
-                                                اطلاعات دانش آموز با موفقیت ثبت و رمز عبور برایشان پیامک شد.
+                                                <?php echo m('msg.student_saved_sms') ?>
                                                 <hr>
                                                 <p class="mb-0">نام کاربری : کد ملی ثبت شده
                                                 </p>
@@ -439,18 +437,14 @@ include_once '../../temp.html';
                                                         <form method="post" data-parsley-validate="">
                                                             <div class="row">
                                                                 <div class="col-xl-6 mb-2">
-                                                                    <label for="sens" class="form-label mg-t-15">کدملی
-                                                                        دانش آموز: <span
-                                                                                style="color: red">*</span></label>
+                                                                    <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span style="color: red">*</span></label>
                                                                     <input class="form-control" name="codemeli"
                                                                            type="text"
                                                                            placeholder="با اعداد انگلیسی وارد شود"
                                                                            required>
                                                                 </div>
                                                                 <div class="col-xl-6">
-                                                                    <label for="sens" class="form-label mg-t-15">ملیت
-                                                                        دانش آموز: <span
-                                                                                style="color: red">*</span></label>
+                                                                    <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nationality') ?> <span style="color: red">*</span></label>
                                                                     <select class="form-control select2 "
                                                                             name="melliat"
                                                                             aria-describedby="basic-addon2" required>
@@ -499,8 +493,8 @@ include_once '../../temp.html';
                                                                                             </label>
 
                                                                                             <span class="menu-info-trigger"
-                                                                                                  data-tooltip="در این بخش می‌توانید اطلاعات چند دانش آموز را به‌صورت هم‌زمان از طریق فایل اکسل ثبت کنید. ابتدا فایل نمونه را دانلود و اطلاعات دانش آموزان را مطابق قالب آن تکمیل نمایید، سپس فایل را آپلود کنید. برای استفاده از امکانات ماکروی فایل، پس از دانلود از بخش Properties گزینه Unblock را فعال کنید."
-                                                                                                  aria-label="راهنمای ثبت نام دسته جمعی دانش آموزان">
+                                                                                                  data-tooltip="<?php echo m('tooltip.bulk_add_students') ?>"
+                                                                                                  aria-label="<?php echo m('aria.bulk_add_students_help') ?>">
 
                                                                                                     <i class="fe fe-info fs-4"></i>
                                                                                                 </span>
@@ -508,7 +502,7 @@ include_once '../../temp.html';
                                                                                         </div>
 
                                                                                         <p class="tx-12 mb-0 text-muted font-weight-bolder">
-                                                                                            ثبت نام دسته جمعی دانش آموزان
+                                                                                            <?php echo m('action.bulk_add_students') ?>
                                                                                             با فایل اکسل
                                                                                         </p>
 
@@ -626,7 +620,7 @@ include_once '../../temp.html';
                                                         <form method="post" data-parsley-validate="">
                                                             <div class="col-xl-6">
 
-                                                                <label for="tel-student" class="form-label">شماره دانش آموز:
+                                                                <label for="tel-student" class="form-label"><?php echo m('form.student_phone_short') ?>
                                                                     <span
                                                                             style="color: red">*</span></label>
                                                                 <input type="number" name="tel" class="form-control"
@@ -739,8 +733,7 @@ include_once '../../temp.html';
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-4 ">
-                                                                                <label class="form-label">شماره همراه
-                                                                                    دانش آموز: </label>
+                                                                                <label class="form-label"><?php echo m('form.student_mobile_label') ?> </label>
                                                                                 <div class="input-group mb-3">
 
                                                                                     <input type="text"
@@ -748,7 +741,7 @@ include_once '../../temp.html';
                                                                                            name="tel1"
 
                                                                                            aria-describedby="basic-addon2"
-                                                                                           aria-label="شماره همراه دانش آموز"
+                                                                                           aria-label="<?php echo m('aria.student_mobile') ?>"
                                                                                            class="form-control"
                                                                                            value="<?php echo $_SESSION['add-student']['tel']; ?>"
                                                                                            disabled>
@@ -1285,14 +1278,14 @@ include_once '../../temp.html';
                                                                             <div class="col-lg-4 mg-t-20 ">
                                                                                 <div class="input-group-prepend">
                                                                                     <div class="input-group-text">
-                                                                                        نوع دانش آموز:
+                                                                                        <?php echo m('label.student_type_colon') ?>
                                                                                         <span class="tx-danger">*</span>
                                                                                     </div>
                                                                                     <select class="form-control select2" multiple
                                                                                             required=""
                                                                                             name="type-vip[]"
                                                                                             aria-describedby="basic-addon2">
-                                                                                        <option label="نوع دانش آموز">
+                                                                                        <option label="<?php echo m('col.student_type') ?>">
                                                                                         </option>
                                                                                         <?php
                                                                                         $sql = "SELECT * FROM type_vip";
@@ -1337,14 +1330,14 @@ include_once '../../temp.html';
                                                                             <div class="col-lg-4 mg-t-20 ">
                                                                                 <div class="input-group-prepend">
                                                                                     <div class="input-group-text">
-                                                                                        شیفت دانش آموز:
+                                                                                        <?php echo m('label.student_shift_colon') ?>
                                                                                         <span class="tx-danger">*</span>
                                                                                     </div>
                                                                                     <select class="form-control select2"
                                                                                             required=""
                                                                                             name="shift"
                                                                                             aria-describedby="basic-addon2">
-                                                                                        <option label="نوع دانش آموز">
+                                                                                        <option label="<?php echo m('col.student_type') ?>">
                                                                                         </option>
                                                                                         <option value="0">صبح</option>
                                                                                         <option value="1">بعدازظهر</option>

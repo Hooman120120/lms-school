@@ -540,7 +540,7 @@ include_once '../temp.html';
                                                                                                     echo $id;
                                                                                                 } else {
                                                                                                     echo '0';
-                                                                                                } ?></strong> پایه های ثبت نامی
+                                                                                                } ?></strong> <?php echo m('profile.enrolled_grades') ?>
                                                 </li>
                                                 <li>
                                                     <strong class="badge <?php if (isset($courseregister) and $courseregister == 1) { ?>  badge-danger ">
@@ -552,7 +552,7 @@ include_once '../temp.html';
                                                 </li>
                                                 <li>
                                                     <strong class="badge badge-success-light"> <?php if ($_SESSION['auth']['role'] == 1) {
-                                                                                                    echo 'دانش آموز';
+                                                                                                    echo t('student');
                                                                                                 } else {
                                                                                                     echo 'همکار آموزشی';
                                                                                                 } ?></strong> نوع حساب
@@ -646,7 +646,7 @@ include_once '../temp.html';
                                     <?php } ?>
                                     <?php if (isset($erorcode) and $erorcode == 14) { ?>
                                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            کد ملی پدر نمی تواند با کدملی دانش آموز یکسان باشد
+                                            <?php echo m('validate.father_nid_same') ?>
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -654,7 +654,7 @@ include_once '../temp.html';
                                     <?php } ?>
                                     <?php if (isset($erorcode) and $erorcode == 18) { ?>
                                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            کد ملی مادر نمی تواند با کدملی دانش آموز یکسان باشد
+                                            <?php echo m('validate.mother_nid_same') ?>
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>

@@ -209,7 +209,7 @@ include_once '../temp.html';
                                             </li>
                                             <li>
                                                 <strong class="badge badge-success-light"> <?php if ($_SESSION['auth']['role'] == 1) {
-                                                        echo 'دانش آموز';
+                                                        echo t('student');
                                                     } else {
                                                         echo 'همکار آموزشی';
                                                     } ?></strong> نوع حساب

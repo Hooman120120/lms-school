@@ -2509,3 +2509,26 @@
     [active_options] => []
 )
 
+[2026-09-19 08:24:48] add_event started - Array
+(
+    [action] => add_event
+    [event_id] => 
+    [title] => test
+    [calendar_groups_id] => 
+    [description] => 
+    [personal_note] => 
+    [weekly_day] => 6
+    [start_date] => 1405/06/28 10:00
+    [end_date] => 1405/06/30 11:00
+    [target_group] => admin
+    [visibility] => 0
+    [event_type] => 0
+    [is_academic] => 0
+    [overlap] => 0
+    [admin_roles] => ["0"]
+    [admin_users] => []
+    [is_all_admins] => 0
+    [selected_courses] => []
+    [active_options] => []
+)
+

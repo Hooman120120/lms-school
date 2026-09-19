@@ -33,6 +33,10 @@ try {
      echo $e->getMessage();
     echo 'خطای غیر منتظره رخ داده است';
 }
+
+// نوع مؤسسه (مدرسه / آموزشگاه) + واژه‌نامه و توابع t() و m()
+// باید بعد از ساخته شدن $conn لود شود، چون نوع مؤسسه از setting_public خوانده می‌شود.
+require_once BASE_PATH . '/config/institution.php';
 function protocol()
 {
     return 'http://';
@@ -123,7 +127,7 @@ if (isset($_GET['logoutadmin'])) {
 define('__MOSHAVER', 'واحد مشاوره و خرید پایه');
 define('__LOGINROOM', ' مشکلات ورود به کلاس آنلاین');
 define('__OFFICIAL', 'واحد مالی و اداری');
-define('__TECHER', 'اساتید و مربیان');
+define('__TECHER', t('teacher_alt') . ' و مربیان');
 define('__QUIZ', 'حوزه آزمون های الکترونیکی');
 define('__MAINTENANCE', 'واحد فنی و توسعه زیرساخت');
 define('__BAZRESI', 'واحد بازرسی ، ثبت شکایت');

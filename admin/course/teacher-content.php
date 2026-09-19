@@ -24,7 +24,7 @@ if (session_id() != ($session['session_id'] ?? null)) {
 }
 if ((int)($_SESSION['admin']['adminrole'] ?? -1) !== 3) {
     http_response_code(403);
-    exit('این مسیر فقط برای حساب معلم قابل استفاده است.');
+    exit(m('perm.teacher_only_path'));
 }
 
 RequireTeacherPermission('teacher_perm_content', url('admin/course/Active-course.php'));

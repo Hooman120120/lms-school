@@ -51,7 +51,7 @@ if (isset($_GET['grade'])) {
                     <div class="course-card-vertical">
                         <div class="card-image-wrapper">
                             <div class="grade-badge">
-                                <?php echo (in_array($current_grade, ['انسانی', 'تجربی', 'ریاضی', 'المپیاد'])) ? '' : 'پایه '; ?>
+                                <?php echo (in_array($current_grade, ['انسانی', 'تجربی', 'ریاضی', 'المپیاد'])) ? '' : t('grade') . ' '; ?>
                                 <?php echo $current_grade; ?>
                             </div>
                             <img src="<?php echo $fr->piclink; ?>">
@@ -111,7 +111,7 @@ if (isset($_GET['grade'])) {
             }
             echo '</div>';
         } else {
-            echo "<div class='text-center w-100 p-5 text-muted'>در حال حاضر پایه‌ای برای این دسته ثبت نشده است.</div>";
+            echo "<div class='text-center w-100 p-5 text-muted'>" . m('msg.no_course_in_category') . "</div>";
         }
     } catch (PDOException $e) {
         echo "خطا: " . $e->getMessage();

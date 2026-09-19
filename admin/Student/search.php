@@ -36,7 +36,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت دانش آموز | <?php echo __TITLE ?></title>
+    <title> <?php echo m('page.add_student') ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -62,7 +62,7 @@ include_once '../../temp.html';
 
                         <div class="card custom-card">
                             <div class="card-header">
-                                <h5 class="mb-3 font-weight-bold tx-14">استعلام اطلاعات دانش آموز</h5>
+                                <h5 class="mb-3 font-weight-bold tx-14"><?php echo m('label.student_inquiry') ?></h5>
                             </div>
                             <div class="card-body">
                                 <section class="section">
@@ -72,7 +72,7 @@ include_once '../../temp.html';
                                                 <!--                                                <div class="card-body">-->
 
                                                 <div class="col-xl-12">
-                                                    <label for="sens" class="form-label mg-t-15">کدملی دانش آموز: <span
+                                                    <label for="sens" class="form-label mg-t-15"><?php echo m('form.student_nid_label') ?> <span
                                                                 style="color: red">*</span></label>
                                                     <input class="form-control" name="codemeli" type="text"
                                                            placeholder="با اعداد انگلیسی وارد شود"
