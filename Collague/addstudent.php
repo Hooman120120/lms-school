@@ -138,6 +138,7 @@ if (isset($_POST['submit-student']) AND isset($_SESSION['add-student']) AND $_SE
         $school = trim($_POST['school']);
         $state_user = retstate($_POST['state-student']);
         if (!checkCodemeli($_SESSION['add-student']['codemeli'])) {
+            hf_control_require_seat($conn, hf_control_login_id($_SESSION['add-student']['codemeli']), 'student');
             $insert = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,tel3,birthdate,`state`,city,nameschool,typeschool,paye,reshtestudent,area,gender,datecreated,timecreated,ipcreated,oscreated,useradder ) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             $insert_student = $conn->prepare($insert);

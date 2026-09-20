@@ -274,6 +274,7 @@ if (isset($_POST['upload'])) {
                     $creator = "bulk_upload";
                     // inserting dbpersonal
                     foreach ($allRows as $row) {
+                        hf_control_require_seat($conn, hf_control_login_id($row['codemeli']), 'student');
                         $insert->execute([
                             $row['codemeli'],
                             $row['fname'],

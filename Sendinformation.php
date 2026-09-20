@@ -84,6 +84,7 @@ if (isset($_POST['submit-student'])) {
         $school = trim($_POST['school']);
         $state_user = retstate($_POST['state-student']);
         if (!checkCodemeli($_SESSION['personal']['codemeli'])) {
+            hf_control_require_seat($conn, hf_control_login_id($_SESSION['personal']['codemeli']), 'student');
             $insert = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,tel3,birthdate,`state`,city,nameschool,typeschool,paye,reshtestudent,area,gender,datecreated,timecreated,ipcreated,oscreated ) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             $insert_student = $conn->prepare($insert);
@@ -190,6 +191,7 @@ if (isset($_POST['submit-collague'])) {
         $parentCollague=trim($_POST['parent-collague']);
         $reshteCollague=trim($_POST['reshte-collague']);
         if (!checkCodemeli($_SESSION['personal']['codemeli'])) {
+            hf_control_require_seat($conn, hf_control_login_id($_SESSION['personal']['codemeli']), 'colleague');
             $insertc = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,personalcode,birthdate,`state`,city,gender,workname,semat,maghta,reshtehamkar,presented,datecreated,timecreated,ipcreated,oscreated) 
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             $query_collague = $conn->prepare($insertc);

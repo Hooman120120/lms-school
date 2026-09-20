@@ -175,6 +175,7 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) {
         $tel_home = ($area_digits !== '' && $local_digits !== '') ? $area_digits . $local_digits : null;
 
         if (!checkCodemeli($_SESSION['add-student']['codemeli'])) {
+            hf_control_require_seat($conn, hf_control_login_id($_SESSION['add-student']['codemeli']), 'student');
             $insert = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,tel3,tel_home,melliat,birthdate,`state`,city,nameschool,typeschool,paye,reshtestudent,area,gender,shift,datecreated,timecreated,ipcreated,oscreated,creator,moaref,description ) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             $insert_student = $conn->prepare($insert);

@@ -765,6 +765,8 @@ if (isset($_POST['save'])) {
                 }
                 $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['course_codes'] ?? []);
 
+                $hfStaffType = $adminrole === 3 ? 'teacher' : ($adminrole === 0 ? 'admin' : 'staff');
+                hf_control_require_seat($conn, hf_control_admin_id($username), $hfStaffType);
                 $addmin = 'INSERT INTO dbadmin (username,password,fname,lname,adminactive,mobile,dakheli,adminpic,gender,per_skyroom,permision_actfactor,permision_notpay,permision_actwallet,permision_bill,permision_financial_export,permision_viewcall,permision_viewstudent,permision_viewcollague,permision_reportcollague,permision_viewcourse,permision_viewbill,permision_viewwallet,permision_viewalert,permision_viewsupport,permision_viewdocument,permision_viewemploy,permision_viewsetting,permision_addstudent,permision_editstudent,permision_addcourse_student,permision_reportstudent,permision_refer,permision_allticket,permision_deletcourse,permision_discount,permision_addcall,permision_managecall,permision_viewtest,permision_suporter,permision_manage_suporter,excel_permission,skill_permission,reportcall_permission,installment_permission,olympiad_permission,adminrole,administrator,history_permission,autodialer,permission_calendar,permission_news_notif)
 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
                 $ins = $conn->prepare($addmin);

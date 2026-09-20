@@ -29,6 +29,15 @@ if (isset($_POST['loginadmin'])) {
                         if ($res['adminactive'] == 0) {
                             $erorlock = 1;
                         } else {
+                            try {
+                                hf_control_require_panel_access($conn, true);
+                            } catch (Throwable $e) {
+                                $hfAccessError = $e->getMessage();
+                                $res = null;
+                            }
+                            if ($res === null) {
+                                goto login_admin_finished;
+                            }
                             $ip = GetIp();
                             $os = GetOs();
                             $sql2 = 'SELECT * FROM dbadmin WHERE username=?';
@@ -103,6 +112,7 @@ if (isset($_POST['loginadmin'])) {
         $tokeneror = 1;
     }
 }
+login_admin_finished:
 include_once '../temp.html';
 ?>
 <!DOCTYPE html>
@@ -180,6 +190,14 @@ include_once '../temp.html';
                                     </form>
                                     <div class="text-center mt-5 ml-0 text-warning">
                                         <?php
+                                        if (isset($hfAccessError)) { ?>
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <?php echo htmlspecialchars($hfAccessError, ENT_QUOTES, 'UTF-8') ?>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        <?php }
                                         if (isset($tokeneror) and $tokeneror === 1) { ?>
                                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                                 <strong>متاسفم!</strong> خطای غیر منتظره رخ داده است

@@ -31,6 +31,15 @@ if (isset($_POST['loginuser'])) {
                         if ($res['activity'] == 0) {
                             $erorlock = 1;
                         } else {
+                            try {
+                                hf_control_require_panel_access($conn, true);
+                            } catch (Throwable $e) {
+                                $hfAccessError = $e->getMessage();
+                                $res = null;
+                            }
+                            if ($res === null) {
+                                goto login_user_finished;
+                            }
                             $ip = GetIp();
                             $os = GetOs();
                             $sql2 = 'SELECT * FROM dbpersonal WHERE codemeli=?';
@@ -116,6 +125,7 @@ if (isset($_POST['loginuser'])) {
         $tokeneror = 1;
     }
 }
+login_user_finished:
 // End Receive Form Login
 
 //* Start Receive Forget password
@@ -275,6 +285,14 @@ document.oncontextmenu = function () {
                         <?php if (isset($erorMaxsms) and $erorMaxsms === 1) { ?>
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 سقف ارسال پیامک برای شما به پایان رسیده است. لطفاً ساعتی بعد امتحان کنید
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <?php }
+                        if (isset($hfAccessError)) { ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <?php echo htmlspecialchars($hfAccessError, ENT_QUOTES, 'UTF-8') ?>
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -586,7 +604,15 @@ document.oncontextmenu = function () {
                         </div>
 
                         <div class="login-wrap p-4 p-md-5">
-                            <?php if (isset($tokeneror) and $tokeneror === 1) { ?>
+                            <?php if (isset($hfAccessError)) { ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?php echo htmlspecialchars($hfAccessError, ENT_QUOTES, 'UTF-8') ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            <?php }
+                            if (isset($tokeneror) and $tokeneror === 1) { ?>
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                     <strong>متاسفم!</strong> خطای غیر منتظره رخ داده است
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

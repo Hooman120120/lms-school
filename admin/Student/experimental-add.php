@@ -160,6 +160,7 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student2'])) {
                     $codemeliValue = '9' . substr($_SESSION['add-student2']['tel'], 1);
                 }
             }
+            hf_control_require_seat($conn, hf_control_login_id($codemeliValue), 'student');
             $insert = 'INSERT INTO dbpersonal (codemeli,fname,lname,gender,tel1,paye,reshtestudent,datecreated,timecreated,ipcreated,oscreated,creator) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
             $insert_student = $conn->prepare($insert);

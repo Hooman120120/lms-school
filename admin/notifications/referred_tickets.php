@@ -95,9 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
                                 if ($status === 1) { // تایید
                                     $dbPersStmt = $conn->prepare("UPDATE dbpersonal SET suspension_mode = 1, suspension_reason = ? WHERE codemeli = ?");
                                     $dbPersStmt->execute([$referee_comment, $student_codemeli]);
+                                    hf_control_release($conn, hf_control_login_id($student_codemeli), true);
                                 } elseif ($status === 0) { // رد
-                                    $dbPersStmt = $conn->prepare("UPDATE dbpersonal SET suspension_mode = 0 WHERE codemeli = ?");
-                                    $dbPersStmt->execute([$student_codemeli]);
+                                    $response = hf_control_unsuspend_student($conn, $student_codemeli);
+                                    if (isset($response['allowed']) && !$response['allowed']) {
+                                        throw new RuntimeException(hf_control_denial_message($response));
+                                    }
                                 }
                             }
                         }

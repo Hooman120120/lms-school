@@ -182,6 +182,7 @@ if (isset($_POST['save'])) {
                 $adminrole = 3;
                 $schoolRoleId = $teacherSchoolRoleId;
 
+                hf_control_require_seat($conn, hf_control_admin_id($username), 'teacher');
                 $addmin = 'INSERT INTO dbadmin (username, password, fname, lname, adminactive, mobile, dakheli, adminpic, gender, per_skyroom, adminrole, school_role_id, teacher_perm_courses, teacher_perm_online_class, teacher_perm_students, teacher_perm_attendance, teacher_perm_homework, teacher_perm_content, teacher_perm_messages)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
                 $ins = $conn->prepare($addmin);

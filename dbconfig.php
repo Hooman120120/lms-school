@@ -37,6 +37,7 @@ try {
 // نوع مؤسسه (مدرسه / آموزشگاه) + واژه‌نامه و توابع t() و m()
 // باید بعد از ساخته شدن $conn لود شود، چون نوع مؤسسه از setting_public خوانده می‌شود.
 require_once BASE_PATH . '/config/institution.php';
+require_once BASE_PATH . '/inc/hf_control.php';
 function protocol()
 {
     return 'http://';
@@ -94,6 +95,8 @@ function displayError($displayerror)
 }
 
 displayError(DISPLAY_ERROR);
+
+hf_control_enforce_authenticated_request($conn);
 
 
 global $flashMessage;

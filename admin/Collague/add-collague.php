@@ -121,6 +121,7 @@ if (isset($_POST['submit-collague'])) {
             $codemeli = date('Ymd') . rand(100, 999);
         }
 
+        hf_control_require_seat($conn, hf_control_login_id($_SESSION['add-collague']['tel']), 'colleague');
         $insertc = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,personalcode,birthdate,`state`,city,gender,workname,semat,maghta,reshtehamkar,presented,datecreated,timecreated,ipcreated,oscreated,creator) 
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
         $query_collague = $conn->prepare($insertc);

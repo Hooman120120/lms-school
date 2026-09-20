@@ -54,19 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'unsus
     }
 
     try {
-        $st = $conn->prepare("
-            UPDATE dbpersonal
-            SET suspension_mode = 0,
-                suspension_reason = NULL
-            WHERE codemeli = ?
-            LIMIT 1
-        ");
-        $st->execute([$studentUsername]);
-
-        if ($st->rowCount() > 0) {
+        $response = hf_control_unsuspend_student($conn, $studentUsername);
+        if (!isset($response['allowed']) || $response['allowed']) {
             $_SESSION['flash_success'][] = m('msg.student_activated');
         } else {
-            $_SESSION['flash_errors'][] = m('msg.student_not_found_or_active');
+            $_SESSION['flash_errors'][] = hf_control_denial_message($response);
         }
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
@@ -139,9 +131,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['req
             if ($requestedMode === 1) {
                 $stApply = $conn->prepare("UPDATE dbpersonal SET suspension_mode = 1, suspension_reason = ? WHERE codemeli = ? LIMIT 1");
                 $stApply->execute([$requestedReason, $studentUsername]);
+                hf_control_release($conn, hf_control_login_id($studentUsername), true);
             } else {
-                $stApply = $conn->prepare("UPDATE dbpersonal SET suspension_mode = 0, suspension_reason = NULL WHERE codemeli = ? LIMIT 1");
-                $stApply->execute([$studentUsername]);
+                $response = hf_control_unsuspend_student($conn, $studentUsername);
+                if (isset($response['allowed']) && !$response['allowed']) {
+                    throw new RuntimeException(hf_control_denial_message($response));
+                }
             }
         }
 

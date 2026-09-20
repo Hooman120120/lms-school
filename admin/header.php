@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../inc/jdf.php';
+
 if (!isset($_SESSION['admin'])) {
     header('location: login.php');
     die();
