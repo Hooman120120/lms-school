@@ -38,6 +38,7 @@ try {
 // باید بعد از ساخته شدن $conn لود شود، چون نوع مؤسسه از setting_public خوانده می‌شود.
 require_once BASE_PATH . '/config/institution.php';
 require_once BASE_PATH . '/inc/hf_control.php';
+require_once BASE_PATH . '/inc/cross_panel.php';
 function protocol()
 {
     return 'http://';

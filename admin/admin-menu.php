@@ -1340,6 +1340,15 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
+            <?php if (cross_panel_secret() !== ''): ?>
+                <li class="nav-item mt-3">
+                    <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
+                        <span class="shape1"></span><span class="shape2"></span>
+                        <i class="fe fe-external-link sidemenu-icon"></i>
+                        <span class="sidemenu-label">ورود به پنل آزمون</span>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
         <hr>
         <ul class="nav" style="margin-left: 10px; display:none;" aria-hidden="true">

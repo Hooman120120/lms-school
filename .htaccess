@@ -1,1 +1,2 @@
 php_value session.gc_maxlifetime 7200
+SetEnv CROSS_PANEL_SECRET "5a0f986a3340edb925069ccb32a7a127bfcce37a8584090a727a96f93edb28d4"

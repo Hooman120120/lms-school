@@ -777,6 +777,55 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                 $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
                 $registerClassUpdate->execute([$registerClassPermission, $username]);
                 syncStaffCourseAssignments($conn, $username, $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
+                $oesPermissions = [
+                    'dashboard.view' => 1,
+                    'calendar.view' => $manage_calendar,
+                    'calendar.manage' => $manage_calendar,
+                    'students.section' => $menustudent,
+                    'students.register' => $addstudent,
+                    'groups.registration' => $coursestudent,
+                    'groups.manage' => $menucourse,
+                    'groups.assign' => $menucourse,
+                    'students.report' => $reportstudent,
+                    'packages.create' => $menuquiz,
+                    'packages.schedule_manage' => $menuquiz,
+                    'exams.section' => $menuquiz,
+                    'exams.manage' => $menuquiz,
+                    'exams.registration' => $menuquiz,
+                    'exams.list' => $menuquiz,
+                    'packages.list' => $menuquiz,
+                    'results.list' => $menuquiz,
+                    'results.detailed' => $menuquiz,
+                    'exams.descriptive_grade' => $menuquiz,
+                    'colleagues.section' => $menuemploy,
+                    'colleagues.create' => $menuemploy,
+                    'colleagues.list' => $menuemploy,
+                    'colleagues.edit' => $menuemploy,
+                    'colleagues.reset_password' => $menuemploy,
+                    'colleagues.delete' => $menuemploy,
+                    'content.section' => $manage_news_notif,
+                    'exams.approve' => $menuquiz,
+                    'notifications.manage' => $manage_news_notif,
+                    'news.manage' => $manage_news_notif,
+                    'events.manage' => $manage_news_notif,
+                    'requests.section' => $menusupport,
+                    'signup_requests.manage' => $menusupport,
+                    'teacher_tickets.manage' => $menusupport,
+                ];
+                $oesSync = cross_panel_sync_oes_admin([
+                    'username' => $username,
+                    'first_name' => $name,
+                    'last_name' => $famili,
+                    'email' => '',
+                    'mobile' => $mob,
+                    'gender' => (int) $gender,
+                    'active' => (int) $activate,
+                    'role' => cross_panel_oes_role($adminrole, $selectedSchoolRoleKey),
+                    'permissions' => $oesPermissions,
+                ]);
+                if (empty($oesSync['ok'])) {
+                    $_SESSION['cross_panel_warning'] = (string) ($oesSync['message'] ?? 'ساخت حساب در پنل آزمون انجام نشد');
+                }
                 $documentUploadErrors = SaveAdminDocumentUploads($username);
                 if ($documentUploadErrors) {
                     $_SESSION['admin_document_flash_errors'] = $documentUploadErrors;
@@ -1010,16 +1059,22 @@ include_once '../../temp.html';
 
                             <!-- LEFT COLUMN: Permissions (دسترسى‌ها و نقش‌ها) -->
                             <div class="col-lg-6 mb-4">
-                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                <div class="card custom-card h-100 border-0 shadow-sm permission-card">
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
                                         دسترسی‌ها و نقش‌ها
-                                        <span class="menu-info-trigger" style="color: white;"
+                                        <div class="d-flex align-items-center" style="gap:12px;">
+                                            <label class="mb-0 d-flex align-items-center" style="gap:6px;cursor:pointer;">
+                                                <input type="checkbox" class="permission-select-all">
+                                                انتخاب همه
+                                            </label>
+                                            <span class="menu-info-trigger" style="color: white;"
                                               data-tooltip="در این بخش می‌توانید مجوزها و سطح دسترسی کارمند را تعیین کنید.با فعال کردن و یا غیرفعال کردن هر بخش،مجوز دسترسی و یا عدم دسترسی کارمندان به آن بخش داده می شود."
                                               aria-label="راهنمای مجوزات"
                                               onclick="event.preventDefault(); event.stopPropagation();">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row text-right">
@@ -1227,16 +1282,22 @@ include_once '../../temp.html';
 
                             <!-- LEFT COLUMN: Permissions (دسترسى‌ها و نقش‌ها) -->
                             <div class="col-lg-6 mb-4">
-                                <div class="card custom-card h-100 border-0 shadow-sm">
+                                <div class="card custom-card h-100 border-0 shadow-sm permission-card">
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
                                         دسترسی‌ها و نقش‌ها
-                                        <span class="menu-info-trigger" style="color: white;"
+                                        <div class="d-flex align-items-center" style="gap:12px;">
+                                            <label class="mb-0 d-flex align-items-center" style="gap:6px;cursor:pointer;">
+                                                <input type="checkbox" class="permission-select-all">
+                                                انتخاب همه
+                                            </label>
+                                            <span class="menu-info-trigger" style="color: white;"
                                               data-tooltip="در این بخش می‌توانید مجوزها و سطح دسترسی کارمند را تعیین کنید.با فعال کردن و یا غیرفعال کردن هر بخش،مجوز دسترسی و یا عدم دسترسی کارمندان به آن بخش داده می شود."
                                               aria-label="راهنمای مجوزات"
                                               onclick="event.preventDefault(); event.stopPropagation();">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row text-right">
@@ -1282,6 +1343,35 @@ include_once '../../temp.html';
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.permission-card').forEach(function (card) {
+                const selectAll = card.querySelector('.permission-select-all');
+                const permissions = Array.from(card.querySelectorAll('.permission-option input[type="checkbox"]'));
+                if (!selectAll || permissions.length === 0) return;
+
+                function refreshSelectAll() {
+                    const checkedCount = permissions.filter(function (permission) {
+                        return permission.checked;
+                    }).length;
+                    selectAll.checked = checkedCount === permissions.length;
+                    selectAll.indeterminate = checkedCount > 0 && checkedCount < permissions.length;
+                }
+
+                selectAll.addEventListener('change', function () {
+                    const shouldCheck = selectAll.checked;
+                    permissions.forEach(function (permission) {
+                        permission.checked = shouldCheck;
+                    });
+                    permissions.forEach(function (permission) {
+                        permission.dispatchEvent(new Event('change', {bubbles: true}));
+                    });
+                    refreshSelectAll();
+                });
+                permissions.forEach(function (permission) {
+                    permission.addEventListener('change', refreshSelectAll);
+                });
+                refreshSelectAll();
+            });
+
             function bindCourseScope(roleSelectName, mode) {
                 const roleSelect = document.querySelector('select[name="' + roleSelectName + '"]');
                 const wrapper = document.querySelector('.staff-course-scope[data-mode="' + mode + '"]');
