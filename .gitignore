@@ -1,1 +1,4 @@
 /quiz
+/.vscode
+.htaccess
+dbconfig.php
