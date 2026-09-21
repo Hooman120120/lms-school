@@ -3,6 +3,7 @@ $crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
 if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     require_once $crossPanelHelper;
 }
+//test
 // ✅ Stronger guard: make sure the logged-in admin has a username
 if (empty($_SESSION['admin'])) {
     header('location: login.php');
