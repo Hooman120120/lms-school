@@ -3,6 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+require_once '../../inc/chahard_rooms.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -41,6 +42,13 @@ $courseCode = $staffCourseCode;
 $classStmt = $conn->prepare('SELECT id, name FROM classes WHERE codecourse = ? ORDER BY name ASC');
 $classStmt->execute([$courseCode]);
 $courseClasses = $classStmt->fetchAll(PDO::FETCH_OBJ);
+$chahardRooms = [];
+$chahardRoomsError = '';
+try {
+    $chahardRooms = chahard_rooms_for_lms();
+} catch (Throwable $e) {
+    $chahardRoomsError = $e->getMessage();
+}
 
 function validDarsClassIds(array $submittedIds, array $courseClasses): array
 {
@@ -121,6 +129,11 @@ if (isset($_POST['updateroom'])) {
         if ($codecourse !== $courseCode) {
             http_response_code(400);
             exit('پایه انتخاب‌شده معتبر نیست.');
+        }
+        if ($room !== '' && !in_array($room, array_column($chahardRooms, 'roomId'), true)) {
+            $_SESSION['message'] = $chahardRoomsError !== '' ? $chahardRoomsError : 'اتاق انتخاب‌شده در چهاردیواری وجود ندارد.';
+            header("Location: dars.php?code=$codecourse");
+            die();
         }
         $sql = "UPDATE dbdars SET link_class = ? WHERE id = ? AND codecourse = ?";
         $stmt = $conn->prepare($sql);
@@ -224,10 +237,13 @@ include_once '../../temp.html';
                                                 <div class="col-lg-12 mg-t-20">
                                                     <p class="mg-b-10"> شناسه اتاق چهاردیواری <span
                                                             class="tx-danger">*</span></p>
-                                                    <input class="form-control" name="room_class"
-                                                           aria-describedby="basic-addon2"
-                                                           type="text" placeholder="4562153"
-                                                           value="<?php echo htmlspecialchars($res->link_class ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                    <select class="form-control" name="room_class" aria-describedby="basic-addon2" <?= $chahardRoomsError !== '' ? 'disabled' : '' ?>>
+                                                        <option value="">بدون اتاق</option>
+                                                        <?php foreach ($chahardRooms as $chahardRoom): ?>
+                                                            <option value="<?= htmlspecialchars((string) $chahardRoom['roomId'], ENT_QUOTES, 'UTF-8') ?>" <?= (string) ($res->link_class ?? '') === (string) $chahardRoom['roomId'] ? 'selected' : '' ?>><?= htmlspecialchars((string) $chahardRoom['title'] . ' — ' . (string) $chahardRoom['roomId'], ENT_QUOTES, 'UTF-8') ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <?php if ($chahardRoomsError !== ''): ?><small class="text-danger"><?= htmlspecialchars($chahardRoomsError, ENT_QUOTES, 'UTF-8') ?></small><?php endif; ?>
                                                     <?php
                                                     $hash = bin2hex(random_bytes(32));
                                                     $_SESSION['token'] = $hash;
@@ -240,7 +256,7 @@ include_once '../../temp.html';
                                             </div>
                                             <div class="row">
                                                 <div class="text-center mg-t-30">
-                                                    <button class="btn ripple  btn-info pd-x-20" type="submit"
+                                                    <button class="btn ripple  btn-info pd-x-20" type="submit" <?= $chahardRoomsError !== '' ? 'disabled' : '' ?>
                                                         name="updateroom">ذخیره اتاق
                                                     </button>
                                                     <?php if (!empty($res->link_class)) { ?>

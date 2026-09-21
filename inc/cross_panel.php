@@ -1,17 +1,49 @@
 <?php
+/**
+ * Cross-panel single sign-on between the three HF panels (lms, oes, chahard).
+ *
+ * Every panel shares one CROSS_PANEL_SECRET and exposes cross-panel-login.php.
+ * A panel links to the *other* two; the target resolves the username against
+ * its own admin table, so an admin only lands where it already has an account.
+ */
+
+const CROSS_PANEL_SELF = 'lms';
+
+const CROSS_PANEL_LABELS = [
+    'lms' => 'پنل آموزش',
+    'oes' => 'پنل آزمون',
+    'chahard' => 'پنل کلاس آنلاین',
+];
 
 function cross_panel_secret(): string
 {
     return trim((string) getenv('CROSS_PANEL_SECRET'));
 }
 
-function cross_panel_oes_url(): string
+function cross_panel_url(string $type): string
 {
-    $configured = trim((string) getenv('CROSS_PANEL_OES_URL'));
-    if ($configured !== '') {
-        return rtrim($configured, '/');
+    if (!isset(CROSS_PANEL_LABELS[$type])) {
+        throw new InvalidArgumentException('نوع پنل معتبر نیست');
     }
-    return rtrim(currentDomain(), '/') . '/oes-school';
+    return rtrim(trim((string) getenv('CROSS_PANEL_' . strtoupper($type) . '_URL')), '/');
+}
+
+/** The other two panels, in menu order, that are actually configured. */
+function cross_panel_targets(): array
+{
+    if (cross_panel_secret() === '') {
+        return [];
+    }
+    $targets = [];
+    foreach (CROSS_PANEL_LABELS as $type => $label) {
+        if ($type === CROSS_PANEL_SELF) {
+            continue;
+        }
+        if (cross_panel_url($type) !== '') {
+            $targets[$type] = $label;
+        }
+    }
+    return $targets;
 }
 
 function cross_panel_signature(string $action, string $username, int $expires, string $body = ''): string
@@ -19,16 +51,20 @@ function cross_panel_signature(string $action, string $username, int $expires, s
     return hash_hmac('sha256', implode("\n", [$action, $username, (string) $expires, hash('sha256', $body)]), cross_panel_secret());
 }
 
-function cross_panel_login_url(string $username): string
+function cross_panel_login_url(string $type, string $username): string
 {
     $expires = time() + 60;
-    $signature = cross_panel_signature('login', $username, $expires);
-    return cross_panel_oes_url() . '/cross-panel-login.php?' . http_build_query([
+    return cross_panel_url($type) . '/cross-panel-login.php?' . http_build_query([
         'username' => $username,
         'expires' => $expires,
-        'signature' => $signature,
+        'signature' => cross_panel_signature('login', $username, $expires),
     ]);
 }
+function cross_panel_oes_url(): string
+{
+    return cross_panel_url('oes');
+}
+
 
 function cross_panel_oes_role(?int $adminRole, ?string $schoolRoleKey): int
 {

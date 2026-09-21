@@ -143,6 +143,13 @@ if (is_file($templateFile)) {
     <link href="../assets/css-rtl/dark-style.css" rel="stylesheet">
     <link href="../assets/css-rtl/colors/default.css" rel="stylesheet">
 
+    <style>
+        .main-signin-wrapper .card {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+    </style>
+
 
 </head>
 
