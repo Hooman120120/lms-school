@@ -113,7 +113,10 @@ if (isset($_POST['loginadmin'])) {
     }
 }
 login_admin_finished:
-include_once '../temp.html';
+$templateFile = __DIR__ . '/../temp.html';
+if (is_file($templateFile)) {
+    include_once $templateFile;
+}
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">

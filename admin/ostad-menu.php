@@ -1,4 +1,8 @@
 <?php
+$crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
+if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
+    require_once $crossPanelHelper;
+}
 if (empty($_SESSION['admin'])) {
     header('location: login.php');
     exit;
@@ -143,7 +147,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 </li>
             <?php endif ?>
 
-            <?php if (cross_panel_secret() !== ''): ?>
+            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
                 <li class="nav-item mt-3">
                     <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
                         <span class="shape1"></span><span class="shape2"></span>

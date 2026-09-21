@@ -1,4 +1,8 @@
 <?php
+$crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
+if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
+    require_once $crossPanelHelper;
+}
 // ✅ Stronger guard: make sure the logged-in admin has a username
 if (empty($_SESSION['admin'])) {
     header('location: login.php');
@@ -1340,7 +1344,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (cross_panel_secret() !== ''): ?>
+            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
                 <li class="nav-item mt-3">
                     <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
                         <span class="shape1"></span><span class="shape2"></span>

@@ -52,18 +52,20 @@ function currentDomain()
 
 function assest($src)
 {
-
-    $domain = trim(CURRENT_DOMAIN, '/ ');
-    $src = $domain . '/lms-school/' . trim($src, '/');
-    return $src;
+    return appBaseUrl() . '/' . trim($src, '/');
 }
 
 function url($url)
 {
-
-    $domain = trim(CURRENT_DOMAIN, '/ ');
-    $url = $domain . '/lms-school/' . trim($url, '/');
-    return $url;
+    return appBaseUrl() . '/' . trim($url, '/');
+}
+function appBaseUrl()
+{
+    $configured = trim((string) getenv('APP_BASE_URL'));
+    if ($configured !== '') {
+        return rtrim($configured, '/');
+    }
+    return rtrim(CURRENT_DOMAIN, '/ ') . '/lms-school';
 }
 function dd($value)
 {
