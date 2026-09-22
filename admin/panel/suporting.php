@@ -3,6 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+require_once '../../inc/chahard_rooms.php';
 displayerror(1);
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -95,7 +96,7 @@ if (isset($_GET['generate'])) {
     // ------------------------------------------------------------
     //  بخش جدید: فراخوانی API سامانه‌ی اتاق مجازی خودتان
     // ------------------------------------------------------------
-    $apiUrl = 'https://room.honaramoozesh.ir/api/enroll';
+    $apiUrl = chahard_join_url();
     $params = [
         'roomId'   => trim($course->link_class),  // شناسه اتاق (همان roomId)
         'username' => $_GET['Id'],
@@ -111,7 +112,7 @@ if (isset($_GET['generate'])) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'X-API-Key: -iQUqvEIIrq3DlkiHrt0K0ipUODyd62kJ3TP2Cxky50'   // کلید API خود را وارد کنید
+        'X-API-Key: ' . chahard_api_key()
     ]);
 
     $response = curl_exec($ch);

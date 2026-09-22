@@ -4,9 +4,9 @@ session_set_cookie_params([
     'lifetime' => 86400,        // عمر کوکی سشن به ثانیه (24 ساعت)
     'path' => '/',              // کوکی در کل دامنه قابل دسترس است
     'domain' => '',             // به صورت خودکار دامنه فعلی را تشخیص می‌دهد. اگر مشکل داشت، دامنه اصلی را اینجا قرار دهید.
-    'secure' => true,           // **مهم:** چون سایت شما HTTPS است، این باید true باشد
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
     'httponly' => true,         // کوکی از طریق JavaScript قابل دسترسی نیست (امنیت بیشتر)
-    'samesite' => 'None',       // **کلید حل مشکل درگاه:** برای درخواست‌های cross-site (مانند بازگشت از بانک) کوکی ارسال می‌شود
+    'samesite' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'None' : 'Lax',
 ]);
 
 session_start();
@@ -40,7 +40,11 @@ require_once BASE_PATH . '/inc/hf_control.php';
 require_once BASE_PATH . '/inc/cross_panel.php';
 function protocol()
 {
-    return 'http://';
+    $https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    if (!$https && isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+        $https = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0])) === 'https';
+    }
+    return $https ? 'https://' : 'http://';
 }
 
 function currentDomain()

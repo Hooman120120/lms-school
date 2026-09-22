@@ -147,14 +147,16 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 </li>
             <?php endif ?>
 
-            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
-                <li class="nav-item mt-3">
-                    <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
-                        <span class="shape1"></span><span class="shape2"></span>
-                        <i class="fe fe-external-link sidemenu-icon"></i>
-                        <span class="sidemenu-label">ورود به پنل آزمون</span>
-                    </a>
-                </li>
+            <?php if (function_exists('cross_panel_targets')): ?>
+                <?php foreach (cross_panel_targets() as $crossPanelType => $crossPanelLabel): ?>
+                    <li class="nav-item mt-3">
+                        <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url($crossPanelType, (string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
+                            <span class="shape1"></span><span class="shape2"></span>
+                            <i class="fe fe-external-link sidemenu-icon"></i>
+                            <span class="sidemenu-label">ورود به <?= htmlspecialchars($crossPanelLabel, ENT_QUOTES, 'UTF-8') ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             <?php endif; ?>
         </ul>
         <hr>

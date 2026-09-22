@@ -3,6 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+require_once '../../inc/chahard_rooms.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -101,7 +102,7 @@ if(isset($_GET['logindars'])) {
 
     $student = retAdmin($_SESSION['admin']['user']);
 
-    $apiUrl = 'https://room.honaramoozesh.ir/api/enroll';
+    $apiUrl = chahard_join_url();
     $params = array(
         'roomId'   => trim($dars->link_class),
         'username' => $_SESSION['admin']['user'],
@@ -117,7 +118,7 @@ if(isset($_GET['logindars'])) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
-        'X-API-Key: -iQUqvEIIrq3DlkiHrt0K0ipUODyd62kJ3TP2Cxky50'
+        'X-API-Key: ' . chahard_api_key()
     ]);
 
     $response = curl_exec($ch);

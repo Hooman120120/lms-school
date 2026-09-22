@@ -3,6 +3,7 @@ $crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
 if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     require_once $crossPanelHelper;
 }
+//test
 // ✅ Stronger guard: make sure the logged-in admin has a username
 if (empty($_SESSION['admin'])) {
     header('location: login.php');
@@ -1331,14 +1332,16 @@ else                  $c = '#15233f';
             <?php } ?>
             
 
-            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
-                <li class="nav-item mt-3">
-                    <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
-                        <span class="shape1"></span><span class="shape2"></span>
-                        <i class="fe fe-external-link sidemenu-icon"></i>
-                        <span class="sidemenu-label">ورود به پنل آزمون</span>
-                    </a>
-                </li>
+            <?php if (function_exists('cross_panel_targets')): ?>
+                <?php foreach (cross_panel_targets() as $crossPanelType => $crossPanelLabel): ?>
+                    <li class="nav-item mt-3">
+                        <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url($crossPanelType, (string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
+                            <span class="shape1"></span><span class="shape2"></span>
+                            <i class="fe fe-external-link sidemenu-icon"></i>
+                            <span class="sidemenu-label">ورود به <?= htmlspecialchars($crossPanelLabel, ENT_QUOTES, 'UTF-8') ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             <?php endif; ?>
         </ul>
         <hr>

@@ -3,6 +3,7 @@ include_once '../dbconfig.php';
 include_once '../inc/jdf.php';
 include_once '../inc/function.php';
 include_once '../inc/function_login.php';
+require_once '../inc/chahard_rooms.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../blackList.html';
     exit;
@@ -32,6 +33,28 @@ if ($_SESSION['auth']['role'] != 1) {
 if (!isset($_GET['code']) and $_GET['code'] = '') {
     header('location: ' . url('Course/allcourse.php'));
     die();
+}
+
+function showClassJoinError(string $message, int $courseCode, int $status): void
+{
+    http_response_code($status);
+    $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+    $backUrl = 'mycourse.php?code=' . $courseCode;
+    ?>
+    <!doctype html>
+    <html lang="fa" dir="rtl">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ورود به کلاس انجام نشد</title>
+        <style>
+            *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f1f6fc;color:#183047;font-family:Tahoma,Arial,sans-serif}.card{width:min(100%,540px);padding:36px;background:#fff;border:1px solid #e2eaf3;border-radius:20px;box-shadow:0 16px 45px rgba(23,48,79,.09);text-align:center}.icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 20px;border-radius:18px;background:#fff0ed;color:#c84638;font-size:32px;font-weight:bold}h1{margin:0 0 14px;font-size:22px}p{margin:0;color:#52677b;line-height:2;font-size:15px}.action{display:inline-block;margin-top:28px;padding:12px 24px;border-radius:10px;background:#087fa1;color:#fff;text-decoration:none;font-size:14px;font-weight:bold}.action:hover{background:#076984}
+        </style>
+    </head>
+    <body><main class="card"><div class="icon">!</div><h1>ورود به کلاس انجام نشد</h1><p><?= $safeMessage ?></p><a class="action" href="<?= htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8') ?>">بازگشت به دوره</a></main></body>
+    </html>
+    <?php
+    exit;
 }
 
 if (!isset($_GET['demo'])) {
@@ -107,11 +130,21 @@ if (isset($_GET['login'])) {
 //        header('location:' . $skytoken);
 //    }
 
+         $roomId = trim((string) ($course->link_class ?? ''));
+         if (!isset($_GET['demo'])) {
+             $darsId = (int) ($_GET['dars'] ?? 0);
+             $roomStmt = $conn->prepare('SELECT d.link_class FROM dbdars d INNER JOIN class_dars cd ON cd.dars_id = d.id WHERE d.id = ? AND d.codecourse = ? AND cd.class_id = ? LIMIT 1');
+             $roomStmt->execute([$darsId, (int) $course->codecourse, (int) $thisCourse->class_id]);
+             $roomId = trim((string) $roomStmt->fetchColumn());
+             if ($darsId <= 0 || $roomId === '' || $roomId === '#') {
+                 showClassJoinError('برای این درس اتاق چهاردیواری در کلاس شما تنظیم نشده است.', (int) $course->codecourse, 404);
+             }
+         }
          $student = retPerson($_SESSION['auth']['user']);
     
-         $apiUrl = 'https://room.honaramoozesh.ir/api/enroll';
+         $apiUrl = chahard_join_url();
          $params = array(
-             'roomId'   => trim($course->link_class),
+             'roomId'   => $roomId,
              'username' => $_SESSION['auth']['user'],
              'password' => $_SESSION['auth']['user'],
              'name'     => $student->fname,
@@ -125,7 +158,7 @@ if (isset($_GET['login'])) {
          curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
          curl_setopt($ch, CURLOPT_HTTPHEADER, [
              'Content-Type: application/json',
-             'X-API-Key: -iQUqvEIIrq3DlkiHrt0K0ipUODyd62kJ3TP2Cxky50'
+             'X-API-Key: ' . chahard_api_key()
          ]);
     
          $response = curl_exec($ch);
@@ -142,7 +175,7 @@ if (isset($_GET['login'])) {
              header("Location: " . $joinLink);
              exit;
          } else {
-             die("خطا در اتصال به کلاس آنلاین");
+             showClassJoinError((string) ($result['message'] ?? 'ارتباط با کلاس آنلاین برقرار نشد.'), (int) $course->codecourse, $httpCode >= 400 ? $httpCode : 502);
          }
 }
 if (isset($_GET['general'])) {
@@ -184,6 +217,12 @@ if (isset($_GET['general'])) {
 
 $student_username = $_SESSION['auth']['user'] ?? ($_SESSION['student']['user'] ?? ''); // adjust if your session key differs
 $codecourse = (int)($course->codecourse ?? 0);
+$studentRoomLessons = [];
+if (!isset($_GET['demo']) && isset($thisCourse->class_id)) {
+    $roomLessonsStmt = $conn->prepare("SELECT DISTINCT d.id, d.dars FROM class_dars cd INNER JOIN dbdars d ON d.id = cd.dars_id WHERE cd.class_id = ? AND d.codecourse = ? AND d.link_class IS NOT NULL AND d.link_class <> '' AND d.link_class <> '#' ORDER BY d.dars");
+    $roomLessonsStmt->execute([(int) $thisCourse->class_id, $codecourse]);
+    $studentRoomLessons = $roomLessonsStmt->fetchAll(PDO::FETCH_OBJ);
+}
 
 $hwTodoCount = 0;
 
@@ -292,12 +331,12 @@ include_once '../temp.html';
                             </div>
                             <div class="card-body text-center">
                                 <?php if (!isset($_GET['demo'])) { ?>
-                                    <?php if (act_classSkyroomForThisClass($class->id) == 0) { ?>
-                                        <button class="btn btn-primary disabled">کلاس فعال نیست</button>
+                                    <?php if (!$studentRoomLessons) { ?>
+                                        <span class="text-muted">برای درس‌های این کلاس اتاق چهاردیواری تنظیم نشده است.</span>
                                     <?php } else { ?>
-                                        <a href="?code=<?php echo $course->codecourse ?>&login=true" target="_blank"
-                                           class="btn btn-primary">ورود به کلاس
-                                            آنلاین</a>
+                                        <?php foreach ($studentRoomLessons as $roomLesson) { ?>
+                                            <a href="?code=<?= (int) $course->codecourse ?>&login=true&dars=<?= (int) $roomLesson->id ?>" target="_blank" class="btn btn-primary m-1">ورود به اتاق <?= htmlspecialchars((string) $roomLesson->dars, ENT_QUOTES, 'UTF-8') ?></a>
+                                        <?php } ?>
                                     <?php }
                                 } else { ?>
                                     <?php if (act_classSkyroomDemo($_GET['code']) == 0) { ?>
