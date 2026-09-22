@@ -5,7 +5,7 @@ if (realpath(__FILE__) === realpath($_SERVER['SCRIPT_FILENAME'] ?? '')) {
 }
 
 function hf_control_config(): ?array
-{
+{   
     $url = rtrim(trim((string) getenv('HF_CONTROL_URL')), '/');
     $panelId = trim((string) getenv('HF_PANEL_ID'));
     $panelKey = trim((string) getenv('HF_PANEL_KEY'));
@@ -206,7 +206,7 @@ function hf_control_enforce_authenticated_request(PDO $conn): void
 }
 
 function hf_control_claim(PDO $conn, string $externalId, string $userType): array
-{
+{   
     if (!hf_control_configured()) {
         return ['allowed' => true, 'reason' => 'not_configured'];
     }
@@ -344,10 +344,10 @@ function hf_control_denial_message(array $response): string
 }
 
 function hf_control_require_seat(PDO $conn, string $externalId, string $userType): void
-{
+{  
     try {
         $response = hf_control_claim($conn, $externalId, $userType);
-    } catch (Throwable $e) {
+    } catch (Throwable $e) { 
         http_response_code(503);
         exit('ارتباط با HF برقرار نشد و کاربر ایجاد نشد');
     }

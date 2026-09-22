@@ -102,42 +102,65 @@ function updateLogResult($log_id, $http_code, $response_body, $is_success, $erro
 // =========================== توابع داخلی (بدون API) ===========================
 function checkUserquiz($user)
 {
-    global $ponn;
-    $sql = 'SELECT * FROM `_users` WHERE uusername=?';
-    $query = $ponn->prepare($sql);
-    $query->execute([$user]);
-    return $query->rowCount() == 0; // true اگر کاربر وجود نداشته باشد
+    $sync = function_exists('cross_panel_sync_oes')
+        ? cross_panel_sync_oes('student.get', ['username' => (string)$user])
+        : ['ok' => false];
+    if (!empty($sync['ok'])) {
+        return false;
+    }
+
+    /*
+     * فراخوانی‌کنندگان قدیمی، پس از true شدن این تابع مستقیماً در اتصال
+     * legacy آزمون INSERT می‌زدند. کاربر را در OES با درخواست امضاشده
+     * می‌سازیم و false برمی‌گردانیم تا آن INSERT قدیمی اجرا نشود.
+     * این کار بخش بانکی/verify/callback پرداخت را تغییر نمی‌دهد.
+     */
+    $person = function_exists('retPerson') ? retPerson($user) : null;
+    $plainPassword = function_exists('passUser') ? (string) passUser($user) : '';
+    $result = CreateUserByApi([
+        'username' => (string)$user,
+        'password' => md5($plainPassword),
+        'active' => 1,
+        'expiration_date' => '3021-03-21',
+        'fname' => (string)($person->fname ?? ''),
+        'lname' => (string)($person->lname ?? ''),
+    ]);
+    if (!empty($result['success'])) {
+        return false;
+    }
+    $_SESSION['cross_panel_warning'] = (string)($result['message'] ?? 'ساخت دانش‌آموز در سامانه آزمون انجام نشد');
+    return true;
 }
 
 function retIdGroup($code)
 {
-    global $ponn;
-    $sql = 'SELECT ugid FROM `_ugroups` WHERE ugtitle=? ';
-    $query = $ponn->prepare($sql);
-    $query->execute([$code]);
-    $result = $query->fetch(PDO::FETCH_OBJ);
-    return $result->ugid ?? null;
+    $sync = function_exists('cross_panel_sync_oes')
+        ? cross_panel_sync_oes('group.get', ['code' => (string)$code])
+        : ['ok' => false];
+    return !empty($sync['ok']) ? (int)($sync['ugid'] ?? 0) : null;
 }
 
 function retIdStudent($username)
 {
-    global $ponn;
-    $sql = 'SELECT uid FROM `_users` WHERE uusername=? ';
-    $query = $ponn->prepare($sql);
-    $query->execute([$username]);
-    $result = $query->fetch(PDO::FETCH_OBJ);
-    return $result->uid ?? null;
+    $sync = function_exists('cross_panel_sync_oes')
+        ? cross_panel_sync_oes('student.get', ['username' => (string)$username])
+        : ['ok' => false];
+    return !empty($sync['ok']) ? (int)($sync['uid'] ?? 0) : null;
 }
 
 function checkGroupAdd($code, $username)
 {
     $ugid = retIdGroup($code);
     $uid = retIdStudent($username);
-    global $ponn;
-    $sql = 'SELECT * FROM `_ugroups_umembers` WHERE ugid_parent=? AND uid=?';
-    $query = $ponn->prepare($sql);
-    $query->execute([$ugid, $uid]);
-    return $query->rowCount() == 0; // true اگر عضو نباشد
+    if (!$ugid || !$uid || !function_exists('cross_panel_sync_oes')) {
+        return true;
+    }
+    $sync = cross_panel_sync_oes('membership.upsert', ['ugid' => (int)$ugid, 'uid' => (int)$uid]);
+    if (!empty($sync['ok'])) {
+        return false; // عضویت امن ثبت شده؛ INSERT مستقیم legacy اجرا نشود.
+    }
+    $_SESSION['cross_panel_warning'] = (string)($sync['message'] ?? 'ثبت عضویت دانش‌آموز در سامانه آزمون انجام نشد');
+    return true;
 }
 
 function checkEntityGroupQuiz($code)
@@ -237,11 +260,22 @@ function GetTestQuestions($utid)
 
 // =========================== توابع API با لاگ کامل ===========================
 
+function crossPanelDataSync($action, array $data)
+{
+    if (!function_exists('cross_panel_sync_oes')) {
+        return ['ok' => false, 'message' => 'ماژول ارتباط امن بین پنل‌ها بارگذاری نشده است'];
+    }
+    return cross_panel_sync_oes($action, $data);
+}
+
 function checkUserquizByApi($user)
 {
     if (empty($user)) {
         return false;
     }
+
+    $sync = crossPanelDataSync('student.get', ['username' => (string)$user]);
+    return !empty($sync['ok']) ? (int)($sync['uid'] ?? 0) : false;
 
     $url = "https://my.dast-garmi.ir/api/check-user.php?user=" . urlencode($user);
     $log_id = logApiCall('check_user_quiz', 'user', $user, 'GET', $url, null, null, $_SESSION['admin']['user'] ?? null);
@@ -285,6 +319,9 @@ function retIdGroupByApi($code)
         return null;
     }
 
+    $sync = crossPanelDataSync('group.get', ['code' => (string)$code]);
+    return !empty($sync['ok']) ? (int)($sync['ugid'] ?? 0) : null;
+
     $url = "https://my.dast-garmi.ir/api/get-group-id.php?code=" . urlencode($code);
     $log_id = logApiCall('get_group_id', 'group', 0, 'GET', $url, null, null, $_SESSION['admin']['user'] ?? null);
 
@@ -326,6 +363,9 @@ function AddUserToGroupByApi($ugid, $uid, $requested_by = null, $maxRetries = 2,
     if ($ugid <= 0 || $uid['uid'] <= 0) {
         return false;
     }
+
+    $sync = crossPanelDataSync('membership.upsert', ['ugid' => (int)$ugid, 'uid' => (int)$uid['uid']]);
+    return !empty($sync['ok']);
 
     $url = "https://my.dast-garmi.ir/api/add-user-to-group.php";
     $payload = ['ugid' => $ugid, 'uid' => $uid['uid']];
@@ -392,6 +432,10 @@ function AddUserTestPaymentByApi($packid, $uid, $requested_by = null, $maxRetrie
     if ($packid <= 0 || $uid['uid'] <= 0) {
         return false;
     }
+
+    // This grants package access only; no payment verification is performed here.
+    $sync = crossPanelDataSync('package.assign', ['package_id' => (int)$packid, 'uid' => (int)$uid['uid']]);
+    return !empty($sync['ok']);
 
     $url = "https://my.dast-garmi.ir/api/add-user-test-payment.php";
     $payload = ['packid' => $packid, 'uid' => $uid['uid']];
@@ -557,6 +601,11 @@ function GetUserIdByApi($username)
         return ['success' => false, 'error' => 'نام کاربری خالی است.'];
     }
 
+    $sync = crossPanelDataSync('student.get', ['username' => (string)$username]);
+    return !empty($sync['ok'])
+        ? ['success' => true, 'uid' => (int)($sync['uid'] ?? 0)]
+        : ['success' => false, 'error' => $sync['message'] ?? 'کاربر یافت نشد', 'uid' => null];
+
     $apiUrl = "https://my.dast-garmi.ir/api/get-user-by-username.php?username=" . urlencode($username);
     $log_id = logApiCall('get_user_by_username', 'user', $username, 'GET', $apiUrl, null, null, $_SESSION['admin']['user'] ?? null);
 
@@ -688,6 +737,17 @@ function GetTestQuestionsByApi($utid)
 
 function CreateUserByApi(array $userData, $requested_by = null)
 {
+    $sync = crossPanelDataSync('student.upsert', [
+        'username' => (string)($userData['username'] ?? ''),
+        'password_hash' => (string)($userData['password'] ?? ''),
+        'password' => (string)($userData['pass'] ?? ''),
+        'active' => isset($userData['active']) ? (int)$userData['active'] : 1,
+        'expiration_date' => (string)($userData['expiration_date'] ?? '3021-03-21'),
+        'first_name' => (string)($userData['fname'] ?? ''),
+        'last_name' => (string)($userData['lname'] ?? ''),
+    ]);
+    return !empty($sync['ok']) ? ['success' => true, 'uid' => (int)($sync['uid'] ?? 0)] : ['success' => false, 'message' => $sync['message'] ?? 'همگام‌سازی کاربر ناموفق بود'];
+
     $url = "https://my.dast-garmi.ir/api/create-user.php";
     $log_id = logApiCall('create_user', 'user', 0, 'POST', $url, $userData, ['Content-Type: application/json'],
         $requested_by ?? $_SESSION['admin']['user'] ?? null);
@@ -731,6 +791,9 @@ function CreateUserByApi(array $userData, $requested_by = null)
 
 function CreateGroupByApi($aid, $ugtitle, $ugdescription, $requested_by = null)
 {
+    $sync = crossPanelDataSync('group.upsert', ['code' => (string)$ugtitle, 'title' => (string)$ugdescription]);
+    return !empty($sync['ok']) ? ['success' => true, 'ugid' => (int)($sync['ugid'] ?? 0)] : ['success' => false, 'message' => $sync['message'] ?? 'همگام‌سازی پایه ناموفق بود'];
+
     $url = "https://my.dast-garmi.ir/api/create-group.php";
     $payload = compact('aid', 'ugtitle', 'ugdescription');
     $log_id = logApiCall('create_group', 'group', 0, 'POST', $url, $payload, ['Content-Type: application/json'],
@@ -774,6 +837,9 @@ function CreateGroupByApi($aid, $ugtitle, $ugdescription, $requested_by = null)
 
 function AddSubGroupByApi($aid, $ugtitle, $ugdescription, $ugid_parent, $requested_by = null)
 {
+    $sync = crossPanelDataSync('subgroup.upsert', ['code' => (string)$ugtitle, 'title' => (string)$ugdescription, 'parent_ugid' => (int)$ugid_parent]);
+    return !empty($sync['ok']) ? ['success' => true, 'ugid' => (int)($sync['ugid'] ?? 0)] : ['success' => false, 'message' => $sync['message'] ?? 'همگام‌سازی کلاس ناموفق بود'];
+
     $url = "https://my.dast-garmi.ir/api/add-subgroup.php";
     $payload = compact('aid', 'ugtitle', 'ugdescription', 'ugid_parent');
     $log_id = logApiCall('add_subgroup', 'group', 0, 'POST', $url, $payload, ['Content-Type: application/json'],
@@ -817,6 +883,9 @@ function AddSubGroupByApi($aid, $ugtitle, $ugdescription, $ugid_parent, $request
 
 function UpdateGroupByApi($ugtitleNew, $ugdescription, $ugtitleOld, $requested_by = null)
 {
+    $sync = crossPanelDataSync('group.upsert', ['code' => (string)$ugtitleNew, 'old_code' => (string)$ugtitleOld, 'title' => (string)$ugdescription]);
+    return !empty($sync['ok']) ? ['success' => true, 'ugid' => (int)($sync['ugid'] ?? 0)] : ['success' => false, 'message' => $sync['message'] ?? 'همگام‌سازی پایه ناموفق بود'];
+
     $url = "https://my.dast-garmi.ir/api/update-group.php";
     $payload = compact('ugtitleNew', 'ugtitleOld', 'ugdescription');
     $log_id = logApiCall('update_group', 'group', 0, 'POST', $url, $payload, ['Content-Type: application/json'],
@@ -942,7 +1011,3 @@ function getPackageGroups() {
 
     return null;
 }
-
-
-
-

@@ -3,7 +3,6 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
-
 include_once '../../inc/bulk_upload.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -118,7 +117,7 @@ $states = array();
 while ($row = $result->fetch()) {
     $states[] = $row;
 }
-if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) {
+if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) { 
     if (
         $_POST['fname-student'] != NULL and $_POST['lname-student'] != NULL and $_POST['parent-student'] != NULL and $_POST['tel-mother'] != NULL and $_POST['tel-father'] != NULL
         and $_POST['roz-student'] != NULL and $_POST['mah-student'] != NULL and $_POST['sal-student'] != NULL and $_POST['state-student'] != NULL and $_POST['city-student'] != NULL
@@ -173,8 +172,7 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) {
             $errors[] = 'بخش شماره ثابت باید ۷ تا ۸ رقم باشد.';
         }
         $tel_home = ($area_digits !== '' && $local_digits !== '') ? $area_digits . $local_digits : null;
-
-        if (!checkCodemeli($_SESSION['add-student']['codemeli'])) {
+        if (!checkCodemeli($_SESSION['add-student']['codemeli'])) { 
             hf_control_require_seat($conn, hf_control_login_id($_SESSION['add-student']['codemeli']), 'student');
             $insert = 'INSERT INTO dbpersonal (codemeli,fname,lname,fathername,tel1,tel2,tel3,tel_home,melliat,birthdate,`state`,city,nameschool,typeschool,paye,reshtestudent,area,gender,shift,datecreated,timecreated,ipcreated,oscreated,creator,moaref,description ) 
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
@@ -227,6 +225,15 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) {
             $insert_user = 'INSERT INTO dblogin (username,password,`role`) VALUES (?,?,?)';
             $query_user = $conn->prepare($insert_user);
             $query_user->execute([$_SESSION['add-student']['codemeli'], $pass, 1]);
+            $oesSync = cross_panel_sync_oes_student(
+                (string)$_SESSION['add-student']['codemeli'],
+                $fnameStudent,
+                $lnameStudent,
+                $pass
+            );
+            if (empty($oesSync['ok'])) {
+                $_SESSION['cross_panel_warning'] = (string)($oesSync['message'] ?? 'ساخت حساب دانش‌آموز در سامانه آزمون انجام نشد');
+            }
             $text = 'کد ملی' . ';' . $pass;
             SendSms($_SESSION['add-student']['tel'], $text, 171697, $_SESSION['add-student']['codemeli']);
             unset($_SESSION['add-student']);

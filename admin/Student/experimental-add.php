@@ -205,6 +205,15 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student2'])) {
             $insert_user = 'INSERT INTO dblogin (username,password,`role`) VALUES (?,?,?)';
             $query_user = $conn->prepare($insert_user);
             $query_user->execute([$codemeliValue, $codemeliValue, 1]);
+            $oesSync = cross_panel_sync_oes_student(
+                (string)$codemeliValue,
+                $fnameStudent,
+                $lnameStudent,
+                (string)$codemeliValue
+            );
+            if (empty($oesSync['ok'])) {
+                $_SESSION['cross_panel_warning'] = (string)($oesSync['message'] ?? 'ساخت حساب دانش‌آموز در سامانه آزمون انجام نشد');
+            }
             $text = $codemeliValue . ';' . $codemeliValue;
             SendSms($_SESSION['add-student2']['tel'], $text, 171697, $codemeliValue);
             unset($_SESSION['add-student2']);

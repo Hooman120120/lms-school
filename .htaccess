@@ -1,2 +1,11 @@
 php_value session.gc_maxlifetime 7200
+SetEnv HF_CONTROL_VERIFY_TLS "1"
+SetEnv CROSS_PANEL_OES_URL "http://localhost/oes"
 SetEnv CROSS_PANEL_SECRET "5a0f986a3340edb925069ccb32a7a127bfcce37a8584090a727a96f93edb28d4"
+
+
+SetEnv APP_BASE_URL "http://localhost/lms-school"
+
+SetEnv HF_CONTROL_URL "https://hf.honarfanavari.ir/api/v1"
+SetEnv HF_PANEL_ID "0315c551-04c2-4dc3-b1fc-d281aae24312"
+SetEnv HF_PANEL_KEY "6e3874c6c3713276c648f6cf5358771f0ccb25dff981fede47afa1939c6e21b9"

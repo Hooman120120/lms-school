@@ -33,7 +33,6 @@ try {
      echo $e->getMessage();
     echo 'خطای غیر منتظره رخ داده است';
 }
-
 // نوع مؤسسه (مدرسه / آموزشگاه) + واژه‌نامه و توابع t() و m()
 // باید بعد از ساخته شدن $conn لود شود، چون نوع مؤسسه از setting_public خوانده می‌شود.
 require_once BASE_PATH . '/config/institution.php';

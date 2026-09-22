@@ -367,6 +367,39 @@ include_once '../../temp.html';
                                 " افزوده شد .
                             </div>
                         <?php } ?>
+                        <?php if (Permision('permision_viewwallet')) { ?>
+                            <div class="col-12">
+                                <div class="card custom-card">
+                                    <div class="card-body py-3">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between" style="gap: 12px;">
+                                            <div>
+                                                <h6 class="main-content-label mb-1">مدیریت کیف پول</h6>
+                                                <p class="text-muted mb-0">برای نمایش ابزارهای کیف پول، دکمه را انتخاب کنید.</p>
+                                            </div>
+                                            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#wallet-management-actions" aria-expanded="false"
+                                                    aria-controls="wallet-management-actions">
+                                                <i class="si si-wallet ml-1"></i> مدیریت کیف پول
+                                                <i class="fe fe-chevron-down mr-1"></i>
+                                            </button>
+                                        </div>
+                                        <div class="collapse mt-3" id="wallet-management-actions">
+                                            <div class="d-flex flex-wrap" style="gap: 10px;">
+                                                <a class="btn btn-primary" href="<?php echo url('admin/wallet/dashboard.php') ?>">
+                                                    <i class="fe fe-grid ml-1"></i> داشبورد کیف پول
+                                                </a>
+                                                <a class="btn btn-outline-primary" href="<?php echo url('admin/wallet/exchange.php') ?>">
+                                                    <i class="fe fe-plus-circle ml-1"></i> افزودن / کاهش اعتبار
+                                                </a>
+                                                <a class="btn btn-outline-primary" href="<?php echo url('admin/wallet/searchwalletview.php') ?>">
+                                                    <i class="fe fe-list ml-1"></i> گزارش تراکنش‌ها
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
                         <div class="col-lg-6">
                             <div class="card custom-card">
                                 <div class="card-body">

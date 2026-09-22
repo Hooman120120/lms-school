@@ -3,7 +3,7 @@ set_time_limit(0); // حذف محدودیت زمان PHP
 ini_set('memory_limit', '512M');
 include_once '../../inc/jdf.php';
 include_once '../../vendor/autoload.php';
-include_once '../../quizconfig.php';
+// include_once '../../quizconfig.php';
 include_once 'function-quiz.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;

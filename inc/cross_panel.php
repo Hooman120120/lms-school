@@ -11,7 +11,7 @@ function cross_panel_oes_url(): string
     if ($configured !== '') {
         return rtrim($configured, '/');
     }
-    return rtrim(currentDomain(), '/') . '/oes-school';
+    return rtrim(currentDomain(), '/') . '/oes';
 }
 
 function cross_panel_signature(string $action, string $username, int $expires, string $body = ''): string
@@ -70,4 +70,49 @@ function cross_panel_sync_oes_admin(array $admin): array
     $response = @file_get_contents(cross_panel_oes_url() . '/cross-panel-sync-admin.php', false, $context);
     $decoded = is_string($response) ? json_decode($response, true) : null;
     return is_array($decoded) ? $decoded : ['ok' => false, 'message' => 'ارتباط با پنل آزمون برقرار نشد'];
+}
+
+/** Send a short-lived, signed data synchronisation request to OES. */
+function cross_panel_sync_oes(string $action, array $data): array
+{
+    $secret = cross_panel_secret();
+    if ($secret === '') {
+        return ['ok' => false, 'message' => 'کلید ارتباط بین پنل‌ها تنظیم نشده است'];
+    }
+    $username = (string) ($_SESSION['admin']['user'] ?? 'lms-system');
+    $body = json_encode(['action' => $action, 'data' => $data], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($body === false) {
+        return ['ok' => false, 'message' => 'دادهٔ همگام‌سازی معتبر نیست'];
+    }
+    $expires = time() + 60;
+    $headers = [
+        'Content-Type: application/json',
+        'X-Cross-Username: ' . $username,
+        'X-Cross-Expires: ' . $expires,
+        'X-Cross-Signature: ' . cross_panel_signature('sync-data', $username, $expires, $body),
+    ];
+    $context = stream_context_create(['http' => [
+        'method' => 'POST',
+        'header' => implode("\r\n", $headers),
+        'content' => $body,
+        'timeout' => 10,
+        'ignore_errors' => true,
+    ]]);
+    $response = @file_get_contents(cross_panel_oes_url() . '/cross-panel-sync.php', false, $context);
+    $decoded = is_string($response) ? json_decode($response, true) : null;
+    return is_array($decoded) ? $decoded : ['ok' => false, 'message' => 'ارتباط با پنل آزمون برقرار نشد'];
+}
+
+/** Create or update the OES account that corresponds to an LMS student. */
+function cross_panel_sync_oes_student(string $username, string $firstName, string $lastName, string $plainPassword, bool $active = true): array
+{
+    return cross_panel_sync_oes('student.upsert', [
+        'username' => $username,
+        // OES currently stores its login verifier as MD5; no raw password is sent.
+        'password_hash' => md5($plainPassword),
+        'active' => $active ? 1 : 0,
+        'expiration_date' => '3021-03-21',
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+    ]);
 }
