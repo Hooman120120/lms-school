@@ -1,8 +1,0 @@
-php_value session.gc_maxlifetime 7200
-SetEnv APP_BASE_URL "http://192.168.1.225/lms-school"
-SetEnv HF_CONTROL_URL "http://192.168.1.225/api/v1"
-SetEnv CHAHARD_API_KEY "79946ca1bf7a0dc2cbbb53dc1df83f4e9cdce682b12081a493bb3c63df8f1dc9daa8b0c117eb3db4cc20858b98995eb2"
-SetEnv HF_CONTROL_VERIFY_TLS "1"
-SetEnv CROSS_PANEL_OES_URL "https://oes.honarfanavari.ir"
-SetEnv CROSS_PANEL_SECRET "5a0f986a3340edb925069ccb32a7a127bfcce37a8584090a727a96f93edb28d4"
-SetEnv CROSS_PANEL_CHAHARD_URL "http://localhost/chahard"
