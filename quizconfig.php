@@ -3,8 +3,8 @@
 
 
 define('DB_HOST1', 'localhost');
-define('DB_USER1', 'myhona_quiz');
-define('DB_PASS1', 'fqbVdGg5!xj1^gFB');
+define('DB_USER1', 'root');
+define('DB_PASS1', '');
 define('DB_NAME1', 'myhona_quiz');
 
 
@@ -16,6 +16,6 @@ try {
 
 } catch (PDOException $e) {
 
-//    echo $e->getMessage();
+//    echo $e->getMessage(); 
     echo 'خطای غیر منتظره رخ داده است';
 }
