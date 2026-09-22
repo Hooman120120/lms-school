@@ -16339,3 +16339,48 @@ Stack trace:
 [09-Sep-2026 12:11:26 Asia/Tehran] PHP Warning:  include_once(): Failed opening '../../blackList.html' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/admin/call_status.php on line 9
 [09-Sep-2026 12:11:33 Asia/Tehran] PHP Warning:  include_once(../../blackList.html): failed to open stream: No such file or directory in /home/myhona/public_html/admin/call_status.php on line 9
 [09-Sep-2026 12:11:33 Asia/Tehran] PHP Warning:  include_once(): Failed opening '../../blackList.html' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/myhona/public_html/admin/call_status.php on line 9
+[21-Sep-2026 10:25:05 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 10:32:16 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 10:36:15 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 10:40:00 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 10:41:35 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 10:43:14 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/admin/login.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 17:32:30 Asia/Tehran] PHP Warning:  session_start(): Failed to decode session object. Session has been destroyed in /home/h374886/school/dbconfig.php on line 12
+[21-Sep-2026 18:33:29 Asia/Tehran] PHP Warning:  Undefined variable $studentAcademicYear in /home/h374886/school/admin/index.php on line 142
+[21-Sep-2026 18:33:29 Asia/Tehran] PHP Warning:  Trying to access array offset on value of type null in /home/h374886/school/admin/index.php on line 142
+[21-Sep-2026 18:33:29 Asia/Tehran] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/h374886/school/admin/index.php on line 142
+[21-Sep-2026 18:38:36 Asia/Tehran] PHP Fatal error:  Uncaught Error: Undefined constant "__SCHOOL_NAME" in /home/h374886/school/admin/header.php:53
+Stack trace:
+#0 /home/h374886/school/admin/index.php(115): include_once()
+#1 {main}
+  thrown in /home/h374886/school/admin/header.php on line 53

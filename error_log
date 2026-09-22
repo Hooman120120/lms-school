@@ -16210,3 +16210,15 @@ Stack trace:
 [13-Sep-2026 18:17:58 Europe/London] PHP Notice:  Undefined index: personal in /home/myhona/public_html/Sendinformation-experimental.php on line 20
 [13-Sep-2026 18:17:58 Europe/London] PHP Notice:  Trying to access array offset on value of type null in /home/myhona/public_html/Sendinformation-experimental.php on line 20
 [14-Sep-2026 16:41:57 Europe/London] PHP Notice:  Undefined index: codemeli in /home/myhona/public_html/smsVerification.php on line 80
+[21-Sep-2026 10:41:59 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 102 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(102): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/cross-panel-login.php(2): require_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185
+[21-Sep-2026 11:00:29 Asia/Tehran] PHP Fatal error:  Uncaught TypeError: hf_control_enforce_authenticated_request(): Argument #1 ($conn) must be of type PDO, null given, called in /home/h374886/school/dbconfig.php on line 106 and defined in /home/h374886/school/inc/hf_control.php:185
+Stack trace:
+#0 /home/h374886/school/dbconfig.php(106): hf_control_enforce_authenticated_request()
+#1 /home/h374886/school/index.php(2): include_once('/home/h374886/s...')
+#2 {main}
+  thrown in /home/h374886/school/inc/hf_control.php on line 185

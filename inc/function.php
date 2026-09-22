@@ -3347,7 +3347,7 @@ function getSchoolAcademicYearRange(?int $timestamp = null): array
         'start_gregorian' => sprintf('%04d-%02d-%02d', $startGregorian[0], $startGregorian[1], $startGregorian[2]),
         'end_gregorian' => sprintf('%04d-%02d-%02d', $endGregorian[0], $endGregorian[1], $endGregorian[2]),
         'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $endExclusiveGregorian[0], $endExclusiveGregorian[1], $endExclusiveGregorian[2]),
-        'label' => sprintf('%04d–%04d', $baseYear, $baseYear + 1),
+        'label' => sprintf('%04d–%04d', $baseYear + 1, $baseYear),
     ];
 }
 //1tir to 1 tir

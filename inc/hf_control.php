@@ -4,12 +4,22 @@ if (realpath(__FILE__) === realpath($_SERVER['SCRIPT_FILENAME'] ?? '')) {
     exit;
 }
 
+function hf_control_env(string $name): string
+{
+    foreach ([$_SERVER[$name] ?? null, $_ENV[$name] ?? null, getenv($name)] as $value) {
+        if (is_string($value) && trim($value) !== '') {
+            return trim($value);
+        }
+    }
+    return '';
+}
+
 function hf_control_config(): ?array
-{   
-    $url = rtrim(trim((string) getenv('HF_CONTROL_URL')), '/');
-    $panelId = trim((string) getenv('HF_PANEL_ID'));
-    $panelKey = trim((string) getenv('HF_PANEL_KEY'));
-    $verifyTls = filter_var(getenv('HF_CONTROL_VERIFY_TLS'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+{
+    $url = rtrim(hf_control_env('HF_CONTROL_URL'), '/');
+    $panelId = hf_control_env('HF_PANEL_ID');
+    $panelKey = hf_control_env('HF_PANEL_KEY');
+    $verifyTls = filter_var(hf_control_env('HF_CONTROL_VERIFY_TLS'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     if ($url === '' || $panelId === '' || $panelKey === '') {
         return null;
     }

@@ -469,65 +469,12 @@ include_once '../../temp.html';
                                                 </div>
 
                                                 <div class="col-4">
-                                                    <!-- Elementary -->
-                                                    <div class="btn-group dropdown me-2 mb-3">
-                                                        <a href="?paye=ابتدایی"
-                                                           class="btn btn-info shadow rounded <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'ابتدایی') ? 'active' : ''; ?>">
-                                                            <i class="fa fa-graduation-cap"></i> گروه ابتدایی
-                                                        </a>
-                                                        <button type="button"
-                                                                class="btn btn-info shadow rounded dropdown-toggle dropdown-toggle-split"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span class="visually-hidden">Toggle Dropdown</span>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'اول') ? 'active' : ''; ?>"
-                                                                   href="?paye=اول">کلاس اول دبستان</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'دوم') ? 'active' : ''; ?>"
-                                                                   href="?paye=دوم">کلاس دوم دبستان</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'چهارم') ? 'active' : ''; ?>"
-                                                                   href="?paye=چهارم">کلاس چهارم دبستان</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'پنجم') ? 'active' : ''; ?>"
-                                                                   href="?paye=پنجم">کلاس پنجم دبستان</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'ششم') ? 'active' : ''; ?>"
-                                                                   href="?paye=ششم">کلاس ششم دبستان</a></li>
-                                                        </ul>
-                                                    </div>
-
-                                                    <!-- Middle School -->
-                                                    <div class="btn-group dropdown me-2 mb-3">
-                                                        <a href="?paye=متوسطه_اول"
-                                                           class="btn btn-success shadow rounded <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'متوسطه_اول') ? 'active' : ''; ?>">
-                                                            <i class="fa fa-book"></i> متوسطه اول
-                                                        </a>
-                                                        <button type="button"
-                                                                class="btn btn-success shadow rounded dropdown-toggle dropdown-toggle-split"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span class="visually-hidden">Toggle Dropdown</span>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'هفتم') ? 'active' : ''; ?>"
-                                                                   href="?paye=هفتم">هفتم</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'هشتم') ? 'active' : ''; ?>"
-                                                                   href="?paye=هشتم">هشتم</a></li>
-                                                            <li>
-                                                                <a class="dropdown-item <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'نهم') ? 'active' : ''; ?>"
-                                                                   href="?paye=نهم">نهم</a></li>
-                                                        </ul>
-                                                    </div>
 
                                                     <!-- High School -->
                                                     <div class="btn-group dropdown me-2 mb-3">
                                                         <a href="?paye=متوسطه_دوم"
                                                            class="btn btn-warning shadow rounded <?php echo (isset($_GET['paye']) && $_GET['paye'] === 'متوسطه_دوم') ? 'active' : ''; ?>">
-                                                            <i class="fa fa-star"></i> متوسطه دوم
+                                                             متوسطه دوم
                                                         </a>
                                                         <button type="button"
                                                                 class="btn btn-warning shadow rounded dropdown-toggle dropdown-toggle-split"
@@ -616,24 +563,17 @@ include_once '../../temp.html';
                                                 </div>
                                                 <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
                                                     <div class="col-2 text-left mb-3 bg">
-                                                        <a href="login_skyroom.php?loginPublick " target="_blank"
-                                                           class="btn btn-sm btn-info"><i class="fa fa-tv"></i> ورود به کلاس
-                                                            مشاوره
-                                                            (عمومی) </a>
+                                                        
                                                     </div>
                                                 <?php } ?>
                                                 <?php
                                                 if (Permision('permision_viewtest')) {
                                                     ?>
                                                     <div class="col-2 text-right ">
-                                                        <a href="?loginquiz" target="_blank" class="btn btn-sm btn-success"><i
-                                                                    class="fe fe-check-square"></i> ورود بـه سـامانـه آزمـون
-                                                        </a>
+                                                        
                                                     </div>
                                                     <div class="col-2 text-right ">
-                                                       <a href="view-api-logs.php" class="btn btn-sm btn-secondary"><i
-                                                                   class="fe fe-check-circle"></i> api log dast-garmi
-                                                       </a>
+                                                       
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -938,20 +878,14 @@ include_once '../../temp.html';
                                                 </div>
                                                 <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
                                                     <div class="col-2 text-left mb-3">
-                                                        <a href="login_skyroom.php?loginPublick " target="_blank"
-                                                           class="btn btn-sm btn-info"><i class="fa fa-tv"></i> ورود به کلاس
-                                                            مشاوره
-                                                            (عمومی) </a>
+                                                        
                                                     </div>
                                                 <?php } ?>
                                                 <?php
                                                 if (Permision('permision_viewtest')) {
                                                     ?>
                                                     <div class="col-2 text-right ">
-                                                        <a href="?loginquiz" target="_blank"
-                                                           class="btn btn-sm btn-success"><i
-                                                                    class="fe fe-check-square"></i> ورود بـه سـامانـه
-                                                            آزمـون </a>
+                                                        
                                                     </div>
                                                 <?php } ?>
 
@@ -1212,18 +1146,13 @@ include_once '../../temp.html';
 
                                                 <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
                                                     <div class="col-2 text-left mb-3">
-                                                        <a href="login_skyroom.php?loginPublick" target="_blank"
-                                                           class="btn btn-sm btn-info">
-                                                            <i class="fa fa-tv"></i> ورود به کلاس مشاوره (عمومی)
-                                                        </a>
+                                                       
                                                     </div>
                                                 <?php } ?>
 
                                                 <?php if (Permision('permision_viewtest')) { ?>
                                                     <div class="col-2 text-right">
-                                                        <a href="?loginquiz" target="_blank" class="btn btn-sm btn-success">
-                                                            <i class="fe fe-check-square"></i> ورود بـه سـامانـه آزمـون
-                                                        </a>
+                                                        
                                                     </div>
                                                 <?php } ?>
                                             </div>

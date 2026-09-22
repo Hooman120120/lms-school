@@ -72,6 +72,15 @@ $activeNews = $stmt_news->fetchAll(PDO::FETCH_OBJ);
 if (!Permision('permission_calendar')) {
     include_once 'panel/calendar.php';
 }
+$studentAcademicYear = getSchoolAcademicYearRange();
+
+
+// برای استفاده از توابع پنل آزمون
+$crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
+if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
+    require_once $crossPanelHelper;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -139,7 +148,7 @@ if (!Permision('permission_calendar')) {
                                     </h5>
 
                                     <p class="dashboard-subtitle">
-                                        داشبورد مدیریتی — نمای کلی و آمار امسال
+                                        داشبورد مدیریتی — نمای کلی و آمار سال تحصیلی <?php echo htmlspecialchars($studentAcademicYear['label']); ?>
                                     </p>
 
                                 </div>
@@ -186,7 +195,7 @@ if (!Permision('permission_calendar')) {
                         $totalAttendance = $att['attendance'];
 
                         // Operational cards
-                        $studentAcademicYear = getSchoolAcademicYearRange();
+                        
                         $co_student = 'SELECT COUNT(*) as countstudent FROM dbpersonal WHERE datecreated >= ? AND datecreated < ?';
                         $query_st = $conn->prepare($co_student);
                         $query_st->execute([
@@ -211,19 +220,20 @@ if (!Permision('permission_calendar')) {
                         ?>
 
                         <div class="stats-grid stats-grid-three">
-
+                            
                             <a class="stat-card link-card"
-                               href="<?php echo url('admin/panel/academic_year_students.php') ?>"
-                               onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
+                               onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>','CourseDetail','width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
-                                    <p class="stat-label">دانش‌آموزان</p>
-                                    <p class="stat-value"><?php echo number_format($countStudents); ?></p>
-                                    <p class="stat-note">ثبت‌نام‌های سال تحصیلی <?php echo htmlspecialchars($studentAcademicYear['label']); ?></p>
+                                    <p class="stat-label">پایه‌های در حال اجرا</p>
+                                    <p class="stat-value"><?php echo number_format($countCourses); ?></p>
+                                    <p class="stat-note">مشاهده پایه‌ها و دانش‌آموزان</p>
                                 </div>
-                                <div class="stat-icon icon-indigo" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
+                                <div class="stat-icon icon-green" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
                                 </div>
                             </a>
+
+                            
 
                             <a class="stat-card link-card"
                                href="<?php echo url('admin/panel/staff_management.php') ?>"
@@ -239,14 +249,15 @@ if (!Permision('permission_calendar')) {
                             </a>
 
                             <a class="stat-card link-card"
-                               onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>','CourseDetail','width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
+                               href="<?php echo url('admin/panel/academic_year_students.php') ?>"
+                               onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
-                                    <p class="stat-label">پایه‌های در حال ثبت‌نام</p>
-                                    <p class="stat-value"><?php echo number_format($countCourses); ?></p>
-                                    <p class="stat-note">مشاهده پایه‌ها و دانش‌آموزان</p>
+                                    <p class="stat-label">دانش‌آموزان</p>
+                                    <p class="stat-value"><?php echo number_format($countStudents); ?></p>
+                                    <p class="stat-note">ثبت‌نام‌های سال تحصیلی <?php echo htmlspecialchars($studentAcademicYear['label']); ?></p>
                                 </div>
-                                <div class="stat-icon icon-green" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
+                                <div class="stat-icon icon-indigo" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
                                 </div>
                             </a>
 
@@ -255,27 +266,7 @@ if (!Permision('permission_calendar')) {
 
 
                         <div class="stats-grid stats-grid-three">
-
-                            <div class="stat-card">
-                                <div class="stat-left">
-                                    <p class="stat-label">پیامک‌های ارسالی امسال</p>
-                                    <p class="stat-value text-info"><?php echo number_format($countSMS); ?></p>
-                                </div>
-                                <div class="stat-icon icon-cyan" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                                </div>
-                            </div>
-
-                            <div class="stat-card">
-                                <div class="stat-left">
-                                    <p class="stat-label">آزمون‌های برگزار شده امسال</p>
-                                    <p class="stat-value text-warning"><?php echo number_format($totalQuizzes); ?></p>
-                                </div>
-                                <div class="stat-icon icon-amber" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
-                                </div>
-                            </div>
-
+                            
                             <div class="stat-card">
                                 <div class="stat-left">
                                     <p class="stat-label">   تعداد کل کلاس های برگزار شده </p>
@@ -283,6 +274,28 @@ if (!Permision('permission_calendar')) {
                                 </div>
                                 <div class="stat-icon icon-slate" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zM19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z"/></svg>
+                                </div>
+                            </div>
+                            
+
+                            <div class="stat-card">
+                                <div class="stat-left">
+                                    <p class="stat-label">آزمون‌های برگزار شده </p>
+                                    <p class="stat-value text-warning"><?php echo number_format($totalQuizzes); ?></p>
+                                </div>
+                                <div class="stat-icon icon-amber" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+                                </div>
+                            </div>
+
+                            
+                            <div class="stat-card">
+                                <div class="stat-left">
+                                    <p class="stat-label">ارتباط با دانش آموزان و اولیا </p>
+                                    
+                                </div>
+                                <div class="stat-icon icon-cyan" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                                 </div>
                             </div>
 
@@ -293,6 +306,87 @@ if (!Permision('permission_calendar')) {
 
 
                     </div>
+                    <div class="row mt-4 mb-3">
+    <div class="col-12">
+        <div class="row" style="gap:0;">
+
+            <!-- بخش راست: ورود به پنل آزمون (رنگ یاسی) -->
+            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <div class="card card-box h-100"
+                         style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+                                color:#fff;
+                                border:none;
+                                border-radius: 14px;
+                                margin:0;">
+                        <div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap" style="gap:15px;">
+
+                            <div class="d-flex align-items-center" style="gap:14px;">
+                                <div style="width:50px; height:50px; border-radius:12px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center;">
+                                    <i class="fe fe-external-link" style="font-size:24px; color:#fff;"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به پنل آزمون</h5>
+                                    <p class="mb-0" style="color:rgba(255,255,255,0.85); font-size:13px;">
+                                        مدیریت آزمون‌ها و مشاهده نتایج
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>"
+                               class="btn ripple"
+                               style="background:#fff; color:#7c3aed; font-weight:700; padding:10px 22px; border-radius:10px; transition: all 0.3s; white-space:nowrap;"
+                               onmouseover="this.style.background='#f5f0ff'; this.style.transform='translateY(-2px)';"
+                               onmouseout="this.style.background='#fff'; this.style.transform='translateY(0)';">
+
+                                <i class="fe fe-log-in ml-1"></i> ورود
+
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- بخش چپ: ورود به پنل کلاس آنلاین (رنگ سبز جنگلی) -->
+            <div class="col-12 col-md-6">
+                <div class="card card-box h-100"
+                     style="background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+                            color:#fff;
+                            border:none;
+                            border-radius: 14px;
+                            margin:0;">
+                    <div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap" style="gap:15px;">
+
+                        <div class="d-flex align-items-center" style="gap:14px;">
+                            <div style="width:50px; height:50px; border-radius:12px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center;">
+                                <i class="fe fe-video" style="font-size:24px; color:#fff;"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به کلاس آنلاین</h5>
+                                <p class="mb-0" style="color:rgba(255,255,255,0.85); font-size:13px;">
+                                    برگزاری و مدیریت کلاس‌های آنلاین
+                                </p>
+                            </div>
+                        </div>
+
+                        <a href="#"
+                           class="btn ripple"
+                           style="background:#fff; color:#1b4332; font-weight:700; padding:10px 22px; border-radius:10px; transition: all 0.3s; white-space:nowrap;"
+                           onmouseover="this.style.background='#eafff3'; this.style.transform='translateY(-2px)';"
+                           onmouseout="this.style.background='#fff'; this.style.transform='translateY(0)';">
+
+                            <i class="fe fe-log-in ml-1"></i> ورود
+
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
                 </div>
             <?php }
             if (!Permision('permission_calendar')) {

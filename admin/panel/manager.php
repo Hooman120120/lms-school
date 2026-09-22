@@ -220,39 +220,42 @@ include_once '../../temp.html';
                                     <i class="fe fe-info fs-4"></i>
                                 </span>
                             </div>
-                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 ">
-                                <a class=" split-btn block" style="color: #0a0a0a; cursor: pointer;"
-                                   onclick="window.open('<?php echo url('admin/panel/all_users_management.php') ?>',
-                                           'lacking support',
-                                           'width=1250,height=450,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">                                <div class="card custom-card">
-                                        <div class="card-body">
-                                            <div class="card-order">
-                                                <?php
-                                                $co_student = 'SELECT COUNT(*) as countstudent from dbpersonal ';
-                                                $query_st = $conn->prepare($co_student);
-                                                $query_st->execute();
-                                                $result_student = $query_st->fetch(PDO::FETCH_OBJ);
-                                                ?>
-                                                <div class="d-flex align-items-center mb-2" style="gap:12px;">
-                                                    <label class="main-content-label mb-3 pt-1">
-                                                        دانش آموزان
-                                                    </label>
-                                                    <span class="menu-info-trigger"
-                                                          data-tooltip="در این بخش تعداد کل دانش آموزانی که دارای حساب کاربری در سامانه هستند نمایش داده می‌شود. این آمار شامل تمامی دانش آموزان ثبت‌شده بوده و می‌تواند برای بررسی وضعیت کلی کاربران سامانه مورد استفاده قرار گیرد."
-                                                          aria-label="راهنمای دانش آموزان">
-                                                        <i class="fe fe-info fs-4"></i>
-                                                    </span>
-                                                </div>
-                                                <h2 class="text-left card-item-icon card-icon">
-                                                    <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
-                                                            class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
-                                                </h2>
-                                                <p class="mb-0 mt-4 text-muted">افرادی که پنل کاربری دارند</p>
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                                <a class="card custom-card "
+                                   style="color: #0a0a0a; cursor: pointer; text-decoration: none;"
+                                   onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>',
+                                           'CourseDetail',
+                                           'width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
+                                    <div class="card-body">
+                                        <div class="card-order">
+                                            <?php
+                                            $co_course = 'SELECT COUNT(idcourse) as course FROM codtbl_course WHERE activecourse = ? AND course_type = 0';
+                                            $query_st = $conn->prepare($co_course);
+                                            $query_st->execute([1]);
+                                            $result_student = $query_st->fetch(PDO::FETCH_OBJ);
+                                            ?>
+                                            <div class="d-flex align-items-center mb-2" style="gap:12px;">
+                                                <label class="main-content-label mb-3 pt-1">
+                                                    پایه‌های در حال اجرا
+                                                </label>
+                                                <span class="menu-info-trigger"
+                                                      data-tooltip="در این بخش تعداد پایه‌های فعال و در حال اجرای مدرسه نمایش داده می‌شود."
+                                                      aria-label="راهنمای پایه‌های در حال اجرا">
+                                                    <i class="fe fe-info fs-4"></i>
+                                                </span>
                                             </div>
+                                            <h2 class="text-left">
+                                                <i class="fe fe-activity icon-size float-right text-primary"></i>
+                                                <span class="font-weight-bold">
+                        <?php echo number_format($result_student->course) ?>
+                    </span>
+                                            </h2>
+                                            <p class="mb-0 mt-4 text-muted">تعداد پایه‌های فعال مدرسه</p>
                                         </div>
                                     </div>
                                 </a>
                             </div>
+                            
                             <!-- COL END -->
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <a class="split-btn block" style="color: #0a0a0a; cursor: pointer;"
@@ -289,37 +292,35 @@ include_once '../../temp.html';
                                 </a>
                             </div>
                             <!-- COL END -->
-                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                                <a class="card custom-card "
-                                   style="color: #0a0a0a; cursor: pointer; text-decoration: none;"
-                                   onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>',
-                                           'CourseDetail',
-                                           'width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
-                                    <div class="card-body">
-                                        <div class="card-order">
-                                            <?php
-                                            $co_course = 'SELECT COUNT(idcourse) as course FROM codtbl_course WHERE activecourse = ? AND course_type = 0';
-                                            $query_st = $conn->prepare($co_course);
-                                            $query_st->execute([1]);
-                                            $result_student = $query_st->fetch(PDO::FETCH_OBJ);
-                                            ?>
-                                            <div class="d-flex align-items-center mb-2" style="gap:12px;">
-                                                <label class="main-content-label mb-3 pt-1">
-                                                    پایه‌های در حال اجرا
-                                                </label>
-                                                <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش تعداد پایه‌های فعال و در حال اجرای مدرسه نمایش داده می‌شود."
-                                                      aria-label="راهنمای پایه‌های در حال اجرا">
-                                                    <i class="fe fe-info fs-4"></i>
-                                                </span>
+                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 ">
+                                <a class=" split-btn block" style="color: #0a0a0a; cursor: pointer;"
+                                   onclick="window.open('<?php echo url('admin/panel/all_users_management.php') ?>',
+                                           'lacking support',
+                                           'width=1250,height=450,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">                                <div class="card custom-card">
+                                        <div class="card-body">
+                                            <div class="card-order">
+                                                <?php
+                                                $co_student = 'SELECT COUNT(*) as countstudent from dbpersonal ';
+                                                $query_st = $conn->prepare($co_student);
+                                                $query_st->execute();
+                                                $result_student = $query_st->fetch(PDO::FETCH_OBJ);
+                                                ?>
+                                                <div class="d-flex align-items-center mb-2" style="gap:12px;">
+                                                    <label class="main-content-label mb-3 pt-1">
+                                                        دانش آموزان
+                                                    </label>
+                                                    <span class="menu-info-trigger"
+                                                          data-tooltip="در این بخش تعداد کل دانش آموزانی که دارای حساب کاربری در سامانه هستند نمایش داده می‌شود. این آمار شامل تمامی دانش آموزان ثبت‌شده بوده و می‌تواند برای بررسی وضعیت کلی کاربران سامانه مورد استفاده قرار گیرد."
+                                                          aria-label="راهنمای دانش آموزان">
+                                                        <i class="fe fe-info fs-4"></i>
+                                                    </span>
+                                                </div>
+                                                <h2 class="text-left card-item-icon card-icon">
+                                                    <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
+                                                            class="font-weight-bold"><?php echo number_format($result_student->countstudent) ?></span>
+                                                </h2>
+                                                <p class="mb-0 mt-4 text-muted">افرادی که پنل کاربری دارند</p>
                                             </div>
-                                            <h2 class="text-left">
-                                                <i class="fe fe-activity icon-size float-right text-primary"></i>
-                                                <span class="font-weight-bold">
-                        <?php echo number_format($result_student->course) ?>
-                    </span>
-                                            </h2>
-                                            <p class="mb-0 mt-4 text-muted">تعداد پایه‌های فعال مدرسه</p>
                                         </div>
                                     </div>
                                 </a>

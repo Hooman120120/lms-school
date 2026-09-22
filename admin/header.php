@@ -37,12 +37,53 @@ if ($canImpersonate) {
 }
 ?>
 
+<style>
+    /* نمایش نام مدرسه در حالت دسکتاپ - سر جای خودش */
+    .school-name-desktop {
+        display: block;
+    }
+
+    /* در حالت دسکتاپ، نسخه موبایل مخفی باشه */
+    .school-name-mobile {
+        display: none;
+    }
+
+    /* حالت موبایل */
+    @media (max-width: 991px) {
+        /* نام مدرسه دسکتاپ مخفی بشه */
+        .school-name-desktop {
+            display: none !important;
+        }
+
+        /* نام مدرسه موبایل نمایش داده بشه */
+        .school-name-mobile {
+            display: inline-block !important;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a3b4c;
+            margin-left: 8px;
+            white-space: nowrap;
+            max-width: 150px;
+            /*overflow: hidden;*/
+            /*text-overflow: ellipsis;*/
+            vertical-align: middle;
+        }
+
+        /* آواتار و متن کنار هم */
+        .mobile-avatar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    }
+</style>
+
 <div class="main-header side-header sticky">
         <div class="container-fluid">
             <div class="main-header-right">
                 <a class="main-header-menu-icon" href="#" id="mainSidebarToggle"><span></span></a>
             </div>
-            <div class="main-header-center">
+            <div class="main-header-center school-name-desktop">
                 <div class="responsive-logo">
                     <a href="<?php echo url('index.php') ?>"><img src="<?php echo url('assets/img/pngs/logo-hr.png') ?>" style="width: 134px; height:37px;"  class="mobile-logo" alt="لوگو"></a>
 
@@ -50,8 +91,10 @@ if ($canImpersonate) {
                 </div>
 
                 <?php
-                echo jdate('l Y/m/d ');
+                echo jdate('l Y/m/d ') . ' - ' . __SCHOOL_NAME;
                 ?>
+                
+                
 
             </div>
             <div class="main-header-right">
@@ -184,6 +227,9 @@ if ($canImpersonate) {
                             <span class="main-img-user"><img alt="avatar"
                                                              src="<?php echo url('assets/img/users/1.jpg') ?>"></span>
                         </a>
+                        <span class="school-name-mobile">
+    <?php echo __SCHOOL_NAME ?>
+</span>
                         <div class="dropdown-menu">
                             <div class="header-navheading">
                                 <h6 class="main-notification-title"><?php echo $_SESSION['admin']['name']." " .$_SESSION['admin']['famili'] ?></h6>

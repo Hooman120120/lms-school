@@ -9376,3 +9376,4 @@ Stack trace:
 [15-Sep-2026 17:32:31 Asia/Tehran] PHP Notice:  Trying to get property 'id' of non-object in /home/myhona/public_html/admin/course/attendance.php on line 647
 [15-Sep-2026 17:32:31 Asia/Tehran] PHP Notice:  Trying to get property 'id' of non-object in /home/myhona/public_html/admin/course/attendance.php on line 647
 [15-Sep-2026 17:32:31 Asia/Tehran] PHP Notice:  Trying to get property 'id' of non-object in /home/myhona/public_html/admin/course/attendance.php on line 647
+[21-Sep-2026 19:03:05 Asia/Tehran] PHP Parse error:  syntax error, unexpected token "endif" in /home/h374886/school/admin/course/Active-course.php on line 857

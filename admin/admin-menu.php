@@ -3,7 +3,6 @@ $crossPanelHelper = __DIR__ . '/../inc/cross_panel.php';
 if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     require_once $crossPanelHelper;
 }
-//test
 // ✅ Stronger guard: make sure the logged-in admin has a username
 if (empty($_SESSION['admin'])) {
     header('location: login.php');
@@ -82,8 +81,11 @@ else                  $c = '#15233f';
 
     body .main-sidebar-body .nav-item.active>.nav-link::after,
     body .main-sidebar-body .nav-item.active>.nav-link::before {
+    body .main-sidebar-body .nav-item.active>.nav-link::after,
+    body .main-sidebar-body .nav-item.active>.nav-link::before {
         border-left: 20px solid <?= $c ?> !important;
     }
+
 
     .menu-info-trigger {
         display: inline-flex;
@@ -1381,7 +1383,11 @@ else                  $c = '#15233f';
                     <span class="menu-info-trigger flex-shrink-0"
                         data-tooltip="<?php echo m('menu.mysystem_tooltip') ?>"
                         aria-label="راهنمای سامانه من">
+                        data-tooltip="<?php echo m('menu.mysystem_tooltip') ?>"
+                        aria-label="راهنمای سامانه من">
 
+                        <i class="fe fe-info fs-4"></i>
+                    </span>
                         <i class="fe fe-info fs-4"></i>
                     </span>
 
