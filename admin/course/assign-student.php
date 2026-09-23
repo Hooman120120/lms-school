@@ -2,6 +2,7 @@
 include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
+include_once '../../inc/function-quiz.php';
 include_once '../../inc/jdf.php';
 require '../../vendor/autoload.php';
 
@@ -9,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 $msg = '';
 $failedList = [];
+$oesSyncWarnings = [];
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -86,7 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
         if ($check->rowCount() === 0) {
             $insert = $conn->prepare("UPDATE dbcourse SET class_id = ? WHERE username = ? AND codecourse = ?");
             $insert->execute([$class_id, $username, $codecourse]);
-            $_SESSION['msg'] = "✅ دانش آموز با موفقیت ثبت شد.";
+            $oesSync = syncStudentCourseClassToOes($username, (int) $codecourse, $class_id);
+            $_SESSION['msg'] = !empty($oesSync['ok'])
+                ? "✅ دانش آموز در کلاس و سامانه آزمون ثبت شد."
+                : "⚠️ دانش‌آموز در کلاس LMS ثبت شد، اما همگام‌سازی OES انجام نشد: " . ($oesSync['message'] ?? 'خطای نامشخص');
         } else {
             $_SESSION['msg'] = "⚠️ این دانش آموز قبلاً در این کلاس ثبت‌نام شده است.";
         }
@@ -139,9 +144,17 @@ if (isset($_POST['upload_excel'])) {
                 $stmtInsert = $conn->prepare("UPDATE dbcourse SET class_id = ? WHERE username = ? AND codecourse = ?");
                 $stmtInsert->execute([$class_id, $codemeli, $codecourse]);
                 $successCount++;
+
+                $oesSync = syncStudentCourseClassToOes($codemeli, (int) $codecourse, $class_id);
+                if (empty($oesSync['ok'])) {
+                    $oesSyncWarnings[] = [
+                        'codemeli' => $codemeli,
+                        'reason' => $oesSync['message'] ?? 'خطای نامشخص در همگام‌سازی OES'
+                    ];
+                }
             }
 
-            $_SESSION['msg'] = "✅ تعداد ثبت موفق: $successCount";
+            $_SESSION['msg'] = "✅ تعداد ثبت موفق در LMS: $successCount";
         } else {
             $_SESSION['msg'] = "⚠️ فایل اکسل آپلود نشده یا خطا دارد.";
         }
@@ -415,6 +428,22 @@ if (
                             <td><?= $i + 1 ?></td>
                             <td><?= htmlspecialchars($fail['codemeli']) ?></td>
                             <td><?= htmlspecialchars($fail['reason']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
+            <?php if (!empty($oesSyncWarnings)): ?>
+                <h3>⚠️ همگام‌سازی‌نشده در سامانه آزمون:</h3>
+                <table border="1" cellpadding="5">
+                    <thead><tr><th>ردیف</th><th>کد ملی</th><th>علت</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($oesSyncWarnings as $i => $warning): ?>
+                        <tr>
+                            <td><?= $i + 1 ?></td>
+                            <td><?= htmlspecialchars($warning['codemeli']) ?></td>
+                            <td><?= htmlspecialchars($warning['reason']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

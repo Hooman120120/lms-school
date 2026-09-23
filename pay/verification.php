@@ -148,6 +148,14 @@ if (isset($_SESSION['payment']) and $_SESSION['payment']['metod'] == 1) {
         $logMsg .= "Class ID: " . ($class_id ? $class_id : "NULL یا خالی") . "\n";
 
         if ($class_id) {
+            // عضویت پایه و زیرپایه را هم‌زمان و به‌صورت idempotent در OES ثبت کن.
+            $enrollmentSync = syncStudentCourseClassToOes(
+                (string) $tbt->username,
+                (int) $tbt->codecourse,
+                (int) $class_id
+            );
+            $logMsg .= "نتیجه همگام‌سازی پایه/زیرپایه: " . json_encode($enrollmentSync, JSON_UNESCAPED_UNICODE) . "\n";
+
             // ۲. دریافت ugid از دیتابیس
             $stmt = $conn->prepare("SELECT ugid FROM classes WHERE id = ?");
             $stmt->execute([$class_id]);

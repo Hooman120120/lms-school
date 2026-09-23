@@ -100,6 +100,11 @@ if (isset($_POST['save'])) {
                 // ۱. دریافت آیدی کلاسی که کاربر انتخاب کرده است
                 $class_id = $tbt->class_id;
 
+                if (!empty($class_id)) {
+                    // ثبت هم‌زمان عضویت پایه و زیرپایهٔ کلاس در OES.
+                    syncStudentCourseClassToOes((string) $tbt->username, (int) $tbt->codecourse, (int) $class_id);
+                }
+
                 // ۲. دریافت ugid (آیدی گروه در سامانه آزمون) از جدول classes
                 // فرض می‌کنیم شما از PDO با متغیر $conn استفاده می‌کنید
                 $stmt = $conn->prepare("SELECT ugid FROM classes WHERE id = ?");

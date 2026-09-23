@@ -764,19 +764,14 @@ if (isset($_POST['confirm_invoice'])) {
                     $rew = $qpo->fetchAll(PDO::FETCH_OBJ);
 
                     foreach ($rew as $tbt) {
-                        $sql = "SELECT * FROM classes WHERE codecourse = ? AND is_active = 1 ORDER BY id DESC LIMIT 1";
-                        $stmt_cls = $conn->prepare($sql);
-                        $stmt_cls->execute([$tbt->codecourse]);
-                        $class_info = $stmt_cls->fetch(PDO::FETCH_OBJ);
-
-                        $existingUgumid = checkGroupAddByApi($tbt->codecourse, $tbt->username);
-                        if (!$existingUgumid) {
-                            if ($class_info && !empty($class_info->ugid)) {
-                                $ugid = $class_info->ugid;
-                                $uid = GetUserIdByApi($tbt->username);
-                                if ($uid) {
-                                    AddUserToGroupByApi($ugid, $uid);
-                                }
+                        if (!empty($tbt->class_id)) {
+                            $oesSync = syncStudentCourseClassToOes(
+                                (string) $tbt->username,
+                                (int) $tbt->codecourse,
+                                (int) $tbt->class_id
+                            );
+                            if (empty($oesSync['ok'])) {
+                                throw new RuntimeException($oesSync['message'] ?? 'همگام‌سازی OES ناموفق بود');
                             }
                         }
                     }

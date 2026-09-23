@@ -165,11 +165,18 @@ if (isset($_GET['verify'])) {
         $logMsg .= "Class ID: " . ($class_id ? $class_id : "NULL یا خالی") . "\n";
 
         if ($class_id) {
+            // ثبت هم‌زمان عضویت پایه و زیرپایهٔ کلاس در OES.
+            $enrollmentSync = syncStudentCourseClassToOes(
+                (string) $tbt->username,
+                (int) $tbt->codecourse,
+                (int) $class_id
+            );
+            $logMsg .= "نتیجه همگام‌سازی پایه/زیرپایه: " . json_encode($enrollmentSync, JSON_UNESCAPED_UNICODE) . "\n";
+
             // ۲. دریافت ugid از دیتابیس
             $stmt = $conn->prepare("SELECT ugid FROM classes WHERE id = ?");
             $stmt->execute([$class_id]);
             $class_info = $stmt->fetch(PDO::FETCH_ASSOC);
-
             $logMsg .= "نتیجه جستجوی کلاس در دیتابیس: " . ($class_info ? json_encode($class_info) : "کلاس پیدا نشد") . "\n";
 
             if ($class_info && !empty($class_info['ugid'])) {
@@ -179,7 +186,6 @@ if (isset($_GET['verify'])) {
                 // ۳. گرفتن آیدی کاربر از سامانه آزمون
                 
                 $logMsg .= "آیدی کاربر در آزمون (UID): " . ($uid ? $uid : "پیدا نشد!") . "\n";
-
                 if ($uid) {
                     // ۴. ثبت در گروه
                     $result = AddUserToGroupByApi($ugid, $uid);

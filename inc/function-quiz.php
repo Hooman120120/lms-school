@@ -163,6 +163,71 @@ function checkGroupAdd($code, $username)
     return true;
 }
 
+/**
+ * Keep an LMS course/class enrolment aligned with its OES grade and subgroup.
+ *
+ * A class subgroup is optional in LMS, but when it is configured for quizzes
+ * the student must belong to both the parent grade and that subgroup in OES.
+ * The OES membership endpoint is idempotent, so this may safely be called
+ * after every class assignment or transfer.
+ */
+function syncStudentCourseClassToOes(string $username, int $courseCode, int $classId): array
+{
+    global $conn;
+
+    if ($username === '' || $courseCode <= 0 || $classId <= 0) {
+        return ['ok' => false, 'message' => 'اطلاعات دانش‌آموز، پایه یا کلاس معتبر نیست'];
+    }
+    if (!function_exists('cross_panel_sync_oes')) {
+        return ['ok' => false, 'message' => 'ماژول ارتباط با سامانه آزمون بارگذاری نشده است'];
+    }
+
+    $course = function_exists('returnCourse') ? returnCourse($courseCode) : false;
+    $classStmt = $conn->prepare('SELECT codecourse, ugid FROM classes WHERE id = ? LIMIT 1');
+    $classStmt->execute([$classId]);
+    $class = $classStmt->fetch(PDO::FETCH_OBJ);
+    if (!$class || (int) $class->codecourse !== $courseCode) {
+        return ['ok' => false, 'message' => 'کلاس انتخاب‌شده متعلق به این پایه نیست'];
+    }
+
+    $gradeUgid = (int) ($course->ugid ?? 0);
+    if ($gradeUgid <= 0) {
+        $grade = cross_panel_sync_oes('group.get', ['code' => (string) $courseCode]);
+        $gradeUgid = !empty($grade['ok']) ? (int) ($grade['ugid'] ?? 0) : 0;
+    }
+    $classUgid = (int) ($class->ugid ?? 0);
+    if ($gradeUgid <= 0 || $classUgid <= 0) {
+        return ['ok' => false, 'message' => 'گروه آزمونِ پایه یا زیرپایهٔ کلاس هنوز تنظیم نشده است'];
+    }
+
+    $student = cross_panel_sync_oes('student.get', ['username' => $username]);
+    $uid = !empty($student['ok']) ? (int) ($student['uid'] ?? 0) : 0;
+    if ($uid <= 0) {
+        $person = function_exists('retPerson') ? retPerson($username) : null;
+        $plainPassword = function_exists('passUser') ? (string) passUser($username) : '';
+        $student = cross_panel_sync_oes_student(
+            $username,
+            (string) ($person->fname ?? ''),
+            (string) ($person->lname ?? ''),
+            $plainPassword,
+            true
+        );
+        $uid = !empty($student['ok']) ? (int) ($student['uid'] ?? 0) : 0;
+    }
+    if ($uid <= 0) {
+        return ['ok' => false, 'message' => $student['message'] ?? 'ساخت یا یافتن دانش‌آموز در سامانه آزمون ناموفق بود'];
+    }
+
+    foreach ([$gradeUgid, $classUgid] as $ugid) {
+        $membership = cross_panel_sync_oes('membership.upsert', ['uid' => $uid, 'ugid' => $ugid]);
+        if (empty($membership['ok'])) {
+            return ['ok' => false, 'message' => $membership['message'] ?? 'ثبت عضویت در سامانه آزمون ناموفق بود'];
+        }
+    }
+
+    return ['ok' => true, 'uid' => $uid, 'grade_ugid' => $gradeUgid, 'class_ugid' => $classUgid];
+}
+
 function checkEntityGroupQuiz($code)
 {
     global $ponn;

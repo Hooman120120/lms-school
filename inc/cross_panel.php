@@ -51,13 +51,14 @@ function cross_panel_signature(string $action, string $username, int $expires, s
     return hash_hmac('sha256', implode("\n", [$action, $username, (string) $expires, hash('sha256', $body)]), cross_panel_secret());
 }
 
-function cross_panel_login_url(string $type, string $username): string
+function cross_panel_login_url(string $username): string
 {
     $expires = time() + 60;
-    return cross_panel_url($type) . '/cross-panel-login.php?' . http_build_query([
+    $signature = cross_panel_signature('login', $username, $expires);
+    return cross_panel_oes_url() . '/cross-panel-login.php?' . http_build_query([
         'username' => $username,
         'expires' => $expires,
-        'signature' => cross_panel_signature('login', $username, $expires),
+        'signature' => $signature,
     ]);
 }
 function cross_panel_oes_url(): string
@@ -110,7 +111,7 @@ function cross_panel_sync_oes_admin(array $admin): array
 
 /** Send a short-lived, signed data synchronisation request to OES. */
 function cross_panel_sync_oes(string $action, array $data): array
-{
+{   
     $secret = cross_panel_secret();
     if ($secret === '') {
         return ['ok' => false, 'message' => 'کلید ارتباط بین پنل‌ها تنظیم نشده است'];
