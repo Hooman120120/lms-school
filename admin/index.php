@@ -159,7 +159,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
             font-size: 12px;
         }
         .dashboard-notification-button.has-active-notifications {
-            animation: dashboard-notification-alert 4s linear infinite;
+            animation: dashboard-notification-alert 2s linear infinite;
         }
         @keyframes dashboard-notification-alert {
             0%, 49.99% {
@@ -267,10 +267,6 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                                 <i class="fe fe-monitor ml-2"></i> میزکار من
                                             </a>
                                         <?php endif; ?>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item text-primary" href="<?= url('admin/notifications/school_notifications.php') ?>">
-                                            <i class="fe fe-bell ml-2"></i> اعلان‌های مدرسه
-                                        </a>
                                     </div>
                                 </div>
                                 <a class="dashboard-notification-button <?= $activeNotificationCount > 0 ? 'has-active-notifications' : '' ?>"
