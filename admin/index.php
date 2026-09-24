@@ -300,6 +300,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 
                         ?>
 
+                        <?php if ($isInstitute): ?>
+                            <div class="section-head"><h6 class="section-title">آمار کل</h6></div>
+                        <?php endif; ?>
                         <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
                             <a class="stat-card link-card"
@@ -356,9 +359,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php endif; ?>
 
                         </div>
-
-
-
+                        <?php if ($isInstitute): ?>
+                            <div class="section-head"><h6 class="section-title">آمار جاری</h6></div>
+                        <?php endif; ?>
                         <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
                             <div class="stat-card">
