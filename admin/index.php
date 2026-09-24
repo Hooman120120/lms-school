@@ -54,6 +54,7 @@ $sql_notifs = "SELECT DISTINCT n.*
 $stmt_notifs = $conn->prepare($sql_notifs);
 $stmt_notifs->execute([':role' => $roleParam]);
 $activeNotifs = $stmt_notifs->fetchAll(PDO::FETCH_OBJ);
+$activeNotificationCount = count($activeNotifs);
 
 //news get
 
@@ -122,6 +123,60 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
             gap: 10px;
             position: relative;
             z-index: 2;
+        }
+        .dashboard-notification-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 40px;
+            padding: 8px 15px;
+            border: 0;
+            border-radius: 999px;
+            background: #fff;
+            color: #17233f;
+            font-size: 14px;
+            font-weight: 800;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, .16);
+            text-decoration: none;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .dashboard-notification-button:hover {
+            color: #17233f;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, .22);
+        }
+        .dashboard-notification-button .notification-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #e8edf5;
+            color: #17233f;
+            font-size: 12px;
+        }
+        .dashboard-notification-button.has-active-notifications {
+            animation: dashboard-notification-alert 4s linear infinite;
+        }
+        @keyframes dashboard-notification-alert {
+            0%, 49.99% {
+                background: #dc2626;
+                color: #fff;
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, .7), 0 7px 18px rgba(127, 29, 29, .45);
+            }
+            25% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0), 0 7px 18px rgba(127, 29, 29, .45); }
+            50%, 100% {
+                background: #fff;
+                color: #17233f;
+                box-shadow: 0 5px 14px rgba(0, 0, 0, .16);
+            }
+        }
+        .dashboard-notification-button.has-active-notifications .notification-count {
+            background: #fff;
+            color: #dc2626;
         }
         .dashboard-wrap .stats-grid.stats-grid-three {
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -218,6 +273,15 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         </a>
                                     </div>
                                 </div>
+                                <a class="dashboard-notification-button <?= $activeNotificationCount > 0 ? 'has-active-notifications' : '' ?>"
+                                   href="<?= url('admin/notifications/school_notifications.php') ?>"
+                                   aria-label="اعلان‌ها<?= $activeNotificationCount > 0 ? '، ' . $activeNotificationCount . ' اعلان فعال' : '' ?>">
+                                    <i class="fe fe-bell"></i>
+                                    <span>اعلان‌ها</span>
+                                    <?php if ($activeNotificationCount > 0): ?>
+                                        <span class="notification-count"><?= number_format($activeNotificationCount) ?></span>
+                                    <?php endif; ?>
+                                </a>
                                 <div class="dropdown" style="position:relative;z-index:2;">
                                     <button aria-expanded="false"
                                             aria-haspopup="true"
