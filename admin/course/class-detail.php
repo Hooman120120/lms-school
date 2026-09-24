@@ -339,20 +339,7 @@ include_once '../../temp.html';
                                             <small class="text-muted">دسترسی‌های فعال شما برای همین کلاس</small>
                                         </div>
                                         <div class="d-flex flex-wrap" style="gap: 8px;">
-                                            <?php if ($teacherCanStudents): ?>
-                                                <a class="btn btn-outline-primary" href="assign-student.php?class_id=<?= (int)$class_id ?>">
-                                                    <i class="fe fe-users"></i> مشاهده دانش‌آموزان
-                                                </a>
-                                            <?php endif; ?>
-                                            <?php if ($teacherCanHomework): ?>
-                                                <a class="btn btn-outline-success" href="homeworks.php?class_id=<?= (int)$class_id ?>">
-                                                    <i class="fe fe-check-square"></i> مدیریت تکالیف
-                                                </a>
-                                            <?php endif; ?>
                                             <?php if ($teacherCanAttendance): ?>
-                                                <a class="btn btn-outline-warning" href="attendance.php?id=<?= (int)$classDetails->codecourse ?>&amp;class=<?= (int)$class_id ?>">
-                                                    <i class="fe fe-user-check"></i> حضور و غیاب
-                                                </a>
                                                 <a class="btn btn-outline-dark" href="class-register.php?class=<?= (int)$class_id ?>">
                                                     <i class="fe fe-book"></i> دفتر کلاسی
                                                 </a>

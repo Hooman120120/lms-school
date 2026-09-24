@@ -4153,6 +4153,7 @@ function createRegisterClassEvent(
     int $classId,
     int $createdBy,
     int $teacherId,
+    int $darsId,
     string $title,
     ?string $eventDate,
     int $type, string $description = '', ?string $groupUid = null
@@ -4168,15 +4169,15 @@ function createRegisterClassEvent(
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, title, event_date, group_uid, description, type, status, created_by)
+            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
     return $st->execute([
         $classId,
-        $teacherId,
+        $teacherId, $darsId,
         $title,
         $eventDate,
         $groupUid,

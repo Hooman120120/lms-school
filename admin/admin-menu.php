@@ -79,10 +79,8 @@ else                  $c = '#15233f';
         border-left: 20px solid <?= $c ?> !important;
     }
 
-    body .main-sidebar-body .nav-item.active>.nav-link::after,
-    body .main-sidebar-body .nav-item.active>.nav-link::before {
-    body .main-sidebar-body .nav-item.active>.nav-link::after,
-    body .main-sidebar-body .nav-item.active>.nav-link::before {
+    body .main-sidebar-body .nav-item.active > .nav-link::after,
+    body .main-sidebar-body .nav-item.active > .nav-link::before {
         border-left: 20px solid <?= $c ?> !important;
     }
 
@@ -104,7 +102,9 @@ else                  $c = '#15233f';
 
     #menuInfoTooltip {
         position: fixed;
-        z-index: 999999;
+        z-index: 2147483647;
+        display: block;
+        box-sizing: border-box;
         width: 280px;
         max-width: calc(100vw - 20px);
         padding: 10px 12px;
@@ -120,7 +120,8 @@ else                  $c = '#15233f';
         opacity: 0;
         visibility: hidden;
         transform: translateY(-50%);
-        transition: opacity 0.15s;
+        will-change: left, top, opacity;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
     }
 
     #menuInfoTooltip.show {
@@ -156,7 +157,7 @@ else                  $c = '#15233f';
     </div>
     <div class="main-sidebar-body">
         <ul class="nav">
-            <li class="nav-header"><span class="nav-label">پنل کاربری</span></li>
+            <li class="nav-header"><span class="nav-label" style="font-size: 15px; color: #CD964F;">ویژه مدارس</span></li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo url('admin/index.php') ?>">
                     <span class="shape1"></span>
@@ -1334,17 +1335,6 @@ else                  $c = '#15233f';
             <?php } ?>
             
 
-            <?php if (function_exists('cross_panel_targets')): ?>
-                <?php foreach (cross_panel_targets() as $crossPanelType => $crossPanelLabel): ?>
-                    <li class="nav-item mt-3">
-                        <a class="nav-link" href="<?= htmlspecialchars(cross_panel_login_url($crossPanelType, (string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>">
-                            <span class="shape1"></span><span class="shape2"></span>
-                            <i class="fe fe-external-link sidemenu-icon"></i>
-                            <span class="sidemenu-label">ورود به <?= htmlspecialchars($crossPanelLabel, ENT_QUOTES, 'UTF-8') ?></span>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            <?php endif; ?>
         </ul>
         <hr>
         <ul class="nav" style="margin-left: 10px; display:none;" aria-hidden="true">
@@ -1383,11 +1373,6 @@ else                  $c = '#15233f';
                     <span class="menu-info-trigger flex-shrink-0"
                         data-tooltip="<?php echo m('menu.mysystem_tooltip') ?>"
                         aria-label="راهنمای سامانه من">
-                        data-tooltip="<?php echo m('menu.mysystem_tooltip') ?>"
-                        aria-label="راهنمای سامانه من">
-
-                        <i class="fe fe-info fs-4"></i>
-                    </span>
                         <i class="fe fe-info fs-4"></i>
                     </span>
 
@@ -1400,57 +1385,63 @@ else                  $c = '#15233f';
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tooltip = document.createElement('div');
-        tooltip.id = 'menuInfoTooltip';
-        document.body.appendChild(tooltip);
+    (function () {
+        if (window.adminInfoTooltipInitialized) return;
+        window.adminInfoTooltipInitialized = true;
 
-        const triggers = document.querySelectorAll('.menu-info-trigger');
+        var tooltip = document.getElementById('menuInfoTooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'menuInfoTooltip';
+            tooltip.setAttribute('role', 'tooltip');
+            document.body.appendChild(tooltip);
+        }
+        var activeTrigger = null;
 
+        function closestTrigger(target) {
+            while (target && target !== document) {
+                if (target.nodeType === 1 && target.classList.contains('menu-info-trigger') && target.hasAttribute('data-tooltip')) return target;
+                target = target.parentNode;
+            }
+            return null;
+        }
         function showTooltip(trigger) {
-            tooltip.textContent = trigger.getAttribute('data-tooltip');
-
+            var message = trigger.getAttribute('data-tooltip');
+            if (!message) return;
+            activeTrigger = trigger;
+            tooltip.textContent = message;
             tooltip.classList.remove('place-left', 'place-right');
             tooltip.classList.add('show');
-
-            const triggerRect = trigger.getBoundingClientRect();
-            const tooltipWidth = tooltip.offsetWidth;
-            const tooltipHeight = tooltip.offsetHeight;
-
-            let left = triggerRect.left - tooltipWidth - 10;
-            let placement = 'place-left';
-
-            // اگر سمت چپ فضا نبود، سمت راست نمایش داده شود
-            if (left < 10) {
-                left = triggerRect.right + 10;
-                placement = 'place-right';
-            }
-
-            let top = triggerRect.top + (triggerRect.height / 2);
-            const halfHeight = tooltipHeight / 2;
-
-            // جلوگیری از خروج Tooltip از بالا یا پایین صفحه
-            top = Math.max(halfHeight + 10, top);
-            top = Math.min(window.innerHeight - halfHeight - 10, top);
-
+            var triggerRect = trigger.getBoundingClientRect();
+            var tooltipRect = tooltip.getBoundingClientRect();
+            var margin = 10;
+            var left = triggerRect.left - tooltipRect.width - margin;
+            var placement = 'place-left';
+            if (left < margin) { left = triggerRect.right + margin; placement = 'place-right'; }
+            left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
+            var halfHeight = tooltipRect.height / 2;
+            var top = triggerRect.top + (triggerRect.height / 2);
+            top = Math.max(halfHeight + margin, Math.min(top, window.innerHeight - halfHeight - margin));
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
             tooltip.classList.add(placement);
         }
-
-        function hideTooltip() {
+        function hideTooltip(trigger) {
+            if (trigger && activeTrigger && trigger !== activeTrigger) return;
+            activeTrigger = null;
             tooltip.classList.remove('show', 'place-left', 'place-right');
         }
-
-        triggers.forEach(function(trigger) {
-            trigger.addEventListener('mouseenter', function() {
-                showTooltip(trigger);
-            });
-
-            trigger.addEventListener('mouseleave', hideTooltip);
+        document.addEventListener('pointerover', function (event) {
+            var trigger = closestTrigger(event.target);
+            if (trigger && (!event.relatedTarget || !trigger.contains(event.relatedTarget))) showTooltip(trigger);
         });
-
-        window.addEventListener('scroll', hideTooltip, true);
-        window.addEventListener('resize', hideTooltip);
-    });
+        document.addEventListener('pointerout', function (event) {
+            var trigger = closestTrigger(event.target);
+            if (trigger && (!event.relatedTarget || !trigger.contains(event.relatedTarget))) hideTooltip(trigger);
+        });
+        document.addEventListener('focusin', function (event) { var trigger = closestTrigger(event.target); if (trigger) showTooltip(trigger); });
+        document.addEventListener('focusout', function (event) { var trigger = closestTrigger(event.target); if (trigger) hideTooltip(trigger); });
+        window.addEventListener('scroll', function () { hideTooltip(); }, true);
+        window.addEventListener('resize', function () { hideTooltip(); });
+    })();
 </script>

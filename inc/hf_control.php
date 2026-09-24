@@ -35,7 +35,7 @@ function hf_control_request(string $endpoint, string $method = 'GET', ?array $pa
 {
     $config = hf_control_config();
     if (!$config) {
-        throw new RuntimeException('اتصال این پنل به HF تنظیم نشده است');
+        throw new RuntimeException('اتصال این پنل به هنرفناوری تنظیم نشده است');
     }
 
     $handle = curl_init($config['url'] . '/' . ltrim($endpoint, '/'));
@@ -67,14 +67,14 @@ function hf_control_request(string $endpoint, string $method = 'GET', ?array $pa
     curl_close($handle);
 
     if ($body === false || $error !== '') {
-        throw new RuntimeException('ارتباط با HF برقرار نشد');
+        throw new RuntimeException('ارتباط با هنرفناوری برقرار نشد');
     }
     $decoded = json_decode($body, true);
     if (!is_array($decoded)) {
-        throw new RuntimeException('پاسخ HF معتبر نیست');
+        throw new RuntimeException('پاسخ هنرفناوری معتبر نیست');
     }
     if ($status < 200 || $status >= 300 || ($decoded['ok'] ?? false) !== true) {
-        throw new RuntimeException((string) ($decoded['message'] ?? $decoded['error'] ?? 'درخواست HF ناموفق بود'));
+        throw new RuntimeException((string) ($decoded['message'] ?? $decoded['error'] ?? 'درخواست هنرفناوری ناموفق بود'));
     }
     return $decoded;
 }
@@ -99,7 +99,7 @@ function hf_control_store_license(PDO $conn, array $response): array
     );
     $signature = (string) ($response['signature'] ?? '');
     if ($signature === '' || !hash_equals($expected, $signature) || !is_array($payload['license'])) {
-        throw new RuntimeException('امضای پاسخ HF معتبر نیست');
+        throw new RuntimeException('امضای پاسخ هنرفناوری معتبر نیست');
     }
 
     $license = $payload['license'];
@@ -176,10 +176,10 @@ function hf_control_access_state(PDO $conn, bool $forceRefresh = false): array
 function hf_control_access_message(string $reason): string
 {
     return match ($reason) {
-        'expired', 'service_expired' => 'اشتراک این سامانه به پایان رسیده است. لطفاً از پنل HF تمدید کنید.',
-        'panel_suspended', 'service_inactive', 'customer_inactive' => 'دسترسی این سامانه از پنل HF غیرفعال شده است.',
-        'hf_unavailable' => 'در حال حاضر امکان بررسی وضعیت اشتراک از HF وجود ندارد.',
-        default => 'دسترسی به این سامانه توسط HF متوقف شده است.',
+        'expired', 'service_expired' => 'اشتراک این سامانه به پایان رسیده است. لطفاً از پنل هنرفناوری تمدید کنید.',
+        'panel_suspended', 'service_inactive', 'customer_inactive' => 'دسترسی این سامانه از پنل هنرفناوری غیرفعال شده است.',
+        'hf_unavailable' => 'در حال حاضر امکان بررسی وضعیت اشتراک از هنرفناوری وجود ندارد.',
+        default => 'دسترسی به این سامانه توسط هنرفناوری متوقف شده است.',
     };
 }
 
@@ -348,8 +348,8 @@ function hf_control_denial_message(array $response): string
     return match ((string) ($response['reason'] ?? '')) {
         'capacity_full', 'capacity_exceeded' => 'ظرفیت کاربران این پنل تکمیل شده است',
         'expired', 'service_expired' => 'اشتراک این پنل به پایان رسیده است',
-        'panel_suspended', 'service_inactive', 'customer_inactive' => 'این پنل در HF غیرفعال است',
-        default => (string) ($response['message'] ?? 'ایجاد کاربر توسط HF تأیید نشد'),
+        'panel_suspended', 'service_inactive', 'customer_inactive' => 'این پنل در هنرفناوری غیرفعال است',
+        default => (string) ($response['message'] ?? 'ایجاد کاربر توسط هنرفناوری تأیید نشد'),
     };
 }
 
@@ -359,7 +359,7 @@ function hf_control_require_seat(PDO $conn, string $externalId, string $userType
         $response = hf_control_claim($conn, $externalId, $userType);
     } catch (Throwable $e) { 
         http_response_code(503);
-        exit('ارتباط با HF برقرار نشد و کاربر ایجاد نشد');
+        exit('ارتباط با هنرفناوری برقرار نشد و کاربر ایجاد نشد');
     }
     if (isset($response['allowed']) && !$response['allowed']) {
         http_response_code(409);

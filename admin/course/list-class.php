@@ -680,7 +680,6 @@ include_once '../../temp.html';
                                                 <th class="wd-10p">جلسات برگزار شده</th>
                                                 <th class="wd-5p">کلاس</th>
                                                 <th class="wd-5p">مشاوره</th>
-                                                <th class="wd-5p">آزمون</th>
                                             <?php endif; ?>
                                             <th class="wd-15p">نام کلاس</th>
                                             <th class="wd-10p">تعداد دانش آموزان</th>
@@ -727,13 +726,6 @@ include_once '../../temp.html';
                                                         </td>
                                                         <td class="text-center">
                                                             <?php if (act_generalSkyroomForThisClass($class->id) == 0) { ?>
-                                                                <span class="text-danger"><i class="mdi mdi-adjust"></i></span>
-                                                            <?php } else { ?>
-                                                                <span class="text-success"><i class="fe fe-wifi"></i></span>
-                                                            <?php } ?>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <?php if (act_quizForThisClass($class->id) == 0) { ?>
                                                                 <span class="text-danger"><i class="mdi mdi-adjust"></i></span>
                                                             <?php } else { ?>
                                                                 <span class="text-success"><i class="fe fe-wifi"></i></span>
@@ -831,20 +823,7 @@ include_once '../../temp.html';
                                                                         <i class="fe fe-info"></i> اطلاعات کلاس
                                                                     </a>
                                                                     <?php endif; ?>
-                                                                    <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_students')): ?>
-                                                                    <a class="dropdown-item" href="assign-student.php?class_id=<?php echo $class->id ?>">
-                                                                        <i class="fe fe-check-circle"></i> مشاهده دانش‌آموزان
-                                                                    </a>
-                                                                    <?php endif; ?>
-                                                                    <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_homework')): ?>
-                                                                    <a class="dropdown-item" href="homeworks.php?class_id=<?php echo $class->id ?>">
-                                                                        <i class="fe fe-check-square"></i> مدیریت تکالیف
-                                                                    </a>
-                                                                    <?php endif; ?>
                                                                     <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_attendance')): ?>
-                                                                    <a class="dropdown-item" href="attendance.php?id=<?php echo $class->codecourse ?>&class=<?= $class->id ?>">
-                                                                        <i class="fe fe-check-square"></i> حضور و غیاب
-                                                                    </a>
                                                                     <a class="dropdown-item" href="class-register.php?class=<?= $class->id ?>">
                                                                         <i class="fe fe-check-square"></i> دفتر کلاسی
                                                                     </a>
@@ -870,18 +849,6 @@ include_once '../../temp.html';
                                                                                 <i class="fe fe-video-off"></i> قطع مشاوره
                                                                             </a>
                                                                         <?php } ?>
-                                                                        <?php if (act_quizForThisClass($class->id) == 0) { ?>
-                                                                            <a class="dropdown-item text-secondary" href="?act_quiz=<?php echo $class->id ?>">
-                                                                                <i class="fe fe-grid"></i> فعالسازی آزمون
-                                                                            </a>
-                                                                        <?php } else { ?>
-                                                                            <a class="dropdown-item text-warning" href="?expire_quiz=<?php echo $class->id ?>">
-                                                                                <i class="fe fe-stop-circle"></i> قطع آزمون
-                                                                            </a>
-                                                                        <?php } ?>
-                                                                        <a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $class->codecourse ?>" target="_blank">
-                                                                            <i class="fe fe-tv"></i> ورود به کلاس آنلاین
-                                                                        </a>
                                                                         <div class="dropdown-divider"></div>
                                                                         <a class="dropdown-item text-success" href="list-class.php?code=<?php echo $class->codecourse ?>&edit=<?php echo $class->id ?>">
                                                                             <i class="fe fe-edit"></i> ویرایش کلاس
@@ -901,21 +868,6 @@ include_once '../../temp.html';
                                                                         <?php if ($teacherClassHubAccess): ?>
                                                                         <a class="dropdown-item" href="class-detail.php?class_id=<?php echo $class->id ?>&codecourse=<?= $class->codecourse ?>">
                                                                             <i class="fe fe-info"></i> اطلاعات کلاس
-                                                                        </a>
-                                                                        <?php endif; ?>
-                                                                        <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_students')): ?>
-                                                                        <a class="dropdown-item" href="assign-student.php?class_id=<?php echo $class->id ?>">
-                                                                            <i class="fe fe-check-circle"></i> مشاهده دانش‌آموزان
-                                                                        </a>
-                                                                        <?php endif; ?>
-                                                                        <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_homework')): ?>
-                                                                        <a class="dropdown-item" href="homeworks.php?class_id=<?php echo $class->id ?>">
-                                                                            <i class="fe fe-check-square"></i> مدیریت تکالیف
-                                                                        </a>
-                                                                        <?php endif; ?>
-                                                                        <?php if ($adminRole !== 3 && TeacherPermission('teacher_perm_attendance')): ?>
-                                                                        <a class="dropdown-item" href="attendance.php?id=<?php echo $class->codecourse ?>&class=<?= $class->id ?>">
-                                                                            <i class="fe fe-check-square"></i> حضور و غیاب
                                                                         </a>
                                                                         <?php endif; ?>
 
@@ -940,18 +892,6 @@ include_once '../../temp.html';
                                                                                     <i class="fe fe-video-off"></i> قطع مشاوره
                                                                                 </a>
                                                                             <?php } ?>
-                                                                            <?php if (act_quizForThisClass($class->id) == 0) { ?>
-                                                                                <a class="dropdown-item text-secondary" href="?act_quiz=<?php echo $class->id ?>">
-                                                                                    <i class="fe fe-grid"></i> فعالسازی آزمون
-                                                                                </a>
-                                                                            <?php } else { ?>
-                                                                                <a class="dropdown-item text-warning" href="?expire_quiz=<?php echo $class->id ?>">
-                                                                                    <i class="fe fe-stop-circle"></i> قطع آزمون
-                                                                                </a>
-                                                                            <?php } ?>
-                                                                            <a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $class->codecourse ?>" target="_blank">
-                                                                                <i class="fe fe-tv"></i> ورود به کلاس آنلاین
-                                                                            </a>
                                                                             <div class="dropdown-divider"></div>
                                                                             <a class="dropdown-item text-success" href="list-class.php?code=<?php echo $class->codecourse ?>&edit=<?php echo $class->id ?>">
                                                                                 <i class="fe fe-edit"></i> ویرایش کلاس
