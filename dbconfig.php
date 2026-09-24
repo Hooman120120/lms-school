@@ -155,8 +155,8 @@ define('__USERSMS', '09127945631');
 define('__PASSSMS', (string) getenv('SMS_PASSWORD'));
 
 // Online Gateway BehPardakht Mellat
-define('__TERMINAL_BPM', 7877055);
-define('__USERNAME_BPM', "7877055");
+define('__TERMINAL_BPM', (int) getenv('MELLAT_TERMINAL_ID'));
+define('__USERNAME_BPM', (string) getenv('MELLAT_USERNAME'));
 define('__PASSWORD_BPM', (string) getenv('PASSWORD_BPM'));
 //simotel variables
 define('SIMOTEL_SERVER', '93.114.106.208:9880');
