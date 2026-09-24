@@ -61,9 +61,11 @@ $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($cu
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
 
 
-$role = (int)($_SESSION['admin']['adminrole'] ?? 0);
+$role = (int)($_SESSION['admin']['adminrole'] ?? $adminRole);
 
-if ($role === 1) $c = '#138420';
+// مدیر مدرسه از رنگ هویتی مدرسه استفاده می‌کند؛ آموزشگاه رنگ فعلی خود را نگه می‌دارد.
+if ($role === 0 && inst_is('school')) $c = '#1E4C4C';
+elseif ($role === 1) $c = '#138420';
 elseif ($role === 2) $c = '#516d9b';
 elseif ($role === 6) $c = '#ff8a00';
 elseif ($role >= 51 && $role <= 59) $c = '#244370';

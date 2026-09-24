@@ -80,6 +80,18 @@ if (empty($_SESSION['academic_year_token'])) {
 }
 $isArchiveView = (int)$studentAcademicYear['base_jalali_year'] !== (int)$currentAcademicYear['base_jalali_year'];
 $isInstituteDashboard = inst_is('institute');
+$dashboardHeroColor = '#15233f';
+if (!$isInstituteDashboard && (int)$adminRole === 0) {
+    $dashboardHeroColor = '#54AA9F';
+} elseif ((int)$adminRole === 1) {
+    $dashboardHeroColor = '#138420';
+} elseif ((int)$adminRole === 2) {
+    $dashboardHeroColor = '#516d9b';
+} elseif ((int)$adminRole === 6) {
+    $dashboardHeroColor = '#ff8a00';
+} elseif ((int)$adminRole >= 51 && (int)$adminRole <= 59) {
+    $dashboardHeroColor = '#244370';
+}
 
 
 // برای استفاده از توابع پنل آزمون
@@ -101,6 +113,16 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     <title> حساب کاربری | <?php echo __TITLE ?></title>
     <?php include_once 'link.php'; ?>
     <style>
+        .dashboard-hero {
+            background: linear-gradient(135deg, <?= $dashboardHeroColor ?>, <?= $dashboardHeroColor ?>) !important;
+        }
+        .dashboard-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+        }
         .dashboard-wrap .stats-grid.stats-grid-three {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
@@ -169,6 +191,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 
                                 </div>
 
+                                <div class="dashboard-actions">
                                 <div class="dropdown" style="position:relative;z-index:2;">
                                     <button aria-expanded="false"
                                             aria-haspopup="true"
@@ -218,6 +241,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                             <noscript><button type="submit" class="btn btn-primary btn-sm btn-block">نمایش</button></noscript>
                                         </form>
                                     </div>
+                                </div>
                                 </div>
 
                             </div>
@@ -392,11 +416,11 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     <div class="col-12">
         <div class="row" style="gap:0;">
 
-            <!-- بخش راست: ورود به پنل آزمون (رنگ یاسی) -->
+            <!-- ورود به پنل آزمون: رنگ مدرسه طلایی و رنگ آموزشگاه یاسی است. -->
             <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card card-box h-100"
-                         style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+                         style="background: <?= $isInstituteDashboard ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : '#E8A752' ?>;
                                 color:#fff;
                                 border:none;
                                 border-radius: 14px;
@@ -417,8 +441,8 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 
                             <a href="<?= htmlspecialchars(cross_panel_login_url((string) $_SESSION['admin']['user']), ENT_QUOTES, 'UTF-8') ?>"
                                class="btn ripple"
-                               style="background:#fff; color:#7c3aed; font-weight:700; padding:10px 22px; border-radius:10px; transition: all 0.3s; white-space:nowrap;"
-                               onmouseover="this.style.background='#f5f0ff'; this.style.transform='translateY(-2px)';"
+                               style="background:#fff; color:<?= $isInstituteDashboard ? '#7c3aed' : '#A36C16' ?>; font-weight:700; padding:10px 22px; border-radius:10px; transition: all 0.3s; white-space:nowrap;"
+                               onmouseover="this.style.background='<?= $isInstituteDashboard ? '#f5f0ff' : '#fff7e7' ?>'; this.style.transform='translateY(-2px)';"
                                onmouseout="this.style.background='#fff'; this.style.transform='translateY(0)';">
 
                                 <i class="fe fe-log-in ml-1"></i> ورود
