@@ -332,6 +332,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                 </div>
                             </a>
 
+                            <?php if (!$isInstitute): ?>
                             <a class="stat-card link-card"
                                href="<?php echo url('admin/panel/academic_year_students.php') ?>"
                                onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
@@ -344,6 +345,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
                                 </div>
                             </a>
+                            <?php endif; ?>
 
                             <?php if ($isInstitute): ?>
                                 <div class="stat-card">
@@ -377,7 +379,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label">آزمون‌های برگزار شده امسال</p>
+                                    <p class="stat-label"><?= $isInstitute ? 'آزمون‌های برگزار شده' : 'آزمون‌های برگزار شده امسال' ?></p>
                                     <p class="stat-value text-warning"><?php echo number_format($totalQuizzes); ?></p>
                                 </div>
                                 <div class="stat-icon icon-amber" aria-hidden="true">
@@ -388,8 +390,8 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label">پیامک‌های ارسالی امسال</p>
-                                    <p class="stat-value text-info"><?php echo number_format($countSMS); ?></p>
+                                    <p class="stat-label"><?= $isInstitute ? 'فراگیران' : 'پیامک‌های ارسالی امسال' ?></p>
+                                    <p class="stat-value text-info"><?php echo number_format($isInstitute ? $totalLearners : $countSMS); ?></p>
                                 </div>
                                 <div class="stat-icon icon-cyan" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
@@ -399,8 +401,8 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php if ($isInstitute): ?>
                                 <div class="stat-card">
                                     <div class="stat-left">
-                                        <p class="stat-label">ثبت‌نام‌های قطعی امسال</p>
-                                        <p class="stat-value text-success"><?php echo number_format($permanentEnrollments); ?> نفر</p>
+                                        <p class="stat-label">اطلاع‌رسانی‌ها</p>
+                                        <p class="stat-value text-success"><?php echo number_format($countSMS); ?></p>
                                     </div>
                                     <div class="stat-icon icon-indigo" aria-hidden="true">
                                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm8 2c-2.33 0-7 1.17-7 3.5V21h14v-2.5C23 14.17 18.33 13 16 13z"/></svg>
