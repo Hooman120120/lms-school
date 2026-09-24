@@ -332,7 +332,6 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                 </div>
                             </a>
 
-                            <?php if (!$isInstitute): ?>
                             <a class="stat-card link-card"
                                href="<?php echo url('admin/panel/academic_year_students.php') ?>"
                                onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
@@ -345,7 +344,6 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
                                 </div>
                             </a>
-                            <?php endif; ?>
 
                             <?php if ($isInstitute): ?>
                                 <div class="stat-card">
