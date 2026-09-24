@@ -348,9 +348,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php if ($isInstitute): ?>
                                 <div class="stat-card">
                                     <div class="stat-left">
-                                        <p class="stat-label">بازدیدهای امروز</p>
+                                        <p class="stat-label">افتخارآفرینان کل</p>
                                         <p class="stat-value"><?php echo number_format($todayVisits); ?></p>
-                                        <p class="stat-note">ورود موفق به حساب کاربری</p>
+                                        <p class="stat-note">قبولی‌های آزمون‌های کشوری</p>
                                     </div>
                                     <div class="stat-icon icon-pink" aria-hidden="true">
                                         <svg viewBox="0 0 24 24"><path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 11.5A4.5 4.5 0 1 1 12 7a4.5 4.5 0 0 1 0 9.5zm0-7.2A2.7 2.7 0 1 0 12 14.7a2.7 2.7 0 0 0 0-5.4z"/></svg>
