@@ -104,7 +104,22 @@ try {
         $values[] = in_array($type, ['tinyint', 'smallint', 'int', 'bigint', 'decimal', 'float', 'double'], true) ? 0 : '';
     }
 
+    // The school profile chosen in hf (HF_INSTITUTION_TYPE / HF_GENDER). The
+    // licence carries it too, so an unset value is simply left for that.
+    $institutionType = (string) getenv('HF_INSTITUTION_TYPE');
+    $gender = (string) getenv('HF_GENDER');
+    if ($gender !== '' && !$server->query("SHOW COLUMNS FROM setting_public LIKE 'gender'")->fetch()) {
+        // Before the transaction: ALTER TABLE would commit it implicitly.
+        $server->exec("ALTER TABLE setting_public ADD COLUMN gender ENUM('boys','girls') DEFAULT NULL");
+    }
+
     $server->beginTransaction();
+    if (in_array($institutionType, ['school', 'institute'], true)) {
+        $server->prepare('UPDATE setting_public SET institution_type = ? ORDER BY id LIMIT 1')->execute([$institutionType]);
+    }
+    if (in_array($gender, ['boys', 'girls'], true)) {
+        $server->prepare('UPDATE setting_public SET gender = ? ORDER BY id LIMIT 1')->execute([$gender]);
+    }
     $server->exec('INSERT IGNORE INTO hf_control_state (id) VALUES (1)');
     $insert = $server->prepare('INSERT INTO dbadmin (`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', array_fill(0, count($columns), '?')) . ')');
     $insert->execute($values);
