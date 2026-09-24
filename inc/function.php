@@ -3330,11 +3330,23 @@ function allUsersCount(): int
  */
 function getSchoolAcademicYearRange(?int $timestamp = null): array
 {
+    // The selected archive is stored per administrator session.  Supplying a
+    // timestamp deliberately bypasses it, which keeps historical utilities
+    // that ask for a specific date deterministic.
+    $baseYear = null;
+    if ($timestamp === null && isset($_SESSION['academic_year_base'])) {
+        $selectedYear = filter_var($_SESSION['academic_year_base'], FILTER_VALIDATE_INT);
+        if ($selectedYear !== false && $selectedYear >= 1300 && $selectedYear <= 1600) {
+            $baseYear = (int)$selectedYear;
+        }
+    }
     $timestamp = $timestamp ?? time();
 
-    $jalaliYear = (int)jdate('Y', $timestamp, '', '', 'en');
-    $jalaliMonth = (int)jdate('m', $timestamp, '', '', 'en');
-    $baseYear = $jalaliMonth >= 4 ? $jalaliYear : $jalaliYear - 1;
+    if ($baseYear === null) {
+        $jalaliYear = (int)jdate('Y', $timestamp, '', '', 'en');
+        $jalaliMonth = (int)jdate('m', $timestamp, '', '', 'en');
+        $baseYear = $jalaliMonth >= 4 ? $jalaliYear : $jalaliYear - 1;
+    }
 
     $startGregorian = jalali_to_gregorian($baseYear, 4, 1);
     $endGregorian = jalali_to_gregorian($baseYear + 1, 3, 31);
@@ -3350,9 +3362,44 @@ function getSchoolAcademicYearRange(?int $timestamp = null): array
         'label' => sprintf('%04d–%04d', $baseYear + 1, $baseYear),
     ];
 }
+
+/** Set or clear the academic-year view for the current administrator session. */
+function setSelectedAcademicYear(?int $baseYear): void
+{
+    if ($baseYear === null) {
+        unset($_SESSION['academic_year_base']);
+        return;
+    }
+
+    $_SESSION['academic_year_base'] = $baseYear;
+}
+
+/** Returns selectable school years, including the current year. */
+function getSelectableAcademicYears(int $firstYear = 1400): array
+{
+    $current = getSchoolAcademicYearRange(time())['base_jalali_year'];
+    $years = [];
+    for ($year = $current; $year >= $firstYear; $year--) {
+        $start = jalali_to_gregorian($year, 4, 1);
+        $end = jalali_to_gregorian($year + 1, 4, 1);
+        $years[] = [
+            'base_jalali_year' => $year,
+            'start_jalali' => sprintf('%04d/04/01', $year),
+            'end_jalali' => sprintf('%04d/03/31', $year + 1),
+            'start_gregorian' => sprintf('%04d-%02d-%02d', $start[0], $start[1], $start[2]),
+            'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $end[0], $end[1], $end[2]),
+            'label' => sprintf('%04d–%04d', $year, $year + 1),
+        ];
+    }
+    return $years;
+}
 //1tir to 1 tir
 function getJalaliYearWindowApprox(?string $today = null): array
 {
+    if ($today === null && isset($_SESSION['academic_year_base'])) {
+        $range = getSchoolAcademicYearRange();
+        return [$range['start_gregorian'], $range['end_exclusive_gregorian']];
+    }
     $today = $today ?: date('Y-m-d');
 
     $year = (int)substr($today, 0, 4);

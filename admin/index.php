@@ -73,6 +73,13 @@ if (!Permision('permission_calendar')) {
     include_once 'panel/calendar.php';
 }
 $studentAcademicYear = getSchoolAcademicYearRange();
+$currentAcademicYear = getSchoolAcademicYearRange(time());
+$selectableAcademicYears = getSelectableAcademicYears();
+if (empty($_SESSION['academic_year_token'])) {
+    $_SESSION['academic_year_token'] = bin2hex(random_bytes(32));
+}
+$isArchiveView = (int)$studentAcademicYear['base_jalali_year'] !== (int)$currentAcademicYear['base_jalali_year'];
+$isInstituteDashboard = inst_is('institute');
 
 
 // برای استفاده از توابع پنل آزمون
@@ -97,13 +104,22 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
         .dashboard-wrap .stats-grid.stats-grid-three {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
+        .dashboard-wrap .stats-grid.stats-grid-four {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
         @media (max-width: 1200px) {
             .dashboard-wrap .stats-grid.stats-grid-three {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .dashboard-wrap .stats-grid.stats-grid-four {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
         @media (max-width: 576px) {
             .dashboard-wrap .stats-grid.stats-grid-three {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-wrap .stats-grid.stats-grid-four {
                 grid-template-columns: 1fr;
             }
         }
@@ -148,7 +164,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     </h5>
 
                                     <p class="dashboard-subtitle">
-                                        داشبورد مدیریتی — نمای کلی و آمار سال تحصیلی <?php echo htmlspecialchars($studentAcademicYear['label']); ?>
+                                        <?= $isInstituteDashboard ? 'داشبورد مدیریتی — نمای کلی مؤسسه' : 'داشبورد مدیریتی — نمای کلی و آمار سال تحصیلی ' . htmlspecialchars($studentAcademicYear['label']) ?>
                                     </p>
 
                                 </div>
@@ -179,11 +195,38 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         </a>
                                     </div>
                                 </div>
+                                <div class="dropdown" style="position:relative;z-index:2;">
+                                    <button aria-expanded="false"
+                                            aria-haspopup="true"
+                                            class="btn ripple btn-light dropdown-toggle"
+                                            data-bs-toggle="dropdown"
+                                            type="button"
+                                            style="font-size:14px;font-weight:700;">
+                                        <i class="fe fe-archive ml-1"></i> <?= $isArchiveView ? 'بایگانی ' . htmlspecialchars($studentAcademicYear['label']) : 'بایگانی سال‌های تحصیلی' ?>
+                                    </button>
+                                    <div class="dropdown-menu tx-13 p-3" style="min-width:245px;">
+                                        <div class="font-weight-bold mb-2">نمایش داده‌های سال تحصیلی</div>
+                                        <form method="post" action="select-academic-year.php">
+                                            <input type="hidden" name="token" value="<?= htmlspecialchars($_SESSION['academic_year_token']) ?>">
+                                            <select class="form-control form-control-sm mb-2" name="academic_year" onchange="this.form.submit()" aria-label="انتخاب سال تحصیلی">
+                                                <?php foreach ($selectableAcademicYears as $year): ?>
+                                                    <option value="<?= (int)$year['base_jalali_year'] ?>" <?= (int)$year['base_jalali_year'] === (int)$studentAcademicYear['base_jalali_year'] ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($year['label']) ?><?= (int)$year['base_jalali_year'] === (int)$currentAcademicYear['base_jalali_year'] ? ' (سال جاری)' : '' ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <noscript><button type="submit" class="btn btn-primary btn-sm btn-block">نمایش</button></noscript>
+                                        </form>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
 
                         <?php
+                        if (!empty($flashMessage)) {
+                            echo '<div class="alert alert-success mb-3">' . htmlspecialchars((string)$flashMessage) . '</div>';
+                        }
                         // Yearly stats
                         $counts = countSmsInJalaliYearWindow();
                         $countSMS = $counts['total'];
@@ -217,16 +260,30 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                         $result_course = $query_course->fetch(PDO::FETCH_OBJ);
                         $countCourses = (int)($result_course->course ?? 0);
 
+                        $isInstitute = $isInstituteDashboard;
+                        $totalLearners = $isInstitute ? allUsersCount() : $countStudents;
+                        $todayVisits = 0;
+                        if ($isInstitute) {
+                            try {
+                                $visitStmt = $conn->prepare('SELECT COUNT(*) FROM dbh_login WHERE datelogin = ?');
+                                $visitStmt->execute([date('Y-m-d')]);
+                                $todayVisits = (int)$visitStmt->fetchColumn();
+                            } catch (PDOException $e) {
+                                // Older installations without login history show zero safely.
+                            }
+                        }
+                        $permanentEnrollments = $isInstitute ? countPermanetUsers() : 0;
+
                         ?>
 
-                        <div class="stats-grid stats-grid-three">
+                        <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
                             <a class="stat-card link-card"
                                onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>','CourseDetail','width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
-                                    <p class="stat-label">پایه‌های در حال اجرا</p>
+                                    <p class="stat-label"><?= $isInstitute ? 'دوره‌های برگزار شده' : 'پایه‌های در حال اجرا' ?></p>
                                     <p class="stat-value"><?php echo number_format($countCourses); ?></p>
-                                    <p class="stat-note">مشاهده پایه‌ها و دانش‌آموزان</p>
+                                    <p class="stat-note"><?= $isInstitute ? 'جزئیات دوره‌ها' : 'مشاهده پایه‌ها و دانش‌آموزان' ?></p>
                                 </div>
                                 <div class="stat-icon icon-green" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
@@ -252,24 +309,37 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                href="<?php echo url('admin/panel/academic_year_students.php') ?>"
                                onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
-                                    <p class="stat-label">دانش‌آموزان</p>
-                                    <p class="stat-value"><?php echo number_format($countStudents); ?></p>
-                                    <p class="stat-note">ثبت‌نام‌های سال تحصیلی <?php echo htmlspecialchars($studentAcademicYear['label']); ?></p>
+                                    <p class="stat-label"><?= $isInstitute ? 'فراگیران کل' : 'دانش‌آموزان' ?></p>
+                                    <p class="stat-value"><?php echo number_format($totalLearners); ?></p>
+                                    <p class="stat-note"><?= $isInstitute ? 'افرادی که پنل کاربری دارند' : 'ثبت‌نام‌های سال تحصیلی ' . htmlspecialchars($studentAcademicYear['label']) ?></p>
                                 </div>
                                 <div class="stat-icon icon-indigo" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
                                 </div>
                             </a>
 
+                            <?php if ($isInstitute): ?>
+                                <div class="stat-card">
+                                    <div class="stat-left">
+                                        <p class="stat-label">بازدیدهای امروز</p>
+                                        <p class="stat-value"><?php echo number_format($todayVisits); ?></p>
+                                        <p class="stat-note">ورود موفق به حساب کاربری</p>
+                                    </div>
+                                    <div class="stat-icon icon-pink" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24"><path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 11.5A4.5 4.5 0 1 1 12 7a4.5 4.5 0 0 1 0 9.5zm0-7.2A2.7 2.7 0 1 0 12 14.7a2.7 2.7 0 0 0 0-5.4z"/></svg>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
                         </div>
 
 
 
-                        <div class="stats-grid stats-grid-three">
+                        <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label">   تعداد کل کلاس های برگزار شده </p>
+                                    <p class="stat-label">تعداد کل کلاس‌های برگزار شده</p>
                                     <p class="stat-value text-dark"> ≈ <?php echo number_format($totalAttendance); ?></p>
                                 </div>
                                 <div class="stat-icon icon-slate" aria-hidden="true">
@@ -280,7 +350,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label">آزمون‌های برگزار شده </p>
+                                    <p class="stat-label">آزمون‌های برگزار شده امسال</p>
                                     <p class="stat-value text-warning"><?php echo number_format($totalQuizzes); ?></p>
                                 </div>
                                 <div class="stat-icon icon-amber" aria-hidden="true">
@@ -291,13 +361,25 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label">ارتباط با دانش آموزان و اولیا </p>
-                                    
+                                    <p class="stat-label">پیامک‌های ارسالی امسال</p>
+                                    <p class="stat-value text-info"><?php echo number_format($countSMS); ?></p>
                                 </div>
                                 <div class="stat-icon icon-cyan" aria-hidden="true">
                                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                                 </div>
                             </div>
+
+                            <?php if ($isInstitute): ?>
+                                <div class="stat-card">
+                                    <div class="stat-left">
+                                        <p class="stat-label">ثبت‌نام‌های قطعی امسال</p>
+                                        <p class="stat-value text-success"><?php echo number_format($permanentEnrollments); ?> نفر</p>
+                                    </div>
+                                    <div class="stat-icon icon-indigo" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm8 2c-2.33 0-7 1.17-7 3.5V21h14v-2.5C23 14.17 18.33 13 16 13z"/></svg>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
 
                         </div>
 

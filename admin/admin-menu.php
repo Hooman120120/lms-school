@@ -157,7 +157,7 @@ else                  $c = '#15233f';
     </div>
     <div class="main-sidebar-body">
         <ul class="nav">
-            <li class="nav-header"><span class="nav-label" style="font-size: 15px; color: #CD964F;">ویژه مدارس</span></li>
+            <li class="nav-header"><span class="nav-label" style="font-size: 15px; color: #CD964F;"><?= inst_is('institute') ? 'ویژه آموزشگاه' : 'ویژه مدارس' ?></span></li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo url('admin/index.php') ?>">
                     <span class="shape1"></span>

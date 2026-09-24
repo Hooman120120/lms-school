@@ -92,6 +92,10 @@ if ($canImpersonate) {
 
                 <?php
                 echo jdate('l Y/m/d ') . ' - ' . __SCHOOL_NAME;
+                $selectedAcademicYear = filter_var($_SESSION['academic_year_base'] ?? null, FILTER_VALIDATE_INT);
+                if ($selectedAcademicYear !== false && $selectedAcademicYear >= 1300 && $selectedAcademicYear <= 1600) {
+                    echo ' <span class="badge bg-warning text-dark">نمای بایگانی ' . (int)$selectedAcademicYear . '–' . ((int)$selectedAcademicYear + 1) . '</span>';
+                }
                 ?>
                 
                 
