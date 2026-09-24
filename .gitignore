@@ -1,0 +1,39 @@
+# Local settings: database logins, hf panel keys, bank/SMS credentials. Never committed;
+# on the server these come from nginx (hf's per-school config + /etc/panel/<type>.secrets.conf).
+/.htaccess
+/.htaccess.*
+*.env
+
+# Logs, archives, dumps, editor files
+*.log
+error_log
+*.zip
+*.rar
+*.sql
+*.bak
+.DS_Store
+/.vscode/
+/.idea/
+/node_modules/
+
+# Per-school data: everything the panel writes (see the panel's writable list on the server,
+# /etc/panel/<type>.writable), ignored whole: git cannot re-include files inside an ignored folder.
+# Exported student lists live in assets/doc in every panel.
+/assets/doc/
+/uploads/
+/uploads-student/
+/assets/attachments/
+/assets/doc/
+/assets/schedule/
+/assets/group_files/
+/admin/autodialer/announcements/
+/storage/
+/tmp/
+/other_payments/mapping.json
+/other_payments/redirect_log.txt
+/other_payments/callback_debug.txt
+/admin/panel/calendar_debug.log
+/admin/webhook_test_log.txt
+/admin/webhook_raw_log.jsonl
+/admin/call_debug_log.txt
+/admin/course/ex/hozor.csv

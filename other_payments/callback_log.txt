@@ -1,0 +1,7 @@
+2026-08-18 10:13:08 - Sent to system_b: Array
+(
+    [orderId] => 1787044308169
+    [source] => system_b
+    [verify_result] => 
+)
+

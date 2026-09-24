@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /admin/
+
+# Handle requests with a subdirectory (e.g., /admin/panel/call_popup.php/...)
+RewriteRule ^[^/]+/call_popup\.php(/.*)?$ call_popup.php$1 [L,NC]
+
+# Handle requests without a subdirectory (e.g., /admin/call_popup.php/...)
+RewriteRule ^call_popup\.php(/.*)?$ call_popup.php$1 [L,NC]

@@ -1,0 +1,212 @@
+<?php
+include_once '../../dbconfig.php';
+include_once '../../inc/function_login.php';
+include_once '../../inc/function.php';
+include_once '../../inc/jdf.php';
+
+if (!isset($_SESSION['admin'])) {
+    header('location: ../login.php');
+    exit;
+}
+$currentUser = (string)($_SESSION['admin']['user'] ?? '');
+if ($currentUser === '' || SchoolNotificationAllowedTypes() === []) {
+    http_response_code(403);
+    exit('برای سمت فعلی، دسترسی به اعلان‌های مدرسه تعریف نشده است.');
+}
+
+if (empty($_SESSION['school_notification_csrf'])) {
+    $_SESSION['school_notification_csrf'] = bin2hex(random_bytes(24));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = (string)($_POST['csrf'] ?? '');
+    if (!hash_equals((string)$_SESSION['school_notification_csrf'], $token)) {
+        http_response_code(419);
+        exit('درخواست نامعتبر است. صفحه را تازه‌سازی کنید.');
+    }
+    if (isset($_POST['notification_id'])) {
+        MarkSchoolNotificationRead((int)$_POST['notification_id'], $currentUser);
+    } elseif (isset($_POST['mark_all'])) {
+        foreach (GetSchoolNotifications($currentUser, null, 300) as $visibleNotification) {
+            MarkSchoolNotificationRead((int)$visibleNotification['id'], $currentUser);
+        }
+    }
+    $returnType = (string)($_POST['return_type'] ?? '');
+    header('Location: ' . url('admin/notifications/school_notifications.php') . ($returnType !== '' ? '?type=' . rawurlencode($returnType) : ''));
+    exit;
+}
+
+$catalog = SchoolNotificationCatalog();
+$allowedTypes = SchoolNotificationAllowedTypes();
+$schoolRoleKey = SchoolStaffRoleKey($currentUser);
+$legacyCounts = SchoolLegacyNotificationCounts($currentUser);
+$selectedType = (string)($_GET['type'] ?? '');
+if (!in_array($selectedType, $allowedTypes, true)) {
+    $selectedType = '';
+}
+$notifications = GetSchoolNotifications($currentUser, $selectedType !== '' ? $selectedType : null, 200);
+$unreadCount = CountSchoolNotifications($currentUser, true);
+?>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>اعلان‌های مدرسه | <?= __TITLE ?></title>
+    <?php include_once '../link.php'; ?>
+    <style>
+        .school-notification {border-right:4px solid #d5d9df; transition:.15s ease;}
+        .school-notification.unread {border-right-color:#0d6efd; background:#f5f9ff;}
+        .school-notification:hover {box-shadow:0 6px 16px rgba(31,45,61,.09);}
+        .notification-meta {display:flex; flex-wrap:wrap; gap:8px; color:#6c757d; font-size:12px;}
+        .notification-icon {width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e8f1ff;color:#0d6efd;font-size:20px;flex:0 0 42px;}
+    </style>
+</head>
+<body class="main-body leftmenu">
+<div class="page">
+    <?php include_once '../menu.php'; include_once '../header.php'; ?>
+    <div class="main-content side-content pt-0">
+        <div class="container-fluid">
+            <div class="inner-body">
+                <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h2 class="main-content-title tx-24 mg-b-5">اعلان‌های مدرسه</h2>
+                        <p class="text-muted mb-0">فقط اعلان‌های مجاز برای سمت و پایه‌های تخصیص‌یافته شما نمایش داده می‌شود.</p>
+                    </div>
+                    <?php if ($unreadCount > 0): ?>
+                        <form method="post">
+                            <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
+                            <input type="hidden" name="return_type" value="<?= htmlspecialchars($selectedType) ?>">
+                            <button class="btn btn-outline-primary" name="mark_all" value="1">خواندن همه (<?= $unreadCount ?>)</button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (!SchoolNotificationsReady()): ?>
+                    <div class="alert alert-warning">ساختار دیتابیس اعلان‌های مدرسه هنوز نصب نشده است. migration مربوط به اعلان‌ها را اجرا کنید.</div>
+                <?php else: ?>
+                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
+                        <div class="card custom-card mb-3">
+                            <div class="card-header border-bottom-0">
+                                <h5 class="card-title mb-0">اعلان‌های عملیاتی سامانه</h5>
+                                <p class="text-muted mb-0 mt-1">مکانیزم‌های قبلی سامانه با دسترسی متناسب با سمت مدرسه</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)
+                                        || ($schoolRoleKey === 'financial_deputy' && Permision('permision_actfactor'))): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-warning btn-block text-right p-3" href="<?= url('admin/notifications/verify_by_manager.php') ?>">
+                                                <i class="fe fe-credit-card ml-2"></i> فاکتورهای منتظر تأیید
+                                                <?php if ($legacyCounts['pending_invoice'] > 0): ?><span class="badge badge-warning float-left"><?= (int)$legacyCounts['pending_invoice'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy'], true)): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-info btn-block text-right p-3" href="<?= url('admin/notifications/unread_sms.php') ?>">
+                                                <i class="fe fe-message-square ml-2"></i> پیامک‌های جدید
+                                                <?php if ($legacyCounts['unread_sms'] > 0): ?><span class="badge badge-info float-left"><?= (int)$legacyCounts['unread_sms'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notification_view.php') ?>">
+                                                <i class="fe fe-phone-call ml-2"></i> اعلان تماس مشاوران
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-secondary btn-block text-right p-3" href="<?= url('admin/notifications/notif_rule_management.php') ?>">
+                                                <i class="fe fe-sliders ml-2"></i> کنترل قوانین اعلان تماس
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($schoolRoleKey === 'counselor'): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notifications.php') ?>">
+                                                <i class="fe fe-phone-call ml-2"></i> اعلان تماس دانش‌آموزان من
+                                                <?php if ($legacyCounts['contact_alert'] > 0): ?><span class="badge badge-primary float-left"><?= (int)$legacyCounts['contact_alert'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'counselor'], true)): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-danger btn-block text-right p-3" href="<?= url('admin/notifications/thread_list.php') ?>">
+                                                <i class="fe fe-inbox ml-2"></i> تیکت‌های اعلان تماس
+                                                <?php if ($legacyCounts['contact_ticket'] > 0): ?><span class="badge badge-danger float-left"><?= (int)$legacyCounts['contact_ticket'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="card custom-card mb-3">
+                        <div class="card-body d-flex flex-wrap" style="gap:8px">
+                            <a class="btn btn-sm <?= $selectedType === '' ? 'btn-primary' : 'btn-outline-primary' ?>" style="font-size: 17px;" href="<?= url('admin/notifications/school_notifications.php') ?>">همه</a>
+                            <?php foreach ($allowedTypes as $type): ?>
+                                <a class="btn btn-sm <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>" style="font-size: 17px;"
+                                   href="<?= url('admin/notifications/school_notifications.php?type=' . rawurlencode($type)) ?>">
+                                    <?= htmlspecialchars($catalog[$type]['title']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <?php if ($notifications === []): ?>
+                        <div class="alert alert-light text-center py-5">در این بخش اعلانی برای شما وجود ندارد.</div>
+                    <?php endif; ?>
+
+                    <?php foreach ($notifications as $notification):
+                        $meta = $catalog[$notification['event_type']] ?? ['title' => $notification['event_type'], 'icon' => 'fe-bell'];
+                        $target = trim((string)($notification['target_url'] ?? ''));
+                    ?>
+                        <div class="card custom-card school-notification <?= (int)$notification['is_read'] === 0 ? 'unread' : '' ?> mb-2">
+                            <div class="card-body d-flex align-items-start" style="gap:14px">
+                                <div class="notification-icon"><i class="fe <?= htmlspecialchars($meta['icon']) ?>"></i></div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap:8px">
+                                        <div>
+                                            <span class="badge badge-light mb-1"><?= htmlspecialchars($meta['title']) ?></span>
+                                            <h5 class="mb-1"><?= htmlspecialchars($notification['title']) ?></h5>
+                                        </div>
+                                        <?php if ((int)$notification['is_read'] === 0): ?><span class="badge badge-primary">جدید</span><?php endif; ?>
+                                    </div>
+                                    <?php if (!empty($notification['body'])): ?><p class="mb-2"><?= nl2br(htmlspecialchars($notification['body'])) ?></p><?php endif; ?>
+                                    <div class="notification-meta">
+                                        <?php if (trim((string)$notification['actor_name']) !== ''): ?><span><i class="fe fe-user"></i> <?= htmlspecialchars(trim($notification['actor_name'])) ?></span><?php endif; ?>
+                                        <?php if (!empty($notification['coursename'])): ?><span><i class="fe fe-layers"></i> <?= htmlspecialchars($notification['coursename']) ?></span><?php endif; ?>
+                                        <?php if (!empty($notification['class_name'])): ?><span><i class="fe fe-users"></i> <?= htmlspecialchars($notification['class_name']) ?></span><?php endif; ?>
+                                        <span><i class="fe fe-clock"></i> <?= htmlspecialchars(toJalali($notification['created_at'], 'Y/m/d H:i', 'fa')) ?></span>
+                                    </div>
+                                    <div class="mt-3 d-flex" style="gap:8px">
+                                        <?php if ($target !== '' && strpos($target, 'admin/') === 0): ?>
+                                            <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url($target)) ?>">مشاهده جزئیات</a>
+                                        <?php endif; ?>
+                                        <?php if ((int)$notification['is_read'] === 0): ?>
+                                            <form method="post">
+                                                <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
+                                                <input type="hidden" name="notification_id" value="<?= (int)$notification['id'] ?>">
+                                                <input type="hidden" name="return_type" value="<?= htmlspecialchars($selectedType) ?>">
+                                                <button class="btn btn-sm btn-outline-secondary">خواندم</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php include '../../footers.php'; ?>
+</body>
+</html>

@@ -1,0 +1,140 @@
+
+ body, html {
+	 padding: 0;
+	 margin: 0;
+	 background: #eee;
+	 font-family: IRANSans, -apple-system, BlinkMacSystemFont, Vazir, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	 direction: rtl;
+	 height: 100%;
+}
+ .printview {
+	 max-width: 1000px;
+	 margin: 0 auto;
+	 background: #fff;
+	 min-height: 100%;
+	 position: relative;
+}
+ .content {
+	 padding: 20px;
+	 position: relative;
+}
+ .title {
+	 text-align: center;
+	 font-size: 130%;
+	 margin: 20px 0 40px;
+	 font-weight: bold;
+}
+@media(max-width:767px) {
+    .title{
+        text-align: right
+    }
+}
+ .meta {
+	 position: absolute;
+	 left: 50px;
+	 top: 50px;
+	 font-size: 80%;
+}
+ table {
+	 font-size: 90%;
+	 width: 100%;
+	 border-collapse: collapse;
+}
+ table thead tr {
+	 background: #000;
+	 color: #fff;
+}
+ table tfoot tr {
+	 background: #444;
+	 color: #fff;
+}
+ table th, table td {
+	 padding: 5px;
+	 text-align: right;
+}
+ table tbody tr:nth-child(2n) {
+	 background-color: #eee;
+}
+ .text-left {
+	 text-align: left;
+}
+ .info {
+	 font-size: 80%;
+	 color: #333;
+	 margin: 20px 0;
+}
+ .signature {
+	 margin: 20px 0 0 0;
+}
+ .signature .text {
+	 width: 200px;
+	 text-align: center;
+	 float: left;
+}
+ .signature:after {
+	 clear: both;
+	 content: '';
+	 display: table;
+}
+.clearance-meta {
+    position: absolute;
+    right: 648px;
+    top: 32px;
+    font-size: 13.8px;
+}
+.clearance-title {
+    text-align: center;
+    right: 300px;
+    font-size: 28px;
+    top: 144px;
+    font-weight: bold;
+    position: absolute;
+}
+.clearance-content {
+    text-align: right;
+    top: 42px;
+    padding-right: 104px;
+    padding-left: 100px;
+    padding-top: 36px;
+    position: relative;
+    font-size: 16px;
+}
+.clearance-footer-meta {
+    position: absolute;
+    right: 600px;
+    top: 1064px;
+    font-size: 16px;
+}
+.clearance-print-view {
+    width: 840px;
+    height: 1188px;
+    margin: 0 auto;
+    background: #fff;
+    position: relative;
+}
+.clearance-logo {
+    width: 176px;
+    height: 40px;
+    top: 40px;
+    right: 44px;
+    position: absolute;
+}
+.clearance-footer-hr-blue {
+    height:16px;
+    width: 840px;
+    border-width:0;
+    background-color: #01286D;
+    top: 1132px;
+    position: absolute;
+}
+.clearance-footer-hr-green {
+    height:16px;
+    width: 88px;
+    border-width:0;
+    background-color: #1BCC38;
+    top: 1132px;
+    left: 0;
+    position: absolute;
+    text-align: left;
+    margin-left:0;
+}
