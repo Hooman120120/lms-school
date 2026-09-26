@@ -1130,9 +1130,9 @@ function renderCalendar() {
         }
         #transposedCalendar .tc-event .tc-t {
             flex: none;
-            font-size: 11px;
-            font-weight: 400;
-            opacity: .85;
+            font-size: 12px;
+            font-weight: 600;
+            color: #000;
             direction: ltr;
         }
         #transposedCalendar .tc-event .tc-name {
@@ -1171,11 +1171,11 @@ function renderCalendar() {
         }
         #transposedCalendar .mg-event { padding: 2px 6px; }
         #transposedCalendar .mg-event .wg-title { font-size: 12px; }
-        #transposedCalendar .mg-event .wg-time { font-size: 11px; }
+        #transposedCalendar .mg-event .wg-time { font-size: 12px; }
         #transposedCalendar .wg-event.wg-dragging { opacity: .45; }
         #transposedCalendar td.wg-cell.wg-drop { background: #e4ffed; outline: 2px dashed #298680; outline-offset: -3px; }
         #transposedCalendar .wg-title { display: block; font-size: 13px; font-weight: 700; color: #1d212f; }
-        #transposedCalendar .wg-time { display: block; font-size: 12px; color: #5b6270; direction: ltr; }
+        #transposedCalendar .wg-time { display: block; font-size: 12px; font-weight: 600; color: #000; direction: ltr; }
 
         /* ---------- نوار جستجوی درون تقویم ---------- */
         .calendar-search-bar {
