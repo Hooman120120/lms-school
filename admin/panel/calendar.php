@@ -2294,6 +2294,25 @@ function renderCalendar() {
             document.getElementById('formAction').value = 'update_event';
             if (typeof window.__setWeeklyEditMode === 'function') {
                 window.__setWeeklyEditMode(event.start ? event.start.getDay() : null);
+                // جلسه ای از یک سری هفتگی («عنوان #n» با همان پایه): تیک هفتگی روشن و تاریخ پایان،
+                // روزِ آخرین جلسه ی سری تا ویرایش مستقیم روی بقیه ی هفته ها هم بنشیند
+                var seriesMatch = String(event.title).trim().match(/^(.*\S)\s*#(\d+)$/);
+                if (seriesMatch) {
+                    var groupId = String(event.extendedProps.calendar_groups_id || '');
+                    var series = calendar.getEvents().filter(function (other) {
+                        var m = String(other.title).trim().match(/^(.*\S)\s*#(\d+)$/);
+                        return m && m[1] === seriesMatch[1] && String(other.extendedProps.calendar_groups_id || '') === groupId;
+                    });
+                    if (series.length > 1) {
+                        var lastSession = series.reduce(function (a, b) { return (b.start > a.start) ? b : a; });
+                        var lastDay = String(lastSession.extendedProps.jalali_start || '').split(' ')[0];
+                        if (lastDay) {
+                            document.getElementById('isWeekly').checked = true;
+                            document.getElementById('end_date').value = lastDay;
+                            updateCombinedDateTime();
+                        }
+                    }
+                }
             }
             document.getElementById('formEventId').value = eventId;
             document.getElementById('visibilitySelect').value = visibility;
