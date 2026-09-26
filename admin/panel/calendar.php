@@ -5,6 +5,11 @@ $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
 $permission_calendar = $admin['permission_calendar'];
+if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
+    // The index widget is view-only for tree accounts; editing belongs to the
+    // separately permissioned executive/academic calendar pages.
+    $permission_calendar = 0;
+}
 
 function debug_log($message, $data = null) {
     $logFile = __DIR__ . '/calendar_debug.log';
@@ -163,6 +168,13 @@ if (isset($_GET['get_events']) && $_GET['get_events'] == 1) {
         }
     }
 
+    if (isset($dashboardCalendarKinds)) {
+        $eventRows = array_values(array_filter($eventRows, static function (array $row) use ($dashboardCalendarKinds): bool {
+            return !empty($row['is_academic'])
+                ? !empty($dashboardCalendarKinds['academic'])
+                : !empty($dashboardCalendarKinds['executive']);
+        }));
+    }
     $events = [];
     foreach ($eventRows as $row) {
         $start_j = gregorian_to_jalali(substr($row['start_date'],0,4), substr($row['start_date'],5,2), substr($row['start_date'],8,2));

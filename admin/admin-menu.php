@@ -224,7 +224,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (Permision('permision_viewstudent')): ?>
+            <?php if (AdminMenuCan('students', Permision('permision_viewstudent'))): ?>
                 <li class="nav-item" style="margin-bottom: 5px;">
                     <a class="nav-link with-sub" href="#">
                         <span class="shape1"></span><span class="shape2"></span>
@@ -249,6 +249,7 @@ else                  $c = '#15233f';
                     <ul class="nav-sub">
 
                         <!-- دانش آموزان قطعی -->
+                        <?php if (AdminMenuCan('students.definitive', true)): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
@@ -257,7 +258,7 @@ else                  $c = '#15233f';
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;"> <!-- فاصله زیرمنو -->
-                                <?php if ($adminRole !== 6): ?>
+                                <?php if (AdminMenuCan('students.definitive.register', $adminRole !== 6)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/add.php') ?>">ثبت نام</a>
                                     </li>
@@ -267,68 +268,88 @@ else                  $c = '#15233f';
                                         <a class="nav-sub-link" href="<//?= url('admin/Student/add-group.php') ?>">ثبت نام گروهی </a>
                                     </li>
                                 <//?php endif; ?> -->
+                                <?php if (AdminMenuCan('students.definitive.enrolment', true)): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/addcourse.php') ?>"><?php echo m('menu.student_register_course') ?></a>
                                 </li>
+                                <?php endif; ?>
+                                <?php if (AdminMenuCan('students.definitive.edit', true)): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/edit-absolute.php') ?>">ویرایش
                                         اطلاعات قطعی</a>
                                 </li>
+                                <?php endif; ?>
 
-                                <?php if ($adminRole == 1) : ?>
+                                <?php if ($adminRole == 1 || AdminHasAnyCurrentTreePermission()) : ?>
 
+                                    <?php if (AdminMenuCan('students.definitive.my-students', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/mystudent.php') ?>">
                                             <?php echo m('menu.students_individual') ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
 
+                                    <?php if (AdminMenuCan('students.definitive.my-courses', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/mypersonalcourse.php') ?>">
                                             <?php echo m('menu.students_per_course') ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
 
+                                    <?php if (AdminMenuCan('students.definitive.cancelled-support', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/canceled_student_list.php') ?>">
                                             <?php echo m('menu.students_canceled_support') ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
 
+                                    <?php if (AdminMenuCan('students.definitive.suspended-support', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/suspension_list.php') ?>">
                                             <?php echo m('menu.students_suspended_list') ?>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
 
                                 <?php endif; ?>
 
 
-                                <?php if ($adminRole !== 2): ?>
+                                <?php if ($adminRole !== 2 || AdminHasAnyCurrentTreePermission()): ?>
+                                    <?php if (AdminMenuCan('students.definitive.course-report', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/Student/registration-Course-absolute.php') ?>">گزارش
                                             تفکیکی</a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if (AdminMenuCan('students.definitive.inactive', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/unactive-student.php') ?>">غیرفعال‌ها</a>
                                     </li>
+                                    <?php endif; ?>
 
-                                    <?php if (Permision('permision_reportstudent')): ?>
+                                    <?php if (AdminMenuCan('students.definitive.cancelled', Permision('permision_reportstudent'))): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/canceled-student.php') ?>">انصرافی ها</a>
                                         </li>
+                                    <?php endif; ?>
+                                    <?php if (AdminMenuCan('students.definitive.suspended', Permision('permision_reportstudent'))): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/suspended-student.php') ?>">
                                                 تعلیقی ها
                                             </a>
                                         </li>
+                                    <?php endif; ?>
+                                    <?php if (AdminMenuCan('students.definitive.cancelled-operator', Permision('permision_reportstudent'))): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/canceled-op-student.php') ?>">لغو پشتیبانی
@@ -338,8 +359,10 @@ else                  $c = '#15233f';
                                 <?php endif; ?>
                             </ul>
                         </li>
+                        <?php endif; ?>
 
                         <!-- دانش آموزان آزمایشی -->
+                        <?php if (AdminMenuCan('students.temporary', true)): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
@@ -348,22 +371,26 @@ else                  $c = '#15233f';
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;">
+                                <?php if (AdminMenuCan('students.temporary.register', true)): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/experimental-add.php') ?>">ثبت
                                         نام
 
                                         موقت</a>
                                 </li>
-                                <?php if ($adminRole !== 2): ?>
+                                <?php endif; ?>
+                                <?php if (AdminMenuCan('students.temporary.enrolment', $adminRole !== 2)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>"><?php echo m('menu.register_democourse_student') ?></a>
                                     </li>
                                 <?php endif; ?>
+                                <?php if (AdminMenuCan('students.temporary.edit', true)): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/edit-experimental.php') ?>">ویرایش
                                         اطلاعات موقت</a>
                                 </li>
-                                <?php if ($adminRole !== 2): ?>
+                                <?php endif; ?>
+                                <?php if (AdminMenuCan('students.temporary.report', $adminRole !== 2)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/Student/registration-Course-experimental.php') ?>">گزارش
@@ -372,6 +399,7 @@ else                  $c = '#15233f';
                                 <?php endif; ?>
                             </ul>
                         </li>
+                        <?php endif; ?>
 
                     </ul>
                 </li>
@@ -381,7 +409,7 @@ else                  $c = '#15233f';
             <?php
             $execMenuIsAdmin = Permision('administrator');
             $execMenuCanViewAcademic = ((int)$adminRole === 3) || SchoolStaffRoleKey($currentUser) !== '';
-            if ($execMenuIsAdmin || $execMenuCanViewAcademic) { ?>
+            if (AdminMenuCan('executive', $execMenuIsAdmin || $execMenuCanViewAcademic)) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-calendar  sidemenu-icon"></i>
@@ -406,22 +434,26 @@ else                  $c = '#15233f';
                             class="angle fe fe-chevron-left"></i></a>
 
                     <ul class="nav-sub">
-                        <?php if ($execMenuIsAdmin) { ?>
+                        <?php if (AdminMenuCan('executive.calendar', $execMenuIsAdmin)) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/panel/calendar_panel.php') ?>">تقویم
                                     اجرایی</a>
                             </li>
                         <?php } ?>
+                        <?php if (AdminMenuCan('executive.academic-calendar', true)): ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/panel/academic-calendar.php') ?>">تقویم
                                 آموزشی</a>
                         </li>
-                        <?php if ($execMenuIsAdmin) { ?>
+                        <?php endif; ?>
+                        <?php if (AdminMenuCan('executive.daily-notices', $execMenuIsAdmin)) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/notifications/daily_notifications.php') ?>">تابلو
                                     اعلان روزانه
                                 </a>
                             </li>
+                        <?php } ?>
+                        <?php if (AdminMenuCan('executive.news', $execMenuIsAdmin)) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/notifications/news_panel.php') ?>">تابلو
                                     اخبار</a>
@@ -435,6 +467,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
+            <?php if (AdminMenuCan('courses', true)): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                         class="si si-organization sidemenu-icon"></i>
@@ -458,6 +491,7 @@ else                  $c = '#15233f';
                 </a>
 
                 <ul class="nav-sub ">
+                    <?php if (AdminMenuCan('courses.main', true)): ?>
                     <li class="nav-item show">
                         <a class="nav with-sub" href="#"><span class="shape1"></span><span class="shape2"></span>
                             <span class="sidemenu-label" style="font-size:16px; color: #79f57d;"><?php echo m('menu.courses_sub') ?></span>
@@ -465,34 +499,40 @@ else                  $c = '#15233f';
 
                         <ul class="nav-sub">
                             <?php if ($adminRole !== 2): ?>
-                                <?php if (Permision('permision_viewcourse')) { ?>
+                                <?php if (AdminMenuCan('courses.main.create', Permision('permision_viewcourse'))) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>"><?php echo m('menu.course_create') ?></a>
                                     </li>
                                 <?php } ?>
+                                <?php if (AdminMenuCan('courses.main.demo-create', true)): ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
                                         href="<?php echo url('admin/democourse/add-democourse.php') ?>"><?php echo m('menu.democourse_create') ?></a>
                                 </li>
+                                <?php endif; ?>
                             <?php endif; ?>
 
+                            <?php if (AdminMenuCan('courses.main.active', true)): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"><?php echo m('menu.active_courses') ?></a>
                             </li>
+                            <?php endif; ?>
 
+                            <?php if (AdminMenuCan('courses.main.demo-active', true)): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link"
                                     href="<?php echo url('admin/democourse/list-democourse.php?paye=all') ?>"><?php echo m('menu.active_democourses') ?></a>
                             </li>
+                            <?php endif; ?>
                             <?php if ($adminRole !== 2): ?>
-                                <?php if (Permision('permision_viewcourse')) { ?>
+                                <?php if (AdminMenuCan('courses.main.archive', Permision('permision_viewcourse'))) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link"
                                             href="<?php echo url('admin/course/unactive-course.php') ?>">
                                             بایگانی سال‌های قبل</a>
                                     </li>
                                 <?php } ?>
-                                <?php if (Permision('permision_discount')) { ?>
+                                <?php if (AdminMenuCan('courses.main.discount', Permision('permision_discount'))) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link"
                                             href="<?php echo url('admin/course/add-discount.php') ?>"> ایجاد
@@ -503,25 +543,33 @@ else                  $c = '#15233f';
 
                         </ul>
                     </li>
+                    <?php endif; ?>
+                    <?php if (AdminMenuCan('courses.handhug', true)): ?>
                     <li class="nav-item show">
                         <a class="nav with-sub" href=""><span class="shape1"></span><span class="shape2"></span>
                             <span class="sidemenu-label "
                                 style="font-size:16px; color: #79f57d;">"بغل دستی ها"</span></a>
 
                         <ul class="nav-sub">
+                            <?php if (AdminMenuCan('courses.handhug.create', true)): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link " href="<?php echo url('admin/handhug/add-handhug.php') ?>"> ساخت
                                     محصول "بغل دستی ها"</a>
                             </li>
+                            <?php endif; ?>
+                            <?php if (AdminMenuCan('courses.handhug.manage', true)): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
                                     href="<?php echo url('admin/handhug/handhug-management.php') ?>"> <?php echo m('menu.handhug_active') ?></a>
                             </li>
+                            <?php endif; ?>
+                            <?php if (AdminMenuCan('courses.handhug.archive', true)): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
                                     href="<?php echo url('admin/handhug/disabled-handhugs.php') ?>"> بایگانی سال‌های قبل
                                     "بغل دستی ها"</a>
                             </li>
+                            <?php endif; ?>
                             <!--<li class="nav-sub-item">-->
                             <!--    <a class="nav-sub-link " href="#">   ثبت گروه های بغل دستی موقت</a>-->
                             <!--</li>-->
@@ -539,11 +587,13 @@ else                  $c = '#15233f';
 
                         </ul>
                     </li>
+                    <?php endif; ?>
 
 
                 </ul>
             </li>
 
+            <?php endif; ?>
             <?php if (inst_is('school') && $schoolNotificationTypes !== [] && (!AdminHasAnyCurrentTreePermission() || AdminHasMenuNavigationPermission('school-notifications'))): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">

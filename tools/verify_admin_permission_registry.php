@@ -54,6 +54,11 @@ foreach (['dashboard.summary.cards.achievements', 'dashboard.summary.cards.learn
 foreach (['dashboard.summary.cards.messages', 'dashboard.summary.notifications', 'dashboard.summary.academic-archive', 'school-notifications'] as $code) {
     if (($nodes[$code]['modes'] ?? []) !== ['school']) throw new RuntimeException("School-only section has wrong mode: $code");
 }
+foreach (['dashboard.calendar.executive', 'dashboard.calendar.academic'] as $code) {
+    if (($nodes[$code]['parent'] ?? null) !== 'dashboard.calendar') {
+        throw new RuntimeException("Dashboard calendar kind needs its own grant: $code");
+    }
+}
 if (count(AdminPermissionCodesForPath('/admin/notifications/school_notifications.php')) !== 2) {
     throw new RuntimeException('Shared notification page must allow either of its two menu grants.');
 }

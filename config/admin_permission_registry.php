@@ -6,6 +6,10 @@
  */
 return [
     ['code'=>'dashboard','label'=>'نمایه','path'=>'admin/index.php','children'=>[
+        ['code'=>'dashboard.calendar','label'=>'تقویم نمایه','children'=>[
+            ['code'=>'dashboard.calendar.executive','label'=>'رویدادهای تقویم اجرایی'],
+            ['code'=>'dashboard.calendar.academic','label'=>'رویدادهای تقویم آموزشی'],
+        ]],
         ['code'=>'dashboard.summary','label'=>'خلاصه وضعیت','children'=>[
             ['code'=>'dashboard.summary.overview','label'=>'چشم‌انداز کلی','children'=>[
                 ['code'=>'dashboard.summary.overview.manager','label'=>'داشبورد مدیریتی','path'=>'admin/panel/manager.php','children'=>[

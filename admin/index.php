@@ -44,6 +44,10 @@ $dashboardUsesPermissionTree = AdminHasAnyCurrentTreePermission();
 $dashboardCan = static function (string $code) use ($dashboardUsesPermissionTree): bool {
     return AdminPermissionCodeAvailable($code) && (!$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission($code));
 };
+$dashboardCalendarKinds = [
+    'executive' => $dashboardUsesPermissionTree ? $dashboardCan('dashboard.calendar.executive') : !Permision('permission_calendar'),
+    'academic' => $dashboardUsesPermissionTree ? $dashboardCan('dashboard.calendar.academic') : !Permision('permission_calendar'),
+];
 $showDashboardSummary = $dashboardUsesPermissionTree
     ? ($dashboardCan('dashboard.summary') || $dashboardCan('dashboard.exam-system') || $dashboardCan('dashboard.online-events'))
     : (int)$adminRole === 0;
@@ -80,7 +84,7 @@ $stmt_news->execute([':role' => (string)$adminRole]);
 $activeNews = $stmt_news->fetchAll(PDO::FETCH_OBJ);
 
 
-if (!Permision('permission_calendar')) {
+if (in_array(true, $dashboardCalendarKinds, true)) {
     include_once 'panel/calendar.php';
 }
 $studentAcademicYear = getSchoolAcademicYearRange();
@@ -328,6 +332,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             echo '<div class="alert alert-success mb-3">' . htmlspecialchars((string)$flashMessage) . '</div>';
                         }
                         // Yearly stats
+                        if ($dashboardCan('dashboard.summary.cards')):
                         $counts = countSmsInJalaliYearWindow();
                         $countSMS = $counts['total'];
 
@@ -497,6 +502,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php endif; ?>
 
                         </div>
+                        <?php endif; ?>
 
 
 
@@ -588,7 +594,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
 </div>
                 </div>
             <?php }
-            if (!Permision('permission_calendar')) {
+            if (in_array(true, $dashboardCalendarKinds, true)) {
                 renderCalendar();
             }
 

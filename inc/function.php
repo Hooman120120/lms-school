@@ -349,6 +349,14 @@ function AdminCanUsePermissionScope(string $code, array $legacyPermissions = [],
     return $legacyPermissions !== [];
 }
 
+/** Keep legacy menu behaviour only until an account receives tree grants. */
+function AdminMenuCan(string $code, bool $legacyAllowed): bool
+{
+    return AdminHasAnyCurrentTreePermission()
+        ? AdminHasMenuNavigationPermission($code)
+        : ($legacyAllowed && AdminPermissionCodeAvailable($code));
+}
+
 /** Resolve a record list to all records or records owned by the signed-in operator. */
 function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
 {
@@ -1151,12 +1159,17 @@ function Permision($tab)
 {
     global $conn;
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
+    $mappedCodes = AdminPermissionCodesForLegacy($tab);
+    if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission()) {
+        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code)) return true;
+        return false;
+    }
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$_SESSION['admin']['user']]);
     $result = $query->fetch();
     if ($result && !empty($result[$tab])) return true;
-    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
+    foreach ($mappedCodes as $code) {
         if (AdminHasMenuNavigationPermission($code)) return true;
     }
     return false;
@@ -1166,12 +1179,17 @@ function PermisionUser($tab, $user)
 {
     global $conn;
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
+    $mappedCodes = AdminPermissionCodesForLegacy($tab);
+    if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission((string)$user)) {
+        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
+        return false;
+    }
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$user]);
     $result = $query->fetch();
     if ($result && !empty($result[$tab])) return true;
-    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
+    foreach ($mappedCodes as $code) {
         if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
     }
     return false;
