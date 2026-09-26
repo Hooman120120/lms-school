@@ -948,11 +948,6 @@ function SchoolNotificationCatalog(): array
         'discipline'         => ['title' => 'مورد انضباطی جدید', 'icon' => 'fe-alert-triangle'],
         'executive_calendar' => ['title' => 'تغییر تقویم اجرایی', 'icon' => 'fe-calendar'],
         'academic_calendar'  => ['title' => 'تغییر تقویم آموزشی', 'icon' => 'fe-book-open'],
-        // Existing legacy categories remain available only to roles whose
-        // policy explicitly allows every notification (manager/general deputy).
-        'pending_invoice'    => ['title' => 'فاکتور منتظر تأیید', 'icon' => 'fe-file-text'],
-        'contact_ticket'     => ['title' => 'تیکت اعلان تماس', 'icon' => 'fe-phone-call'],
-        'contact_control'    => ['title' => 'کنترل اعلان تماس', 'icon' => 'fe-sliders'],
     ];
 }
 

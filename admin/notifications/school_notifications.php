@@ -9,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
+$isNotificationListPage = !empty($_GET['list']);
 if ($currentUser === '' || SchoolNotificationAllowedTypes() === []) {
     http_response_code(403);
     exit('برای سمت فعلی، دسترسی به اعلان‌های مدرسه تعریف نشده است.');
@@ -50,7 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     $returnType = (string)($_POST['return_type'] ?? '');
-    header('Location: ' . url('admin/notifications/school_notifications.php') . ($returnType !== '' ? '?type=' . rawurlencode($returnType) : ''));
+    $returnUrl = 'admin/notifications/' . ($isNotificationListPage ? 'school_notification_list.php' : 'school_notifications.php');
+    $returnQuery = $returnType !== '' ? '?type=' . rawurlencode($returnType) : '';
+    header('Location: ' . url($returnUrl) . $returnQuery);
     exit;
 }
 
@@ -64,6 +67,7 @@ if (!in_array($selectedType, $allowedTypes, true)) {
 }
 $view = (string)($_GET['view'] ?? 'unread');
 if (!in_array($view, ['unread', 'read'], true)) $view = 'unread';
+$notificationPage = 'admin/notifications/' . ($isNotificationListPage ? 'school_notification_list.php' : 'school_notifications.php');
 $notifications = GetSchoolNotifications($currentUser, $selectedType !== '' ? $selectedType : null, 200, $view === 'read');
 $unreadCount = CountSchoolNotifications($currentUser, true);
 $typeCounts = SchoolNotificationTypeCounts($currentUser);
@@ -106,7 +110,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                 <?php if (!SchoolNotificationsReady()): ?>
                     <div class="alert alert-warning">ساختار دیتابیس اعلان‌های مدرسه هنوز نصب نشده است. migration مربوط به اعلان‌ها را اجرا کنید.</div>
                 <?php else: ?>
-                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
+                    <?php if (!$isNotificationListPage && in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mb-3">
                             <div class="card-header border-bottom-0">
                                 <h5 class="card-title mb-0">اعلان‌های اطلاع‌رسانی</h5>
@@ -158,15 +162,21 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                                                 <?php if ($legacyCounts['unread_sms'] > 0): ?><span class="badge badge-info float-left"><?= (int)$legacyCounts['unread_sms'] ?></span><?php endif; ?>
                                             </a>
                                         </div>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <button class="btn btn-outline-dark btn-block text-right p-3" type="button" disabled title="اتصال صندوق ایمیل در مرحله بعد اضافه می‌شود">
+                                                <i class="fe fe-mail ml-2"></i> اعلان ایمیل‌های جدید
+                                                <span class="badge badge-light float-left">به‌زودی</span>
+                                            </button>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     <?php endif; ?>
 
-                    <div class="card custom-card mb-3">
+                    <?php if (!$isNotificationListPage): ?><div class="card custom-card mb-3">
                         <div class="card-header border-bottom-0">
-                            <h5 class="card-title mb-0">دسته‌بندی اعلان‌ها</h5>
+                            <h5 class="card-title mb-0"><?= inst_is('institute') ? 'اعلان‌های دوره‌ها' : 'اعلان‌های پایه‌ها' ?></h5>
                             <p class="text-muted mb-0 mt-1">روی هر دسته بزنید تا فقط اعلان‌های همان بخش را ببینید.</p>
                         </div>
                         <div class="card-body">
@@ -175,7 +185,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                                 <?php $counts = $typeCounts[$type] ?? ['total' => 0, 'unread' => 0]; ?>
                                 <div class="col-md-6 col-xl-4 mb-3">
                                     <a class="btn btn-block text-right p-3 <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>"
-                                       href="<?= url('admin/notifications/school_notifications.php?type=' . rawurlencode($type) . '&view=unread') ?>">
+                                       href="<?= url('admin/notifications/school_notification_list.php?type=' . rawurlencode($type) . '&view=unread') ?>">
                                         <i class="fe <?= htmlspecialchars($catalog[$type]['icon']) ?> ml-2"></i>
                                         <?= htmlspecialchars($catalog[$type]['title']) ?>
                                         <span class="float-left">
@@ -188,12 +198,13 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3" style="gap:8px">
                         <h5 class="mb-0"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?></h5>
                         <div class="btn-group">
-                            <a class="btn btn-sm <?= $view === 'unread' ? 'btn-primary' : 'btn-outline-primary' ?>" href="<?= url('admin/notifications/school_notifications.php' . ($selectedType !== '' ? '?type=' . rawurlencode($selectedType) . '&view=unread' : '')) ?>">دریافت‌های جدید<?= $unreadCount > 0 ? ' (' . $unreadCount . ')' : '' ?></a>
-                            <a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url('admin/notifications/school_notifications.php?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a>
+                            <a class="btn btn-sm <?= $view === 'unread' ? 'btn-primary' : 'btn-outline-primary' ?>" href="<?= url($notificationPage . ($selectedType !== '' ? '?type=' . rawurlencode($selectedType) . '&view=unread' : '')) ?>">دریافت‌های جدید<?= $unreadCount > 0 ? ' (' . $unreadCount . ')' : '' ?></a>
+                            <a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url($notificationPage . '?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a>
                         </div>
                     </div>
 
@@ -241,7 +252,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                         </div>
                     <?php endforeach; ?>
 
-                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>
+                    <?php if (!$isNotificationListPage && in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mt-4">
                             <div class="card-header border-bottom-0"><h5 class="card-title mb-0">اعلان‌های مالی</h5><p class="text-muted mb-0 mt-1">موارد مالی منتظر بررسی و تأیید</p></div>
                             <div class="card-body"><div class="row">
