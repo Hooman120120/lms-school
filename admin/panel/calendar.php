@@ -5,10 +5,11 @@ $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
 $permission_calendar = $admin['permission_calendar'];
-// Calendar groups are پایه‌ها in a school and دوره‌ها in an institute; the
-// weekly view puts one column per group, in the order they were created.
-$gw = inst_is('institute') ? 'دوره' : 'پایه';
-$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+// Calendar groups are the پایه‌ها (school and institute alike): one column each in
+// the weekly view, one stacked month each in the monthly view.
+$gw = 'پایه';
+calendarSeedDefaultGrades($conn, (int)$adminId);
+$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
     // The index widget is view-only for tree accounts; editing belongs to the
     // separately permissioned executive/academic calendar pages.
@@ -249,6 +250,7 @@ if (isset($_GET['get_events']) && $_GET['get_events'] == 1) {
             'personal_note' => $row['personal_note'],
             'calendar_groups_id' => $row['calendar_groups_id'] ?? null,
             'group_title' => $row['group_title'] ?? '',
+            'marker' => calendarEventMarker($row['marker'] ?? null),
             'jalali_start' => $jalali_start,
             'jalali_end' => $jalali_end,
             'target_summary' => $target_summary,
@@ -284,6 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         ? 1
         : (isset($_POST['is_academic']) ? (int)$_POST['is_academic'] : 0);
     $overlap = isset($_POST['overlap']) ? (int)$_POST['overlap'] : 0;
+    $marker = calendarEventMarker($_POST['marker'] ?? null);
     $start_greg = jalaliToGregorian($start_jalali);
     $end_greg = jalaliToGregorian($end_jalali);
 
@@ -393,10 +396,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             $stmt = $conn->prepare("
         INSERT INTO calendar_events 
-        (title, description,personal_note, start_date, end_date, calendar_groups_id, creator_id, updated_by_id, target_type, visibility, event_type, overlap, is_academic)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, description,personal_note, start_date, end_date, calendar_groups_id, creator_id, updated_by_id, target_type, visibility, event_type, overlap, is_academic, marker)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-            $stmt->execute([$occTitle, $description, $personal_note , $occStart, $occEnd, $calendar_groups_id, $adminId, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic]);
+            $stmt->execute([$occTitle, $description, $personal_note , $occStart, $occEnd, $calendar_groups_id, $adminId, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, $marker]);
             $eventId = $conn->lastInsertId();
             $createdEventIds[] = (int)$eventId;
 
@@ -555,8 +558,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $oldTitle = (string)$oldTitleStmt->fetchColumn();
 
             // Full update from the modal
-            $stmt = $conn->prepare("UPDATE calendar_events SET title=?, description=?, personal_note=? , start_date=?, end_date=?, calendar_groups_id=?, updated_by_id=?, target_type=?, visibility=?, event_type=?, overlap=?, is_academic=? WHERE id=?");
-            $stmt->execute([$title, $description, $personal_note, $start_greg, $end_greg, $calendar_groups_id, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, $eventId]);
+            $stmt = $conn->prepare("UPDATE calendar_events SET title=?, description=?, personal_note=? , start_date=?, end_date=?, calendar_groups_id=?, updated_by_id=?, target_type=?, visibility=?, event_type=?, overlap=?, is_academic=?, marker=? WHERE id=?");
+            $stmt->execute([$title, $description, $personal_note, $start_greg, $end_greg, $calendar_groups_id, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, calendarEventMarker($_POST['marker'] ?? null), $eventId]);
 
             // فقط شماره ی جلسه عوض شده (مثلاً «ریاضی ششم #3» → «#2»): جلسه های بعدی همان
             // رویداد هفتگی (همان عنوان و همان پایه، بعد از این جلسه) از شماره ی جدید پشت سر هم شماره می گیرند.
@@ -991,6 +994,29 @@ function renderCalendar() {
             white-space: nowrap;
         }
 
+        /* خط زمان زیر ماوس در نمای روز */
+        #transposedCalendar .tc-cursor {
+            position: absolute;
+            width: 0;
+            border-left: 2px dotted #ff2d55;
+            pointer-events: none;
+            z-index: 6;
+        }
+        #transposedCalendar .tc-cursor-time {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff2d55;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
         #transposedCalendar .tc-empty {
             text-align: center;
             color: #1d212f;
@@ -1041,6 +1067,60 @@ function renderCalendar() {
 
         #transposedCalendar .wg-event:hover { filter: brightness(.95); }
         #transposedCalendar .wg-event[draggable] { cursor: grab; }
+
+        /* نشانه ی رویداد: دایره ی بزرگ گوشه ی رویداد با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
+        #transposedCalendar .wg-event,
+        #transposedCalendar .tc-allday { position: relative; }
+        .ev-dot {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+            z-index: 2;
+        }
+        .ev-dot.ev-dot-inline {
+            position: static;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        #transposedCalendar .wg-event .ev-dot,
+        #transposedCalendar .tc-event .ev-dot,
+        #transposedCalendar .tc-allday .ev-dot { top: 50%; transform: translateY(-50%); }
+        #transposedCalendar .tc-event { padding-left: 24px; }
+        #transposedCalendar .wg-event:has(.ev-dot) { padding-left: 26px; padding-right: 26px; }
+
+        /* ماه: یک تقویم برای هر پایه، زیر هم */
+        #transposedCalendar .mg-section { margin-bottom: 18px; }
+        #transposedCalendar .mg-title {
+            padding: 8px 14px;
+            border-radius: 10px 10px 0 0;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #transposedCalendar .mg-count { font-size: 12px; font-weight: 400; opacity: .85; }
+        #transposedCalendar table.mg-table { min-width: 560px; border-radius: 0 0 10px 10px; }
+        #transposedCalendar td.mg-cell { height: 92px; }
+        #transposedCalendar td.mg-other { background: #f4f5f7; }
+        #transposedCalendar td.mg-other .mg-date { color: #a0a4ad; }
+        #transposedCalendar td.mg-today { background: #e4ffed; }
+        #transposedCalendar .mg-date {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1d212f;
+            cursor: pointer;
+            margin-bottom: 3px;
+        }
+        #transposedCalendar .mg-event { padding: 2px 6px; }
+        #transposedCalendar .mg-event .wg-title { font-size: 12px; }
+        #transposedCalendar .mg-event .wg-time { font-size: 11px; }
         #transposedCalendar .wg-event.wg-dragging { opacity: .45; }
         #transposedCalendar td.wg-cell.wg-drop { background: #e4ffed; outline: 2px dashed #298680; outline-offset: -3px; }
         #transposedCalendar .wg-title { display: block; font-size: 13px; font-weight: 700; color: #1d212f; }
@@ -1172,6 +1252,15 @@ function renderCalendar() {
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="markerSelect">نشانه</label>
+                                <select class="form-select" id="markerSelect" name="marker">
+                                    <option value="">بدون نشانه</option>
+                                    <?php foreach (CALENDAR_EVENT_MARKERS as $key => $mk): ?>
+                                        <option value="<?= $key ?>" style="color: <?= $mk['color'] ?>;">● <?= htmlspecialchars($mk['label']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">توضیحات</label>
@@ -2039,6 +2128,7 @@ function renderCalendar() {
             document.getElementById('description').value = event.extendedProps.description || '';
             document.getElementById('personal_note').value = event.extendedProps.personal_note || '';
             document.getElementById('groupSelect').value = event.extendedProps.calendar_groups_id || '';
+            document.getElementById('markerSelect').value = event.extendedProps.marker || '';
             document.getElementById('formAction').value = 'update_event';
             if (typeof window.__setWeeklyBlockVisible === 'function') {
                 window.__setWeeklyBlockVisible(false);
@@ -2117,6 +2207,13 @@ function renderCalendar() {
         // ------------------------------------------------------------------
         var CAL_GROUP_WORD = <?= json_encode($gw, JSON_UNESCAPED_UNICODE) ?>;
         var CAL_WEEK_GROUPS = <?= json_encode(array_map(static fn($g) => ['id' => (int)$g['id'], 'title' => $g['title'], 'color' => $g['color']], $weekGroups), JSON_UNESCAPED_UNICODE) ?>;
+        var CAL_MARKERS = <?= json_encode(CALENDAR_EVENT_MARKERS, JSON_UNESCAPED_UNICODE) ?>;
+        // دایره ی نشانه ی رویداد (کلاس آنلاین، کنسل، ...) برای گوشه ی رویداد
+        function markerDot(ev, inline) {
+            var mk = CAL_MARKERS[ev.extendedProps && ev.extendedProps.marker];
+            if (!mk) return '';
+            return '<span class="ev-dot' + (inline ? ' ev-dot-inline' : '') + '" style="background:' + mk.color + '" title="' + tcEscape(mk.label) + '"></span>';
+        }
         var TC_MONTH_HEIGHT = 500; // همان ارتفاعی که تقویم با آن ساخته می شود
         var TC_DAY_NAMES = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
 
@@ -2279,7 +2376,7 @@ function renderCalendar() {
             if (!calendar) return;
             var stats = applyCalendarSearchDisplay();
             var v = calendar.view;
-            if (v && (v.type === 'timeGridWeek' || v.type === 'timeGridDay')) {
+            if (v && (v.type === 'timeGridWeek' || v.type === 'timeGridDay' || v.type === 'dayGridMonth')) {
                 renderTimeView(v, visibleCalendarEvents());
             }
             updateCalendarSearchInfo(stats);
@@ -2288,7 +2385,9 @@ function renderCalendar() {
         // هفته: روزها در سطر و پایه ها (یا دوره ها) در ستون، مثل جدول برنامه ی هفتگی.
         // روز: همان نمای ساعت به ساعت.
         function renderTimeView(view, events) {
-            if (view.type === 'timeGridWeek') {
+            if (view.type === 'dayGridMonth') {
+                renderMonthByGroup(view, events);
+            } else if (view.type === 'timeGridWeek') {
                 renderWeekByGroup(view.activeStart, view.activeEnd, events);
             } else {
                 renderTransposed(view.activeStart, view.activeEnd, events);
@@ -2297,6 +2396,94 @@ function renderCalendar() {
 
         function wgTime(d) {
             return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        // ماه: برای هر پایه یک تقویم ماهانه ی جدا، زیر هم؛ هر کدام فقط رویدادهای همان پایه
+        function renderMonthByGroup(view, events) {
+            var host = document.getElementById('transposedCalendar');
+            if (!host) return;
+            var known = {};
+            CAL_WEEK_GROUPS.forEach(function (g) { known[g.id] = true; });
+            var groupOf = function (ev) {
+                var id = parseInt(ev.extendedProps.calendar_groups_id, 10);
+                return known[id] ? id : 0;
+            };
+            var inRange = events.filter(function (ev) {
+                if (!ev.start) return false;
+                var e = ev.end || new Date(ev.start.getTime() + 1);
+                return ev.start < view.activeEnd && e > view.activeStart;
+            });
+            var sections = CAL_WEEK_GROUPS.slice();
+            if (inRange.some(function (ev) { return groupOf(ev) === 0; })) {
+                sections.push({ id: 0, title: 'بدون ' + CAL_GROUP_WORD, color: '#B5B5B5' });
+            }
+
+            var days = [];
+            var cur = new Date(view.activeStart.getFullYear(), view.activeStart.getMonth(), view.activeStart.getDate());
+            while (cur < view.activeEnd) { days.push(new Date(cur)); cur.setDate(cur.getDate() + 1); }
+            var today = new Date();
+            var dayNum = function (d) {
+                try { return new Intl.DateTimeFormat('fa-IR-u-ca-persian', { day: 'numeric' }).format(d); }
+                catch (e) { return String(d.getDate()); }
+            };
+            var names = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+
+            var html = '';
+            sections.forEach(function (g) {
+                var mine = inRange.filter(function (ev) { return groupOf(ev) === g.id; });
+                html += '<section class="mg-section">';
+                html += '<div class="mg-title" style="background:' + tcEscape(g.color) + ';color:' + tcTextColorFor(g.color) + '">'
+                      + tcEscape(g.title) + '<span class="mg-count">' + mine.length + ' رویداد</span></div>';
+                html += '<table class="wg-table mg-table"><thead><tr>';
+                names.forEach(function (n) { html += '<th class="wg-day">' + n + '</th>'; });
+                html += '</tr></thead><tbody>';
+                days.forEach(function (day, i) {
+                    if (i % 7 === 0) html += '<tr>';
+                    var dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+                    var dayEnd = new Date(dayStart.getTime() + 86400000);
+                    var cls = 'wg-cell mg-cell'
+                        + (day >= view.currentStart && day < view.currentEnd ? '' : ' mg-other')
+                        + (tcSameDay(day, today) ? ' mg-today' : '');
+                    var greg = day.getFullYear() + '-' + String(day.getMonth() + 1).padStart(2, '0') + '-' + String(day.getDate()).padStart(2, '0');
+                    html += '<td class="' + cls + '" data-day="' + day.getFullYear() + '-' + (day.getMonth() + 1) + '-' + day.getDate()
+                          + '" data-group="' + g.id + '"><a class="mg-date" data-greg="' + greg + '">' + dayNum(day) + '</a>';
+                    mine.filter(function (ev) {
+                        var e = ev.end || new Date(ev.start.getTime() + 1);
+                        return ev.start < dayEnd && e > dayStart;
+                    }).sort(function (a, b) { return (b.allDay - a.allDay) || (a.start - b.start); }).forEach(function (ev) {
+                        var bg = ev.backgroundColor || ev.borderColor || g.color || '#B5B5B5';
+                        html += '<div class="wg-event mg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
+                              + (hasCalendarPermission ? ' draggable="true"' : '')
+                              + ' style="border-inline-start-color:' + tcEscape(bg) + '" title="' + tcEscape(ev.title) + '">' + markerDot(ev)
+                              + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
+                              + (ev.allDay ? '' : '<span class="wg-time">' + wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '</span>')
+                              + '</div>';
+                    });
+                    html += '</td>';
+                    if (i % 7 === 6) html += '</tr>';
+                });
+                html += '</tbody></table></section>';
+            });
+            if (!sections.length) {
+                html = '<div class="tc-empty">هنوز پایه‌ای تعریف نشده است.</div>';
+            }
+            host.innerHTML = html;
+
+            host.querySelectorAll('[data-ev]').forEach(function (node) {
+                node.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var ev = calendar.getEventById(node.getAttribute('data-ev'));
+                    if (ev) showEventDetail(ev);
+                });
+            });
+            // مثل نمای ماهِ قبلی: کلیک روی عدد روز، جزئیات آن روز را باز می کند
+            host.querySelectorAll('.mg-date').forEach(function (a) {
+                a.addEventListener('click', function () {
+                    window.open('day_info.php?date=' + a.getAttribute('data-greg'), 'DayInfo',
+                        'width=1520,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=0,location=0');
+                });
+            });
+            if (hasCalendarPermission) wgEnableDrag(host);
         }
 
         function renderWeekByGroup(viewStart, viewEnd, events) {
@@ -2364,7 +2551,7 @@ function renderCalendar() {
                             : (ev.end ? wgTime(ev.start) + ' - ' + wgTime(ev.end) : wgTime(ev.start));
                         html += '<div class="wg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
                               + (hasCalendarPermission ? ' draggable="true"' : '') + ' style="border-inline-start-color:' + tcEscape(bg) + '"'
-                              + ' title="' + tcEscape(ev.title) + '">'
+                              + ' title="' + tcEscape(ev.title) + '">' + markerDot(ev)
                               + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
                               + '<span class="wg-time">' + when + '</span></div>';
                     });
@@ -2492,7 +2679,8 @@ function renderCalendar() {
                             row.push({ text: td.querySelector('.tc-dayname').textContent + '\n' + td.querySelector('.tc-daydate').textContent, bg: '#e4ffed', bold: true });
                         } else {
                             row.push({ text: Array.prototype.map.call(td.querySelectorAll('.wg-event'), function (n) {
-                                return n.querySelector('.wg-title').textContent + '\n' + n.querySelector('.wg-time').textContent;
+                                var dot = n.querySelector('.ev-dot');
+                                return n.querySelector('.wg-title').textContent + (dot ? ' (' + dot.title + ')' : '') + '\n' + n.querySelector('.wg-time').textContent;
                             }).join('\n\n') });
                         }
                     });
@@ -2500,17 +2688,26 @@ function renderCalendar() {
                 });
                 out.file = 'تقویم-هفته-' + out.title;
             } else if (view.type === 'dayGridMonth') {
+                // همان پایه ها به همان ترتیب صفحه؛ هر پایه یک ردیف عنوان رنگی و بعد هفته هایش
                 var names = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
                 names.forEach(function (n) { out.header.push({ text: n, bg: '#e8e8e8' }); });
-                var cur = new Date(view.activeStart.getFullYear(), view.activeStart.getMonth(), view.activeStart.getDate());
-                var row = [];
-                while (cur < view.activeEnd) {
-                    var inMonth = cur >= view.currentStart && cur < view.currentEnd;
-                    var lines = eventsOnDay(cur).map(viewEventLine).join('\n\n');
-                    row.push({ text: tcJalaliDate(cur) + (lines ? '\n\n' + lines : ''), bg: inMonth ? '' : '#f2f2f2' });
-                    if (row.length === 7) { out.rows.push(row); row = []; }
-                    cur.setDate(cur.getDate() + 1);
-                }
+                document.querySelectorAll('#transposedCalendar .mg-section').forEach(function (sec) {
+                    var titleBar = sec.querySelector('.mg-title');
+                    var bg = titleBar.style.background || '';
+                    var name = titleBar.firstChild ? titleBar.firstChild.textContent : '';
+                    out.rows.push(names.map(function (n, i) { return { text: i === 0 ? name : '', bg: bg, bold: true }; }));
+                    sec.querySelectorAll('tbody tr').forEach(function (tr) {
+                        out.rows.push(Array.prototype.map.call(tr.querySelectorAll('td'), function (td) {
+                            var lines = Array.prototype.map.call(td.querySelectorAll('.wg-event'), function (n) {
+                                var t = n.querySelector('.wg-time');
+                                var dot = n.querySelector('.ev-dot');
+                                return n.querySelector('.wg-title').textContent + (dot ? ' (' + dot.title + ')' : '') + (t ? '\n' + t.textContent : '\n(تمام روز)');
+                            }).join('\n\n');
+                            return { text: td.querySelector('.mg-date').textContent + (lines ? '\n\n' + lines : ''),
+                                     bg: td.classList.contains('mg-other') ? '#f2f2f2' : '' };
+                        }));
+                    });
+                });
                 out.file = 'تقویم-ماه-' + out.title;
             } else {
                 out.header = [{ text: 'ساعت', bg: '#e8e8e8' }, { text: 'عنوان', bg: '#e8e8e8' },
@@ -2518,7 +2715,7 @@ function renderCalendar() {
                 eventsOnDay(view.activeStart).forEach(function (ev) {
                     out.rows.push([
                         { text: ev.allDay ? 'تمام روز' : wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') },
-                        { text: ev.title, bold: true },
+                        { text: ev.title + (CAL_MARKERS[ev.extendedProps.marker] ? ' (' + CAL_MARKERS[ev.extendedProps.marker].label + ')' : ''), bold: true },
                         { text: ev.extendedProps.group_title || '', bg: ev.extendedProps.group_title ? (ev.backgroundColor || '') : '' },
                         { text: ev.extendedProps.description || '' }
                     ]);
@@ -2628,7 +2825,7 @@ function renderCalendar() {
                     var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
                     html += '<span class="tc-allday" data-ev="' + tcEscape(ev.id) + '" style="background:'
                           + bg + ';color:' + tcTextColorFor(bg) + '" title="' + tcEscape(ev.title) + '">'
-                          + tcEscape(ev.title) + '</span>';
+                          + markerDot(ev) + tcEscape(ev.title) + '</span>';
                 });
                 html += '</div></td>';
 
@@ -2642,18 +2839,20 @@ function renderCalendar() {
                         var offset = ((ev.__s - range.min * 60) / totalMin) * 100;
                         var width = ((ev.__e - ev.__s) / totalMin) * 100;
                         var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
-                        var label = ev.start.toTimeString().slice(0, 5) + '  ' + ev.title;
+                        // ساعت شروع روی خود نوار نیست؛ جای نوار روی محور زمان همان را نشان می دهد
+                        var tip = wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '  ' + ev.title;
                         html += '<div class="tc-event" data-ev="' + tcEscape(ev.id) + '"'
                               + ' style="right:' + offset + '%; width:' + width + '%; top:'
                               + (4 + laneIndex * 32) + 'px; background:' + bg
                               + '; color:' + tcTextColorFor(bg) + '"'
-                              + ' title="' + tcEscape(label) + '">' + tcEscape(label) + '</div>';
+                              + ' title="' + tcEscape(tip) + '">' + markerDot(ev) + tcEscape(ev.title) + '</div>';
                     });
                 });
                 html += '</div></td></tr>';
             });
 
             html += '</tbody></table>';
+            html += '<div class="tc-cursor" style="display:none"><span class="tc-cursor-time"></span></div>';
             host.innerHTML = html;
 
             // کلیک روی رویداد همان پنجره جزئیات تقویم اصلی را باز می کند
@@ -2663,6 +2862,32 @@ function renderCalendar() {
                     if (ev) showEventDetail(ev);
                 });
             });
+            tcEnableCursor(host, range);
+        }
+
+        // خط نقطه چین عمودی زیر نشانگر ماوس با ساعت و دقیقه ی همان نقطه (محور زمان راست به چپ)
+        function tcEnableCursor(host, range) {
+            var table = host.querySelector('table');
+            var cursor = host.querySelector('.tc-cursor');
+            var label = host.querySelector('.tc-cursor-time');
+            var track = host.querySelector('td.tc-track');
+            if (!table || !cursor || !track) return;
+            host.style.position = 'relative';
+            var totalMin = (range.max - range.min) * 60;
+            table.addEventListener('mousemove', function (e) {
+                var t = track.getBoundingClientRect();
+                if (e.clientX < t.left || e.clientX > t.right) { cursor.style.display = 'none'; return; }
+                var minute = range.min * 60 + Math.round(((t.right - e.clientX) / t.width) * totalMin);
+                var h = Math.floor(minute / 60), m = minute % 60;
+                label.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+                var hostBox = host.getBoundingClientRect();
+                var tableBox = table.getBoundingClientRect();
+                cursor.style.left = (e.clientX - hostBox.left + host.scrollLeft) + 'px';
+                cursor.style.top = (tableBox.top - hostBox.top) + 'px';
+                cursor.style.height = tableBox.height + 'px';
+                cursor.style.display = '';
+            });
+            table.addEventListener('mouseleave', function () { cursor.style.display = 'none'; });
         }
 
         // جابجایی بین تقویم استاندارد (ماه) و نمای جابجاشده (روز/هفته)
@@ -2676,7 +2901,8 @@ function renderCalendar() {
                 : null;
             if (!host || !harness || !fcRoot) return;
 
-            var isTimeGrid = (info.view.type === 'timeGridWeek' || info.view.type === 'timeGridDay');
+            // هر سه نما (ماه، هفته، روز) را خودمان می سازیم؛ FullCalendar فقط نوار ابزار و داده را می دهد
+            var isTimeGrid = true;
 
             // بدنه تقویم اصلی پنهان می شود ولی نوار بالا (ماه/هفته/روز) سر جایش می ماند
             harness.style.display = isTimeGrid ? 'none' : '';
@@ -2754,6 +2980,7 @@ function renderCalendar() {
                 if (contentDiv) {
                     contentDiv.innerHTML = `
             <div style="margin-bottom:15px;"><strong>عنوان:</strong> ${ev.title}</div>
+            ${CAL_MARKERS[ev.extendedProps.marker] ? `<div style="margin-bottom:15px;"><strong>نشانه:</strong> ${markerDot(ev, true)} ${CAL_MARKERS[ev.extendedProps.marker].label}</div>` : ''}
             <div style="margin-bottom:15px;"><strong>توضیحات:</strong> ${desc}</div>
             <div style="margin-bottom:15px;"><strong>یادداشت شخصی:</strong> ${note}</div>
             <div style="margin-bottom:15px;"><strong>تاریخ شروع:</strong> ${ev.extendedProps.jalali_start}</div>
@@ -2878,6 +3105,7 @@ function renderCalendar() {
                             ev.extendedProps.course_targets = ev.course_targets || [];
                             ev.extendedProps.overlap = ev.overlap || 0;
                             ev.extendedProps.teacher_groups = ev.teacher_groups || [];
+                            ev.extendedProps.marker = ev.marker || null;
                         });
                         console.log(events)
                         successCallback(events);
@@ -2935,7 +3163,7 @@ function renderCalendar() {
                 var stats = applyCalendarSearchDisplay();
                 updateCalendarSearchInfo(stats);
                 var v = calendar.view;
-                if (v && (v.type === 'timeGridWeek' || v.type === 'timeGridDay')) {
+                if (v && (v.type === 'timeGridWeek' || v.type === 'timeGridDay' || v.type === 'dayGridMonth')) {
                     renderTimeView(v, visibleCalendarEvents());
                 }
                 focusRequestedEvent();
@@ -3099,6 +3327,7 @@ function renderCalendar() {
                 document.getElementById('title').value = '';
                 document.getElementById('description').value = '';
                 document.getElementById('personal_note').value = '';
+                document.getElementById('markerSelect').value = '';
                 document.getElementById('start_date').value = '';
                 document.getElementById('end_date').value = '';
                 document.getElementById('start_time').value = '00:00';

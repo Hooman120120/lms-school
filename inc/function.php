@@ -5342,3 +5342,89 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
 if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
     EnforceAdminPageTreePermission();
 }
+
+/*
+ * پایه‌های پیش‌فرض تقویم: پایه اول تا دوازدهم با رنگ‌های ثابت، برای مدرسه و
+ * مؤسسه یکسان. هر پنل فقط یک بار آن‌ها را می‌گیرد (نشانه در app_seeds)، پس
+ * پایه‌ای که مدیر حذف کند دوباره ساخته نمی‌شود.
+ *
+ * پایه‌ها در همان جدول calendar_groups با is_grade = 1 از گروه‌های قدیمی جدا
+ * می‌شوند. تقویم و «مدیریت پایه‌ها» فقط پایه‌ها را نشان می‌دهند؛ گروه‌های قدیمی
+ * پاک نمی‌شوند و رویدادهایشان «بدون پایه» دیده می‌شوند.
+ */
+const CALENDAR_DEFAULT_GRADES = [
+    'پایه اول'     => '#18E877',
+    'پایه دوم'     => '#9AEB1A',
+    'پایه سوم'     => '#FFE900',
+    'پایه چهارم'   => '#FFB300',
+    'پایه پنجم'    => '#F57300',
+    'پایه ششم'     => '#F55656',
+    'پایه هفتم'    => '#FA1F4F',
+    'پایه هشتم'    => '#E82DF5',
+    'پایه نهم'     => '#962DF5',
+    'پایه دهم'     => '#3140F5',
+    'پایه یازدهم'  => '#10A4F5',
+    'پایه دوازدهم' => '#2EF5E0',
+];
+
+/*
+ * نشانه‌ی رویداد: دایره‌ی رنگی گوشه‌ی هر رویداد در همه‌ی تقویم‌ها. رنگ‌ها عمداً
+ * با رنگ پایه‌ها قاطی نمی‌شوند: قرمز و سبز تیره‌اند، صورتی کم‌رنگ، و دور دایره
+ * همیشه حلقه‌ی سفید دارد.
+ */
+const CALENDAR_EVENT_MARKERS = [
+    'online'         => ['label' => 'کلاس آنلاین',           'color' => '#6B7280'],
+    'cancel_school'  => ['label' => 'کنسل توسط آموزشگاه',    'color' => '#B00020'],
+    'cancel_teacher' => ['label' => 'کنسل توسط معلم',        'color' => '#FFB3D9'],
+    'extra'          => ['label' => 'فوق برنامه',            'color' => '#111111'],
+    'exam'           => ['label' => 'آزمون',                 'color' => '#0B6B2E'],
+];
+
+function calendarEventMarker(?string $key): ?string
+{
+    return ($key !== null && isset(CALENDAR_EVENT_MARKERS[$key])) ? $key : null;
+}
+
+function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
+{
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    try {
+        $conn->exec("CREATE TABLE IF NOT EXISTS app_seeds (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        $seeded = $conn->query("SELECT name FROM app_seeds WHERE name LIKE 'calendar_%'")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('calendar_event_marker', $seeded, true)) {
+            if (!$conn->query("SHOW COLUMNS FROM calendar_events LIKE 'marker'")->fetchColumn()) {
+                $conn->exec("ALTER TABLE calendar_events ADD COLUMN marker VARCHAR(20) NULL DEFAULT NULL");
+            }
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_event_marker')");
+        }
+        if (!in_array('calendar_grades_flag', $seeded, true)) {
+            if (!$conn->query("SHOW COLUMNS FROM calendar_groups LIKE 'is_grade'")->fetchColumn()) {
+                $conn->exec("ALTER TABLE calendar_groups ADD COLUMN is_grade TINYINT(1) NOT NULL DEFAULT 0");
+            }
+            $mark = $conn->prepare("UPDATE calendar_groups SET is_grade = 1 WHERE title = ?");
+            foreach (array_keys(CALENDAR_DEFAULT_GRADES) as $title) $mark->execute([$title]);
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grades_flag')");
+        }
+        if (in_array('calendar_default_grades', $seeded, true)) return;
+        $exists = $conn->prepare("SELECT 1 FROM calendar_groups WHERE title = ? LIMIT 1");
+        $insert = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, 'پایه پیش‌فرض', ?, 1)");
+        foreach (CALENDAR_DEFAULT_GRADES as $title => $color) {
+            $exists->execute([$title]);
+            if (!$exists->fetchColumn()) $insert->execute([$title, $color, $createdBy]);
+        }
+        $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_default_grades')");
+    } catch (PDOException $e) {
+        error_log('calendar default grades: ' . $e->getMessage());
+    }
+}
+
+/** ORDER BY for the پایه‌ها: پایه اول…دوازدهم in grade order, then any پایه the admin added. */
+function calendarGroupsOrderSql(string $alias = ''): string
+{
+    $col = ($alias !== '' ? $alias . '.' : '') . 'title';
+    $list = implode(',', array_map(fn($t) => "'" . $t . "'", array_keys(CALENDAR_DEFAULT_GRADES)));
+    return "FIELD($col, $list) = 0, FIELD($col, $list), " . ($alias !== '' ? $alias . '.' : '') . 'id';
+}
+

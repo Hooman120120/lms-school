@@ -4,8 +4,8 @@ include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
 
-// Calendar groups are the columns of the weekly view: پایه in a school, دوره in an institute.
-$gw = inst_is('institute') ? 'دوره' : 'پایه';
+// Calendar groups are the پایه‌ها: the columns of the weekly view and the stacked months.
+$gw = 'پایه';
 
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -28,6 +28,7 @@ if (session_id() != $re['session_id']) {
 }
 // Admin ID directly from session – no extra DB query
 $adminId = $_SESSION['admin']['idadmin'];
+calendarSeedDefaultGrades($conn, (int)$adminId);
 
 // Flash message container
 $message = ['success' => false, 'text' => ''];
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'عنوان ' . $gw . ' اجباری است.'];
     } else {
         try {
-            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by) VALUES (?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, ?, ?, 1)");
             $stmt->execute([$title, $color, $description, $adminId]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت اضافه شد.'];
         } catch (Exception $e) {
@@ -65,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'عنوان و شناسه ' . $gw . ' الزامی است.'];
     } else {
         try {
-            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, description = ?, updated_by = ? WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, description = ?, updated_by = ? WHERE id = ? AND is_grade = 1");
             $stmt->execute([$title, $color, $description, $adminId, $id]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت ویرایش شد.'];
         } catch (Exception $e) {
@@ -84,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'شناسه ' . $gw . ' نامعتبر است.'];
     } else {
         try {
-            $stmt = $conn->prepare("DELETE FROM calendar_groups WHERE id = ?");
+            $stmt = $conn->prepare("DELETE FROM calendar_groups WHERE id = ? AND is_grade = 1");
             $stmt->execute([$id]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت حذف شد.'];
         } catch (Exception $e) {
@@ -103,7 +104,7 @@ if (isset($_SESSION['group_message'])) {
 }
 
 // Fetch all groups
-$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 
 include_once '../../temp.html';
 ?>
