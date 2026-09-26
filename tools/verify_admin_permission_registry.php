@@ -84,6 +84,17 @@ foreach ($safeCallSiblings as $code) {
 if (!isset($nodes['public-relations.safe-call.manage.total-statistics'])) {
     throw new RuntimeException('Safe-call total statistics section is missing.');
 }
+foreach (['total-statistics', 'operator-statistics', 'phone-search'] as $section) {
+    $code = 'public-relations.safe-call.manage.' . $section;
+    if (($nodes[$code]['parent'] ?? null) !== 'public-relations.safe-call.manage') {
+        throw new RuntimeException("Safe-call section must have an independent grant: $code");
+    }
+}
+foreach (['temp-users-sales.php', 'permanet-users-sales.php'] as $salesPage) {
+    if (count(AdminPermissionCodesForPath('/admin/panel/' . $salesPage)) !== 2) {
+        throw new RuntimeException("Sales report must be reachable from manager and desktop grants: $salesPage");
+    }
+}
 if (isset($nodes['public-relations.safe-call.manage.action-save'])) {
     throw new RuntimeException('Reviewed manage-call sections must not be mixed with generic root actions.');
 }

@@ -27,9 +27,16 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_managecall')) {
-    header('location: ' . url('admin/index.php'));
-    die();
+$isGroupExport = false;
+foreach (array_keys($_GET) as $exportKey) {
+    if (str_starts_with((string)$exportKey, 'g')) { $isGroupExport = true; break; }
+}
+$exportScope = $isGroupExport
+    ? 'public-relations.safe-call.manage.total-statistics.export'
+    : 'public-relations.safe-call.manage.operator-statistics.export';
+if (!AdminCanUsePermissionScope($exportScope, ['permision_managecall'])) {
+    http_response_code(403);
+    exit('مجوز دریافت این گزارش تماس ندارید.');
 }
 if(isset($_GET['gexportAll'])){
     $stm = $conn->prepare("SELECT * FROM tel_db LEFT JOIN  tel_detail ON `tel_db`.`id`=`tel_detail`.`dbtel` WHERE `tel_db`.`group`=?");

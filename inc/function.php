@@ -355,6 +355,12 @@ function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
     if (!AdminHasAnyCurrentTreePermission()) return $legacyAll ? 'all' : 'own';
     if (AdminHasMenuPermission($scopeCode . '.all')) return 'all';
     if (AdminHasMenuPermission($scopeCode . '.own')) return 'own';
+    // The sales cards appear on both dashboard pages. A full "My desktop"
+    // grant must keep its own-operator cards usable without granting all data.
+    if (str_contains($scopeCode, 'page-b9857fa208.')
+        && AdminHasMenuPermission('dashboard.summary.overview.desktop.sales-temporary')) return 'own';
+    if (str_contains($scopeCode, 'page-25d387505a.')
+        && AdminHasMenuPermission('dashboard.summary.overview.desktop.sales-permanent')) return 'own';
     return null;
 }
 

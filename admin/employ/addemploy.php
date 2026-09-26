@@ -282,7 +282,7 @@ function renderMenuPermissionNode(array $node, array $selected, int $depth = 0, 
     $checked = $grantedByParent || in_array($node['code'], $selected, true);
     $children = array_values(array_filter($node['children'] ?? [], 'AdminPermissionNodeAvailable'));
     $childrenId = 'permission-children-' . (++$instance) . '-' . substr(sha1($node['code']), 0, 8);
-    $startsCollapsed = $depth === 0;
+    $startsCollapsed = $children !== [];
     ?>
     <div class="menu-permission-node depth-<?= $depth ?><?= $startsCollapsed ? ' is-collapsed' : '' ?>" data-menu-node data-depth="<?= $depth ?>">
         <div class="menu-permission-row">

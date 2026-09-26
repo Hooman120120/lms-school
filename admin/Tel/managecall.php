@@ -29,6 +29,24 @@ if (!AdminCanUsePermissionScope('public-relations.safe-call.manage', ['permision
     header('location: ' . url('admin/index.php'));
     die();
 }
+$canCallLists = AdminCanUsePermissionScope('public-relations.safe-call.manage.status-lists', ['permision_managecall']);
+$canManageGroups = AdminCanUsePermissionScope('public-relations.safe-call.manage.groups', ['permision_addcall']);
+$canTotalStatistics = AdminCanUsePermissionScope('public-relations.safe-call.manage.total-statistics', ['permision_managecall']);
+$canOperatorStatistics = AdminCanUsePermissionScope('public-relations.safe-call.manage.operator-statistics', ['permision_managecall']);
+$canPhoneSearch = AdminCanUsePermissionScope('public-relations.safe-call.manage.phone-search', ['permision_managecall']);
+foreach (array_keys($_GET) as $queryKey) {
+    if (preg_match('/^(?:uncall|unresponsecall|callfinish|duplicatecall|begincall|wrongcall|anytelcall|call)-(?:mob|static)/', (string)$queryKey)
+        && !$canCallLists) { http_response_code(403); exit('مجوز این فهرست تماس را ندارید.'); }
+}
+if (isset($_POST['save']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.create', ['permision_addcall'])) {
+    http_response_code(403); exit('مجوز ایجاد گروه تماس ندارید.');
+}
+if (isset($_POST['save-update']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.edit', ['permision_addcall'])) {
+    http_response_code(403); exit('مجوز ویرایش گروه تماس ندارید.');
+}
+if (isset($_POST['add-number']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.import', ['permision_addcall'])) {
+    http_response_code(403); exit('مجوز ورود فایل مخاطبان ندارید.');
+}
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));
@@ -84,6 +102,7 @@ if (Permision('administrator')) {
 }
 
 if (isset($_POST['txt']) and $_POST['txt'] != '') {
+    if (!$canPhoneSearch) { http_response_code(403); exit('مجوز جست‌وجوی تلفن ندارید.'); }
     $category = $_POST['category'];
     $txt = $_POST['txt'];
     switch ($category) {
@@ -103,6 +122,7 @@ if (isset($_POST['txt']) and $_POST['txt'] != '') {
     }
 }
 if(isset($_GET['delgroup'])){
+    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.total-statistics.delete', ['permision_managecall'])) { http_response_code(403); exit('مجوز حذف گزارش گروه ندارید.'); }
     $id=intval($_GET['delgroup']);
     $desql='DELETE FROM tel_db WHERE `group`=?';
     $qsel=$conn->prepare($desql);
@@ -110,6 +130,7 @@ if(isset($_GET['delgroup'])){
     header('location: managecall.php');
 }
 if(isset($_GET['deluser'])){
+    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.contacts.delete', ['permision_managecall'])) { http_response_code(403); exit('مجوز حذف مخاطب ندارید.'); }
     $id=intval($_GET['deluser']);
     $desql='DELETE FROM tel_db WHERE `id`=?';
     $qsel=$conn->prepare($desql);
@@ -232,6 +253,7 @@ if (isset($_POST['save'])) {
     }
 }
 if (isset($_GET['del'])) {
+    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.delete', ['permision_addcall'])) { http_response_code(403); exit('مجوز حذف گروه تماس ندارید.'); }
     $id = intval($_GET['del']);
     $del = 'DELETE FROM tel_group WHERE id=?';
     $qdel = $conn->prepare($del);
@@ -1177,6 +1199,7 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <!--            section 0             -->
+                <?php if ($canCallLists): ?>
                 <div class="card custom-card">
                     <div class="form-group mb-3 m-4 ">
                         <label for="operationSelect"
@@ -3084,8 +3107,9 @@ include_once '../../temp.html';
                 </div>
 
 
+                <?php endif; ?>
                 <!--                first section                 -->
-                <?php if (Permision('permision_addcall')) { ?>
+                <?php if ($canManageGroups) { ?>
                     <div>
                         <div class="row row-sm">
                             <?php if (!isset($_GET['edit'])) { ?>
@@ -3434,8 +3458,9 @@ include_once '../../temp.html';
                     </div>
                 <?php } ?>
                 <!--                2th section            -->
-                <?php if (Permision('permision_managecall')) { ?>
+                <?php if ($canTotalStatistics || $canOperatorStatistics || $canPhoneSearch) { ?>
                     <div class="row row-sm">
+                        <?php if ($canTotalStatistics): ?>
                         <div class="col-lg-12">
                             <div class="card custom-card " >
                                 <div class="card-body" >
@@ -3638,6 +3663,8 @@ include_once '../../temp.html';
                                 </div>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        <?php if ($canOperatorStatistics): ?>
                         <div class="col-lg-12">
                             <div class="card custom-card" >
                                 <div class="card-body"  >
@@ -3863,6 +3890,8 @@ include_once '../../temp.html';
                                 </div>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        <?php if ($canPhoneSearch): ?>
 
                         <div class="col-lg-12">
                             <div class="card custom-card">
@@ -4082,6 +4111,7 @@ include_once '../../temp.html';
                         </div>
 
 
+                        <?php endif; ?>
                     </div>
                 <?php } ?>
             </div>

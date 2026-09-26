@@ -35,6 +35,8 @@ return [
                     ]],
                 ]],
                 ['code'=>'dashboard.summary.overview.desktop','label'=>'میزکار من','path'=>'admin/panel/desktop.php','children'=>[
+                    ['code'=>'dashboard.summary.overview.desktop.sales-temporary','label'=>'ثبت‌نام‌های موقت خود اپراتور','path'=>'admin/panel/temp-users-sales.php'],
+                    ['code'=>'dashboard.summary.overview.desktop.sales-permanent','label'=>'ثبت‌نام‌های قطعی خود اپراتور','path'=>'admin/panel/permanet-users-sales.php'],
                     ['code'=>'dashboard.summary.overview.desktop.seller-users','label'=>'فهرست ثبت‌نام‌های فروش به تفکیک اپراتور','path'=>'admin/panel/myusers-seller.php','children'=>[
                         ['code'=>'dashboard.summary.overview.desktop.seller-users.own','label'=>'فقط ثبت‌نام‌های خود اپراتور'],
                         ['code'=>'dashboard.summary.overview.desktop.seller-users.others','label'=>'ثبت‌نام‌های اپراتورهای دیگر'],
@@ -105,6 +107,7 @@ return [
                     ['code'=>'public-relations.safe-call.manage.contacts.edit','label'=>'ویرایش جزئیات مخاطب'],
                     ['code'=>'public-relations.safe-call.manage.contacts.delete','label'=>'حذف مخاطب'],
                 ]],
+                ['code'=>'public-relations.safe-call.manage.phone-search','label'=>'جست‌وجوی تلفن و بررسی مخاطب'],
             ]],
             ['code'=>'public-relations.safe-call.exchange','label'=>'مرکز تبادل تماس','legacy'=>'permision_managecall','path'=>'admin/Tel/hamtel.php'],
             ['code'=>'public-relations.safe-call.assignment','label'=>'تخصیص شماره به کارشناس','legacy'=>'permision_managecall','path'=>'admin/Tel/assign-phone.php'],

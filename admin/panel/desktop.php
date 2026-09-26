@@ -438,7 +438,9 @@ include_once '../../temp.html';
                             <?php } ?>
                             <!-- COL END -->
                             <?php $allowed_users_administrators = [6];
-                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)) { ?>
+                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)
+                                && (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.today', false) !== null
+                                    || AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.period', false) !== null)) { ?>
                                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                     <div class="card custom-card overflow-hidden" style="height:164px;">
 
@@ -524,7 +526,9 @@ include_once '../../temp.html';
                                 }
                             </style>
                             <?php $allowed_users_administrators = [6];
-                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)) { ?>
+                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)
+                                && (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.today', false) !== null
+                                    || AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.period', false) !== null)) { ?>
                                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                     <div class="card custom-card overflow-hidden" style="height:164px;">
                                         <div class="card-body p-0 h-100 d-flex flex-column">
