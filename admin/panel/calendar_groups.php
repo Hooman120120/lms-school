@@ -4,8 +4,8 @@ include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
 
-// Calendar groups are the columns of the weekly view: پایه in a school, دوره in an institute.
-$gw = inst_is('institute') ? 'دوره' : 'پایه';
+// Calendar groups are the پایه‌ها: the columns of the weekly view and the stacked months.
+$gw = 'پایه';
 
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -28,6 +28,7 @@ if (session_id() != $re['session_id']) {
 }
 // Admin ID directly from session – no extra DB query
 $adminId = $_SESSION['admin']['idadmin'];
+calendarSeedDefaultGrades($conn, (int)$adminId);
 
 // Flash message container
 $message = ['success' => false, 'text' => ''];
@@ -103,7 +104,7 @@ if (isset($_SESSION['group_message'])) {
 }
 
 // Fetch all groups
-$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups ORDER BY " . calendarGroupsOrderSql() . "")->fetchAll(PDO::FETCH_ASSOC);
 
 include_once '../../temp.html';
 ?>
