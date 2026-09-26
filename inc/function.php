@@ -5367,6 +5367,24 @@ const CALENDAR_DEFAULT_GRADES = [
     'پایه دوازدهم' => '#2EF5E0',
 ];
 
+/*
+ * نشانه‌ی رویداد: دایره‌ی رنگی گوشه‌ی هر رویداد در همه‌ی تقویم‌ها. رنگ‌ها عمداً
+ * با رنگ پایه‌ها قاطی نمی‌شوند: قرمز و سبز تیره‌اند، صورتی کم‌رنگ، و دور دایره
+ * همیشه حلقه‌ی سفید دارد.
+ */
+const CALENDAR_EVENT_MARKERS = [
+    'online'         => ['label' => 'کلاس آنلاین',           'color' => '#6B7280'],
+    'cancel_school'  => ['label' => 'کنسل توسط آموزشگاه',    'color' => '#B00020'],
+    'cancel_teacher' => ['label' => 'کنسل توسط معلم',        'color' => '#FFB3D9'],
+    'extra'          => ['label' => 'فوق برنامه',            'color' => '#111111'],
+    'exam'           => ['label' => 'آزمون',                 'color' => '#0B6B2E'],
+];
+
+function calendarEventMarker(?string $key): ?string
+{
+    return ($key !== null && isset(CALENDAR_EVENT_MARKERS[$key])) ? $key : null;
+}
+
 function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
 {
     static $done = false;
@@ -5375,6 +5393,12 @@ function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
     try {
         $conn->exec("CREATE TABLE IF NOT EXISTS app_seeds (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         $seeded = $conn->query("SELECT name FROM app_seeds WHERE name LIKE 'calendar_%'")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('calendar_event_marker', $seeded, true)) {
+            if (!$conn->query("SHOW COLUMNS FROM calendar_events LIKE 'marker'")->fetchColumn()) {
+                $conn->exec("ALTER TABLE calendar_events ADD COLUMN marker VARCHAR(20) NULL DEFAULT NULL");
+            }
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_event_marker')");
+        }
         if (!in_array('calendar_grades_flag', $seeded, true)) {
             if (!$conn->query("SHOW COLUMNS FROM calendar_groups LIKE 'is_grade'")->fetchColumn()) {
                 $conn->exec("ALTER TABLE calendar_groups ADD COLUMN is_grade TINYINT(1) NOT NULL DEFAULT 0");
