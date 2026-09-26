@@ -480,7 +480,7 @@ include_once '../../temp.html';
                                     <i class="fa fa-info-circle"></i>
                                     شماره فرستنده برای ارسال انبوه:
                                     <span class="sender-display"><?php echo $BULK_SENDER_NUMBER; ?></span>
-                                    <small class="d-block mt-1 text-muted">(این شماره به‌طور خودکار توسط سیستم ملی پیامک برای ارسال انبوه تعیین شده است)</small>
+                                    <small class="d-block mt-1 text-muted">(این شماره به‌طور خودکار توسط سیستم پیامک برای ارسال انبوه تعیین شده است)</small>
                                 </div>
 
                                 <form method="post" class="row g-3" id="bulkSmsForm">

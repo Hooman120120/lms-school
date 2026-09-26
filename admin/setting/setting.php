@@ -270,11 +270,11 @@ include_once '../../temp.html';
                                 <div class="col-12">
                                     <div>
                                         <div style="display:flex; align-items:center; gap:12px;">
-                                            <h6 class="main-content-label mb-1">اعتبار سامانه ملی پیامک</h6>
+                                            <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
 
                                             <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید اعتبار باقی‌مانده سامانه ملی پیامک را مشاهده کنید. این اعتبار برای ارسال پیامک‌های سامانه مانند پیامک‌های اطلاع‌رسانی، احراز هویت، اعلان‌ها و سایر پیام‌های ارسالی استفاده می‌شود. در صورت کاهش یا اتمام اعتبار، لازم است حساب سامانه پیامک شارژ شود تا ارسال پیامک‌ها بدون وقفه ادامه یابد."
-                                                  aria-label="راهنمای اعتبار سامانه ملی پیامک"
+                                                  data-tooltip="در این بخش می‌توانید اعتبار باقی‌مانده سامانه پیامک را مشاهده کنید. این اعتبار برای ارسال پیامک‌های سامانه مانند پیامک‌های اطلاع‌رسانی، احراز هویت، اعلان‌ها و سایر پیام‌های ارسالی استفاده می‌شود. در صورت کاهش یا اتمام اعتبار، لازم است حساب سامانه پیامک شارژ شود تا ارسال پیامک‌ها بدون وقفه ادامه یابد."
+                                                  aria-label="راهنمای اعتبار سامانه پیامک"
                                                   onclick="event.preventDefault(); event.stopPropagation();">
 
                                                     <i class="fe fe-info fs-4"></i>
@@ -282,7 +282,7 @@ include_once '../../temp.html';
                                         </div>
 
                                         <p class="text-muted card-sub-title">
-                                            مشاهده اعتبار باقی‌مانده سامانه ملی پیامک
+                                            مشاهده اعتبار باقی‌مانده سامانه پیامک
                                         </p>
                                     </div>
                                 </div>
@@ -290,7 +290,7 @@ include_once '../../temp.html';
                                     <li class="product-item pb-0">
                                         <div class="product-info">
                                             <div class="product-name">اعتبار باقیمانده پیامک</div>
-                                            <div class="price">از ملی پیامک</div>
+                                            <div class="price">از پیامک</div>
                                         </div>
                                         <?php
                                         $username = __USERSMS;
