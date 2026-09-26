@@ -60,15 +60,8 @@ $countPendinghomework = countPendingHomeworkAdmin();
 $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($currentUser));
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
 if (AdminHasAnyCurrentTreePermission()) {
-    $allNotificationTypes = AdminHasMenuPermission('school-notifications.current')
-        || AdminHasMenuPermission('school-notifications.history');
     $schoolNotificationTypes = array_values(array_filter($schoolNotificationTypes, static fn(string $type): bool =>
-        $allNotificationTypes || AdminHasMenuPermission('school-notifications.categories.' . $type)));
-    $notificationTypeCounts = SchoolNotificationTypeCounts($currentUser);
-    $schoolNotificationCount = 0;
-    foreach ($schoolNotificationTypes as $type) {
-        $schoolNotificationCount += (int)($notificationTypeCounts[$type]['unread'] ?? 0);
-    }
+        AdminHasMenuPermission('school-notifications.categories.' . $type)));
 }
 
 
@@ -620,7 +613,25 @@ else                  $c = '#15233f';
                 </li>
             <?php endif; ?>
 
-            <!-- Legacy institute alerts are intentionally hidden in school mode. -->
+            <?php $instituteNotificationLinks = inst_is('institute') ? InstituteNotificationLinks() : []; ?>
+            <?php if ($instituteNotificationLinks !== []): ?>
+                <li class="nav-item">
+                    <a class="nav-link with-sub" href="#">
+                        <span class="shape1"></span><span class="shape2"></span>
+                        <i class="fe fe-bell sidemenu-icon"></i>
+                        <span class="sidemenu-label">اعلان‌های آموزشگاه</span>
+                        <i class="angle fe fe-chevron-left"></i>
+                        <?php $instituteNotificationCount = CountInstituteNotificationMenu(); ?>
+                        <?php if ($instituteNotificationCount > 0): ?><span class="badge badge-warning side-badge mg-r-20"><?= (int)$instituteNotificationCount ?></span><?php endif; ?>
+                    </a>
+                    <ul class="nav-sub">
+                        <?php foreach ($instituteNotificationLinks as $entry): ?>
+                            <li class="nav-sub-item"><a class="nav-sub-link" href="<?= htmlspecialchars(url('admin/notifications/' . $entry[2]), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($entry[1], ENT_QUOTES, 'UTF-8') ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+            <?php endif; ?>
+            <!-- Replaced by the permission-controlled institute links above. -->
             <?php if (false): ?>
                 <!--main alert navigator-->
                 <li class="nav-item">

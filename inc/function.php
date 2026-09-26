@@ -1607,10 +1607,72 @@ function CountCounselorCallAlerts(?string $user = null): int
     return (int)$stmt->fetchColumn();
 }
 
+/** The institute menu and its landing page share exactly the same grants. */
+function InstituteNotificationLinks(): array
+{
+    $role = (int)($_SESSION['admin']['adminrole'] ?? -1);
+    $items = [
+        ['rules', 'کنترل قوانین اعلان تماس', 'notif_rule_management.php', [0]],
+        ['manager', 'اعلان مدیریت', 'manager_notif.php', [0]],
+        ['calls', 'اعلان تماس پشتیبان‌ها', 'notification_view.php', [0]],
+        ['teachers', 'اعلان‌های استادان', 'admin_teacher_notif.php', [0]],
+        ['referred', 'ارجاع‌یافته‌ها', 'referred_tickets.php', [0]],
+        ['deputy.executive', 'معاونت اجرایی', 'administrator_notif.php?type=1', [0, 51]],
+        ['deputy.education', 'معاونت آموزش', 'administrator_notif.php?type=2', [0, 51, 52]],
+        ['deputy.sales', 'معاونت فروش', 'administrator_notif.php?type=3', [0, 51, 52, 53, 54]],
+        ['deputy.technical', 'معاونت فنی', 'administrator_notif.php?type=4', [0, 51, 52, 54]],
+        ['sales', 'اعلان‌های واحد فروش', 'notif_sales.php', [0, 2, 51, 52, 54, 6]],
+        ['support', 'اعلان‌های واحد پشتیبانی', 'operator_notif.php', [0, 1, 2, 51, 52, 54]],
+    ];
+    return array_values(array_filter($items, static fn(array $item): bool =>
+        AdminMenuCan('institute-notifications.' . $item[0], in_array($role, $item[3], true))));
+}
+
 function CountSchoolNotificationMenu(?string $user = null): int
 {
     $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
-    return CountSchoolNotifications($user, true) + array_sum(SchoolLegacyNotificationCounts($user));
+    if (!AdminHasAnyCurrentTreePermission($user)) {
+        return CountSchoolNotifications($user, true) + array_sum(SchoolLegacyNotificationCounts($user));
+    }
+    $total = 0;
+    foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
+        if (AdminHasMenuPermission('school-notifications.categories.' . $type, $user)) {
+            $total += (int)$counts['unread'];
+        }
+    }
+    $legacyScopes = [
+        'pending_invoice' => 'financial.invoices', 'wallet_charge_pending' => 'financial.wallet',
+        'unread_sms' => 'information.sms', 'contact_ticket' => 'information.tickets',
+        'contact_alert' => 'information.my-calls',
+    ];
+    foreach (SchoolLegacyNotificationCounts($user) as $kind => $count) {
+        if (isset($legacyScopes[$kind]) && AdminHasMenuNavigationPermission('school-notifications.' . $legacyScopes[$kind], $user)) {
+            $total += (int)$count;
+        }
+    }
+    return $total;
+}
+
+function CountInstituteNotificationMenu(): int
+{
+    $user = (string)($_SESSION['admin']['user'] ?? '');
+    if ($user === '' || !inst_is('institute')) return 0;
+    $links = array_column(InstituteNotificationLinks(), 0);
+    $manager = Permision('permision_viewalert');
+    $all = $manager && Permision('permision_viewemploy');
+    $administrator = (int)Permision('administrator');
+    $total = 0;
+    if (array_intersect($links, ['manager', 'support', 'deputy.executive', 'deputy.education', 'deputy.sales', 'deputy.technical'])) {
+        $total += countReportThreadsVisible($user, $manager, $all);
+        $total += countStudentOperatorChanged($user, $administrator);
+        $total += countNewStudent($user, $administrator);
+    }
+    if (in_array('teachers', $links, true) || in_array('support', $links, true)) {
+        $total += countTeacherTicketsNeedAction($user, (int)($_SESSION['admin']['adminrole'] ?? 0), $administrator);
+    }
+    if (in_array('referred', $links, true)) $total += countPendingTicketReferrals($user);
+    if (in_array('sales', $links, true)) $total += countbackfromcrmOP($user);
+    return $total;
 }
 
 function GetSchoolNotifications(?string $user = null, ?string $eventType = null, int $limit = 100, ?bool $read = null): array

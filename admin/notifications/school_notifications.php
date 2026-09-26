@@ -16,7 +16,11 @@ $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $isNotificationListPage = !empty($_GET['list']);
 $notificationUsesTree = AdminHasAnyCurrentTreePermission();
 $notificationCan = static function (string $suffix) use ($notificationUsesTree): bool {
-    return !$notificationUsesTree || AdminHasMenuPermission('school-notifications.' . $suffix);
+    if (!$notificationUsesTree) return true;
+    // A grant for a page operation must also reveal that page's entry card.
+    return str_starts_with($suffix, 'information.') || str_starts_with($suffix, 'financial.')
+        ? AdminHasMenuNavigationPermission('school-notifications.' . $suffix)
+        : AdminHasMenuPermission('school-notifications.' . $suffix);
 };
 $notificationSectionCan = static function (string $suffix) use ($notificationUsesTree): bool {
     return !$notificationUsesTree || AdminHasMenuNavigationPermission('school-notifications.' . $suffix);
@@ -27,9 +31,8 @@ if ($notificationUsesTree && !AdminHasMenuNavigationPermission('school-notificat
 }
 $allowedTypes = SchoolNotificationAllowedTypes();
 if ($notificationUsesTree) {
-    $allCategoryAccess = $notificationCan('current') || $notificationCan('history');
     $allowedTypes = array_values(array_filter($allowedTypes, static fn(string $type): bool =>
-        $allCategoryAccess || AdminHasMenuPermission('school-notifications.categories.' . $type)));
+        AdminHasMenuPermission('school-notifications.categories.' . $type)));
 }
 $canCurrentNotifications = $notificationCan('current') || ($allowedTypes !== [] && $notificationSectionCan('categories'));
 if ($currentUser === '' || SchoolNotificationAllowedTypes() === []) {
@@ -215,7 +218,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!$isNotificationListPage && $allowedTypes !== [] && $canCurrentNotifications): ?><div class="card custom-card mb-3">
+                    <?php if (!$isNotificationListPage && $allowedTypes !== [] && ($canCurrentNotifications || $notificationCan('history'))): ?><div class="card custom-card mb-3">
                         <div class="card-header border-bottom-0">
                             <h5 class="card-title mb-0"><?= inst_is('institute') ? 'اعلان‌های دوره‌ها' : 'اعلان‌های پایه‌ها' ?></h5>
                             <p class="text-muted mb-0 mt-1">روی هر دسته بزنید تا فقط اعلان‌های همان بخش را ببینید.</p>
@@ -226,7 +229,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                 <?php $counts = $typeCounts[$type] ?? ['total' => 0, 'unread' => 0]; ?>
                                 <div class="col-md-6 col-xl-4 mb-3">
                                     <a class="btn btn-block text-right p-3 <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>"
-                                       href="<?= url('admin/notifications/school_notification_list.php?type=' . rawurlencode($type) . '&view=unread') ?>">
+                                       href="<?= url('admin/notifications/school_notification_list.php?type=' . rawurlencode($type) . '&view=' . ($canCurrentNotifications ? 'unread' : 'read')) ?>">
                                         <i class="fe <?= htmlspecialchars($catalog[$type]['icon']) ?> ml-2"></i>
                                         <?= htmlspecialchars($catalog[$type]['title']) ?>
                                         <span class="float-left">

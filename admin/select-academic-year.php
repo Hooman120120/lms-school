@@ -8,9 +8,9 @@ if (!isset($_SESSION['admin'])) {
     header('location: login.php');
     exit;
 }
-if (!inst_is('school')) {
-    http_response_code(404);
-    exit('بایگانی سال تحصیلی در نسخه آموزشگاهی فعال نیست.');
+if (AdminHasAnyCurrentTreePermission() && !AdminHasMenuPermission('dashboard.summary.academic-archive')) {
+    http_response_code(403);
+    exit('دسترسی بایگانی سال‌های تحصیلی فعال نشده است.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !hash_equals($_SESSION['academic_year_token'] ?? '', $_POST['token'] ?? '')) {

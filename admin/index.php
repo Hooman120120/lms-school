@@ -68,18 +68,9 @@ $sql_notifs = "SELECT DISTINCT n.*
 $stmt_notifs = $conn->prepare($sql_notifs);
 $stmt_notifs->execute([':role' => $roleParam]);
 $activeNotifs = $stmt_notifs->fetchAll(PDO::FETCH_OBJ);
-$activeNotificationCount = CountSchoolNotificationMenu((string)($_SESSION['admin']['user'] ?? ''), true);
-if ($dashboardUsesPermissionTree && inst_is('school')) {
-    $notificationTypeCounts = SchoolNotificationTypeCounts((string)($_SESSION['admin']['user'] ?? ''));
-    $allNotificationTypes = AdminHasMenuPermission('school-notifications.current')
-        || AdminHasMenuPermission('school-notifications.history');
-    $activeNotificationCount = 0;
-    foreach (SchoolNotificationAllowedTypes() as $type) {
-        if ($allNotificationTypes || AdminHasMenuPermission('school-notifications.categories.' . $type)) {
-            $activeNotificationCount += (int)($notificationTypeCounts[$type]['unread'] ?? 0);
-        }
-    }
-}
+$activeNotificationCount = inst_is('school')
+    ? CountSchoolNotificationMenu((string)($_SESSION['admin']['user'] ?? ''))
+    : CountInstituteNotificationMenu();
 
 //news get
 
@@ -300,9 +291,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     </div>
                                 </div>
                                 <?php endif; ?>
-                                <?php if ($dashboardCan('dashboard.summary.notifications') && (!$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission('school-notifications'))): ?>
+                                <?php if ($dashboardCan('dashboard.summary.notifications')): ?>
                                 <a class="dashboard-notification-button <?= $activeNotificationCount > 0 ? 'has-active-notifications' : '' ?>"
-                                   href="<?= url('admin/notifications/school_notifications.php') ?>"
+                                   href="<?= url(inst_is('school') ? 'admin/notifications/school_notifications.php' : 'admin/notifications/institute_notifications.php') ?>"
                                    aria-label="اعلان‌ها<?= $activeNotificationCount > 0 ? '، ' . $activeNotificationCount . ' اعلان فعال' : '' ?>">
                                     <i class="fe fe-bell"></i>
                                     <span>اعلان‌ها</span>

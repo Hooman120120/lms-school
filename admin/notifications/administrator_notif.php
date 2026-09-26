@@ -81,6 +81,12 @@ if (!function_exists('countNewStudent')) {
     }
 }
 $type = filter_input(INPUT_GET, 'type', FILTER_VALIDATE_INT);
+$deputyPermissions = [1 => 'executive', 2 => 'education', 3 => 'sales', 4 => 'technical'];
+if (inst_is('institute') && AdminHasAnyCurrentTreePermission()
+    && (!isset($deputyPermissions[$type]) || !AdminHasMenuPermission('institute-notifications.deputy.' . $deputyPermissions[$type]))) {
+    http_response_code(403);
+    exit('دسترسی اعلان‌های این معاونت فعال نشده است.');
+}
 
 if ($type == 3 or $type == 1) {
     $sqlCountChanges = 'SELECT COUNT(*) FROM change_expert_requests WHERE status = ?';

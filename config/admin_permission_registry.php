@@ -57,8 +57,8 @@ return [
                     ]],
                 ]],
             ]],
-            ['code'=>'dashboard.summary.notifications','label'=>'نمایش دکمهٔ اعلان‌ها','modes'=>['school']],
-            ['code'=>'dashboard.summary.academic-archive','label'=>'بایگانی سال‌های تحصیلی','modes'=>['school'],'path'=>'admin/select-academic-year.php'],
+            ['code'=>'dashboard.summary.notifications','label'=>'نمایش دکمهٔ اعلانات (هشدار و چشمک‌زن)'],
+            ['code'=>'dashboard.summary.academic-archive','label'=>'نمایش دکمهٔ بایگانی سال‌های تحصیلی','path'=>'admin/select-academic-year.php','auto_scan'=>false],
             ['code'=>'dashboard.summary.cards','label'=>'کارت‌های خلاصه وضعیت','children'=>[
                 ['code'=>'dashboard.summary.cards.courses','label'=>'پایه‌های در حال اجرا','labels'=>['institute'=>'دوره‌های برگزارشده'],'path'=>'admin/panel/course_detail.php'],
                 ['code'=>'dashboard.summary.cards.staff','label'=>'همکاران','path'=>'admin/panel/staff_management.php'],
@@ -188,7 +188,7 @@ return [
             ['code'=>'courses.handhug.archive','label'=>'بایگانی سال‌های قبل بغل‌دستی‌ها','path'=>'admin/handhug/disabled-handhugs.php'],
         ]],
     ]],
-    ['code'=>'school-notifications','label'=>'اعلان‌ها','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
+    ['code'=>'school-notifications','label'=>'اعلان‌های مدرسه','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
         ['code'=>'school-notifications.categories','label'=>'دسته‌های اعلان','children'=>[
             ['code'=>'school-notifications.categories.new_student','label'=>'دانش‌آموز جدید'],
             ['code'=>'school-notifications.categories.attendance','label'=>'حضور و غیاب جدید'],
@@ -197,7 +197,7 @@ return [
             ['code'=>'school-notifications.categories.executive_calendar','label'=>'تغییر تقویم اجرایی'],
             ['code'=>'school-notifications.categories.academic_calendar','label'=>'تغییر تقویم آموزشی'],
         ]],
-        ['code'=>'school-notifications.current','label'=>'دریافت‌های جدید'],
+        ['code'=>'school-notifications.current','label'=>'دریافت‌های جدید دسته‌های مجاز'],
         ['code'=>'school-notifications.history','label'=>'آرشیو خوانده‌شده'],
         ['code'=>'school-notifications.open','label'=>'مشاهدهٔ جزئیات اعلان'],
         ['code'=>'school-notifications.mark-read','label'=>'علامت‌گذاری اعلان به‌عنوان خوانده‌شده'],
@@ -213,6 +213,21 @@ return [
             ['code'=>'school-notifications.financial.invoices','label'=>'فاکتورهای منتظر تأیید','path'=>'admin/notifications/verify_by_manager.php'],
             ['code'=>'school-notifications.financial.wallet','label'=>'تأیید شارژ کیف پول','path'=>'admin/Bill/waitingWallet.php'],
         ]],
+    ]],
+    ['code'=>'institute-notifications','label'=>'اعلان‌های آموزشگاه','modes'=>['institute'],'path'=>'admin/notifications/institute_notifications.php','auto_scan'=>false,'children'=>[
+        ['code'=>'institute-notifications.rules','label'=>'کنترل قوانین اعلان تماس','path'=>'admin/notifications/notif_rule_management.php'],
+        ['code'=>'institute-notifications.manager','label'=>'اعلان مدیریت','path'=>'admin/notifications/manager_notif.php'],
+        ['code'=>'institute-notifications.calls','label'=>'اعلان تماس پشتیبان‌ها','path'=>'admin/notifications/notification_view.php'],
+        ['code'=>'institute-notifications.teachers','label'=>'اعلان‌های استادان','path'=>'admin/notifications/admin_teacher_notif.php'],
+        ['code'=>'institute-notifications.referred','label'=>'ارجاع‌یافته‌ها','path'=>'admin/notifications/referred_tickets.php'],
+        ['code'=>'institute-notifications.deputy','label'=>'اعلان معاونت‌ها','path'=>'admin/notifications/administrator_notif.php','children'=>[
+            ['code'=>'institute-notifications.deputy.executive','label'=>'معاونت اجرایی'],
+            ['code'=>'institute-notifications.deputy.education','label'=>'معاونت آموزش'],
+            ['code'=>'institute-notifications.deputy.sales','label'=>'معاونت فروش'],
+            ['code'=>'institute-notifications.deputy.technical','label'=>'معاونت فنی'],
+        ]],
+        ['code'=>'institute-notifications.sales','label'=>'اعلان‌های واحد فروش','path'=>'admin/notifications/notif_sales.php'],
+        ['code'=>'institute-notifications.support','label'=>'اعلان‌های واحد پشتیبانی','path'=>'admin/notifications/operator_notif.php'],
     ]],
     ['code'=>'tickets','label'=>'تیکت‌ها','legacy'=>'permision_viewsupport','children'=>[
         ['code'=>'tickets.reactivate-requests','label'=>'درخواست‌های بازگردانی ثبت‌نام موقت','path'=>'admin/notifications/reactivate_tickets.php','children'=>[
