@@ -5346,8 +5346,11 @@ if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains
 /*
  * پایه‌های پیش‌فرض تقویم: پایه اول تا دوازدهم با رنگ‌های ثابت، برای مدرسه و
  * مؤسسه یکسان. هر پنل فقط یک بار آن‌ها را می‌گیرد (نشانه در app_seeds)، پس
- * پایه‌ای که مدیر حذف کند دوباره ساخته نمی‌شود. پایه‌های موجود با همین عنوان
- * دست نمی‌خورند.
+ * پایه‌ای که مدیر حذف کند دوباره ساخته نمی‌شود.
+ *
+ * پایه‌ها در همان جدول calendar_groups با is_grade = 1 از گروه‌های قدیمی جدا
+ * می‌شوند. تقویم و «مدیریت پایه‌ها» فقط پایه‌ها را نشان می‌دهند؛ گروه‌های قدیمی
+ * پاک نمی‌شوند و رویدادهایشان «بدون پایه» دیده می‌شوند.
  */
 const CALENDAR_DEFAULT_GRADES = [
     'پایه اول'     => '#18E877',
@@ -5371,9 +5374,18 @@ function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
     $done = true;
     try {
         $conn->exec("CREATE TABLE IF NOT EXISTS app_seeds (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        if ($conn->query("SELECT 1 FROM app_seeds WHERE name = 'calendar_default_grades'")->fetchColumn()) return;
+        $seeded = $conn->query("SELECT name FROM app_seeds WHERE name LIKE 'calendar_%'")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('calendar_grades_flag', $seeded, true)) {
+            if (!$conn->query("SHOW COLUMNS FROM calendar_groups LIKE 'is_grade'")->fetchColumn()) {
+                $conn->exec("ALTER TABLE calendar_groups ADD COLUMN is_grade TINYINT(1) NOT NULL DEFAULT 0");
+            }
+            $mark = $conn->prepare("UPDATE calendar_groups SET is_grade = 1 WHERE title = ?");
+            foreach (array_keys(CALENDAR_DEFAULT_GRADES) as $title) $mark->execute([$title]);
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grades_flag')");
+        }
+        if (in_array('calendar_default_grades', $seeded, true)) return;
         $exists = $conn->prepare("SELECT 1 FROM calendar_groups WHERE title = ? LIMIT 1");
-        $insert = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by) VALUES (?, ?, 'پایه پیش‌فرض', ?)");
+        $insert = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, 'پایه پیش‌فرض', ?, 1)");
         foreach (CALENDAR_DEFAULT_GRADES as $title => $color) {
             $exists->execute([$title]);
             if (!$exists->fetchColumn()) $insert->execute([$title, $color, $createdBy]);
@@ -5384,7 +5396,7 @@ function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
     }
 }
 
-/** ORDER BY for calendar_groups: پایه اول…دوازدهم in grade order first, then the panel's own groups. */
+/** ORDER BY for the پایه‌ها: پایه اول…دوازدهم in grade order, then any پایه the admin added. */
 function calendarGroupsOrderSql(string $alias = ''): string
 {
     $col = ($alias !== '' ? $alias . '.' : '') . 'title';

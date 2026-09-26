@@ -9,7 +9,7 @@ $permission_calendar = $admin['permission_calendar'];
 // the weekly view, one stacked month each in the monthly view.
 $gw = 'پایه';
 calendarSeedDefaultGrades($conn, (int)$adminId);
-$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
+$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
     // The index widget is view-only for tree accounts; editing belongs to the
     // separately permissioned executive/academic calendar pages.

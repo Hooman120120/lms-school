@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'عنوان ' . $gw . ' اجباری است.'];
     } else {
         try {
-            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by) VALUES (?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, ?, ?, 1)");
             $stmt->execute([$title, $color, $description, $adminId]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت اضافه شد.'];
         } catch (Exception $e) {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'عنوان و شناسه ' . $gw . ' الزامی است.'];
     } else {
         try {
-            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, description = ?, updated_by = ? WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, description = ?, updated_by = ? WHERE id = ? AND is_grade = 1");
             $stmt->execute([$title, $color, $description, $adminId, $id]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت ویرایش شد.'];
         } catch (Exception $e) {
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message = ['success' => false, 'text' => 'شناسه ' . $gw . ' نامعتبر است.'];
     } else {
         try {
-            $stmt = $conn->prepare("DELETE FROM calendar_groups WHERE id = ?");
+            $stmt = $conn->prepare("DELETE FROM calendar_groups WHERE id = ? AND is_grade = 1");
             $stmt->execute([$id]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت حذف شد.'];
         } catch (Exception $e) {
@@ -104,7 +104,7 @@ if (isset($_SESSION['group_message'])) {
 }
 
 // Fetch all groups
-$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups ORDER BY " . calendarGroupsOrderSql() . "")->fetchAll(PDO::FETCH_ASSOC);
+$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 
 include_once '../../temp.html';
 ?>
