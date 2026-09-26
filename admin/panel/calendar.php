@@ -544,10 +544,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Drag‑drop: only update the dates
             $stmt = $conn->prepare("UPDATE calendar_events SET start_date=?, end_date=?, updated_by_id=? WHERE id=?");
             $stmt->execute([$start_greg, $end_greg, $adminId, $eventId]);
+            // کشیدن به ستون پایه/دوره ی دیگر در نمای هفته، پایه ی رویداد را هم عوض می کند (0 = بدون پایه)
+            if (isset($_POST['move_group'])) {
+                $moveGroup = (int)$_POST['move_group'] ?: null;
+                $conn->prepare("UPDATE calendar_events SET calendar_groups_id=? WHERE id=?")->execute([$moveGroup, $eventId]);
+            }
         } else {
+            $oldTitleStmt = $conn->prepare("SELECT title FROM calendar_events WHERE id = ?");
+            $oldTitleStmt->execute([$eventId]);
+            $oldTitle = (string)$oldTitleStmt->fetchColumn();
+
             // Full update from the modal
             $stmt = $conn->prepare("UPDATE calendar_events SET title=?, description=?, personal_note=? , start_date=?, end_date=?, calendar_groups_id=?, updated_by_id=?, target_type=?, visibility=?, event_type=?, overlap=?, is_academic=? WHERE id=?");
             $stmt->execute([$title, $description, $personal_note, $start_greg, $end_greg, $calendar_groups_id, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, $eventId]);
+
+            // فقط شماره ی جلسه عوض شده (مثلاً «ریاضی ششم #3» → «#2»): جلسه های بعدی همان
+            // رویداد هفتگی (همان عنوان و همان پایه، بعد از این جلسه) از شماره ی جدید پشت سر هم شماره می گیرند.
+            if (preg_match('/^(.*\S)\s*#(\d+)$/u', trim($oldTitle), $oldM)
+                && preg_match('/^(.*\S)\s*#(\d+)$/u', trim($title), $newM)
+                && $oldM[1] === $newM[1] && $oldM[2] !== $newM[2]) {
+                $base = $newM[1];
+                $next = (int)$newM[2];
+                $seriesStmt = $conn->prepare("SELECT id, title FROM calendar_events
+                    WHERE id <> ? AND start_date > ? AND calendar_groups_id <=> ? AND title LIKE ?
+                    ORDER BY start_date, id");
+                $seriesStmt->execute([$eventId, $start_greg, $calendar_groups_id, $base . '%#%']);
+                $renumber = $conn->prepare("UPDATE calendar_events SET title = ?, updated_by_id = ? WHERE id = ?");
+                foreach ($seriesStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    if (preg_match('/^(.*\S)\s*#(\d+)$/u', trim($row['title']), $m) && $m[1] === $base) {
+                        $renumber->execute([$base . ' #' . (++$next), $adminId, $row['id']]);
+                    }
+                }
+            }
 
             // گروه های آموزشی مجاز
             setEventTeacherGroups((int)$eventId, $_POST['teacher_groups'] ?? []);
@@ -1012,6 +1040,9 @@ function renderCalendar() {
         }
 
         #transposedCalendar .wg-event:hover { filter: brightness(.95); }
+        #transposedCalendar .wg-event[draggable] { cursor: grab; }
+        #transposedCalendar .wg-event.wg-dragging { opacity: .45; }
+        #transposedCalendar td.wg-cell.wg-drop { background: #e4ffed; outline: 2px dashed #298680; outline-offset: -3px; }
         #transposedCalendar .wg-title { display: block; font-size: 13px; font-weight: 700; color: #1d212f; }
         #transposedCalendar .wg-time { display: block; font-size: 12px; color: #5b6270; direction: ltr; }
 
@@ -2321,13 +2352,15 @@ function renderCalendar() {
                 html += '<tr class="' + (tcSameDay(day, today) ? 'wg-today' : '') + '">';
                 html += '<td class="wg-day"><span class="tc-dayname">' + tcDayLabel(day) + '</span>'
                       + '<span class="tc-daydate">' + tcJalaliDate(day) + '</span></td>';
+                var dayKey = day.getFullYear() + '-' + (day.getMonth() + 1) + '-' + day.getDate();
                 columns.forEach(function (g) {
-                    html += '<td class="wg-cell">';
+                    html += '<td class="wg-cell" data-day="' + dayKey + '" data-group="' + g.id + '">';
                     dayEvents.filter(function (ev) { return groupOf(ev) === g.id; }).forEach(function (ev) {
                         var bg = ev.backgroundColor || ev.borderColor || g.color || '#B5B5B5';
                         var when = ev.allDay ? 'تمام روز'
                             : (ev.end ? wgTime(ev.start) + ' - ' + wgTime(ev.end) : wgTime(ev.start));
-                        html += '<div class="wg-event" data-ev="' + tcEscape(ev.id) + '" style="border-inline-start-color:' + tcEscape(bg) + '"'
+                        html += '<div class="wg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
+                              + (hasCalendarPermission ? ' draggable="true"' : '') + ' style="border-inline-start-color:' + tcEscape(bg) + '"'
                               + ' title="' + tcEscape(ev.title) + '">'
                               + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
                               + '<span class="wg-time">' + when + '</span></div>';
@@ -2346,6 +2379,79 @@ function renderCalendar() {
                     if (ev) showEventDetail(ev);
                 });
             });
+            if (hasCalendarPermission) wgEnableDrag(host);
+        }
+
+        // جابجایی جلسه با کشیدن: سطر دیگر روز را عوض می کند و ستون دیگر پایه/دوره را؛ ساعت همان می ماند
+        var wgDragging = null;
+        function wgEnableDrag(host) {
+            host.querySelectorAll('.wg-event[draggable]').forEach(function (node) {
+                node.addEventListener('dragstart', function (e) {
+                    wgDragging = { id: node.getAttribute('data-ev'), group: node.getAttribute('data-group') };
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', wgDragging.id);
+                    node.classList.add('wg-dragging');
+                });
+                node.addEventListener('dragend', function () {
+                    node.classList.remove('wg-dragging');
+                    host.querySelectorAll('.wg-drop').forEach(function (c) { c.classList.remove('wg-drop'); });
+                    wgDragging = null;
+                });
+            });
+            host.querySelectorAll('td.wg-cell').forEach(function (cell) {
+                var accepts = function () { return !!wgDragging; };
+                cell.addEventListener('dragover', function (e) {
+                    if (!accepts()) return;
+                    e.preventDefault();
+                    cell.classList.add('wg-drop');
+                });
+                cell.addEventListener('dragleave', function () { cell.classList.remove('wg-drop'); });
+                cell.addEventListener('drop', function (e) {
+                    if (!accepts()) return;
+                    e.preventDefault();
+                    cell.classList.remove('wg-drop');
+                    var ev = calendar.getEventById(wgDragging.id);
+                    if (!ev || !ev.start) return;
+                    var p = cell.getAttribute('data-day').split('-').map(Number);
+                    var target = new Date(p[0], p[1] - 1, p[2]);
+                    var from = new Date(ev.start.getFullYear(), ev.start.getMonth(), ev.start.getDate());
+                    var days = Math.round((target - from) / 86400000);
+                    var group = cell.getAttribute('data-group');
+                    if (!days && group === wgDragging.group) return;
+                    wgMoveEvent(ev, days, group !== wgDragging.group ? group : null);
+                });
+            });
+        }
+
+        function wgLocalIso(d) {
+            var pad = function (n) { return String(n).padStart(2, '0'); };
+            return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+                + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+        }
+
+        function wgShift(d, days) {
+            var n = new Date(d.getTime());
+            n.setDate(n.getDate() + days); // تقویمی، تا تغییر ساعت رسمی ساعت جلسه را جابجا نکند
+            return n;
+        }
+
+        function wgMoveEvent(ev, days, group) {
+            var formData = new URLSearchParams();
+            formData.append('action', 'update_event');
+            formData.append('event_id', ev.id);
+            formData.append('title', ev.title);
+            formData.append('target_group', ev.extendedProps.target_type || 'admin');
+            formData.append('start_greg', wgLocalIso(wgShift(ev.start, days)));
+            formData.append('end_greg', ev.end ? wgLocalIso(wgShift(ev.end, days)) : '');
+            formData.append('update_roles', '0');
+            if (group !== null) formData.append('move_group', group);
+            fetch(window.location.href, { method: 'POST', body: formData })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.success) calendar.refetchEvents();
+                    else alert('خطا در جابجایی: ' + data.message);
+                })
+                .catch(function () { alert('خطا در ارتباط با سرور.'); });
         }
 
         function renderTransposed(viewStart, viewEnd, events) {
