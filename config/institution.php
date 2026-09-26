@@ -103,6 +103,7 @@ if (!function_exists('inst_features')) {
                 'fixed_grade_enum' => true,  // پایهٔ ۱ تا ۱۲ به صورت لیست ثابت
                 'academic_year'    => true,  // سال تحصیلی (در مقابل ترم)
                 'shift'            => true,  // شیفت صبح / بعدازظهر
+                'wallet'           => false, // کیف پول در نسخه مدرسه‌ای ارائه نمی‌شود
             ],
             'institute' => [
                 'parent_guardian'  => false, // فراگیر معمولاً بزرگسال است
@@ -111,6 +112,7 @@ if (!function_exists('inst_features')) {
                 'fixed_grade_enum' => false, // دوره‌ها آزاد تعریف می‌شوند
                 'academic_year'    => false, // به جایش ترم
                 'shift'            => false,
+                'wallet'           => true,  // اعتبار و شارژ کیف پول برای آموزشگاه
             ],
         ];
 

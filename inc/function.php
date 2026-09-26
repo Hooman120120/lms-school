@@ -1156,12 +1156,17 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
         'unread_sms' => 0,
         'contact_ticket' => 0,
         'contact_alert' => 0,
+        'wallet_charge_pending' => 0,
     ];
 
     try {
         if (in_array($roleKey, ['manager', 'general_deputy'], true)
             || ($roleKey === 'financial_deputy' && PermisionUser('permision_actfactor', $user))) {
             $counts['pending_invoice'] = (int)$conn->query("SELECT COUNT(*) FROM deposit_verifications WHERE status = 'pending'")->fetchColumn();
+        }
+        if (inst_feature('wallet') && (in_array($roleKey, ['manager', 'general_deputy'], true)
+            || ($roleKey === 'financial_deputy' && PermisionUser('permision_actwallet', $user)))) {
+            $counts['wallet_charge_pending'] = (int)$conn->query("SELECT COUNT(*) FROM db_wallet WHERE status = 'در انتظار بررسی'")->fetchColumn();
         }
         if (in_array($roleKey, ['manager', 'general_deputy', 'executive_deputy'], true)) {
             $counts['unread_sms'] = (int)$conn->query('SELECT COUNT(*) FROM sms_inbox WHERE is_read = 0')->fetchColumn();

@@ -1257,7 +1257,7 @@ else                  $c = '#15233f';
 
                         </span>
                         <i
-                            class="angle fe fe-chevron-left"></i><?php $count = Permision('permision_viewbill') ? countCheckfactor() + countCheckWallet() : 0;
+                            class="angle fe fe-chevron-left"></i><?php $count = Permision('permision_viewbill') ? countCheckfactor() + (inst_feature('wallet') ? countCheckWallet() : 0) : 0;
                                                                     if ($count > 0) { ?> <span
                                 class="badge badge-warning side-badge "><?php echo $count; ?></span><?php } ?></a>
 
@@ -1286,7 +1286,7 @@ else                  $c = '#15233f';
                                 <?php endif; ?>
                             <?php } ?>
 
-                            <?php if (Permision('permision_actwallet')) { ?>
+                            <?php if (inst_feature('wallet') && Permision('permision_actwallet')) { ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link" href="<?php echo url('admin/Bill/waitingWallet.php') ?>">منتظر تایید
                                         کیف پول <?php if (countCheckWallet() > 0) { ?><span

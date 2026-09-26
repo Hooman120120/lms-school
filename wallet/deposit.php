@@ -4,6 +4,8 @@ include_once '../inc/jdf.php';
 include_once '../inc/function.php';
 include_once '../inc/function_login.php';
 
+if (!inst_feature('wallet')) { http_response_code(404); exit('کیف پول در نسخه مدرسه‌ای فعال نیست.'); }
+
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../blackList.html';
     exit;
