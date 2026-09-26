@@ -3,3 +3,9 @@
 .htaccess
 dbconfig.php
 .idea.zip
+
+# Runtime / user uploaded files
+/uploads/announcements/
+/uploads/letters/
+/uploads/special_letters/
+/storage/admin_documents/*.png

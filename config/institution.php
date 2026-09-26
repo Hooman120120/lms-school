@@ -419,3 +419,8 @@ if (!function_exists('inst_level_groups')) {
 if (!defined('INST_TYPE')) {
     define('INST_TYPE', inst_type());
 }
+
+if (!defined('__SCHOOL_NAME')) {
+    $configuredSchoolName = trim((string) getenv('SCHOOL_NAME'));
+    define('__SCHOOL_NAME', $configuredSchoolName !== '' ? $configuredSchoolName : t('org', 'مدرسه'));
+}

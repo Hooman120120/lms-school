@@ -942,12 +942,16 @@ function SchoolStaffRoleKey(?string $user = null): ?string
 function SchoolNotificationCatalog(): array
 {
     return [
+                // 'spatial-letter' => ['title' => 'نامه های خاص ', 'icon' => 'fe-user-plus'],
         'new_student'        => ['title' => 'دانش‌آموز جدید', 'icon' => 'fe-user-plus'],
         'attendance'         => ['title' => 'حضور و غیاب جدید', 'icon' => 'fe-check-square'],
         'exam'               => ['title' => 'آزمون و نمره جدید', 'icon' => 'fe-edit-3'],
         'discipline'         => ['title' => 'مورد انضباطی جدید', 'icon' => 'fe-alert-triangle'],
         'executive_calendar' => ['title' => 'تغییر تقویم اجرایی', 'icon' => 'fe-calendar'],
         'academic_calendar'  => ['title' => 'تغییر تقویم آموزشی', 'icon' => 'fe-book-open'],
+        'announcement'       => ['title' => 'اطلاعیه', 'icon' => 'fe-mail'],
+        'circular'           => ['title' => 'بخشنامه', 'icon' => 'fe-file-text'],
+        'special_letter'    => ['title' => 'نامه اختصاصی', 'icon' => 'fe-mail'],
         // Existing legacy categories remain available only to roles whose
         // policy explicitly allows every notification (manager/general deputy).
         'pending_invoice'    => ['title' => 'فاکتور منتظر تأیید', 'icon' => 'fe-file-text'],
@@ -974,13 +978,13 @@ function SchoolNotificationAllowedTypes(?string $roleKey = null): array
         case 'counselor':
             return ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
         case 'teacher':
-            return ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            return ['attendance', 'new_student', 'exam', 'academic_calendar', 'announcement', 'circular', 'special_letter'];
         case 'financial_deputy':
-            return ['pending_invoice', 'executive_calendar'];
+            return ['pending_invoice', 'executive_calendar', 'announcement', 'circular', 'special_letter'];
         case 'technical_deputy':
-            return ['executive_calendar', 'academic_calendar'];
+            return ['executive_calendar', 'academic_calendar', 'announcement', 'circular', 'special_letter'];
         default:
-            return [];
+            return ['announcement', 'circular', 'special_letter'];
     }
 }
 
@@ -1010,8 +1014,10 @@ function CreateSchoolNotification(
     ?int $classId = null,
     ?string $studentUsername = null,
     ?string $targetUrl = null,
-    ?string $sourceType = null,
-    ?string $sourceId = null
+        ?string $sourceType = null,
+        ?string $sourceId = null,
+        string $targetType = 'all',
+        ?string $targetValue = null
 ): bool {
     global $conn;
     if (!SchoolNotificationsReady() || !array_key_exists($eventType, SchoolNotificationCatalog())) {
@@ -1039,13 +1045,15 @@ function CreateSchoolNotification(
         $stmt = $conn->prepare('INSERT INTO school_notifications
             (event_type, title, body, actor_admin_id, actor_username, codecourse, class_id,
              student_username, target_url, source_type, source_id, dedupe_key)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (student_username, target_url, source_type, source_id, dedupe_key, target_type, target_value)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE id = id');
         return $stmt->execute([
             $eventType, $title, $body !== '' ? $body : null, $actorAdminId,
             $actorUsername ?: null, $codecourse ?: null, $classId ?: null,
             $studentUsername ?: null, $targetUrl ?: null, $sourceType ?: null,
-            $sourceId !== null ? (string)$sourceId : null, $dedupeKey
+            $sourceId !== null ? (string)$sourceId : null, $dedupeKey,
+            $targetType, $targetValue
         ]);
     } catch (Throwable $e) {
         error_log('CreateSchoolNotification: ' . $e->getMessage());
@@ -1086,6 +1094,16 @@ function SchoolNotificationVisibility(string $user, ?string $eventType = null, b
         $where[] = '(n.actor_admin_id IS NULL OR n.actor_admin_id <> ?)';
         $args[] = $adminId;
     }
+
+    $where[] = "(n.event_type NOT IN ('special_letter') OR n.recipient_username = ?)";
+    $args[] = $user;
+    $where[] = "(n.event_type NOT IN ('announcement', 'circular') OR (
+        n.status = 'published' AND (
+            n.target_type IN ('all', 'staff', 'colleague', 'teacher', 'teachers', 'hamkar')
+            OR (n.target_type = 'user' AND n.recipient_username = ?)
+        )
+    ))";
+    $args[] = $user;
 
     $roleKey = SchoolStaffRoleKey($user);
     if (in_array($roleKey, ['grade_deputy', 'counselor'], true)) {
@@ -1204,7 +1222,8 @@ function GetSchoolNotifications(?string $user = null, ?string $eventType = null,
     [$where, $args] = SchoolNotificationVisibility($user, $eventType, false);
     $limit = max(1, min(300, $limit));
     $sql = "SELECT n.*, c.coursename, cl.name AS class_name,
-                   CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, '')) AS actor_name,
+                   NULLIF(TRIM(CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, ''))), '') AS actor_name,
+                   n.actor_username,
                    CASE WHEN nr.notification_id IS NULL THEN 0 ELSE 1 END AS is_read
             FROM school_notifications n
             LEFT JOIN codtbl_course c ON c.codecourse = n.codecourse
@@ -3347,7 +3366,7 @@ function getSchoolAcademicYearRange(?int $timestamp = null): array
         'start_gregorian' => sprintf('%04d-%02d-%02d', $startGregorian[0], $startGregorian[1], $startGregorian[2]),
         'end_gregorian' => sprintf('%04d-%02d-%02d', $endGregorian[0], $endGregorian[1], $endGregorian[2]),
         'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $endExclusiveGregorian[0], $endExclusiveGregorian[1], $endExclusiveGregorian[2]),
-        'label' => sprintf('%04d–%04d', $baseYear + 1, $baseYear),
+        'label' => sprintf('%04d–%04d', $baseYear, $baseYear + 1),
     ];
 }
 //1tir to 1 tir
@@ -4146,6 +4165,67 @@ function getTeachersList(): array
     return $st->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
 
+function registerClassEventColumnExists(string $columnName): bool
+{
+    global $conn;
+
+    try {
+        $sql = "SELECT COUNT(*)
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'register_class_events'
+                  AND column_name = ?";
+        $st = $conn->prepare($sql);
+        $st->execute([$columnName]);
+        return (int)$st->fetchColumn() > 0;
+    } catch (Throwable $e) {
+        error_log('registerClassEventColumnExists error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function registerClassEvaluationColumnExists(string $columnName): bool
+{
+    global $conn;
+
+    try {
+        $sql = "SELECT COUNT(*)
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'register_class_evaluation'
+                  AND column_name = ?";
+        $st = $conn->prepare($sql);
+        $st->execute([$columnName]);
+        return (int)$st->fetchColumn() > 0;
+    } catch (Throwable $e) {
+        error_log('registerClassEvaluationColumnExists error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function ensureRegisterClassEventGroupUidColumn(): bool
+{
+    global $conn;
+
+    if (registerClassEventColumnExists('group_uid')) {
+        return true;
+    }
+
+    try {
+        $conn->exec("ALTER TABLE register_class_events ADD COLUMN group_uid CHAR(32) NULL AFTER event_date");
+        try {
+            $conn->exec("CREATE INDEX idx_rce_group_uid ON register_class_events (group_uid)");
+        } catch (Throwable $e) {
+            // Some MySQL versions or old schemas may already contain the index.
+            error_log('create index group_uid warning: ' . $e->getMessage());
+        }
+        return true;
+    } catch (Throwable $e) {
+        error_log('ensureRegisterClassEventGroupUidColumn error: ' . $e->getMessage());
+        return false;
+    }
+}
+
 /**
  * Create a new class event (Exam or Attendance)
  */
@@ -4153,10 +4233,10 @@ function createRegisterClassEvent(
     int $classId,
     int $createdBy,
     int $teacherId,
-    int $darsId,
     string $title,
     ?string $eventDate,
-    int $type, string $description = '', ?string $groupUid = null
+    int $type, string $description = '', ?string $groupUid = null,
+    string $homeworkNotificationTarget = 'family'
 ): bool {
     global $conn;
 
@@ -4166,23 +4246,62 @@ function createRegisterClassEvent(
 
     // تاریخ اختیاری است؛ رشته خالی به NULL تبدیل می شود
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
+    $homeworkNotificationTarget = in_array($homeworkNotificationTarget, ['family', 'family_student'], true)
+        ? $homeworkNotificationTarget
+        : 'family';
+
+    if (!registerClassEventColumnExists('homework_notification_target')) {
+        try {
+            $conn->exec("ALTER TABLE register_class_events ADD COLUMN homework_notification_target VARCHAR(20) NOT NULL DEFAULT 'family' AFTER type");
+        } catch (Throwable $e) {
+            error_log('ensure homework notification target error: ' . $e->getMessage());
+        }
+    }
+
+    $hasGroupUid = registerClassEventColumnExists('group_uid');
+    if (!$hasGroupUid) {
+        ensureRegisterClassEventGroupUidColumn();
+        $hasGroupUid = registerClassEventColumnExists('group_uid');
+    }
+
+    if ($hasGroupUid) {
+        $sql = "
+            INSERT INTO register_class_events
+                (class_id, teacher_id, title, event_date, group_uid, description, type, homework_notification_target, status, created_by)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+        ";
+
+        $st = $conn->prepare($sql);
+        return $st->execute([
+            $classId,
+            $teacherId,
+            $title,
+            $eventDate,
+            $groupUid,
+            $description,
+            $type,
+            $homeworkNotificationTarget,
+            $createdBy
+        ]);
+    }
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, status, created_by)
+            (class_id, teacher_id, title, event_date, description, type, homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
     return $st->execute([
         $classId,
-        $teacherId, $darsId,
+        $teacherId,
         $title,
         $eventDate,
-        $groupUid,
         $description,
         $type,
+        $homeworkNotificationTarget,
         $createdBy
     ]);
 }
@@ -4200,6 +4319,7 @@ function registerClassColumnKinds(): array
         // نمره کلاسی دو بخش دارد: عدد و ارزیابی کیفی
         ['type' => 1, 'title' => 'نمره کلاسی',          'date_bound' => false, 'input' => 'score',      'quality' => true],
         ['type' => 4, 'title' => 'تراز آزمون آنلاین',   'date_bound' => false, 'input' => 'score',      'quality' => false],
+        ['type' => 5, 'title' => 'نمره تکلیف',          'date_bound' => false, 'input' => 'score',      'quality' => false, 'homework' => true],
         ['type' => 3, 'title' => 'توضیحات',             'date_bound' => false, 'input' => 'note',       'quality' => false],
     ];
 }
@@ -4224,6 +4344,10 @@ function deleteRegisterClassEventGroup(int $classId, string $groupUid): bool
 {
     global $conn;
     if ($classId <= 0 || $groupUid === '') {
+        return false;
+    }
+
+    if (!registerClassEventColumnExists('group_uid')) {
         return false;
     }
 
@@ -4335,8 +4459,13 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         static fn($k) => "'" . $k['type'] . "'",
         registerClassColumnKinds()
     ));
-    // ستون های بدون تاریخ انتهای جدول قرار می گیرند
-    $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+
+    if (registerClassEventColumnExists('group_uid')) {
+        // ستون های بدون تاریخ انتهای جدول قرار می گیرند
+        $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+    } else {
+        $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, FIELD(type, $kindOrder), id ASC";
+    }
 
     $st = $conn->prepare($sql);
     $st->execute($params);
@@ -4360,7 +4489,10 @@ function saveStudentRegisterClassEntry(
         return false;
     }
 
-    if ($score !== null || $quality !== null) {
+    $hasQualityColumn = registerClassEvaluationColumnExists('quality');
+    $hasNoteColumn = registerClassEvaluationColumnExists('note');
+
+    if (($score !== null || $quality !== null) && $hasQualityColumn) {
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
                                  WHERE register_class_events_id = ? AND username = ?");
         $check->execute([$eventId, $studentUsername]);
@@ -4392,7 +4524,7 @@ function saveStudentRegisterClassEntry(
     }
 
     // ستون توضیحات؛ رشته خالی یعنی پاک کردن متن
-    if ($note !== null) {
+    if ($note !== null && $hasNoteColumn) {
         $noteValue = ($note === '') ? null : mb_substr($note, 0, 500);
 
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
@@ -4432,8 +4564,9 @@ function saveStudentRegisterClassEntry(
         }
     }
 
-    $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name,
-            ev.title AS event_title, ev.event_date, ev.type AS event_type
+        $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name,
+            ev.title AS event_title, ev.event_date, ev.type AS event_type,
+            ev.homework_notification_target
         FROM register_class_events ev
         INNER JOIN classes c ON c.id = ev.class_id
         WHERE ev.id = ? AND ev.class_id = ? LIMIT 1');
@@ -4453,18 +4586,21 @@ function saveStudentRegisterClassEntry(
     $actorUsername = $actorAdminId ? null : $createdBy;
 
     if ($score !== null || $quality !== null) {
+        $isHomework = (int)($context['event_type'] ?? 0) === 5;
         CreateSchoolNotification(
             'exam',
-            'ثبت آزمون و نمره جدید' . ($className !== '' ? ' - ' . $className : ''),
+            ($isHomework ? 'ثبت نمره تکلیف جدید' : 'ثبت آزمون و نمره جدید') . ($className !== '' ? ' - ' . $className : ''),
             $eventDescription,
             $actorAdminId,
             $actorUsername,
             isset($context['codecourse']) ? (int)$context['codecourse'] : null,
             $classId,
-            null,
+            $isHomework ? $studentUsername : null,
             'admin/course/class-register-notification.php?event=' . $eventId,
-            'register_class_exam_event',
-            (string)$eventId
+            $isHomework ? 'register_class_homework_grade' : 'register_class_exam_event',
+            $isHomework ? $eventId . ':' . $studentUsername : (string)$eventId,
+            $isHomework ? ($context['homework_notification_target'] ?? 'family') : 'all',
+            $isHomework ? $studentUsername : null
         );
     }
     if ($statusCode !== null) {
@@ -4501,8 +4637,16 @@ function saveStudentRegisterClassEntry(
 function getRegisterClassEvaluations(int $classId, int $adminId, int $adminRole): array
 {
     global $conn;
+    $selectColumns = ['e.register_class_events_id AS event_id', 'e.username', 'e.score'];
+    if (registerClassEvaluationColumnExists('note')) {
+        $selectColumns[] = 'e.note';
+    }
+    if (registerClassEvaluationColumnExists('quality')) {
+        $selectColumns[] = 'e.quality';
+    }
+
     $sql = "
-        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality
+        SELECT " . implode(', ', $selectColumns) . "
         FROM register_class_evaluation e
         INNER JOIN register_class_events ev ON e.register_class_events_id = ev.id
         WHERE ev.class_id = ?

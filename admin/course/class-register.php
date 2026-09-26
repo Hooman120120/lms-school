@@ -62,29 +62,12 @@ if (!$is_teacher && !Permision('permision_viewcourse') && !Permision('register_c
 $has_full_permission = $is_teacher
     || in_array($school_role_key, ['manager', 'general_deputy', 'grade_deputy'], true)
     || Permision('register_class_permission');
-$can_view_class_students = $is_teacher
-    ? TeacherPermission('teacher_perm_students')
-    : Permision('permision_viewcourse');
-$can_manage_class_homework = $is_teacher
-    ? TeacherPermission('teacher_perm_homework')
-    : Permision('permision_viewcourse');
 
 // استاد (نقش ۳) فقط کار خودش را می بیند؛ نقش های بالاتر همه چیز را می بینند
 $sees_all_columns = !$is_teacher;
 
 // شناسه استادی که رکوردها باید متعلق به او باشند (برای نقش های بالاتر محدودیتی نیست)
 $scope_teacher_id = $is_teacher ? (int)$admin_id : null;
-$scope_dars_id = (int)($_GET['dars_id'] ?? $_POST['dars_id'] ?? 0);
-if (!$is_teacher && isset($_GET['teacher_id'])) {
-    $scope_teacher_id = (int)$_GET['teacher_id'];
-}
-$scopeOptionsStmt = $conn->prepare('SELECT DISTINCT a.idadmin AS teacher_id, a.username, a.fname, a.lname, ctd.dars_id, d.dars FROM course_teacher ct INNER JOIN dbadmin a ON a.username = ct.teacher_username INNER JOIN course_teacher_dars ctd ON ctd.class_id = ct.class_id AND ctd.teacher_username = ct.teacher_username INNER JOIN dbdars d ON d.id = ctd.dars_id WHERE ct.class_id = ? ORDER BY a.fname, a.lname, d.dars');
-$scopeOptionsStmt->execute([$class_id]);
-$scope_options = $scopeOptionsStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-if ($is_teacher) {
-    $scope_options = array_values(array_filter($scope_options, static fn($row) => (int)$row['teacher_id'] === (int)$admin_id));
-}
-$scope_ready = $is_teacher || ($scope_teacher_id > 0 && $scope_dars_id > 0);
 
 /**
  * بررسی اینکه ستون متعلق به همین کلاس (و در صورت استاد بودن، به خود کاربر) است.
@@ -147,6 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     $jalali_date = trim($_POST['event_date'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $type        = isset($_POST['type']) ? (int)$_POST['type'] : 0;
+    $homework_notification_target = $_POST['homework_notification_target'] ?? 'family';
+    if (!in_array($homework_notification_target, ['family', 'family_student'], true)) {
+        $homework_notification_target = 'family';
+    }
 
     // عنوان ستون از روی نوع انتخاب شده تعیین می شود
     $title = '';
@@ -165,10 +152,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     } else {
         $assigned_teacher_id = (int)($_POST['teacher_id'] ?? 0);
     }
-    $assigned_dars_id = (int)($_POST['dars_id'] ?? 0);
 
     if (!empty($title) && $assigned_teacher_id > 0 && $admin_id > 0) {
-        $newEventId = createRegisterClassEvent($class_id, (int)$admin_id, $assigned_teacher_id, $assigned_dars_id, $title, $gregorian_date, $type, $description);
+        $newEventId = createRegisterClassEvent(
+            $class_id,
+            (int)$admin_id,
+            $assigned_teacher_id,
+            $title,
+            $gregorian_date,
+            $type,
+            $description,
+            null,
+            $homework_notification_target
+        );
 
         if ($newEventId) {
             registerClassLog($class_id, $title, '', null, null, $description, $actor, 'create_event');
@@ -536,20 +532,6 @@ if ($sees_all_columns) {
     $evaluations = getRegisterClassEvaluations($class_id, $admin_id, (int)$adminrole);
     $attendances = getRegisterClassAttendance($class_id, $admin_id, (int)$adminrole);
     $disciplinaries = getClassDisciplinaries($class_id, $admin_id, (int)$adminrole);
-}
-if ($scope_teacher_id > 0) {
-    // رکوردهای قدیمی قبل از اضافه‌شدن dars_id درس ندارند؛ برای اینکه
-    // سابقهٔ همان معلم پنهان نشود، کنار داده‌های درس منتخب نمایش داده می‌شوند.
-    $events = array_values(array_filter($events, static fn($event) =>
-        (int)$event['teacher_id'] === $scope_teacher_id
-        && ($scope_dars_id <= 0 || (int)($event['dars_id'] ?? 0) <= 0 || (int)$event['dars_id'] === $scope_dars_id)
-    ));
-}
-if (!$scope_ready) {
-    $events = [];
-    $evaluations = [];
-    $attendances = [];
-    $disciplinaries = [];
 }
 
 // فقط ستون های همین هفته نمایش داده می شوند؛ قاعده ی تعیین هفته ی هر ستون
@@ -1150,24 +1132,6 @@ include_once '../../temp.html';
                     </h4>
 
                     <div class="rg-tools">
-                        <?php if (!$is_teacher): ?>
-                            <form method="get" class="rg-field d-flex" style="gap:6px;align-items:center;">
-                                <input type="hidden" name="class" value="<?php echo $class_id; ?>">
-                                <select class="rg-field-control" id="registerScopeTeacher" name="teacher_id" required><option value="">معلم</option><?php $seenTeachers = []; foreach ($scope_options as $row): $teacherId = (int)$row['teacher_id']; if (isset($seenTeachers[$teacherId])) continue; $seenTeachers[$teacherId] = true; ?><option value="<?php echo $teacherId; ?>" <?php echo $scope_teacher_id === $teacherId ? 'selected' : ''; ?>><?php echo htmlspecialchars(trim($row['fname'].' '.$row['lname']) ?: $row['username']); ?></option><?php endforeach; ?></select>
-                                <select class="rg-field-control" id="registerScopeDars" name="dars_id" required><option value="">درس</option><?php foreach ($scope_options as $row): ?><option value="<?php echo (int)$row['dars_id']; ?>" data-teacher-id="<?php echo (int)$row['teacher_id']; ?>" <?php echo $scope_dars_id === (int)$row['dars_id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($row['dars']); ?></option><?php endforeach; ?></select>
-                                <button class="rg-export-btn" type="submit">نمایش دفتر</button>
-                            </form>
-                        <?php endif; ?>
-                        <?php if ($can_view_class_students): ?>
-                            <a class="rg-export-btn" href="assign-student.php?class_id=<?php echo $class_id; ?>">
-                                مشاهده دانش‌آموزان
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($can_manage_class_homework): ?>
-                            <a class="rg-export-btn" href="homeworks.php?class_id=<?php echo $class_id; ?>">
-                                مدیریت تکالیف
-                            </a>
-                        <?php endif; ?>
                         <?php /* انتخاب هفته: داده های هر هفته جداگانه نمایش داده می شود */ ?>
                         <div class="rg-field">
                             <span class="rg-field-label">هفته</span>
@@ -1220,35 +1184,6 @@ include_once '../../temp.html';
                         </div>
                     </div>
                 </div>
-
-                <?php if (!$is_teacher): ?>
-                <script>
-                    (function () {
-                        const teacher = document.getElementById('registerScopeTeacher');
-                        const dars = document.getElementById('registerScopeDars');
-                        if (!teacher || !dars) return;
-                        const syncDars = () => {
-                            const teacherId = teacher.value;
-                            [...dars.options].forEach(option => {
-                                if (!option.value) return;
-                                option.hidden = !!teacherId && option.dataset.teacherId !== teacherId;
-                                option.disabled = !!teacherId && option.dataset.teacherId !== teacherId;
-                            });
-                            if (teacherId && (!dars.value || dars.selectedOptions[0].dataset.teacherId !== teacherId)) {
-                                const first = [...dars.options].find(option => option.value && option.dataset.teacherId === teacherId);
-                                if (first) dars.value = first.value;
-                            }
-                        };
-                        teacher.addEventListener('change', syncDars);
-                        dars.addEventListener('change', () => {
-                            const teacherId = dars.selectedOptions[0]?.dataset.teacherId;
-                            if (teacherId) teacher.value = teacherId;
-                            syncDars();
-                        });
-                        syncDars();
-                    })();
-                </script>
-                <?php endif; ?>
 
                 <div class="rg-card">
                     <div class="rg-scroll">
@@ -1519,7 +1454,6 @@ include_once '../../temp.html';
                 </div>
                 <form method="post" action="">
                     <input type="hidden" name="action" value="create_event">
-                    <input type="hidden" name="dars_id" value="<?php echo (int)$scope_dars_id; ?>">
                     <div class="modal-body">
 
                         <?php /* عنوان ستون قابل تغییر نیست و همیشه از روی نوع ستون تعیین می شود */ ?>
@@ -1527,8 +1461,21 @@ include_once '../../temp.html';
                             <?php if ((int)$adminrole === 3): ?>
                                 <input type="hidden" name="teacher_id" value="<?php echo (int)$admin_id; ?>">
                             <?php else: ?>
-                                <input type="hidden" name="teacher_id" value="<?php echo (int)$scope_teacher_id; ?>">
-                                <div class="form-text">ستون برای معلم و درس انتخاب‌شده در بالای دفتر ثبت می‌شود.</div>
+                                <label class="form-label fw-bold"><?php echo m('label.related_teacher') ?></label>
+                                <select class="form-select" name="teacher_id" required>
+                                    <option value=""><?php echo m('label.choose_teacher_dash') ?></option>
+                                    <?php foreach ($teachers_list as $teacher):
+                                        $teacherName = trim(($teacher['fname'] ?? '') . ' ' . ($teacher['lname'] ?? ''));
+                                        if (empty($teacherName)) {
+                                            $teacherName = $teacher['username'];
+                                        }
+                                        $t_id = $teacher['idadmin'] ?? $teacher['id'] ?? 0;
+                                        ?>
+                                        <option value="<?php echo $t_id; ?>">
+                                            <?php echo htmlspecialchars($teacherName); ?> (<?php echo htmlspecialchars($teacher['username']); ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             <?php endif; ?>
                         </div>
                         <div class="mb-3">
@@ -1538,6 +1485,14 @@ include_once '../../temp.html';
                                 <?php foreach (registerClassColumnKinds() as $kindRow): ?>
                                     <option value="<?php echo $kindRow['type']; ?>"><?php echo htmlspecialchars($kindRow['title']); ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="homework_notification_target_container" style="display:none;">
+                            <label class="form-label fw-bold">مخاطب یادداشت نمره تکلیف:</label>
+                            <select class="form-select" name="homework_notification_target">
+                                <option value="family">فقط خانواده</option>
+                                <option value="family_student">خانواده و دانش‌آموز</option>
                             </select>
                         </div>
 
@@ -1771,8 +1726,9 @@ include_once '../../temp.html';
                 // 1 = نمره کلاسی، 4 = تراز آزمون آنلاین  → ورودی عددی
                 // 3 = توضیحات                            → ورودی متنی
                 // 0 = حضور دستی،  2 = حضور آنلاین        → ورودی وضعیت
-                const isScoreColumn = (eventType === '1' || eventType === '4');
+                const isScoreColumn = (eventType === '1' || eventType === '4' || eventType === '5');
                 const isNoteColumn     = (eventType === '3');
+                const isHomeworkColumn = (eventType === '5');
                 const noteContainer    = document.getElementById('note_input_container');
                 const qualityContainer = document.getElementById('quality_input_container');
 
@@ -1801,6 +1757,11 @@ include_once '../../temp.html';
                         gradeField.step = '1';
                         gradeField.placeholder = '7200';
                         gradeLabel.textContent = 'تراز آزمون آنلاین:';
+                    } else if (eventType === '5') {
+                        gradeField.max  = '20';
+                        gradeField.step = '0.25';
+                        gradeField.placeholder = '00.00';
+                        gradeLabel.textContent = 'نمره تکلیف:';
                     } else {
                         gradeField.max  = '20';
                         gradeField.step = '0.25';
@@ -1825,6 +1786,16 @@ include_once '../../temp.html';
                     // actionInput بالاتر بر اساس نوع ستون تعیین شده است و نباید دوباره بازنویسی شود
                 }
             });
+        }
+
+        const columnTypeSelect = document.querySelector('#createEventModal select[name="type"]');
+        const homeworkTargetContainer = document.getElementById('homework_notification_target_container');
+        if (columnTypeSelect && homeworkTargetContainer) {
+            const syncHomeworkTarget = function () {
+                homeworkTargetContainer.style.display = columnTypeSelect.value === '5' ? 'block' : 'none';
+            };
+            columnTypeSelect.addEventListener('change', syncHomeworkTarget);
+            document.getElementById('createEventModal').addEventListener('show.bs.modal', syncHomeworkTarget);
         }
 
         // ---------- Edit Event Modal (reuses createEventModal) ----------

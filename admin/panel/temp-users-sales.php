@@ -47,8 +47,6 @@ if (isset($_GET['ajax_get_admins'])) {
         echo "<option value='{$admin->username}'>{$admin->username}{$selected}</option>";
     }
     exit; // IMPORTANT: Stop the rest of the page from rendering in the AJAX response
-}
-
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
 $isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
@@ -307,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'rejec
         $chk = $conn->prepare("
             SELECT 1
             FROM user_account_status
-            WHERE username = ? AND status = ? AND reason = ?
+            WHERE username = ? AND status = ? AND reason = 
             ORDER BY created_at DESC, id DESC
             LIMIT 1
         ");
