@@ -24,7 +24,9 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewbill')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.installments')
+    : !Permision('permision_viewbill')) {
     http_response_code(403);
     exit('مجوز دسترسی به پرونده‌های اقساطی برای شما تعریف نشده است.');
 }
@@ -64,6 +66,12 @@ try {
     error_log("Permission check error: " . $e->getMessage());
     $canViewAll = false;
 }
+$installmentScope = AdminRecordVisibility('finance.installments', $canViewAll);
+if ($installmentScope === null) {
+    http_response_code(403);
+    exit('سطح مشاهدهٔ پرونده‌های اقساطی برای شما فعال نشده است.');
+}
+$canViewAll = $installmentScope === 'all';
 
 // Fetch payment
 try {

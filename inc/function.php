@@ -364,6 +364,7 @@ function AdminMenuCan(string $code, bool $legacyAllowed): bool
 function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
 {
     if (!AdminHasAnyCurrentTreePermission()) return $legacyAll ? 'all' : 'own';
+    if (AdminHasMenuPermission($scopeCode)) return 'all';
     if (AdminHasMenuPermission($scopeCode . '.all')) return 'all';
     if (AdminHasMenuPermission($scopeCode . '.own')) return 'own';
     // The sales cards appear on both dashboard pages. A full "My desktop"
@@ -373,6 +374,31 @@ function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
     if (str_contains($scopeCode, 'page-25d387505a.')
         && AdminHasMenuPermission('dashboard.summary.overview.desktop.sales-permanent')) return 'own';
     return null;
+}
+
+/** A financial record belongs to the administrator who created its factor. */
+function AdminCanAccessFinanceFactor(int $factorId, string $scopeCode, bool $legacyAll = false): bool
+{
+    global $conn;
+    $scope = AdminRecordVisibility($scopeCode, $legacyAll);
+    if ($scope === null || $factorId <= 0) return false;
+    if ($scope === 'all') return true;
+    $user = (string)($_SESSION['admin']['user'] ?? '');
+    $stmt = $conn->prepare('SELECT 1 FROM dbfactor WHERE idfactor = ? AND (factoradder = ? OR useradder = ?) LIMIT 1');
+    $stmt->execute([$factorId, $user, $user]);
+    return (bool)$stmt->fetchColumn();
+}
+
+/** Filter already-loaded factor rows before legacy pages render them. */
+function AdminFilterFinanceFactors(array $rows, string $scopeCode, bool $legacyAll = false): array
+{
+    if (AdminRecordVisibility($scopeCode, $legacyAll) === 'all') return $rows;
+    $user = (string)($_SESSION['admin']['user'] ?? '');
+    return array_values(array_filter($rows, static function ($row) use ($user): bool {
+        $factorAdder = is_object($row) ? ($row->factoradder ?? null) : ($row['factoradder'] ?? null);
+        $userAdder = is_object($row) ? ($row->useradder ?? null) : ($row['useradder'] ?? null);
+        return (string)$factorAdder === $user || (string)$userAdder === $user;
+    }));
 }
 
 /* Applied from admin/header.php. Legacy-only accounts keep their current

@@ -25,9 +25,15 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_bill')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.advanced-report')
+    : !Permision('permision_bill')) {
     header('location: ' . url('admin/index.php'));
     die();
+}
+$reportScope = AdminRecordVisibility('finance.advanced-report', false);
+if ($reportScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ گزارش مالی برای شما فعال نشده است.');
 }
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
@@ -100,12 +106,12 @@ if (isset($_POST['search'])) {
         $anycourse = 'SELECT * FROM dbfactor WHERE status=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ';
         $quap = $conn->prepare($anycourse);
         $quap->execute([$status, $startdate, $enddate]);
-        $rey = $quap->fetchAll(PDO::FETCH_OBJ);
+        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report', false);
     } else {
         $anycourse = 'SELECT * FROM dbfactor INNER JOIN dbcourse ON dbcourse.numfactor=dbfactor.idfactor WHERE status=? AND codecourse=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ';
         $quap = $conn->prepare($anycourse);
         $quap->execute([$status, $course, $startdate, $enddate]);
-        $rey = $quap->fetchAll(PDO::FETCH_OBJ);
+        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report', false);
     }
 }
 if (isset($_POST['sesave'])) {

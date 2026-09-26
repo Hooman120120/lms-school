@@ -27,7 +27,9 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_notpay')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.unpaid')
+    : !Permision('permision_notpay')) {
     http_response_code(403); exit('مجوز مدیریت پرداخت‌های ناموفق برای شما تعریف نشده است.');
 }
 if (isset($_SESSION['call'])) {
@@ -59,6 +61,12 @@ try {
 } catch (PDOException $e) {
     error_log("Permission check failed: " . $e->getMessage());
 }
+$factorScope = AdminRecordVisibility('finance.unpaid', $canViewAll);
+if ($factorScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای پرداخت‌نشده برای شما فعال نشده است.');
+}
+$canCreateInstallment = !AdminHasAnyCurrentTreePermission()
+    || AdminHasMenuPermission('finance.unpaid.installment-create');
 
 
 if (isset($_GET['call']) and $_GET['call'] != '') {
@@ -135,6 +143,7 @@ if (isset($_GET['unverify'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_payment'])) {
     try {
+        if (!$canCreateInstallment) throw new Exception('مجوز ایجاد قسط برای فاکتور پرداخت‌نشده فعال نشده است.');
         $codemeli = trim($_POST['codemeli']);
         $total_amount = intval($_POST['total_amount']);
         $comment = trim($_POST['comment'] ?? '');
@@ -149,6 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_payment'])) {
         }
         if ($idfactor <= 0) {
             throw new Exception("شناسه فاکتور نامعتبر است.");
+        }
+        if (!AdminCanAccessFinanceFactor($idfactor, 'finance.unpaid', $canViewAll)) {
+            throw new Exception('شما به این فاکتور دسترسی ندارید.');
         }
 
         $checkStudent = $conn->prepare("SELECT COUNT(*) FROM dbpersonal WHERE codemeli = :codemeli");
@@ -326,8 +338,8 @@ include_once '../../temp.html';
                                                                   AND dbfactor.status != ? 
                                                                   AND dbfactor.status != ?';
 
-                                            if ($adminRole == 6 || $adminRole == 1) {
-                                                $sql .= ' AND dbfactor.factoradder = ?';
+                                            if ($factorScope === 'own') {
+                                                $sql .= ' AND (dbfactor.factoradder = ? OR dbfactor.useradder = ?)';
                                             }
 
                                             $sql .= ' ORDER BY dbfactor.datecreate DESC';
@@ -336,8 +348,9 @@ include_once '../../temp.html';
 
                                             // Build parameters array
                                             $params = $statuses; // already in correct order
-                                            if ($adminRole == 6 || $adminRole == 1) {
-                                                $params[] = $username; // or your user ID variable
+                                            if ($factorScope === 'own') {
+                                                $params[] = $username;
+                                                $params[] = $username;
                                             }
 
                                             $query->execute($params);
@@ -384,11 +397,11 @@ include_once '../../temp.html';
                                                                                 با
                                                                                 صادرکننده
                                                                             </a>
-                                                                            <?php if (!empty($res->payment_id)): ?>
+                                                                            <?php if (!empty($res->payment_id) && (AdminHasAnyCurrentTreePermission() ? AdminHasMenuNavigationPermission('finance.installments') : true)): ?>
                                                                                 <a class="dropdown-item text-primary" href="<?php echo url('admin/Bill/paymentinstallments.php?id=' . $res->payment_id) ?>">
                                                                                     <i class="fe fe-eye"></i> مشاهده اقساط
                                                                                 </a>
-                                                                            <?php else: ?>
+                                                                            <?php elseif ($canCreateInstallment): ?>
                                                                                 <a class="dropdown-item text-success" href="#"
                                                                                    data-bs-toggle="modal" data-bs-target="#paymentModal"
                                                                                    data-factor-id="<?= $res->idfactor ?>"

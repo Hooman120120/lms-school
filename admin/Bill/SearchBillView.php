@@ -26,8 +26,14 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_bill')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.statement')
+    : !Permision('permision_bill')) {
     http_response_code(403); exit('مجوز مشاهده صورتحساب‌ها برای شما تعریف نشده است.');
+}
+$statementScope = AdminRecordVisibility('finance.statement', false);
+if ($statementScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ صورتحساب‌ها برای شما فعال نشده است.');
 }
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
@@ -99,6 +105,10 @@ if (isset($_POST['txt']) and $_POST['txt'] != '') {
             $wer->execute([$txt]);
             $recive = $wer->fetchAll(PDO::FETCH_OBJ);
             break;
+    }
+
+    if (isset($recive) && is_array($recive)) {
+        $recive = AdminFilterFinanceFactors($recive, 'finance.statement', false);
     }
 
 

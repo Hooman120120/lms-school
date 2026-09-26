@@ -27,8 +27,14 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_actfactor')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.pending')
+    : !Permision('permision_actfactor')) {
     http_response_code(403); exit('مجوز بررسی و تأیید فاکتور برای شما تعریف نشده است.');
+}
+$pendingScope = AdminRecordVisibility('finance.pending', false);
+if ($pendingScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای منتظر تأیید برای شما فعال نشده است.');
 }
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
@@ -188,8 +194,14 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
                                             <?php
                                             if ($adminRole != 2) {
                                                 $sql = 'SELECT * FROM dbfactor WHERE status=? ';
+                                                $params = ['در انتظار بررسی'];
+                                                if ($pendingScope === 'own') {
+                                                    $sql .= ' AND (factoradder = ? OR useradder = ?)';
+                                                    $params[] = $_SESSION['admin']['user'];
+                                                    $params[] = $_SESSION['admin']['user'];
+                                                }
                                                 $query = $conn->prepare($sql);
-                                                $query->execute(['در انتظار بررسی']);
+                                                $query->execute($params);
                                             } else {
                                                 $sql = 'SELECT DISTINCT dbfactor.* FROM dbfactor INNER JOIN dbcourse ON dbfactor.idfactor = dbcourse.numfactor INNER JOIN codtbl_course ON dbcourse.codecourse = codtbl_course.codecourse WHERE codtbl_course.course_type = 2 AND dbfactor.status = ? ORDER BY dbfactor.idfactor DESC';
                                                 $stmt = $conn->prepare($sql);
@@ -197,6 +209,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
                                                 $query->execute(['در انتظار بررسی']);
                                             }
                                             $result = $query->fetchAll(PDO::FETCH_OBJ);
+                                            $result = AdminFilterFinanceFactors($result, 'finance.pending', false);
                                             if ($query->rowCount() > 0) {
                                                 foreach (
                                                     $result

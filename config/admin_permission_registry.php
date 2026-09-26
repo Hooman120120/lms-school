@@ -266,14 +266,35 @@ $registry = [
     ]],
     ['code'=>'finance','label'=>'امور مالی','legacy'=>'permision_viewbill','children'=>[
         ['code'=>'finance.pending','label'=>'فاکتورهای منتظر تأیید','legacy'=>'permision_actfactor','path'=>'admin/Bill/active-factor.php','children'=>[
+            ['code'=>'finance.pending.own','label'=>'فقط فاکتورهای ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.pending.all','label'=>'فاکتورهای ثبت‌شده توسط همهٔ ایجادکنندگان'],
             ['code'=>'finance.pending.verify','label'=>'تأیید یا رد فاکتور'],['code'=>'finance.pending.receipt','label'=>'مشاهده فیش واریزی'],
         ]],
-        ['code'=>'finance.unpaid','label'=>'فاکتورهای پرداخت‌نشده','legacy'=>'permision_notpay','path'=>'admin/Bill/factor-notpay.php'],
-        ['code'=>'finance.returned','label'=>'فاکتورهای برگشتی','legacy'=>'permision_notpay','path'=>'admin/Bill/returned.php'],
+        ['code'=>'finance.unpaid','label'=>'فاکتورهای پرداخت‌نشده','legacy'=>'permision_notpay','path'=>'admin/Bill/factor-notpay.php','children'=>[
+            ['code'=>'finance.unpaid.own','label'=>'فقط فاکتورهای ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.unpaid.all','label'=>'فاکتورهای ثبت‌شده توسط همهٔ ایجادکنندگان'],
+            ['code'=>'finance.unpaid.installment-create','label'=>'ایجاد پروندهٔ قسط برای فاکتور پرداخت‌نشده'],
+        ]],
+        ['code'=>'finance.returned','label'=>'فاکتورهای مستردشده','legacy'=>'permision_notpay','path'=>'admin/Bill/returned.php','children'=>[
+            ['code'=>'finance.returned.own','label'=>'فقط فاکتورهای ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.returned.all','label'=>'فاکتورهای ثبت‌شده توسط همهٔ ایجادکنندگان'],
+            ['code'=>'finance.returned.manage','label'=>'ثبت و تأیید واریزی یا ویرایش فاکتور'],
+        ]],
         ['code'=>'finance.wallet','label'=>'شارژهای کیف پول منتظر تأیید','legacy'=>'permision_actwallet','modes'=>['institute'],'path'=>'admin/Bill/waitingWallet.php'],
-        ['code'=>'finance.statement','label'=>'صورتحساب','legacy'=>'permision_bill','path'=>'admin/Bill/SearchBillView.php'],
-        ['code'=>'finance.advanced-report','label'=>'گزارش مالی پیشرفته','legacy'=>'permision_bill','path'=>'admin/Bill/advanced-report.php'],
-        ['code'=>'finance.installments','label'=>'موارد اقساطی','legacy'=>'installment_permission','path'=>'admin/Bill/payment.php'],
+        ['code'=>'finance.statement','label'=>'صورتحساب','legacy'=>'permision_bill','path'=>'admin/Bill/SearchBillView.php','children'=>[
+            ['code'=>'finance.statement.own','label'=>'فقط فاکتورهای ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.statement.all','label'=>'فاکتورهای ثبت‌شده توسط همهٔ ایجادکنندگان'],
+        ]],
+        ['code'=>'finance.advanced-report','label'=>'گزارش مالی پیشرفته','legacy'=>'permision_bill','path'=>'admin/Bill/advanced-report.php','children'=>[
+            ['code'=>'finance.advanced-report.own','label'=>'فقط گزارش فاکتورهای ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.advanced-report.all','label'=>'گزارش فاکتورهای همهٔ ایجادکنندگان'],
+        ]],
+        ['code'=>'finance.installments','label'=>'موارد اقساطی','legacy'=>'installment_permission','path'=>'admin/Bill/payment.php','children'=>[
+            ['code'=>'finance.installments.own','label'=>'فقط پرونده‌های قسط ثبت‌شده توسط خود کاربر'],
+            ['code'=>'finance.installments.all','label'=>'پرونده‌های قسط ثبت‌شده توسط همهٔ ایجادکنندگان'],
+            ['code'=>'finance.installments.edit','label'=>'ویرایش یا حذف پروندهٔ قسط'],
+            ['code'=>'finance.installments.details','label'=>'مشاهدهٔ جزئیات و اقساط هر پرونده','path'=>'admin/Bill/paymentinstallments.php'],
+        ]],
         ['code'=>'finance.monthly-payments','label'=>'واریز ماهانه همکاران','legacy'=>'permission_monthly_payment','path'=>'admin/finance/monthly-payments.php'],
         ['code'=>'finance.staff-documents','label'=>'مستندات همکاران','legacy'=>'permission_staff_documents','path'=>'admin/employ/staff-documents.php'],
         ['code'=>'finance.insurance','label'=>'بیمه افراد','legacy'=>'permission_insurance','path'=>'admin/employ/insurance.php'],

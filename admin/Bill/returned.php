@@ -27,9 +27,18 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_notpay')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.returned')
+    : !Permision('permision_notpay')) {
     http_response_code(403); exit('مجوز مدیریت فاکتورهای مسترد برای شما تعریف نشده است.');
 }
+$username = (string)($_SESSION['admin']['user'] ?? '');
+$returnedScope = AdminRecordVisibility('finance.returned', false);
+if ($returnedScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای مستردشده برای شما فعال نشده است.');
+}
+$canManageReturned = !AdminHasAnyCurrentTreePermission()
+    || AdminHasMenuPermission('finance.returned.manage');
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -78,6 +87,9 @@ if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
 }
 if (isset($_GET['delfactor'])) {
     $factorId = intval($_GET['delfactor']);
+    if (!$canManageReturned || !AdminCanAccessFinanceFactor($factorId, 'finance.returned', false)) {
+        http_response_code(403); exit('مجوز مدیریت این فاکتور فعال نشده است.');
+    }
     $factor = queryFactor($factorId);
     if ($factor->status != 'موفق') {
 
@@ -210,16 +222,24 @@ include_once '../../temp.html';
                                             </thead>
                                             <tbody>
                                             <?php
-                                            if ($adminRole == 2) {
+                                            if ($adminRole == 2 && $returnedScope === 'all') {
                                                 $sql = 'SELECT DISTINCT dbfactor.* FROM dbfactor INNER JOIN dbcourse ON dbfactor.idfactor = dbcourse.numfactor INNER JOIN codtbl_course ON dbcourse.codecourse = codtbl_course.codecourse WHERE codtbl_course.course_type = 2 AND dbfactor.status = ? ORDER BY dbfactor.idfactor DESC';
                                                 $query = $conn->prepare($sql);
                                                 $query->execute(['مسترد شده']);
                                             } else {
-                                                $sql = 'SELECT * FROM dbfactor WHERE `status`=? ORDER BY `datecreate` DESC ';
+                                                $sql = 'SELECT * FROM dbfactor WHERE `status`=?';
+                                                $params = ['مسترد شده'];
+                                                if ($returnedScope === 'own') {
+                                                    $sql .= ' AND (factoradder = ? OR useradder = ?)';
+                                                    $params[] = $username;
+                                                    $params[] = $username;
+                                                }
+                                                $sql .= ' ORDER BY `datecreate` DESC ';
                                                 $query = $conn->prepare($sql);
-                                                $query->execute(['مسترد شده']);
+                                                $query->execute($params);
                                             }
                                             $result = $query->fetchAll(PDO::FETCH_OBJ);
+                                            $result = AdminFilterFinanceFactors($result, 'finance.returned', false);
                                             if ($query->rowCount() > 0) {
                                                 foreach (
                                                     $result
@@ -264,6 +284,7 @@ include_once '../../temp.html';
                                                                                href="?call-student=<?php echo $res->username ?>"><i class="fe fe-phone-forwarded"></i> تماس
                                                                                 با دانش آموز
                                                                             </a>
+                                                                            <?php if ($canManageReturned): ?>
                                                                             <div class="dropdown-item text-success "
                                                                                  style="text-align: right"
                                                                                  onclick="window.open('include-deposit.php?factor='+'<?php echo $res->idfactor ?>','تغییر وضعیت'
@@ -297,6 +318,7 @@ include_once '../../temp.html';
                                                                                onclick="return confirm('آیا با حذف این فاکتور موافقید؟')"><i
                                                                                         class="fe fe-x-square"></i>
                                                                                 حذف فاکتور </a>
+                                                                            <?php endif; ?>
 
 
                                                                         </div>

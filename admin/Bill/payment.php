@@ -27,7 +27,9 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewbill')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.installments')
+    : !Permision('permision_viewbill')) {
     http_response_code(403); exit('مجوز دسترسی به بخش اقساط برای شما تعریف نشده است.');
 }
 $username = $_SESSION['admin']['user'];
@@ -45,10 +47,20 @@ try {
 } catch (PDOException $e) {
     error_log("Permission check failed: " . $e->getMessage());
 }
+$installmentScope = AdminRecordVisibility('finance.installments', $canViewAll);
+if ($installmentScope === null) {
+    http_response_code(403); exit('سطح مشاهدهٔ پرونده‌های قسط برای شما فعال نشده است.');
+}
+$canViewAll = $installmentScope === 'all';
+$canEditInstallments = !AdminHasAnyCurrentTreePermission()
+    || AdminHasMenuPermission('finance.installments.edit');
 list($jalaliStart, $jalaliEnd) = getJalaliYearWindowApprox();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        if (!$canEditInstallments) {
+            throw new Exception('مجوز ویرایش پرونده‌های قسط فعال نشده است.');
+        }
         if (isset($_POST['update_payment'])) {
             $codemeli = trim($_POST['codemeli']);
             $total_amount = intval($_POST['total_amount']);
@@ -553,7 +565,7 @@ catch (PDOException $e) {
                                                        onclick="window.open(this.href, 'FactorPopup', 'width=600,height=700,scrollbars=yes,resizable=yes'); return false;">
                                                         فاکتور
                                                     </a>
-                                                    <button type="button" class="btn btn-sm btn-warning"
+                                                    <?php if ($canEditInstallments): ?><button type="button" class="btn btn-sm btn-warning"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#paymentModal"
                                                             data-bs-action="update"
@@ -563,8 +575,8 @@ catch (PDOException $e) {
                                                             data-status="<?= htmlspecialchars($row['status'], ENT_QUOTES, 'UTF-8') ?>"
                                                             data-comment="<?= htmlspecialchars($row['comment'], ENT_QUOTES, 'UTF-8') ?>">
                                                         ویرایش
-                                                    </button>
-                                                    <?php if ($canViewAll): ?>
+                                                    </button><?php endif; ?>
+                                                    <?php if ($canViewAll && $canEditInstallments): ?>
                                                         <form action="payment.php" method="POST" style="display:inline;" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید این پرداخت را حذف کنید؟');">
                                                             <input type="hidden" name="payment_id" value="<?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?>">
                                                             <button type="submit" name="delete_payment" class="btn btn-sm btn-danger">حذف</button>

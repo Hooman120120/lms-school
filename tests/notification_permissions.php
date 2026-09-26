@@ -76,9 +76,25 @@ verifyNotification(!AdminHasMenuNavigationPermission('institute-notifications'),
 $notificationTestGrants = ['institute-notifications.support'];
 verifyNotification(AdminHasAnyCurrentTreePermission(), 'Retired grants must not fall back to legacy access');
 verifyNotification(!AdminHasMenuPermission('institute-notifications.information.sms'), 'Retired grant must not widen access');
+$institutionMode = 'school';
+$notificationTestGrants = ['finance.unpaid.own'];
+verifyNotification(AdminRecordVisibility('finance.unpaid', true) === 'own', 'Unpaid own grant must not show all creators');
+verifyNotification(!AdminHasMenuNavigationPermission('finance.returned'), 'Unpaid access must not show returned invoices');
+verifyNotification(!AdminHasMenuNavigationPermission('finance.installments'), 'Unpaid access must not show installment cases');
+verifyNotification(!AdminHasMenuPermission('finance.unpaid.installment-create'), 'Viewing unpaid invoices must not create installments');
+$notificationTestGrants = ['finance.unpaid.installment-create'];
+verifyNotification(AdminHasMenuNavigationPermission('finance.unpaid'), 'Installment action must reveal its parent invoice page');
+verifyNotification(!AdminHasMenuNavigationPermission('finance.installments'), 'Creating installment must not reveal installment cases');
+$notificationTestGrants = ['finance.unpaid.all'];
+verifyNotification(AdminRecordVisibility('finance.unpaid', false) === 'all', 'Unpaid all grant must show all creators');
+$notificationTestGrants = ['finance.installments.own'];
+verifyNotification(AdminRecordVisibility('finance.installments', true) === 'own', 'Installment own grant must remain scoped');
+$notificationTestGrants = ['finance.statement.all'];
+verifyNotification(AdminRecordVisibility('finance.statement', false) === 'all', 'Statement all grant must show all creators');
 foreach (AdminPermissionIndex() as $code => $metadata) {
     if (!str_starts_with($code, 'school-notifications.')) continue;
     $instituteCode = str_replace('school-notifications.', 'institute-notifications.', $code);
+    $institutionMode = 'institute';
     verifyNotification(AdminPermissionCodeAvailable($instituteCode), 'Institute is missing feature: ' . $instituteCode);
 }
 echo "Passed {$checks} notification permission checks.\n";
