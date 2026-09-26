@@ -554,7 +554,7 @@ if (isset($_POST['esave'])) {
         $schoolRoleId = isset($_POST['eschool_role_id']) && in_array((int)$_POST['eschool_role_id'], $validSchoolRoleIds, true)
             ? (int)$_POST['eschool_role_id'] : NULL;
         $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
-        if ($selectedSchoolRoleKey === 'counselor') {
+        if (inst_is('school') && $selectedSchoolRoleKey === 'counselor') {
             // مشاور از نظر قالب پنل و رفتار قدیمی سامانه همان adminrole پشتیبان است.
             $adminrole = 1;
             $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
@@ -818,7 +818,7 @@ if (isset($_POST['save'])) {
                 $schoolRoleId = isset($_POST['school_role_id']) && in_array((int)$_POST['school_role_id'], $validSchoolRoleIds, true)
                     ? (int)$_POST['school_role_id'] : NULL;
                 $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
-                if ($selectedSchoolRoleKey === 'counselor') {
+                if (inst_is('school') && $selectedSchoolRoleKey === 'counselor') {
                     // مشاور با داشبورد و منطق پشتیبان قدیمی ایجاد می‌شود.
                     $adminrole = 1;
                     $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
