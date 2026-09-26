@@ -114,24 +114,21 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy'], true)): ?>
-                                        <div class="col-md-6 col-xl-4 mb-3">
-                                            <a class="btn btn-outline-info btn-block text-right p-3" href="<?= url('admin/notifications/unread_sms.php') ?>">
-                                                <i class="fe fe-message-square ml-2"></i> پیامک‌های جدید
-                                                <?php if ($legacyCounts['unread_sms'] > 0): ?><span class="badge badge-info float-left"><?= (int)$legacyCounts['unread_sms'] ?></span><?php endif; ?>
-                                            </a>
-                                        </div>
-                                    <?php endif; ?>
-
                                     <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)): ?>
-                                        <div class="col-md-6 col-xl-4 mb-3">
-                                            <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notification_view.php') ?>">
-                                                <i class="fe fe-phone-call ml-2"></i> اعلان تماس مشاوران
-                                            </a>
-                                        </div>
                                         <div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-secondary btn-block text-right p-3" href="<?= url('admin/notifications/notif_rule_management.php') ?>">
                                                 <i class="fe fe-sliders ml-2"></i> کنترل قوانین اعلان تماس
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-danger btn-block text-right p-3" href="<?= url('admin/notifications/thread_list.php') ?>">
+                                                <i class="fe fe-inbox ml-2"></i> تیکت‌های اعلان تماس
+                                                <?php if ($legacyCounts['contact_ticket'] > 0): ?><span class="badge badge-danger float-left"><?= (int)$legacyCounts['contact_ticket'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notification_view.php') ?>">
+                                                <i class="fe fe-phone-call ml-2"></i> <?= inst_is('institute') ? 'اعلان تماس پشتیبان‌ها' : 'اعلان تماس مشاوران' ?>
                                             </a>
                                         </div>
                                     <?php endif; ?>
@@ -139,17 +136,26 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                                     <?php if ($schoolRoleKey === 'counselor'): ?>
                                         <div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notifications.php') ?>">
-                                                <i class="fe fe-phone-call ml-2"></i> اعلان تماس دانش‌آموزان من
+                                                <i class="fe fe-phone-call ml-2"></i> <?= inst_is('institute') ? 'اعلان تماس فراگیران من' : 'اعلان تماس دانش‌آموزان من' ?>
                                                 <?php if ($legacyCounts['contact_alert'] > 0): ?><span class="badge badge-primary float-left"><?= (int)$legacyCounts['contact_alert'] ?></span><?php endif; ?>
                                             </a>
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'counselor'], true)): ?>
+                                    <?php if ($schoolRoleKey === 'counselor'): ?>
                                         <div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-danger btn-block text-right p-3" href="<?= url('admin/notifications/thread_list.php') ?>">
                                                 <i class="fe fe-inbox ml-2"></i> تیکت‌های اعلان تماس
                                                 <?php if ($legacyCounts['contact_ticket'] > 0): ?><span class="badge badge-danger float-left"><?= (int)$legacyCounts['contact_ticket'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy'], true)): ?>
+                                        <div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-info btn-block text-right p-3" href="<?= url('admin/notifications/unread_sms.php') ?>">
+                                                <i class="fe fe-message-square ml-2"></i> پیامک‌های جدید
+                                                <?php if ($legacyCounts['unread_sms'] > 0): ?><span class="badge badge-info float-left"><?= (int)$legacyCounts['unread_sms'] ?></span><?php endif; ?>
                                             </a>
                                         </div>
                                     <?php endif; ?>
