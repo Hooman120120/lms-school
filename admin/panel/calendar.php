@@ -287,6 +287,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         : (isset($_POST['is_academic']) ? (int)$_POST['is_academic'] : 0);
     $overlap = isset($_POST['overlap']) ? (int)$_POST['overlap'] : 0;
     $marker = calendarEventMarker($_POST['marker'] ?? null);
+    // چند پایه تیک خورده باشد: همان رویداد برای هر پایه جدا ساخته می شود
+    $gradeIds = array_column($weekGroups, 'id');
+    $insertGroups = array_values(array_unique(array_filter(
+        array_map('intval', (array)($_POST['calendar_groups_ids'] ?? [])),
+        static fn($id) => in_array($id, array_map('intval', $gradeIds), true)
+    )));
+    if (!$insertGroups) {
+        $insertGroups = [$calendar_groups_id];
+    }
     $start_greg = jalaliToGregorian($start_jalali);
     $end_greg = jalaliToGregorian($end_jalali);
 
@@ -391,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         // هر جلسه ی رویداد هفتگی یک رکورد مستقل با همان مخاطبان و تنظیمات است
         // جلسه های رویداد هفتگی به ترتیب شماره می گیرند: «عنوان #1»، «عنوان #2» ...
-        foreach ($occurrences as $sessionIndex => [$occStart, $occEnd]) {
+        foreach ($insertGroups as $calendar_groups_id) foreach ($occurrences as $sessionIndex => [$occStart, $occEnd]) {
             $occTitle = $is_weekly ? $title . ' #' . ($sessionIndex + 1) : $title;
 
             $stmt = $conn->prepare("
@@ -470,9 +479,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $notificationSourceId ? (string)$notificationSourceId : null
             );
         }
+        $gradeNote = count($insertGroups) > 1 ? ' برای ' . count($insertGroups) . ' پایه' : '';
         $_SESSION['calendar_message'] = ['success' => true, 'message' => $is_weekly
-            ? 'رویداد هفتگی با موفقیت ثبت شد؛ ' . count($occurrences) . ' جلسه ساخته شد.'
-            : 'رویداد با موفقیت اضافه شد.'];
+            ? 'رویداد هفتگی' . $gradeNote . ' با موفقیت ثبت شد؛ ' . count($createdEventIds) . ' جلسه ساخته شد.'
+            : 'رویداد' . $gradeNote . ' با موفقیت اضافه شد.'];
     } catch (Exception $e) {
         debug_log("Exception caught", $e->getMessage());
         $conn->rollBack();
@@ -1068,6 +1078,23 @@ function renderCalendar() {
         #transposedCalendar .wg-event:hover { filter: brightness(.95); }
         #transposedCalendar .wg-event[draggable] { cursor: grab; }
 
+        /* انتخاب چند پایه در فرم رویداد */
+        .grade-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+        .grade-pick {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0;
+            padding: 3px 10px;
+            border: 2px solid var(--grade);
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .grade-pick input { accent-color: var(--grade); margin: 0; }
+        .grade-pick:has(input:checked) { background: var(--grade); color: #1d212f; font-weight: 700; }
+
         /* نشانه ی رویداد: دایره ی بزرگ گوشه ی رویداد با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
         #transposedCalendar .wg-event,
         #transposedCalendar .tc-allday { position: relative; }
@@ -1243,7 +1270,17 @@ function renderCalendar() {
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="groupSelect" class="form-label"><?= $gw ?></label>
-                                    <select class="form-select" id="groupSelect" name="calendar_groups_id">
+                                    <?php /* رویداد جدید: چند پایه با تیک؛ ویرایش: همان یک پایه ی رویداد */ ?>
+                                    <div class="grade-picks" id="groupMulti">
+                                        <?php foreach ($weekGroups as $g): ?>
+                                            <label class="grade-pick" style="--grade: <?= htmlspecialchars($g['color']) ?>;">
+                                                <input type="checkbox" name="calendar_groups_ids[]" value="<?= (int)$g['id'] ?>">
+                                                <span><?= htmlspecialchars($g['title']) ?></span>
+                                            </label>
+                                        <?php endforeach; ?>
+                                        <small class="text-muted d-block mt-1">هیچ پایه‌ای تیک نخورد = بدون پایه. با چند پایه، برای هر پایه یک رویداد جدا ساخته می‌شود.</small>
+                                    </div>
+                                    <select class="form-select" id="groupSelect" name="calendar_groups_id" style="display:none">
                                         <option value="">بدون <?= $gw ?> (مشکی)</option>
                                         <?php
                                         foreach ($weekGroups as $g):
@@ -2128,6 +2165,7 @@ function renderCalendar() {
             document.getElementById('description').value = event.extendedProps.description || '';
             document.getElementById('personal_note').value = event.extendedProps.personal_note || '';
             document.getElementById('groupSelect').value = event.extendedProps.calendar_groups_id || '';
+            setGradePickMode(false);
             document.getElementById('markerSelect').value = event.extendedProps.marker || '';
             document.getElementById('formAction').value = 'update_event';
             if (typeof window.__setWeeklyBlockVisible === 'function') {
@@ -2207,6 +2245,16 @@ function renderCalendar() {
         // ------------------------------------------------------------------
         var CAL_GROUP_WORD = <?= json_encode($gw, JSON_UNESCAPED_UNICODE) ?>;
         var CAL_WEEK_GROUPS = <?= json_encode(array_map(static fn($g) => ['id' => (int)$g['id'], 'title' => $g['title'], 'color' => $g['color']], $weekGroups), JSON_UNESCAPED_UNICODE) ?>;
+        // افزودن: تیک چند پایه؛ ویرایش: انتخاب یک پایه
+        function setGradePickMode(multi) {
+            var picks = document.getElementById('groupMulti');
+            var select = document.getElementById('groupSelect');
+            if (!picks || !select) return;
+            picks.style.display = multi ? '' : 'none';
+            select.style.display = multi ? 'none' : '';
+            picks.querySelectorAll('input').forEach(function (i) { i.checked = false; i.disabled = !multi; });
+            if (multi) select.value = '';
+        }
         var CAL_MARKERS = <?= json_encode(CALENDAR_EVENT_MARKERS, JSON_UNESCAPED_UNICODE) ?>;
         // دایره ی نشانه ی رویداد (کلاس آنلاین، کنسل، ...) برای گوشه ی رویداد
         function markerDot(ev, inline) {
@@ -3328,6 +3376,7 @@ function renderCalendar() {
                 document.getElementById('description').value = '';
                 document.getElementById('personal_note').value = '';
                 document.getElementById('markerSelect').value = '';
+                setGradePickMode(true);
                 document.getElementById('start_date').value = '';
                 document.getElementById('end_date').value = '';
                 document.getElementById('start_time').value = '00:00';
