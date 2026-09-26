@@ -91,6 +91,12 @@ $notificationTestGrants = ['finance.installments.own'];
 verifyNotification(AdminRecordVisibility('finance.installments', true) === 'own', 'Installment own grant must remain scoped');
 $notificationTestGrants = ['finance.statement.all'];
 verifyNotification(AdminRecordVisibility('finance.statement', false) === 'all', 'Statement all grant must show all creators');
+$notificationTestGrants = ['reports.students'];
+verifyNotification(AdminHasMenuNavigationPermission('reports'), 'Student reports must reveal reports menu');
+verifyNotification(!AdminHasMenuNavigationPermission('reports.staff'), 'Student reports must not reveal staff reports');
+$notificationTestGrants = ['reports'];
+verifyNotification(AdminHasMenuNavigationPermission('reports.students'), 'Reports parent must reveal student reports');
+verifyNotification(AdminHasMenuNavigationPermission('reports.staff'), 'Reports parent must reveal staff reports');
 foreach (AdminPermissionIndex() as $code => $metadata) {
     if (!str_starts_with($code, 'school-notifications.')) continue;
     $instituteCode = str_replace('school-notifications.', 'institute-notifications.', $code);

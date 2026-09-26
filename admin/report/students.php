@@ -27,11 +27,11 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_addcourse_student')) {
+if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_addcourse_student')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
-if (!Permision('permision_reportstudent')) {
+if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_reportstudent')) {
     header('location: ' . url('admin/index.php'));
     die();
 }

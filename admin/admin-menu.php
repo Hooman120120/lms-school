@@ -1226,7 +1226,15 @@ else                  $c = '#15233f';
                     </ul>
                 </li>
             <?php } ?>
-            <?php if (Permision('excel_permission')) { ?>
+            <?php if (AdminHasAnyCurrentTreePermission() && AdminHasMenuNavigationPermission('reports')) { ?>
+                <li class="nav-item">
+                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-radio sidemenu-icon"></i><span class="sidemenu-label">آمار و گزارشات</span><i class="angle fe fe-chevron-left"></i></a>
+                    <ul class="nav-sub">
+                        <?php if (AdminHasMenuNavigationPermission('reports.students')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/students.php') ?>"><?= m('menu.students') ?></a></li><?php endif; ?>
+                        <?php if (AdminHasMenuNavigationPermission('reports.staff')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/colleague.php') ?>">همکاران</a></li><?php endif; ?>
+                    </ul>
+                </li>
+            <?php } elseif (!AdminHasAnyCurrentTreePermission() && Permision('excel_permission')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-radio sidemenu-icon"></i>
