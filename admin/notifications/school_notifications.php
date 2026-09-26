@@ -109,8 +109,8 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                     <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mb-3">
                             <div class="card-header border-bottom-0">
-                                <h5 class="card-title mb-0">اعلان‌های عملیاتی سامانه</h5>
-                                <p class="text-muted mb-0 mt-1">مکانیزم‌های قبلی سامانه با دسترسی متناسب با سمت مدرسه</p>
+                                <h5 class="card-title mb-0">اعلان‌های اطلاع‌رسانی</h5>
+                                <p class="text-muted mb-0 mt-1">اعلان‌های عمومی و اطلاع‌رسانی متناسب با سمت شما</p>
                             </div>
                             <div class="card-body">
                                 <div class="row">
