@@ -5,6 +5,10 @@ $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
 $permission_calendar = $admin['permission_calendar'];
+// Calendar groups are پایه‌ها in a school and دوره‌ها in an institute; the
+// weekly view puts one column per group, in the order they were created.
+$gw = inst_is('institute') ? 'دوره' : 'پایه';
+$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
     // The index widget is view-only for tree accounts; editing belongs to the
     // separately permissioned executive/academic calendar pages.
@@ -715,11 +719,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 function renderCalendar() {
-    global $permission_calendar, $conn;
-    // Calendar groups are پایه‌ها in a school and دوره‌ها in an institute; the
-    // weekly view puts one column per group, in the order they were created.
-    $gw = inst_is('institute') ? 'دوره' : 'پایه';
-    $weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+    global $permission_calendar, $conn, $gw, $weekGroups;
     ?>
     <style>
         /* overriding the original fulcalendar styles for customizing the calendar. for more customization change or add here. */
