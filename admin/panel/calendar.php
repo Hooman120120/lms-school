@@ -1087,10 +1087,11 @@ function renderCalendar() {
             display: inline-block;
             vertical-align: middle;
         }
-        #transposedCalendar .wg-event .ev-dot + .wg-title,
+        #transposedCalendar .wg-event .ev-dot,
         #transposedCalendar .tc-event .ev-dot,
         #transposedCalendar .tc-allday .ev-dot { top: 50%; transform: translateY(-50%); }
         #transposedCalendar .tc-event { padding-left: 24px; }
+        #transposedCalendar .wg-event:has(.ev-dot) { padding-left: 26px; padding-right: 26px; }
 
         /* ماه: یک تقویم برای هر پایه، زیر هم */
         #transposedCalendar .mg-section { margin-bottom: 18px; }
