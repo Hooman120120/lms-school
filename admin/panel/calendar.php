@@ -992,6 +992,29 @@ function renderCalendar() {
             white-space: nowrap;
         }
 
+        /* خط زمان زیر ماوس در نمای روز */
+        #transposedCalendar .tc-cursor {
+            position: absolute;
+            width: 0;
+            border-left: 2px dotted #ff2d55;
+            pointer-events: none;
+            z-index: 6;
+        }
+        #transposedCalendar .tc-cursor-time {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff2d55;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
         #transposedCalendar .tc-empty {
             text-align: center;
             color: #1d212f;
@@ -2770,18 +2793,20 @@ function renderCalendar() {
                         var offset = ((ev.__s - range.min * 60) / totalMin) * 100;
                         var width = ((ev.__e - ev.__s) / totalMin) * 100;
                         var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
-                        var label = ev.start.toTimeString().slice(0, 5) + '  ' + ev.title;
+                        // ساعت شروع روی خود نوار نیست؛ جای نوار روی محور زمان همان را نشان می دهد
+                        var tip = wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '  ' + ev.title;
                         html += '<div class="tc-event" data-ev="' + tcEscape(ev.id) + '"'
                               + ' style="right:' + offset + '%; width:' + width + '%; top:'
                               + (4 + laneIndex * 32) + 'px; background:' + bg
                               + '; color:' + tcTextColorFor(bg) + '"'
-                              + ' title="' + tcEscape(label) + '">' + tcEscape(label) + '</div>';
+                              + ' title="' + tcEscape(tip) + '">' + tcEscape(ev.title) + '</div>';
                     });
                 });
                 html += '</div></td></tr>';
             });
 
             html += '</tbody></table>';
+            html += '<div class="tc-cursor" style="display:none"><span class="tc-cursor-time"></span></div>';
             host.innerHTML = html;
 
             // کلیک روی رویداد همان پنجره جزئیات تقویم اصلی را باز می کند
@@ -2791,6 +2816,32 @@ function renderCalendar() {
                     if (ev) showEventDetail(ev);
                 });
             });
+            tcEnableCursor(host, range);
+        }
+
+        // خط نقطه چین عمودی زیر نشانگر ماوس با ساعت و دقیقه ی همان نقطه (محور زمان راست به چپ)
+        function tcEnableCursor(host, range) {
+            var table = host.querySelector('table');
+            var cursor = host.querySelector('.tc-cursor');
+            var label = host.querySelector('.tc-cursor-time');
+            var track = host.querySelector('td.tc-track');
+            if (!table || !cursor || !track) return;
+            host.style.position = 'relative';
+            var totalMin = (range.max - range.min) * 60;
+            table.addEventListener('mousemove', function (e) {
+                var t = track.getBoundingClientRect();
+                if (e.clientX < t.left || e.clientX > t.right) { cursor.style.display = 'none'; return; }
+                var minute = range.min * 60 + Math.round(((t.right - e.clientX) / t.width) * totalMin);
+                var h = Math.floor(minute / 60), m = minute % 60;
+                label.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+                var hostBox = host.getBoundingClientRect();
+                var tableBox = table.getBoundingClientRect();
+                cursor.style.left = (e.clientX - hostBox.left + host.scrollLeft) + 'px';
+                cursor.style.top = (tableBox.top - hostBox.top) + 'px';
+                cursor.style.height = tableBox.height + 'px';
+                cursor.style.display = '';
+            });
+            table.addEventListener('mouseleave', function () { cursor.style.display = 'none'; });
         }
 
         // جابجایی بین تقویم استاندارد (ماه) و نمای جابجاشده (روز/هفته)
