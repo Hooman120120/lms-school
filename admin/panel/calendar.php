@@ -9,7 +9,7 @@ $permission_calendar = $admin['permission_calendar'];
 // the weekly view, one stacked month each in the monthly view.
 $gw = 'پایه';
 calendarSeedDefaultGrades($conn, (int)$adminId);
-$weekGroups = $conn->query("SELECT id, title, color FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
+$weekGroups = $conn->query("SELECT id, title, color, color2 FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
     // The index widget is view-only for tree accounts; editing belongs to the
     // separately permissioned executive/academic calendar pages.
@@ -1093,7 +1093,7 @@ function renderCalendar() {
             user-select: none;
         }
         .grade-pick input { accent-color: var(--grade); margin: 0; }
-        .grade-pick:has(input:checked) { background: var(--grade); color: #1d212f; font-weight: 700; }
+        .grade-pick:has(input:checked) { background: var(--grade-bg, var(--grade)); color: #fff; font-weight: 700; text-shadow: 0 0 2px rgba(0, 0, 0, .6); }
 
         /* نشانه ی رویداد: دایره ی بزرگ سمت راست، پیش از متن، با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
         .ev-dot {
@@ -1111,15 +1111,25 @@ function renderCalendar() {
         }
 
         /* هفته و ماه: دایره کنار خط رنگی پایه (لبه ی راست)، جدا از متن که وسط می ماند */
-        #transposedCalendar .wg-event { position: relative; }
+        #transposedCalendar .wg-event { position: relative; border-inline-start-width: 1px; overflow: hidden; }
+        #transposedCalendar .wg-event::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 6px;
+            background: var(--strip, #B5B5B5);
+        }
         #transposedCalendar .wg-event > .ev-dot {
             position: absolute;
-            right: 6px;
+            right: 11px;
             top: 50%;
             transform: translateY(-50%);
             margin: 0;
         }
-        #transposedCalendar .wg-event:has(> .ev-dot) { padding-right: 28px; padding-left: 28px; }
+        #transposedCalendar .wg-event { padding-right: 12px; }
+        #transposedCalendar .wg-event:has(> .ev-dot) { padding-right: 32px; padding-left: 32px; }
         #transposedCalendar .tc-event > .ev-dot { margin: 0; top: 0; }
 
         /* نمای روز: ساعت شروع سمت راست نوار، عنوان وسط، ساعت پایان سمت چپ */
@@ -1297,7 +1307,7 @@ function renderCalendar() {
                                     <?php /* رویداد جدید: چند پایه با تیک؛ ویرایش: همان یک پایه ی رویداد */ ?>
                                     <div class="grade-picks" id="groupMulti">
                                         <?php foreach ($weekGroups as $g): ?>
-                                            <label class="grade-pick" style="--grade: <?= htmlspecialchars($g['color']) ?>;">
+                                            <label class="grade-pick" style="--grade: <?= htmlspecialchars($g['color']) ?>; --grade-bg: <?= htmlspecialchars(calendarGradeBackground($g['color'], $g['color2'] ?? null)) ?>;">
                                                 <input type="checkbox" name="calendar_groups_ids[]" value="<?= (int)$g['id'] ?>">
                                                 <span><?= htmlspecialchars($g['title']) ?></span>
                                             </label>
@@ -2268,7 +2278,7 @@ function renderCalendar() {
         // محور زمان راست به چپ است، یعنی ساعت های ابتدایی سمت راست.
         // ------------------------------------------------------------------
         var CAL_GROUP_WORD = <?= json_encode($gw, JSON_UNESCAPED_UNICODE) ?>;
-        var CAL_WEEK_GROUPS = <?= json_encode(array_map(static fn($g) => ['id' => (int)$g['id'], 'title' => $g['title'], 'color' => $g['color']], $weekGroups), JSON_UNESCAPED_UNICODE) ?>;
+        var CAL_WEEK_GROUPS = <?= json_encode(array_map(static fn($g) => ['id' => (int)$g['id'], 'title' => $g['title'], 'color' => $g['color'], 'color2' => $g['color2'] ?: null], $weekGroups), JSON_UNESCAPED_UNICODE) ?>;
         // افزودن: تیک چند پایه؛ ویرایش: انتخاب یک پایه
         function setGradePickMode(multi) {
             var picks = document.getElementById('groupMulti');
@@ -2278,6 +2288,26 @@ function renderCalendar() {
             select.style.display = multi ? 'none' : '';
             picks.querySelectorAll('input').forEach(function (i) { i.checked = false; i.disabled = !multi; });
             if (multi) select.value = '';
+        }
+        // پس زمینه ی پایه: رنگ ساده یا طیف راست به چپ
+        function gradeBg(g) {
+            if (!g) return '#B5B5B5';
+            return g.color2 ? 'linear-gradient(to left, ' + g.color + ', ' + g.color2 + ')' : g.color;
+        }
+        function gradeOfEvent(ev) {
+            var id = parseInt(ev.extendedProps && ev.extendedProps.calendar_groups_id, 10);
+            for (var i = 0; i < CAL_WEEK_GROUPS.length; i++) if (CAL_WEEK_GROUPS[i].id === id) return CAL_WEEK_GROUPS[i];
+            return null;
+        }
+        // نوار باریک کنار رویداد در هفته و ماه: طیف بالا به پایین تا در ۶ پیکسل هم دیده شود
+        function eventStrip(ev) {
+            var g = gradeOfEvent(ev);
+            if (g && g.color2) return 'linear-gradient(to bottom, ' + g.color + ', ' + g.color2 + ')';
+            return g ? g.color : (ev.backgroundColor || ev.borderColor || '#B5B5B5');
+        }
+        function eventBg(ev) {
+            var g = gradeOfEvent(ev);
+            return g ? gradeBg(g) : (ev.backgroundColor || ev.borderColor || '#B5B5B5');
         }
         var CAL_MARKERS = <?= json_encode(CALENDAR_EVENT_MARKERS, JSON_UNESCAPED_UNICODE) ?>;
         // دایره ی نشانه ی رویداد (کلاس آنلاین، کنسل، ...) برای گوشه ی رویداد
@@ -2512,7 +2542,7 @@ function renderCalendar() {
             sections.forEach(function (g) {
                 var mine = inRange.filter(function (ev) { return groupOf(ev) === g.id; });
                 html += '<section class="mg-section">';
-                html += '<div class="mg-title" style="background:' + tcEscape(g.color) + ';color:' + tcTextColorFor(g.color) + '">'
+                html += '<div class="mg-title" style="background:' + tcEscape(gradeBg(g)) + ';color:' + (g.color2 ? '#fff;text-shadow:0 0 3px rgba(0,0,0,.55)' : tcTextColorFor(g.color)) + '">'
                       + tcEscape(g.title) + '<span class="mg-count">' + mine.length + ' رویداد</span></div>';
                 html += '<table class="wg-table mg-table"><thead><tr>';
                 names.forEach(function (n) { html += '<th class="wg-day">' + n + '</th>'; });
@@ -2531,10 +2561,10 @@ function renderCalendar() {
                         var e = ev.end || new Date(ev.start.getTime() + 1);
                         return ev.start < dayEnd && e > dayStart;
                     }).sort(function (a, b) { return (b.allDay - a.allDay) || (a.start - b.start); }).forEach(function (ev) {
-                        var bg = ev.backgroundColor || ev.borderColor || g.color || '#B5B5B5';
+                        var bg = eventBg(ev);
                         html += '<div class="wg-event mg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
                               + (hasCalendarPermission ? ' draggable="true"' : '')
-                              + ' style="border-inline-start-color:' + tcEscape(bg) + '" title="' + tcEscape(ev.title) + '">' + markerDot(ev)
+                              + ' style="--strip:' + tcEscape(eventStrip(ev)) + '" title="' + tcEscape(ev.title) + '">' + markerDot(ev)
                               + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
                               + (ev.allDay ? '' : '<span class="wg-time">' + wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '</span>')
                               + '</div>';
@@ -2603,7 +2633,7 @@ function renderCalendar() {
             var html = '<table class="wg-table" style="min-width:' + (130 + columns.length * 170) + 'px">';
             html += '<thead><tr><th class="wg-day">روز</th>';
             columns.forEach(function (g) {
-                html += '<th class="wg-head" style="background:' + tcEscape(g.color) + ';color:' + tcTextColorFor(g.color) + '">'
+                html += '<th class="wg-head" style="background:' + tcEscape(gradeBg(g)) + ';color:' + (g.color2 ? '#fff;text-shadow:0 0 3px rgba(0,0,0,.55)' : tcTextColorFor(g.color)) + '">'
                       + tcEscape(g.title) + '</th>';
             });
             html += '</tr></thead><tbody>';
@@ -2626,11 +2656,11 @@ function renderCalendar() {
                 columns.forEach(function (g) {
                     html += '<td class="wg-cell" data-day="' + dayKey + '" data-group="' + g.id + '">';
                     dayEvents.filter(function (ev) { return groupOf(ev) === g.id; }).forEach(function (ev) {
-                        var bg = ev.backgroundColor || ev.borderColor || g.color || '#B5B5B5';
+                        var bg = eventBg(ev);
                         var when = ev.allDay ? 'تمام روز'
                             : (ev.end ? wgTime(ev.start) + ' - ' + wgTime(ev.end) : wgTime(ev.start));
                         html += '<div class="wg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
-                              + (hasCalendarPermission ? ' draggable="true"' : '') + ' style="border-inline-start-color:' + tcEscape(bg) + '"'
+                              + (hasCalendarPermission ? ' draggable="true"' : '') + ' style="--strip:' + tcEscape(eventStrip(ev)) + '"'
                               + ' title="' + tcEscape(ev.title) + '">' + markerDot(ev)
                               + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
                               + '<span class="wg-time">' + when + '</span></div>';
@@ -2902,9 +2932,10 @@ function renderCalendar() {
                       + '<span class="tc-dayname">' + tcDayLabel(day) + '</span>'
                       + '<span class="tc-daydate">' + tcJalaliDate(day) + '</span>';
                 allDay.forEach(function (ev) {
-                    var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
+                    var bg = eventBg(ev);
+                    var g0 = gradeOfEvent(ev);
                     html += '<span class="tc-allday" data-ev="' + tcEscape(ev.id) + '" style="background:'
-                          + bg + ';color:' + tcTextColorFor(bg) + '" title="' + tcEscape(ev.title) + '">'
+                          + bg + ';color:' + tcTextColorFor(g0 ? g0.color : bg) + '" title="' + tcEscape(ev.title) + '">'
                           + markerDot(ev) + tcEscape(ev.title) + '</span>';
                 });
                 html += '</div></td>';
@@ -2918,14 +2949,15 @@ function renderCalendar() {
                     lane.forEach(function (ev) {
                         var offset = ((ev.__s - range.min * 60) / totalMin) * 100;
                         var width = ((ev.__e - ev.__s) / totalMin) * 100;
-                        var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
+                        var bg = eventBg(ev);
+                        var g1 = gradeOfEvent(ev);
                         // ساعت شروع روی خود نوار نیست؛ جای نوار روی محور زمان همان را نشان می دهد
                         var showTimes = (ev.__e - ev.__s) >= 60;
                         var tip = wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '  ' + ev.title;
                         html += '<div class="tc-event" data-ev="' + tcEscape(ev.id) + '"'
                               + ' style="right:' + offset + '%; width:' + width + '%; top:'
                               + (4 + laneIndex * 32) + 'px; background:' + bg
-                              + '; color:' + tcTextColorFor(bg) + '"'
+                              + '; color:' + tcTextColorFor(g1 ? g1.color : bg) + '"'
                               + ' title="' + tcEscape(tip) + '">'
                               // نوارهای کوتاه تر از یک ساعت جای ساعت ندارند؛ ساعتشان در راهنمای نوار است
                               + (showTimes ? '<span class="tc-t">' + wgTime(ev.start) + '</span>' : '')
