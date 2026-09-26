@@ -120,18 +120,7 @@ include_once '../../temp.html';
                             <?php echo $message ?>
                         </div>
                     <?php } ?>
-                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <h6 class="main-content-label mb-1">نوع مؤسسه</h6>
-                                <p class="text-muted card-sub-title">
-                                    توسط هنرفناوری تعیین می‌شود؛ برای تغییر با پشتیبانی تماس بگیرید
-                                </p>
-                                <p class="mb-1"><?php echo $current_inst_type === 'institute' ? 'آموزشگاه &mdash; فراگیر / دوره' : 'مدرسه &mdash; دانش‌آموز / پایه'; ?></p>
-                                <p class="mb-0"><?php echo $current_gender === 'girls' ? 'دخترانه' : ($current_gender === 'boys' ? 'پسرانه' : 'جنسیت تعیین نشده'); ?></p>
-                            </div>
-                        </div>
-                    </div>
+                 
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
                         <div class="card custom-card">
                             <div class="card-body">
