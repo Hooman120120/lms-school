@@ -61,12 +61,24 @@ verifyNotification(!AdminHasMenuPermission('school-notifications.mark-all'), 'Vi
 $notificationTestGrants = ['school-notifications'];
 verifyNotification(AdminHasMenuPermission('school-notifications.mark-all'), 'Whole branch grants its operations');
 $institutionMode = 'institute';
-$notificationTestGrants = ['institute-notifications.support'];
-verifyNotification(array_column(InstituteNotificationLinks(), 0) === ['support'], 'Only granted institute link appears');
-$notificationTestGrants = ['institute-notifications.deputy.education'];
-verifyNotification(array_column(InstituteNotificationLinks(), 0) === ['deputy.education'], 'Deputy types remain independent');
+$notificationTestGrants = ['institute-notifications.information.sms'];
+verifyNotification(AdminHasMenuNavigationPermission('institute-notifications'), 'One feature reveals institute menu');
+verifyNotification(!AdminHasMenuPermission('institute-notifications.information.rules'), 'SMS must not grant rules');
+$notificationTestGrants = ['institute-notifications.categories.attendance'];
+verifyNotification(!AdminHasMenuPermission('institute-notifications.categories.exam'), 'Institute categories stay independent');
+verifyNotification(!AdminHasMenuPermission('institute-notifications.mark-all'), 'Category must not grant read-all');
 $notificationTestGrants = ['institute-notifications'];
-verifyNotification(count(InstituteNotificationLinks()) === 11, 'Whole institute branch restores all menu links');
+verifyNotification(AdminHasMenuPermission('institute-notifications.information.sms'), 'Full branch includes SMS');
+verifyNotification(AdminHasMenuPermission('institute-notifications.financial.invoices'), 'Full branch includes invoices');
+verifyNotification(AdminHasMenuPermission('institute-notifications.mark-all'), 'Full branch includes read-all');
 $notificationTestGrants = ['dashboard.summary.notifications'];
-verifyNotification(InstituteNotificationLinks() === [], 'Display-only grant must not grant operations');
+verifyNotification(!AdminHasMenuNavigationPermission('institute-notifications'), 'Display-only grant must not grant operations');
+$notificationTestGrants = ['institute-notifications.support'];
+verifyNotification(AdminHasAnyCurrentTreePermission(), 'Retired grants must not fall back to legacy access');
+verifyNotification(!AdminHasMenuPermission('institute-notifications.information.sms'), 'Retired grant must not widen access');
+foreach (AdminPermissionIndex() as $code => $metadata) {
+    if (!str_starts_with($code, 'school-notifications.')) continue;
+    $instituteCode = str_replace('school-notifications.', 'institute-notifications.', $code);
+    verifyNotification(AdminPermissionCodeAvailable($instituteCode), 'Institute is missing feature: ' . $instituteCode);
+}
 echo "Passed {$checks} notification permission checks.\n";

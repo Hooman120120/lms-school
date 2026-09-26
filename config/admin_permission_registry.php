@@ -4,7 +4,7 @@
  * A node is a visible menu item, a page reached by that item, or an operation
  * on that page. Do not add generic headings that do not exist in admin-menu.
  */
-return [
+$registry = [
     ['code'=>'dashboard','label'=>'نمایه','path'=>'admin/index.php','children'=>[
         ['code'=>'dashboard.calendar','label'=>'تقویم نمایه','children'=>[
             ['code'=>'dashboard.calendar.executive','label'=>'رویدادهای تقویم اجرایی'],
@@ -189,7 +189,7 @@ return [
         ]],
     ]],
     ['code'=>'school-notifications','label'=>'اعلان‌های مدرسه','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
-        ['code'=>'school-notifications.categories','label'=>'دسته‌های اعلان','children'=>[
+        ['code'=>'school-notifications.categories','label'=>'اعلان‌های پایه‌ها','children'=>[
             ['code'=>'school-notifications.categories.new_student','label'=>'دانش‌آموز جدید'],
             ['code'=>'school-notifications.categories.attendance','label'=>'حضور و غیاب جدید'],
             ['code'=>'school-notifications.categories.exam','label'=>'آزمون و نمره جدید'],
@@ -205,29 +205,15 @@ return [
         ['code'=>'school-notifications.information','label'=>'اعلان‌های اطلاع‌رسانی','children'=>[
             ['code'=>'school-notifications.information.rules','label'=>'کنترل قوانین اعلان تماس','path'=>'admin/notifications/notif_rule_management.php'],
             ['code'=>'school-notifications.information.tickets','label'=>'تیکت‌های اعلان تماس','path'=>'admin/notifications/thread_list.php'],
-            ['code'=>'school-notifications.information.operator','label'=>'اعلان تماس مشاوران','path'=>'admin/notifications/notification_view.php'],
+            ['code'=>'school-notifications.information.operator','label'=>'اعلان تماس مشاوران','labels'=>['institute'=>'اعلان تماس پشتیبان‌ها'],'path'=>'admin/notifications/notification_view.php'],
             ['code'=>'school-notifications.information.my-calls','label'=>'اعلان تماس دانش‌آموزان من','path'=>'admin/notifications/notifications.php'],
+            ['code'=>'school-notifications.information.email','label'=>'نمایش اعلان ایمیل‌های جدید (به‌زودی)'],
             ['code'=>'school-notifications.information.sms','label'=>'پیامک‌های جدید','path'=>'admin/notifications/unread_sms.php'],
         ]],
         ['code'=>'school-notifications.financial','label'=>'اعلان‌های مالی','children'=>[
             ['code'=>'school-notifications.financial.invoices','label'=>'فاکتورهای منتظر تأیید','path'=>'admin/notifications/verify_by_manager.php'],
             ['code'=>'school-notifications.financial.wallet','label'=>'تأیید شارژ کیف پول','path'=>'admin/Bill/waitingWallet.php'],
         ]],
-    ]],
-    ['code'=>'institute-notifications','label'=>'اعلان‌های آموزشگاه','modes'=>['institute'],'path'=>'admin/notifications/institute_notifications.php','auto_scan'=>false,'children'=>[
-        ['code'=>'institute-notifications.rules','label'=>'کنترل قوانین اعلان تماس','path'=>'admin/notifications/notif_rule_management.php'],
-        ['code'=>'institute-notifications.manager','label'=>'اعلان مدیریت','path'=>'admin/notifications/manager_notif.php'],
-        ['code'=>'institute-notifications.calls','label'=>'اعلان تماس پشتیبان‌ها','path'=>'admin/notifications/notification_view.php'],
-        ['code'=>'institute-notifications.teachers','label'=>'اعلان‌های استادان','path'=>'admin/notifications/admin_teacher_notif.php'],
-        ['code'=>'institute-notifications.referred','label'=>'ارجاع‌یافته‌ها','path'=>'admin/notifications/referred_tickets.php'],
-        ['code'=>'institute-notifications.deputy','label'=>'اعلان معاونت‌ها','path'=>'admin/notifications/administrator_notif.php','children'=>[
-            ['code'=>'institute-notifications.deputy.executive','label'=>'معاونت اجرایی'],
-            ['code'=>'institute-notifications.deputy.education','label'=>'معاونت آموزش'],
-            ['code'=>'institute-notifications.deputy.sales','label'=>'معاونت فروش'],
-            ['code'=>'institute-notifications.deputy.technical','label'=>'معاونت فنی'],
-        ]],
-        ['code'=>'institute-notifications.sales','label'=>'اعلان‌های واحد فروش','path'=>'admin/notifications/notif_sales.php'],
-        ['code'=>'institute-notifications.support','label'=>'اعلان‌های واحد پشتیبانی','path'=>'admin/notifications/operator_notif.php'],
     ]],
     ['code'=>'tickets','label'=>'تیکت‌ها','legacy'=>'permision_viewsupport','children'=>[
         ['code'=>'tickets.reactivate-requests','label'=>'درخواست‌های بازگردانی ثبت‌نام موقت','path'=>'admin/notifications/reactivate_tickets.php','children'=>[
@@ -293,3 +279,21 @@ return [
         ['code'=>'finance.insurance','label'=>'بیمه افراد','legacy'=>'permission_insurance','path'=>'admin/employ/insurance.php'],
     ]],
 ];
+
+
+// Both entry pages use the same sections and operations. Keep their grants separate.
+$copyNotificationNode = static function (array $node) use (&$copyNotificationNode): array {
+    $node['code'] = str_replace('school-notifications', 'institute-notifications', $node['code']);
+    if (isset($node['children'])) $node['children'] = array_map($copyNotificationNode, $node['children']);
+    return $node;
+};
+foreach ($registry as $position => $node) {
+    if ($node['code'] !== 'school-notifications') continue;
+    $instituteNotifications = $copyNotificationNode($node);
+    $instituteNotifications['label'] = 'اعلان‌های آموزشگاه';
+    $instituteNotifications['modes'] = ['institute'];
+    $instituteNotifications['path'] = 'admin/notifications/institute_notifications.php';
+    array_splice($registry, $position + 1, 0, [$instituteNotifications]);
+    break;
+}
+return $registry;
