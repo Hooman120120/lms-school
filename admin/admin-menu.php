@@ -1209,10 +1209,6 @@ else                  $c = '#15233f';
                                 <span class="badge badge-light "></span></a>
                         </li>
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('') ?>"> پشتیبان گیری
-                                <span class="badge badge-light "></span></a>
-                        </li>
-                        <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/setting/ready-message.php') ?>"> پیام
                                 های آماده
                                 <span class="badge badge-light "></span></a>
