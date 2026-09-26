@@ -387,14 +387,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $selectedCoursesForNotification = [];
         }
         // هر جلسه ی رویداد هفتگی یک رکورد مستقل با همان مخاطبان و تنظیمات است
-        foreach ($occurrences as [$occStart, $occEnd]) {
+        // جلسه های رویداد هفتگی به ترتیب شماره می گیرند: «عنوان #1»، «عنوان #2» ...
+        foreach ($occurrences as $sessionIndex => [$occStart, $occEnd]) {
+            $occTitle = $is_weekly ? $title . ' #' . ($sessionIndex + 1) : $title;
 
             $stmt = $conn->prepare("
         INSERT INTO calendar_events 
         (title, description,personal_note, start_date, end_date, calendar_groups_id, creator_id, updated_by_id, target_type, visibility, event_type, overlap, is_academic)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-            $stmt->execute([$title, $description, $personal_note , $occStart, $occEnd, $calendar_groups_id, $adminId, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic]);
+            $stmt->execute([$occTitle, $description, $personal_note , $occStart, $occEnd, $calendar_groups_id, $adminId, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic]);
             $eventId = $conn->lastInsertId();
             $createdEventIds[] = (int)$eventId;
 
