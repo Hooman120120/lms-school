@@ -59,6 +59,17 @@ $countPendingTicketReferrals = countPendingTicketReferrals($currentUser);
 $countPendinghomework = countPendingHomeworkAdmin();
 $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($currentUser));
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
+if (AdminHasAnyCurrentTreePermission()) {
+    $allNotificationTypes = AdminHasMenuPermission('school-notifications.current')
+        || AdminHasMenuPermission('school-notifications.history');
+    $schoolNotificationTypes = array_values(array_filter($schoolNotificationTypes, static fn(string $type): bool =>
+        $allNotificationTypes || AdminHasMenuPermission('school-notifications.categories.' . $type)));
+    $notificationTypeCounts = SchoolNotificationTypeCounts($currentUser);
+    $schoolNotificationCount = 0;
+    foreach ($schoolNotificationTypes as $type) {
+        $schoolNotificationCount += (int)($notificationTypeCounts[$type]['unread'] ?? 0);
+    }
+}
 
 
 $role = (int)($_SESSION['admin']['adminrole'] ?? $adminRole);
@@ -594,7 +605,9 @@ else                  $c = '#15233f';
             </li>
 
             <?php endif; ?>
-            <?php if (inst_is('school') && $schoolNotificationTypes !== [] && (!AdminHasAnyCurrentTreePermission() || AdminHasMenuNavigationPermission('school-notifications'))): ?>
+            <?php if (inst_is('school') && (AdminHasAnyCurrentTreePermission()
+                ? AdminHasMenuNavigationPermission('school-notifications')
+                : $schoolNotificationTypes !== [])): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>

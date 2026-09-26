@@ -57,7 +57,7 @@ return [
                     ]],
                 ]],
             ]],
-            ['code'=>'dashboard.summary.notifications','label'=>'اعلان‌ها','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php'],
+            ['code'=>'dashboard.summary.notifications','label'=>'نمایش دکمهٔ اعلان‌ها','modes'=>['school']],
             ['code'=>'dashboard.summary.academic-archive','label'=>'بایگانی سال‌های تحصیلی','modes'=>['school'],'path'=>'admin/select-academic-year.php'],
             ['code'=>'dashboard.summary.cards','label'=>'کارت‌های خلاصه وضعیت','children'=>[
                 ['code'=>'dashboard.summary.cards.courses','label'=>'پایه‌های در حال اجرا','labels'=>['institute'=>'دوره‌های برگزارشده'],'path'=>'admin/panel/course_detail.php'],
@@ -188,8 +188,31 @@ return [
             ['code'=>'courses.handhug.archive','label'=>'بایگانی سال‌های قبل بغل‌دستی‌ها','path'=>'admin/handhug/disabled-handhugs.php'],
         ]],
     ]],
-    ['code'=>'school-notifications','label'=>'اعلان‌های مدرسه','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','children'=>[
-        ['code'=>'school-notifications.current','label'=>'اعلان‌های جاری'],['code'=>'school-notifications.history','label'=>'اعلان‌های خوانده‌شده و قدیمی'],
+    ['code'=>'school-notifications','label'=>'اعلان‌ها','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
+        ['code'=>'school-notifications.categories','label'=>'دسته‌های اعلان','children'=>[
+            ['code'=>'school-notifications.categories.new_student','label'=>'دانش‌آموز جدید'],
+            ['code'=>'school-notifications.categories.attendance','label'=>'حضور و غیاب جدید'],
+            ['code'=>'school-notifications.categories.exam','label'=>'آزمون و نمره جدید'],
+            ['code'=>'school-notifications.categories.discipline','label'=>'مورد انضباطی جدید'],
+            ['code'=>'school-notifications.categories.executive_calendar','label'=>'تغییر تقویم اجرایی'],
+            ['code'=>'school-notifications.categories.academic_calendar','label'=>'تغییر تقویم آموزشی'],
+        ]],
+        ['code'=>'school-notifications.current','label'=>'دریافت‌های جدید'],
+        ['code'=>'school-notifications.history','label'=>'آرشیو خوانده‌شده'],
+        ['code'=>'school-notifications.open','label'=>'مشاهدهٔ جزئیات اعلان'],
+        ['code'=>'school-notifications.mark-read','label'=>'علامت‌گذاری اعلان به‌عنوان خوانده‌شده'],
+        ['code'=>'school-notifications.mark-all','label'=>'خواندن همهٔ اعلان‌ها'],
+        ['code'=>'school-notifications.information','label'=>'اعلان‌های اطلاع‌رسانی','children'=>[
+            ['code'=>'school-notifications.information.rules','label'=>'کنترل قوانین اعلان تماس','path'=>'admin/notifications/notif_rule_management.php'],
+            ['code'=>'school-notifications.information.tickets','label'=>'تیکت‌های اعلان تماس','path'=>'admin/notifications/thread_list.php'],
+            ['code'=>'school-notifications.information.operator','label'=>'اعلان تماس مشاوران','path'=>'admin/notifications/notification_view.php'],
+            ['code'=>'school-notifications.information.my-calls','label'=>'اعلان تماس دانش‌آموزان من','path'=>'admin/notifications/notifications.php'],
+            ['code'=>'school-notifications.information.sms','label'=>'پیامک‌های جدید','path'=>'admin/notifications/unread_sms.php'],
+        ]],
+        ['code'=>'school-notifications.financial','label'=>'اعلان‌های مالی','children'=>[
+            ['code'=>'school-notifications.financial.invoices','label'=>'فاکتورهای منتظر تأیید','path'=>'admin/notifications/verify_by_manager.php'],
+            ['code'=>'school-notifications.financial.wallet','label'=>'تأیید شارژ کیف پول','path'=>'admin/Bill/waitingWallet.php'],
+        ]],
     ]],
     ['code'=>'tickets','label'=>'تیکت‌ها','legacy'=>'permision_viewsupport','children'=>[
         ['code'=>'tickets.reactivate-requests','label'=>'درخواست‌های بازگردانی ثبت‌نام موقت','path'=>'admin/notifications/reactivate_tickets.php','children'=>[
