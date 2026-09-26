@@ -5352,20 +5352,31 @@ if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains
  * می‌شوند. تقویم و «مدیریت پایه‌ها» فقط پایه‌ها را نشان می‌دهند؛ گروه‌های قدیمی
  * پاک نمی‌شوند و رویدادهایشان «بدون پایه» دیده می‌شوند.
  */
+// عنوان => [رنگ، رنگ دوم]. رنگ دوم یعنی طیف: از رنگ اول (راست) به رنگ دوم (چپ).
+// دهم تا دوازدهم هر کدام سه رشته دارند: رنگ پایه به رنگ رشته (انسانی سبز، ریاضی قرمز، تجربی آبی).
 const CALENDAR_DEFAULT_GRADES = [
-    'پایه اول'     => '#18E877',
-    'پایه دوم'     => '#9AEB1A',
-    'پایه سوم'     => '#FFE900',
-    'پایه چهارم'   => '#FFB300',
-    'پایه پنجم'    => '#F57300',
-    'پایه ششم'     => '#F55656',
-    'پایه هفتم'    => '#FA1F4F',
-    'پایه هشتم'    => '#E82DF5',
-    'پایه نهم'     => '#962DF5',
-    'پایه دهم'     => '#3140F5',
-    'پایه یازدهم'  => '#10A4F5',
-    'پایه دوازدهم' => '#2EF5E0',
+    'پایه اول'              => ['#18E877', null],
+    'پایه دوم'              => ['#9AEB1A', null],
+    'پایه سوم'              => ['#FFE900', null],
+    'پایه چهارم'            => ['#FFB300', null],
+    'پایه پنجم'             => ['#F57300', null],
+    'پایه ششم'              => ['#F55656', null],
+    'پایه هفتم'             => ['#FA1F4F', null],
+    'پایه هشتم'             => ['#E82DF5', null],
+    'پایه نهم'              => ['#962DF5', null],
+    'پایه دهم انسانی'       => ['#2E43F6', '#128710'],
+    'پایه دهم ریاضی'        => ['#2E43F6', '#E90013'],
+    'پایه دهم تجربی'        => ['#2E43F6', '#0000FF'],
+    'پایه یازدهم انسانی'    => ['#0FA4F4', '#128710'],
+    'پایه یازدهم ریاضی'     => ['#0FA4F4', '#E90013'],
+    'پایه یازدهم تجربی'     => ['#0FA4F4', '#0000FF'],
+    'پایه دوازدهم انسانی'   => ['#2FF4E0', '#128710'],
+    'پایه دوازدهم ریاضی'    => ['#2FF4E0', '#E90013'],
+    'پایه دوازدهم تجربی'    => ['#2FF4E0', '#0000FF'],
 ];
+
+// پایه های یکپارچه ی قبلی که جایشان را سه رشته گرفته است؛ پنهان می شوند، پاک نمی شوند
+const CALENDAR_RETIRED_GRADES = ['پایه دهم', 'پایه یازدهم', 'پایه دوازدهم'];
 
 /*
  * نشانه‌ی رویداد: دایره‌ی رنگی گوشه‌ی هر رویداد در همه‌ی تقویم‌ها. رنگ‌ها عمداً
@@ -5379,6 +5390,12 @@ const CALENDAR_EVENT_MARKERS = [
     'extra'          => ['label' => 'فوق برنامه',            'color' => '#111111'],
     'exam'           => ['label' => 'آزمون',                 'color' => '#0B6B2E'],
 ];
+
+/** CSS background for a پایه: its colour, or a right-to-left gradient when it has a second colour. */
+function calendarGradeBackground(string $color, ?string $color2): string
+{
+    return $color2 ? "linear-gradient(to left, $color, $color2)" : $color;
+}
 
 function calendarEventMarker(?string $key): ?string
 {
@@ -5407,14 +5424,33 @@ function calendarSeedDefaultGrades(PDO $conn, int $createdBy): void
             foreach (array_keys(CALENDAR_DEFAULT_GRADES) as $title) $mark->execute([$title]);
             $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grades_flag')");
         }
-        if (in_array('calendar_default_grades', $seeded, true)) return;
-        $exists = $conn->prepare("SELECT 1 FROM calendar_groups WHERE title = ? LIMIT 1");
-        $insert = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, 'پایه پیش‌فرض', ?, 1)");
-        foreach (CALENDAR_DEFAULT_GRADES as $title => $color) {
-            $exists->execute([$title]);
-            if (!$exists->fetchColumn()) $insert->execute([$title, $color, $createdBy]);
+        if (!in_array('calendar_grade_color2', $seeded, true)) {
+            if (!$conn->query("SHOW COLUMNS FROM calendar_groups LIKE 'color2'")->fetchColumn()) {
+                $conn->exec("ALTER TABLE calendar_groups ADD COLUMN color2 VARCHAR(20) NULL DEFAULT NULL");
+            }
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grade_color2')");
         }
-        $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_default_grades')");
+        $exists = $conn->prepare("SELECT 1 FROM calendar_groups WHERE title = ? LIMIT 1");
+        $insert = $conn->prepare("INSERT INTO calendar_groups (title, color, color2, description, created_by, is_grade) VALUES (?, ?, ?, 'پایه پیش‌فرض', ?, 1)");
+        if (!in_array('calendar_default_grades', $seeded, true)) {
+            foreach (CALENDAR_DEFAULT_GRADES as $title => [$color, $color2]) {
+                $exists->execute([$title]);
+                if (!$exists->fetchColumn()) $insert->execute([$title, $color, $color2, $createdBy]);
+            }
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_default_grades')");
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grade_tracks')");
+        }
+        // پنل هایی که دهم/یازدهم/دوازدهمِ یکپارچه را گرفته بودند: سه رشته جایگزین می شود
+        if (!in_array('calendar_grade_tracks', $seeded, true)) {
+            $retire = $conn->prepare("UPDATE calendar_groups SET is_grade = 0 WHERE title = ? AND is_grade = 1");
+            foreach (CALENDAR_RETIRED_GRADES as $title) $retire->execute([$title]);
+            foreach (CALENDAR_DEFAULT_GRADES as $title => [$color, $color2]) {
+                if ($color2 === null) continue;
+                $exists->execute([$title]);
+                if (!$exists->fetchColumn()) $insert->execute([$title, $color, $color2, $createdBy]);
+            }
+            $conn->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('calendar_grade_tracks')");
+        }
     } catch (PDOException $e) {
         error_log('calendar default grades: ' . $e->getMessage());
     }

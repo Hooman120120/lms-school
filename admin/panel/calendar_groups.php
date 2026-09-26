@@ -37,14 +37,15 @@ $message = ['success' => false, 'text' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_group') {
     $title = trim($_POST['title'] ?? '');
     $color = $_POST['color'] ?? '#3788d8';
+    $color2 = !empty($_POST['use_color2']) ? ($_POST['color2'] ?? null) : null;
     $description = $_POST['description'] ?? null;
 
     if (empty($title)) {
         $message = ['success' => false, 'text' => 'عنوان ' . $gw . ' اجباری است.'];
     } else {
         try {
-            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, description, created_by, is_grade) VALUES (?, ?, ?, ?, 1)");
-            $stmt->execute([$title, $color, $description, $adminId]);
+            $stmt = $conn->prepare("INSERT INTO calendar_groups (title, color, color2, description, created_by, is_grade) VALUES (?, ?, ?, ?, ?, 1)");
+            $stmt->execute([$title, $color, $color2, $description, $adminId]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت اضافه شد.'];
         } catch (Exception $e) {
             $message = ['success' => false, 'text' => 'خطا: ' . $e->getMessage()];
@@ -60,14 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $id = $_POST['group_id'] ?? 0;
     $title = trim($_POST['title'] ?? '');
     $color = $_POST['color'] ?? '#3788d8';
+    $color2 = !empty($_POST['use_color2']) ? ($_POST['color2'] ?? null) : null;
     $description = $_POST['description'] ?? null;
 
     if (empty($title) || !$id) {
         $message = ['success' => false, 'text' => 'عنوان و شناسه ' . $gw . ' الزامی است.'];
     } else {
         try {
-            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, description = ?, updated_by = ? WHERE id = ? AND is_grade = 1");
-            $stmt->execute([$title, $color, $description, $adminId, $id]);
+            $stmt = $conn->prepare("UPDATE calendar_groups SET title = ?, color = ?, color2 = ?, description = ?, updated_by = ? WHERE id = ? AND is_grade = 1");
+            $stmt->execute([$title, $color, $color2, $description, $adminId, $id]);
             $message = ['success' => true, 'text' => $gw . ' با موفقیت ویرایش شد.'];
         } catch (Exception $e) {
             $message = ['success' => false, 'text' => 'خطا: ' . $e->getMessage()];
@@ -104,7 +106,7 @@ if (isset($_SESSION['group_message'])) {
 }
 
 // Fetch all groups
-$groups = $conn->query("SELECT id, title, color, description, created_at, updated_at FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
+$groups = $conn->query("SELECT id, title, color, color2, description, created_at, updated_at FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
 
 include_once '../../temp.html';
 ?>
@@ -177,18 +179,18 @@ include_once '../../temp.html';
                                 <tr>
                                     <td><?= $idx + 1 ?></td>
                                     <td>
-                                        <span class="color-dot" style="background: <?= htmlspecialchars($group['color']) ?>;"></span>
+                                        <span class="color-dot" style="background: <?= htmlspecialchars(calendarGradeBackground($group['color'], $group['color2'] ?? null)) ?>;"></span>
                                         <?= htmlspecialchars($group['title']) ?>
                                     </td>
                                     <td>
-                                            <span class="badge" style="background:<?= htmlspecialchars($group['color']) ?>; color:#fff; padding:4px 10px;">
-                                                <?= htmlspecialchars($group['color']) ?>
+                                            <span class="badge" style="background:<?= htmlspecialchars(calendarGradeBackground($group['color'], $group['color2'] ?? null)) ?>; color:#fff; padding:4px 10px;">
+                                                <?= htmlspecialchars($group['color']) ?><?= !empty($group['color2']) ? ' → ' . htmlspecialchars($group['color2']) : '' ?>
                                             </span>
                                     </td>
                                     <td><?= nl2br(htmlspecialchars($group['description'] ?? '—')) ?></td>
                                     <td>
                                         <button class="btn btn-sm btn-warning"
-                                                onclick="editGroup(<?= $group['id'] ?>, '<?= htmlspecialchars($group['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($group['color']) ?>', '<?= htmlspecialchars($group['description'] ?? '', ENT_QUOTES) ?>')"
+                                                onclick="editGroup(<?= $group['id'] ?>, '<?= htmlspecialchars($group['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($group['color']) ?>', '<?= htmlspecialchars($group['description'] ?? '', ENT_QUOTES) ?>', '<?= htmlspecialchars($group['color2'] ?? '') ?>')"
                                                 data-bs-toggle="modal" data-bs-target="#groupModal">
                                             <i class="fa fa-edit"></i> ویرایش
                                         </button>
@@ -232,6 +234,12 @@ include_once '../../temp.html';
                             <input type="color" class="form-control form-control-color" id="color" name="color" value="#3788d8">
                         </div>
                         <div class="mb-3">
+                            <label class="form-label d-flex align-items-center gap-2" for="useColor2">
+                                <input type="checkbox" id="useColor2" name="use_color2" value="1"> رنگ دوم (طیف از رنگ اول به رنگ دوم)
+                            </label>
+                            <input type="color" class="form-control form-control-color" id="color2" name="color2" value="#128710">
+                        </div>
+                        <div class="mb-3">
                             <label for="description" class="form-label">توضیحات</label>
                             <textarea class="form-control" id="description" name="description" rows="2"></textarea>
                         </div>
@@ -256,7 +264,9 @@ include_once '../../temp.html';
         document.getElementById('groupModalLabel').innerText = 'افزودن <?= $gw ?> جدید';
     }
 
-    function editGroup(id, title, color, description) {
+    function editGroup(id, title, color, description, color2) {
+        document.getElementById('useColor2').checked = !!color2;
+        document.getElementById('color2').value = color2 || '#128710';
         document.getElementById('formAction').value = 'update_group';
         document.getElementById('editGroupId').value = id;
         document.getElementById('title').value = title;
