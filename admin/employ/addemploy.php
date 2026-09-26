@@ -3,6 +3,9 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
