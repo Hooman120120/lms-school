@@ -1356,8 +1356,10 @@ else                  $c = '#15233f';
                         </button>
 
                         <div class="dropdown-menu tx-13">
-                            <?php $allowed_users_operator = [1, 6, 52];
-                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_operator)) { ?>
+                            <?php $usesPermissionTree = AdminHasAnyCurrentTreePermission();
+                            if ($usesPermissionTree
+                                ? AdminHasMenuNavigationPermission('dashboard.summary.overview.desktop')
+                                : in_array((int)$_SESSION['admin']['adminrole'], [1, 6, 52], true)) { ?>
                                 <a class="dropdown-item" href="<?php echo url('admin/panel/desktop.php') ?>">میزکار
                                     من</a>
                             <?php } ?>

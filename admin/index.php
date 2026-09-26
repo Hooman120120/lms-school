@@ -273,7 +273,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                                 <i class="fe fe-grid ml-2"></i> داشبورد مدیریتی
                                             </a>
                                         <?php endif; ?>
-                                        <?php if ($dashboardCan('dashboard.summary.overview.desktop') && in_array((int)$adminRole, [1, 6, 52], true)): ?>
+                                        <?php if ($dashboardCan('dashboard.summary.overview.desktop')): ?>
                                             <a class="dropdown-item" href="<?= url('admin/panel/desktop.php') ?>">
                                                 <i class="fe fe-monitor ml-2"></i> میزکار من
                                             </a>
