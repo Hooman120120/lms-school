@@ -544,6 +544,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Drag‑drop: only update the dates
             $stmt = $conn->prepare("UPDATE calendar_events SET start_date=?, end_date=?, updated_by_id=? WHERE id=?");
             $stmt->execute([$start_greg, $end_greg, $adminId, $eventId]);
+            // کشیدن به ستون پایه/دوره ی دیگر در نمای هفته، پایه ی رویداد را هم عوض می کند (0 = بدون پایه)
+            if (isset($_POST['move_group'])) {
+                $moveGroup = (int)$_POST['move_group'] ?: null;
+                $conn->prepare("UPDATE calendar_events SET calendar_groups_id=? WHERE id=?")->execute([$moveGroup, $eventId]);
+            }
         } else {
             $oldTitleStmt = $conn->prepare("SELECT title FROM calendar_events WHERE id = ?");
             $oldTitleStmt->execute([$eventId]);
@@ -2377,7 +2382,7 @@ function renderCalendar() {
             if (hasCalendarPermission) wgEnableDrag(host);
         }
 
-        // جابجایی جلسه با کشیدن به روز دیگر؛ ساعت و پایه همان می ماند، پس فقط در ستون خودش رها می شود
+        // جابجایی جلسه با کشیدن: سطر دیگر روز را عوض می کند و ستون دیگر پایه/دوره را؛ ساعت همان می ماند
         var wgDragging = null;
         function wgEnableDrag(host) {
             host.querySelectorAll('.wg-event[draggable]').forEach(function (node) {
@@ -2394,7 +2399,7 @@ function renderCalendar() {
                 });
             });
             host.querySelectorAll('td.wg-cell').forEach(function (cell) {
-                var accepts = function () { return wgDragging && cell.getAttribute('data-group') === wgDragging.group; };
+                var accepts = function () { return !!wgDragging; };
                 cell.addEventListener('dragover', function (e) {
                     if (!accepts()) return;
                     e.preventDefault();
@@ -2411,8 +2416,9 @@ function renderCalendar() {
                     var target = new Date(p[0], p[1] - 1, p[2]);
                     var from = new Date(ev.start.getFullYear(), ev.start.getMonth(), ev.start.getDate());
                     var days = Math.round((target - from) / 86400000);
-                    if (!days) return;
-                    wgMoveEvent(ev, days);
+                    var group = cell.getAttribute('data-group');
+                    if (!days && group === wgDragging.group) return;
+                    wgMoveEvent(ev, days, group !== wgDragging.group ? group : null);
                 });
             });
         }
@@ -2429,7 +2435,7 @@ function renderCalendar() {
             return n;
         }
 
-        function wgMoveEvent(ev, days) {
+        function wgMoveEvent(ev, days, group) {
             var formData = new URLSearchParams();
             formData.append('action', 'update_event');
             formData.append('event_id', ev.id);
@@ -2438,6 +2444,7 @@ function renderCalendar() {
             formData.append('start_greg', wgLocalIso(wgShift(ev.start, days)));
             formData.append('end_greg', ev.end ? wgLocalIso(wgShift(ev.end, days)) : '');
             formData.append('update_roles', '0');
+            if (group !== null) formData.append('move_group', group);
             fetch(window.location.href, { method: 'POST', body: formData })
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
