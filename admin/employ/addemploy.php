@@ -325,7 +325,7 @@ function renderMenuPermissionTree(?object $admin = null): void
             $stmt->execute([$admin->username]);
             $selected = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
         } catch (Throwable $e) { $selected = []; }
-    }
+    }‌
     echo '<div class="col-12 menu-permission-tree">';
     foreach (AdminPermissionRegistry() as $node) renderMenuPermissionNode($node, $selected);
     echo '</div>';

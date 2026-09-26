@@ -1205,10 +1205,6 @@ else                  $c = '#15233f';
                         </li>
 
                         <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/setting/blacklist.php') ?>">بلک لیست
-                                <span class="badge badge-light "></span></a>
-                        </li>
-                        <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/setting/ready-message.php') ?>"> پیام
                                 های آماده
                                 <span class="badge badge-light "></span></a>
