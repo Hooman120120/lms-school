@@ -198,7 +198,7 @@ else                  $c = '#15233f';
                         <span class="sidemenu-label"
                             style="display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
 
-                            روابط عمومی
+                            <?= inst_is('institute') ? 'امور مشتریان' : 'روابط عمومی' ?>
 
                             <span class="menu-info-trigger"
                                 data-tooltip="مدیریت جامع تماس ها ؛ در این بخش میتوانید گروه‌های تماس را تعریف و به کارشناسان تخصیص ‌دهید و بر تمامی گزارش‌های عملکرد و وضعیت تماس‌ها نظارت دقیق داشته باشید. همچنین می‌توانید با ابزار Auto Dialer کمپین‌های تماس گروهی را اجرا کنید."
