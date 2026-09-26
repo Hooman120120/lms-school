@@ -2074,6 +2074,114 @@ include_once '../../temp.html';
         /* consistent font size */
         line-height: 1;
     }
+
+    .chat-composer-actions {
+        position: relative;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .chat-action-button {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: #7f8aa5;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: color .2s ease, background-color .2s ease;
+    }
+
+    .chat-action-button:hover,
+    .chat-action-button:focus,
+    .chat-action-button[aria-expanded="true"] {
+        color: #3858f9;
+        background: #eef1ff;
+        outline: none;
+    }
+
+    .chat-file-picker {
+        margin: 0;
+    }
+
+    .quick-message-picker {
+        position: relative;
+    }
+
+    .quick-message-menu {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 12px);
+        z-index: 1050;
+        width: min(360px, calc(100vw - 48px));
+        max-height: 320px;
+        overflow: hidden;
+        border: 1px solid #e2e6f3;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(31, 45, 61, .18);
+        text-align: right;
+    }
+
+    .quick-message-menu[hidden] {
+        display: none;
+    }
+
+    .quick-message-menu-header {
+        padding: 10px 14px;
+        border-bottom: 1px solid #edf0f7;
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    .quick-message-list {
+        max-height: 265px;
+        overflow-y: auto;
+        padding: 6px;
+    }
+
+    .quick-message-item {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 7px;
+        color: #4a4f5c;
+        line-height: 1.7;
+        text-decoration: none !important;
+        white-space: normal;
+    }
+
+    .quick-message-item:hover,
+    .quick-message-item:focus {
+        color: #2846d8;
+        background: #f2f4ff;
+        outline: none;
+    }
+
+    .quick-message-empty {
+        margin: 0;
+        padding: 18px 12px;
+        color: #8a92a6;
+        text-align: center;
+    }
+
+    @media (max-width: 575.98px) {
+        .main-chat-footer {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        .main-chat-footer .form-control {
+            margin-right: 6px !important;
+            margin-left: 6px !important;
+        }
+    }
 </style>
 
 <head>
@@ -2761,18 +2869,44 @@ include_once '../../temp.html';
                                 <?php } ?>
                             </div>
                         </div>
+                        <?php
+                        $constantMessagesStmt = $conn->prepare("SELECT * FROM suport_message_constant ORDER BY id");
+                        $constantMessagesStmt->execute();
+                        $constantMessages = $constantMessagesStmt->fetchAll(PDO::FETCH_OBJ);
+                        ?>
                         <form method="post" enctype="multipart/form-data">
                             <div class="main-chat-footer">
-                                <nav class="nav">
-
-                                    <a class="nav-link" data-bs-toggle="tooltip" href="#"
-                                       title="یک فایل را پیوست کنید"></a>
-                                    <label class="input-group-btn">
-
-                                        <i class="fe fe-paperclip"></i> <input type="file" name="fileto"
-                                                                               style="display: none;" multiple="">
-
+                                <nav class="nav chat-composer-actions" aria-label="ابزارهای ارسال پیام">
+                                    <label class="chat-action-button chat-file-picker" title="پیوست فایل">
+                                        <i class="fe fe-paperclip" aria-hidden="true"></i>
+                                        <span class="sr-only">پیوست فایل</span>
+                                        <input type="file" name="fileto" style="display: none;" multiple="">
                                     </label>
+
+                                    <div class="quick-message-picker">
+                                        <button type="button" class="chat-action-button" id="quickMessageToggle"
+                                                title="پیام‌های آماده" aria-haspopup="true" aria-expanded="false"
+                                                aria-controls="quickMessageMenu">
+                                            <i class="fe fe-message-square" aria-hidden="true"></i>
+                                            <span class="sr-only">نمایش پیام‌های آماده</span>
+                                        </button>
+                                        <div class="quick-message-menu" id="quickMessageMenu" hidden>
+                                            <div class="quick-message-menu-header">انتخاب پیام آماده برای ارسال</div>
+                                            <div class="quick-message-list">
+                                                <?php if ($constantMessages): ?>
+                                                    <?php foreach ($constantMessages as $constantMessage): ?>
+                                                        <a class="quick-message-item"
+                                                           href="?Id=<?= urlencode((string)($_GET['Id'] ?? '')) ?>&amp;send=<?= (int)$constantMessage->id ?>"
+                                                           onclick="return confirm('آیا با ارسال این پیام آماده به دانش‌آموز موافقید؟')">
+                                                            <?= nl2br(htmlspecialchars($constantMessage->content, ENT_QUOTES, 'UTF-8')) ?>
+                                                        </a>
+                                                    <?php endforeach; ?>
+                                                <?php else: ?>
+                                                    <p class="quick-message-empty">پیام آماده‌ای ثبت نشده است.</p>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </nav>
                                 <?php
                                 if (isset($_GET['edit'])) {
@@ -2800,38 +2934,6 @@ include_once '../../temp.html';
                             </div>
                         </form>
                     </div>
-                    <div class="card custom-card">
-                        <div class="card-header p-3 tx-medium my-auto tx-white bg-dark">
-                            پیام های آماده
-                        </div>
-                        <div class="card-body">
-                            <?php
-                            $sql = "SELECT * FROM suport_message_constant";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->execute();
-                            $constantMessages = $stmt->fetchAll(PDO::FETCH_OBJ);
-                            if ($stmt->rowCount() > 0) {
-                                $row = 1;
-                                foreach ($constantMessages as $message) { ?>
-                                    <div class="text-muted">پیام شماره <?= $row ?></div>
-                                    <p><?= $message->content ?>
-                                        <br>
-                                    <div class="col-12 text-left ">
-                                        <a href="?Id=<?php echo $_GET['Id'] ?>&send=<?= $message->id ?>"
-                                           class="btn btn-sm btn-success"
-                                           onclick="return confirm('آیا با ارسال پیام آماده به این دانش آموز موافقید؟')"><i
-                                                    class="fe fe-send"></i> ارسال </a>
-                                    </div>
-
-                                    <hr>
-                                    <?php
-                                    $row++;
-                                }
-                            }
-                            ?>
-                        </div>
-                    </div>
-
                     <!-- کارت ارسال پیامک - منتقل شده به col-lg-4 -->
                     <div class="card custom-card">
                         <div class="card-header p-3 tx-medium my-auto tx-white bg-primary">
@@ -4856,6 +4958,38 @@ include_once '../../temp.html';
                         return false;
                     }
                     ta.classList.remove('is-invalid');
+                });
+            });
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const picker = document.querySelector('.quick-message-picker');
+                const toggle = document.getElementById('quickMessageToggle');
+                const menu = document.getElementById('quickMessageMenu');
+
+                if (!picker || !toggle || !menu) return;
+
+                function setQuickMessageMenu(open) {
+                    menu.hidden = !open;
+                    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                }
+
+                toggle.addEventListener('click', function () {
+                    setQuickMessageMenu(menu.hidden);
+                });
+
+                document.addEventListener('click', function (event) {
+                    if (!menu.hidden && !picker.contains(event.target)) {
+                        setQuickMessageMenu(false);
+                    }
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape' && !menu.hidden) {
+                        setQuickMessageMenu(false);
+                        toggle.focus();
+                    }
                 });
             });
         </script>
