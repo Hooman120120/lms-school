@@ -3443,6 +3443,25 @@ function renderCalendar() {
             }
         }
         // ------------------------------ Datepickers ------------------------------
+        // داخل پنجره ی رویداد، تقویم انتخاب تاریخ با مختصات کل صفحه جا گرفته و در صفحه های بلند
+        // (مثل ماهِ پایه به پایه) هزاران پیکسل پایین تر، بیرون از دید باز می شد. اینجا کنار خودِ کادر
+        // و نسبت به پنجره ی مرورگر ثابت می شود.
+        if (typeof AzarDatepicker !== 'undefined' && !AzarDatepicker.prototype.__modalFix) {
+            var azarOpen = AzarDatepicker.prototype.open;
+            AzarDatepicker.prototype.open = function () {
+                azarOpen.apply(this, arguments);
+                var box = this._containerEl;
+                if (!box || !this.inputEl || !this.inputEl.closest('.modal')) return;
+                var r = this.inputEl.getBoundingClientRect();
+                var h = box.offsetHeight, w = box.offsetWidth;
+                var below = window.innerHeight - r.bottom;
+                box.style.position = 'fixed';
+                box.style.top = ((below >= h + 8 || r.top < h + 8) ? r.bottom + 4 : r.top - h - 4) + 'px';
+                box.style.left = Math.max(8, Math.min(r.right - w, window.innerWidth - w - 8)) + 'px';
+            };
+            AzarDatepicker.prototype.__modalFix = true;
+        }
+
         // Add event modal datepickers – date only (time is separate)
         const startDateInput = document.getElementById('start_date');
         const endDateInput = document.getElementById('end_date');
