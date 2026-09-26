@@ -254,7 +254,6 @@ $registry = [
         ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
         ['code'=>'settings.levels','label'=>'سطوح دسترسی','path'=>'admin/setting/levels.php'],
         ['code'=>'settings.blacklist','label'=>'بلک‌لیست','path'=>'admin/setting/blacklist.php'],
-        ['code'=>'settings.cards','label'=>'افزودن کارت بانکی','path'=>'admin/setting/credit-card.php'],
         ['code'=>'settings.messages','label'=>'پیام‌های آماده','path'=>'admin/setting/ready-message.php'],
     ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
@@ -281,6 +280,11 @@ $registry = [
             ['code'=>'finance.returned.manage','label'=>'ثبت و تأیید واریزی یا ویرایش فاکتور'],
         ]],
         ['code'=>'finance.wallet','label'=>'شارژهای کیف پول منتظر تأیید','legacy'=>'permision_actwallet','modes'=>['institute'],'path'=>'admin/Bill/waitingWallet.php'],
+        ['code'=>'finance.cards','label'=>'مدیریت شماره کارت‌های بانکی','path'=>'admin/setting/credit-card.php','children'=>[
+            ['code'=>'finance.cards.create','label'=>'افزودن شماره کارت'],
+            ['code'=>'finance.cards.edit','label'=>'ویرایش شماره کارت'],
+            ['code'=>'finance.cards.delete','label'=>'حذف شماره کارت'],
+        ]],
         ['code'=>'finance.statement','label'=>'صورتحساب','legacy'=>'permision_bill','path'=>'admin/Bill/SearchBillView.php','children'=>[
             ['code'=>'finance.statement.own','label'=>'فقط فاکتورهای ثبت‌شده توسط خود کاربر'],
             ['code'=>'finance.statement.all','label'=>'فاکتورهای ثبت‌شده توسط همهٔ ایجادکنندگان'],

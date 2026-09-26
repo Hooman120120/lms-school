@@ -25,11 +25,21 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewsetting')) {
+if (AdminHasAnyCurrentTreePermission()
+    ? !AdminHasMenuNavigationPermission('finance.cards')
+    : !Permision('permision_viewsetting')) {
     header('location:' . url("admin/index.php"));
     die();
 }
+$usesPermissionTree = AdminHasAnyCurrentTreePermission();
+$canCreateCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.create');
+$canEditCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.edit');
+$canDeleteCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.delete');
 if (isset($_POST['save'])) {
+    if (!$canCreateCard) {
+        http_response_code(403);
+        exit('دسترسی افزودن شماره کارت را ندارید.');
+    }
     if (entityCard($_POST['cardnum'])) {
         $pic = 'assets/img/pngs/' . $_POST['pic'];
         $ins = 'INSERT INTO db_card (card_num,card_name,card_bank,sheba,card_pic)VALUES (?,?,?,?,?)';
@@ -40,6 +50,10 @@ if (isset($_POST['save'])) {
     }
 }
 if (isset($_POST['esave'])) {
+    if (!$canEditCard) {
+        http_response_code(403);
+        exit('دسترسی ویرایش شماره کارت را ندارید.');
+    }
     if (entityCard($_POST['ecardnum'])) {
         $pic = 'assets/img/pngs/' . $_POST['epic'];
         $update = 'UPDATE db_card SET card_num=?,card_name=?,card_bank=?,sheba=?,card_pic=? WHERE id=?';
@@ -61,6 +75,10 @@ if (isset($_POST['esave'])) {
     }
 }
 if(isset($_GET['del'])){
+    if (!$canDeleteCard) {
+        http_response_code(403);
+        exit('دسترسی حذف شماره کارت را ندارید.');
+    }
     $sql='SELECT COUNT(*) as cocd FROM db_card ';
     $query=$conn->prepare($sql);
     $query->execute();
@@ -235,11 +253,11 @@ include_once '../../temp.html';
                                             </div>
                                         </div>
                                         <div class="text-left mg-t-10 ">
-                                            <button type="submit" class="btn btn-primary "
+                                            <?php if ($canCreateCard): ?><button type="submit" class="btn btn-primary "
                                                     name="save"><i
                                                         class="fa fa-save"></i>
                                                 افزودن شماره کارت
-                                            </button>
+                                            </button><?php endif; ?>
                                         </div>
                                     </form>
                                 </div>
@@ -344,11 +362,11 @@ include_once '../../temp.html';
                                             </div>
                                         </div>
                                         <div class="text-left mg-t-10 ">
-                                            <button type="submit" class="btn btn-warning "
+                                            <?php if ($canEditCard): ?><button type="submit" class="btn btn-warning "
                                                     name="esave"><i
                                                         class="fa fa-save"></i>
                                                 ویرایش شماره کارت
-                                            </button>
+                                            </button><?php endif; ?>
                                         </div>
                                     </form>
                                 </div>
@@ -412,13 +430,13 @@ include_once '../../temp.html';
                                                     <td class="wd-20"><?php echo $res->card_bank ?></td>
                                                     <td class="wd-20"><?php echo $res->card_name ?></td>
                                                     <td class="wd-15">
-                                                        <a href="?edit=<?php echo $res->id ?>"
+                                                        <?php if ($canEditCard): ?><a href="?edit=<?php echo $res->id ?>"
                                                            class="btn btn-sm btn-warning" title="ویرایش"><i
-                                                                    class="fe fe-edit"></i></a>
-                                                        <a href="?del=<?php echo $res->id ?>"
+                                                                    class="fe fe-edit"></i></a><?php endif; ?>
+                                                        <?php if ($canDeleteCard): ?><a href="?del=<?php echo $res->id ?>"
                                                            class="btn btn-sm btn-danger" title="حذف"
                                                            onclick="return confirm('آیا با حذف این شماره کارت موافقید؟')"><i
-                                                                    class="fe fe-x"></i> </a>
+                                                                    class="fe fe-x"></i> </a><?php endif; ?>
 
                                                     </td>
 

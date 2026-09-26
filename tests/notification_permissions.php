@@ -97,6 +97,16 @@ verifyNotification(!AdminHasMenuNavigationPermission('reports.staff'), 'Student 
 $notificationTestGrants = ['reports'];
 verifyNotification(AdminHasMenuNavigationPermission('reports.students'), 'Reports parent must reveal student reports');
 verifyNotification(AdminHasMenuNavigationPermission('reports.staff'), 'Reports parent must reveal staff reports');
+$notificationTestGrants = ['finance.cards.create'];
+verifyNotification(AdminPermissionCodeAvailable('finance.cards'), 'Card management must be part of finance');
+verifyNotification(!AdminPermissionCodeAvailable('settings.cards'), 'Card management must not remain under settings');
+verifyNotification(AdminHasMenuNavigationPermission('finance.cards'), 'Card create permission must reveal card management');
+verifyNotification(!AdminHasMenuPermission('finance.cards.edit'), 'Card create permission must not grant editing');
+verifyNotification(!AdminHasMenuPermission('finance.cards.delete'), 'Card create permission must not grant deletion');
+$notificationTestGrants = ['finance.cards'];
+verifyNotification(AdminHasMenuPermission('finance.cards.create'), 'Card management parent must include creation');
+verifyNotification(AdminHasMenuPermission('finance.cards.edit'), 'Card management parent must include editing');
+verifyNotification(AdminHasMenuPermission('finance.cards.delete'), 'Card management parent must include deletion');
 foreach (AdminPermissionIndex() as $code => $metadata) {
     if (!str_starts_with($code, 'school-notifications.')) continue;
     $instituteCode = str_replace('school-notifications.', 'institute-notifications.', $code);

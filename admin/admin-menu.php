@@ -1182,7 +1182,7 @@ else                  $c = '#15233f';
                             تنظیمات
 
                             <span class="menu-info-trigger"
-                                data-tooltip="در این بخش می‌توانید تنظیمات عمومی سامانه را مدیریت کنید. امکاناتی مانند تنظیمات کلی سیستم، مدیریت بلک‌لیست، ثبت و مدیریت شماره کارت‌ها، پشتیبان‌گیری از اطلاعات و مدیریت پیام‌های آماده از طریق این قسمت در دسترس است."
+                                data-tooltip="در این بخش می‌توانید تنظیمات عمومی سامانه را مدیریت کنید. امکاناتی مانند تنظیمات کلی سیستم، مدیریت بلک‌لیست، پشتیبان‌گیری از اطلاعات و مدیریت پیام‌های آماده از طریق این قسمت در دسترس است."
                                 aria-label="راهنمای تنظیمات"
                                 onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -1207,10 +1207,6 @@ else                  $c = '#15233f';
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/setting/blacklist.php') ?>">بلک لیست
                                 <span class="badge badge-light "></span></a>
-                        </li>
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/setting/credit-card.php') ?>"> افزودن
-                                شماره کارت <span class="badge badge-light "></span></a>
                         </li>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('') ?>"> پشتیبان گیری
@@ -1322,6 +1318,7 @@ else                  $c = '#15233f';
                         <?php if (AdminHasMenuNavigationPermission('finance.unpaid')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/factor-notpay.php') ?>">فاکتورهای پرداخت‌نشده</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.returned')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/returned.php') ?>">فاکتورهای مستردشده</a></li><?php endif; ?>
                         <?php if (inst_feature('wallet') && AdminHasMenuNavigationPermission('finance.wallet')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/waitingWallet.php') ?>">شارژهای کیف پول منتظر تأیید</a></li><?php endif; ?>
+                        <?php if (AdminHasMenuNavigationPermission('finance.cards')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.statement')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/SearchBillView.php') ?>">صورتحساب‌ها</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.advanced-report')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/advanced-report.php') ?>">گزارش مالی پیشرفته</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.installments')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/payment.php') ?>">موارد اقساطی</a></li><?php endif; ?>
@@ -1330,7 +1327,7 @@ else                  $c = '#15233f';
                         <?php if (AdminHasMenuNavigationPermission('finance.insurance')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/insurance.php') ?>">بیمه افراد</a></li><?php endif; ?>
                     </ul>
                 </li>
-            <?php } elseif (!AdminHasAnyCurrentTreePermission() && (Permision('permision_viewbill') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance'))) { ?>
+            <?php } elseif (!AdminHasAnyCurrentTreePermission() && (Permision('permision_viewbill') || Permision('permision_viewsetting') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance'))) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-database  sidemenu-icon"></i>
@@ -1423,6 +1420,12 @@ else                  $c = '#15233f';
                         <?php if (Permision('permission_insurance')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/insurance.php') ?>">بیمه افراد</a>
+                            </li>
+                        <?php } ?>
+
+                        <?php if (Permision('permision_viewsetting')) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a>
                             </li>
                         <?php } ?>
 
