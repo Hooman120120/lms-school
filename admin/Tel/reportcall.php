@@ -26,7 +26,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcall') || !Permision('reportcall_permission')) {
+if (!AdminCanUsePermissionScope('public-relations.safe-call.reports', ['permision_viewcall', 'reportcall_permission'])) {
     header('location: ' . url('admin/index.php'));
     die();
 }

@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     die();
 }
 
-if (!permision('autodialer')){
+if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.blacklist', ['autodialer'])) {
     echo "دسترسی ندارید.";
     die();
 }

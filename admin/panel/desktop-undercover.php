@@ -440,12 +440,13 @@ include_once '../../temp.html';
                                         <div class="card-body p-0 h-100 d-flex flex-column">
 
                                             <!-- Top half -->
+                                            <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
                                             <a href="<?= url('admin/panel/temp-users-sales.php?type=2') ?>"
                                                class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <div class="d-flex align-items-start justify-content-between">
                                                     <div>
-                                                        <?php if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                             $totalToday = countTodayUsers();
                                                         } else {
                                                             $totalToday = countTodayUsers($_SESSION['admin']['user']);
@@ -457,15 +458,17 @@ include_once '../../temp.html';
                                                 </div>
                                                 <div class="text-center font-weight-bold fs-6"><?= $totalToday ?></div>
                                             </a>
+                                            <?php endif; ?>
 
                                             <div class="border-top"></div>
 
                                             <!-- Bottom half -->
+                                            <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
                                             <a href="<?= url('admin/panel/temp-users-sales.php?type=1') ?>"
                                                class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <?php
-                                                if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                     $totaltemp = countUsers();
                                                 } else {
                                                     $totaltemp = countUsers($_SESSION['admin']['user']);
@@ -479,6 +482,7 @@ include_once '../../temp.html';
                                                 </div>
                                                 <div class="text-center"><?= $totaltemp ?></div>
                                             </a>
+                                            <?php endif; ?>
 
                                         </div>
                                     </div>
@@ -500,12 +504,13 @@ include_once '../../temp.html';
                                         <div class="card-body p-0 h-100 d-flex flex-column">
 
                                             <!-- Top half -->
+                                            <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
                                             <a href="<?= url('admin/panel/permanet-users-sales.php?type=2') ?>"
                                                class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <div class="d-flex align-items-start justify-content-between">
                                                     <div>
-                                                        <?php if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                             $totalpermToday = countTodayPermanetUsers();
                                                         } else {
                                                             $totalpermToday = countTodayPermanetUsers($_SESSION['admin']['user']);
@@ -517,15 +522,17 @@ include_once '../../temp.html';
                                                 </div>
                                                 <div class="text-center font-weight-bold fs-6"><?= $totalpermToday ?></div>
                                             </a>
+                                            <?php endif; ?>
 
                                             <div class="border-top"></div>
 
                                             <!-- Bottom half -->
+                                            <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
                                             <a href="<?= url('admin/panel/permanet-users-sales.php?type=1') ?>"
                                                class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <?php
-                                                if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                     $totalperm = countPermanetUsers();
                                                 } else {
                                                     $totalperm = countPermanetUsers($_SESSION['admin']['user']);
@@ -538,12 +545,13 @@ include_once '../../temp.html';
                                                 </div>
                                                 <div class="text-center"><?= $totalperm ?></div>
                                             </a>
+                                            <?php endif; ?>
 
                                         </div>
                                     </div>
                                 </div>
                             <?php }
-                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)) { ?>
+                            if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators) && AdminRecordVisibility('dashboard.summary.overview.desktop.page-8477ff94be', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null) { ?>
                                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                     <div class="card custom-card overflow-hidden" style="height:164px;">
                                         <div class="card-body p-0 h-100 d-flex flex-column">
@@ -554,7 +562,7 @@ include_once '../../temp.html';
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <div class="d-flex align-items-start justify-content-between">
                                                     <div>
-                                                        <?php if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.desktop.page-8477ff94be', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                             $sql = 'SELECT COUNT(*) FROM sales_followup WHERE status = ?';
                                                             $stmt = $conn->prepare($sql);
                                                             $stmt->execute(['در انتظار تماس']);
@@ -579,7 +587,7 @@ include_once '../../temp.html';
                                                class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                                style="flex:1; transition: box-shadow .2s ease;">
                                                 <?php
-                                                if (in_array($_SESSION['admin']['adminrole'], $sales_deputy)) {
+                                                if (AdminRecordVisibility('dashboard.summary.overview.desktop.page-8477ff94be', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
                                                     $sql = 'SELECT COUNT(*) FROM sales_followup WHERE status = ?';
                                                     $stmt = $conn->prepare($sql);
                                                     $stmt->execute(['فروش موفق']);

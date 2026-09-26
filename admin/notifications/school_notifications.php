@@ -8,6 +8,10 @@ if (!isset($_SESSION['admin'])) {
     header('location: ../login.php');
     exit;
 }
+if (!inst_is('school')) {
+    http_response_code(404);
+    exit('اعلان‌های مدرسه در نسخه آموزشگاهی فعال نیست.');
+}
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $isNotificationListPage = !empty($_GET['list']);
 if ($currentUser === '' || SchoolNotificationAllowedTypes() === []) {

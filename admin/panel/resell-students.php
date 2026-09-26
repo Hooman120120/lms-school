@@ -30,6 +30,12 @@ $isadmin = 0;
 if ($_SESSION['admin']['adminrole'] == 53 or $_SESSION['admin']['adminrole'] == 0 or $_SESSION['admin']['adminrole'] == 52 or $_SESSION['admin']['adminrole'] == 51) {
     $isadmin = 1;
 }
+$recordVisibility = AdminRecordVisibility('dashboard.summary.overview.desktop.page-8477ff94be', $isadmin === 1);
+if ($recordVisibility === null) {
+    http_response_code(403);
+    exit('دسترسی به پیگیری فروش تعریف نشده است.');
+}
+$isadmin = $recordVisibility === 'all' ? 1 : 0;
 if ($isadmin) {
     if ($_GET['status'] == 'all') {
         $sql = 'SELECT * FROM sales_followup WHERE status = ?';
@@ -59,9 +65,11 @@ if ($isadmin) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
     date_default_timezone_set("Asia/Tehran");
-    $sql = "UPDATE sales_followup SET status = ?, updated_at = ? WHERE username = ?";
+    $sql = "UPDATE sales_followup SET status = ?, updated_at = ? WHERE username = ?" . ($isadmin ? '' : ' AND sales_admin = ?');
     $stmt = $conn->prepare($sql);
-    $stmt->execute(['فروش موفق', date("Y-m-d H:i:s"), $_POST['verify_user']]);
+    $params = ['فروش موفق', date("Y-m-d H:i:s"), $_POST['verify_user']];
+    if (!$isadmin) $params[] = $_SESSION['admin']['user'];
+    $stmt->execute($params);
 
     $_SESSION['message'] = 'کاربر موردنظر با موفقیت تائید شد';
 
@@ -71,9 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
 
 if (isset($_POST['reject'])) {
     date_default_timezone_set("Asia/Tehran");
-    $sql = "UPDATE sales_followup SET status = ?, updated_at = ?, followup_note = ? WHERE username = ?";
+    $sql = "UPDATE sales_followup SET status = ?, updated_at = ?, followup_note = ? WHERE username = ?" . ($isadmin ? '' : ' AND sales_admin = ?');
     $stmt = $conn->prepare($sql);
-    $stmt->execute(['ناموفق', date("Y-m-d H:i:s"), $_POST['reason'], $_POST['codemeli']]);
+    $params = ['ناموفق', date("Y-m-d H:i:s"), $_POST['reason'], $_POST['codemeli']];
+    if (!$isadmin) $params[] = $_SESSION['admin']['user'];
+    $stmt->execute($params);
     $_SESSION['message'] = 'کاربر موردنظر با موفقیت رد شد';
 
     header("Location: " . $_SERVER['PHP_SELF'] . "?status=all");

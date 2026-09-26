@@ -47,6 +47,12 @@ $st = $conn->prepare($sq);
 $st->execute([$me]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
 $isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
+$ticketVisibility = AdminRecordVisibility('dashboard.summary.overview.desktop.page-1938484300.page-86bedc87c2', $isAdministrator);
+if ($ticketVisibility === null) {
+    http_response_code(403);
+    exit('دسترسی به درخواست‌های ثبت‌نام جدید تعریف نشده است.');
+}
+$isAdministrator = $ticketVisibility === 'all';
 
 /* =========================
    POST: set ticket status

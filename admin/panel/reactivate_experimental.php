@@ -49,6 +49,12 @@ if (
 ) {
     $isadmin = 1;
 }
+$recordVisibility = AdminRecordVisibility('dashboard.summary.overview.manager.page-68e9102f5d', $isadmin === 1);
+if ($recordVisibility === null) {
+    http_response_code(403);
+    exit('دسترسی به درخواست‌های بازگردانی تعریف نشده است.');
+}
+$isadmin = $recordVisibility === 'all' ? 1 : 0;
 
 
 //if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'restore') {
@@ -95,6 +101,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reque
     $reason    = trim($_POST['reason'] ?? '');
 
     if ($codemeli !== '' && preg_match('/^\d{11}$/', $codemeli)) {
+
+        if ($recordVisibility === 'own') {
+            $ownerCheck = $conn->prepare('SELECT created_by, status FROM user_account_status WHERE username = ? ORDER BY id DESC LIMIT 1');
+            $ownerCheck->execute([$codemeli]);
+            $latestStatus = $ownerCheck->fetch(PDO::FETCH_ASSOC);
+            if (!$latestStatus || $latestStatus['created_by'] !== $createdBy || (int)$latestStatus['status'] !== 1) {
+                http_response_code(403);
+                exit('این درخواست در محدودهٔ دسترسی شما نیست.');
+            }
+        }
 
         // prevent duplicate open ticket for same student + same type
         $dup = $conn->prepare("

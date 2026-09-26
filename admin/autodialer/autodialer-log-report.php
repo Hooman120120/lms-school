@@ -14,7 +14,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     session_unset(); header('location: ../login.php'); die();
 }
 
-if (!permision('autodialer') || (int)($_SESSION['admin']['adminrole'] ?? -1) !== 0) {
+if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.reports', ['autodialer']) || (int)($_SESSION['admin']['adminrole'] ?? -1) !== 0) {
     echo "دسترسی ندارید.";
     die();
 }

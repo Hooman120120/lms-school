@@ -42,7 +42,7 @@ if ($username !== '') {
  * with the new permission tree see only the dashboard leaves granted to them. */
 $dashboardUsesPermissionTree = AdminHasAnyCurrentTreePermission();
 $dashboardCan = static function (string $code) use ($dashboardUsesPermissionTree): bool {
-    return !$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission($code);
+    return AdminPermissionCodeAvailable($code) && (!$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission($code));
 };
 $showDashboardSummary = $dashboardUsesPermissionTree
     ? ($dashboardCan('dashboard.summary') || $dashboardCan('dashboard.exam-system') || $dashboardCan('dashboard.online-events'))
@@ -241,7 +241,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         خلاصه وضعیت
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="در این بخش نمای کلی از وضعیت سامانه نمایش داده می‌شود. اطلاعاتی مانند تعداد پایه‌های فعال در سال تحصیلی جاری، آمار ثبت‌نام‌ها، وضعیت دانش آموزان، همکاران و سایر شاخص‌های مهم مدیریتی در این داشبورد قرار گرفته‌اند تا بتوانید در یک نگاه وضعیت کلی سامانه را بررسی و ارزیابی کنید."
+                                              data-tooltip="<?= $isInstituteDashboard ? 'در این بخش نمای کلی دوره‌ها، فراگیران، همکاران و سایر شاخص‌های مدیریتی آموزشگاه نمایش داده می‌شود.' : 'در این بخش نمای کلی پایه‌های فعال، دانش‌آموزان، همکاران و سایر شاخص‌های مدیریتی مدرسه نمایش داده می‌شود.' ?>"
                                               aria-label="راهنمای خلاصه وضعیت">
 
                 <i class="fe fe-info fs-4"></i>
@@ -472,7 +472,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php endif; ?>
 
                             
-                            <?php if ($dashboardCan('dashboard.summary.cards.messages')): ?>
+                            <?php if ($dashboardCan($isInstitute ? 'dashboard.summary.cards.learners-current' : 'dashboard.summary.cards.messages')): ?>
                             <div class="stat-card">
                                 <div class="stat-left">
                                     <p class="stat-label"><?= $isInstitute ? 'فراگیران' : 'پیامک‌های ارسالی امسال' ?></p>
@@ -484,7 +484,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             </div>
                             <?php endif; ?>
 
-                            <?php if ($isInstitute && $dashboardCan('dashboard.summary.cards.messages')): ?>
+                            <?php if ($isInstitute && $dashboardCan('dashboard.summary.cards.announcements')): ?>
                                 <div class="stat-card">
                                     <div class="stat-left">
                                         <p class="stat-label">اطلاع‌رسانی‌ها</p>

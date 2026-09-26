@@ -273,22 +273,44 @@ function renderEmployeePermissionColumns(array $columns, $admin = null): void
     <?php }
 }
 
-function renderMenuPermissionNode(array $node, array $selected, ?object $admin = null, int $depth = 0): void
+function renderMenuPermissionNode(array $node, array $selected, int $depth = 0, bool $grantedByParent = false): void
 {
-    $modes = $node['modes'] ?? ['school', 'institute'];
-    if (!in_array(inst_type(), $modes, true)) return;
-    /* Legacy columns are intentionally not inferred here: their old broad
-       meanings must never turn into an accidental full-tree grant. */
-    $checked = in_array($node['code'], $selected, true);
-    $children = $node['children'] ?? [];
+    static $instance = 0;
+    if (!AdminPermissionNodeAvailable($node)) return;
+    /* A checked parent grants its complete branch. Rendering descendants as
+       checked keeps that broad grant visible when the form is edited. */
+    $checked = $grantedByParent || in_array($node['code'], $selected, true);
+    $children = array_values(array_filter($node['children'] ?? [], 'AdminPermissionNodeAvailable'));
+    $childrenId = 'permission-children-' . (++$instance) . '-' . substr(sha1($node['code']), 0, 8);
+    $startsCollapsed = $depth === 0;
     ?>
-    <div class="menu-permission-node depth-<?= $depth ?>" data-menu-node>
-        <label class="menu-permission-label">
-            <input class="menu-permission-check" type="checkbox" name="access_permissions[]" value="<?= htmlspecialchars($node['code']) ?>" <?= $checked ? 'checked' : '' ?>>
-            <span><?= htmlspecialchars($node['label']) ?></span>
-            <?php if ($children): ?><small>دسترسی‌های زیرمجموعه</small><?php endif; ?>
-        </label>
-        <?php if ($children): ?><div class="menu-permission-children"><?php foreach ($children as $child) renderMenuPermissionNode($child, $selected, $admin, $depth + 1); ?></div><?php endif; ?>
+    <div class="menu-permission-node depth-<?= $depth ?><?= $startsCollapsed ? ' is-collapsed' : '' ?>" data-menu-node data-depth="<?= $depth ?>">
+        <div class="menu-permission-row">
+            <input class="menu-permission-check" type="checkbox" name="access_permissions[]"
+                   value="<?= htmlspecialchars($node['code'], ENT_QUOTES, 'UTF-8') ?>"
+                   aria-label="اعطای دسترسی <?= htmlspecialchars(AdminPermissionDisplayLabel($node), ENT_QUOTES, 'UTF-8') ?>"
+                   <?= $checked ? 'checked' : '' ?>>
+            <?php if ($children): ?>
+                <button type="button" class="menu-permission-name"
+                        aria-expanded="<?= $startsCollapsed ? 'false' : 'true' ?>"
+                        aria-controls="<?= $childrenId ?>"><?= htmlspecialchars(AdminPermissionDisplayLabel($node), ENT_QUOTES, 'UTF-8') ?></button>
+                <span class="menu-permission-count"><?= count($children) ?> زیرمجموعه</span>
+                <button type="button" class="menu-permission-toggle"
+                        aria-expanded="<?= $startsCollapsed ? 'false' : 'true' ?>"
+                        aria-controls="<?= $childrenId ?>"
+                        title="جمع یا باز کردن زیرمجموعه‌ها">
+                    <i class="fe fe-chevron-down" aria-hidden="true"></i>
+                    <span class="sr-only">جمع یا باز کردن زیرمجموعه‌های <?= htmlspecialchars(AdminPermissionDisplayLabel($node), ENT_QUOTES, 'UTF-8') ?></span>
+                </button>
+            <?php else: ?>
+                <span class="menu-permission-name-static"><?= htmlspecialchars(AdminPermissionDisplayLabel($node), ENT_QUOTES, 'UTF-8') ?></span>
+            <?php endif; ?>
+        </div>
+        <?php if ($children): ?>
+            <div class="menu-permission-children" id="<?= $childrenId ?>" <?= $startsCollapsed ? 'hidden' : '' ?>>
+                <?php foreach ($children as $child) renderMenuPermissionNode($child, $selected, $depth + 1, $checked); ?>
+            </div>
+        <?php endif; ?>
     </div>
     <?php
 }
@@ -304,7 +326,9 @@ function renderMenuPermissionTree(?object $admin = null): void
             $selected = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
         } catch (Throwable $e) { $selected = []; }
     }
-    foreach (AdminPermissionRegistry() as $node) renderMenuPermissionNode($node, $selected, $admin);
+    echo '<div class="col-12 menu-permission-tree">';
+    foreach (AdminPermissionRegistry() as $node) renderMenuPermissionNode($node, $selected);
+    echo '</div>';
 }
 
 /*
@@ -959,12 +983,31 @@ include_once '../../temp.html';
         .permission-master { white-space:nowrap; font-weight:700; color:#214f87; cursor:pointer; }
         .permission-tree-children { padding:8px; }
         .permission-tree-children .permission-option { margin-bottom:6px; }
-        .menu-permission-node { border:1px solid #e1e8f0; border-radius:8px; margin:7px 0; background:#fff; }
-        .menu-permission-label { display:flex; align-items:center; gap:9px; padding:10px 12px; margin:0; cursor:pointer; font-weight:700; }
-        .menu-permission-label small { margin-right:auto; color:#768396; font-weight:400; }
+        .menu-permission-tree { width:100%; }
+        .menu-permission-node { border:1px solid #e1e8f0; border-radius:8px; margin:7px 0; background:#fff; overflow:hidden; }
+        .menu-permission-row { display:flex; align-items:center; min-height:44px; padding:0 8px 0 6px; }
+        .menu-permission-check { flex:0 0 auto; margin:0 4px 0 9px; cursor:pointer; }
+        .menu-permission-name, .menu-permission-name-static { flex:1; text-align:right; padding:10px 4px; font-weight:700; }
+        .menu-permission-name { border:0; background:transparent; color:inherit; cursor:pointer; }
+        .menu-permission-name:hover, .menu-permission-name:focus { color:#1769aa; text-decoration:underline; outline:none; }
+        .menu-permission-count { color:#768396; font-size:12px; white-space:nowrap; margin:0 8px; }
+        .menu-permission-toggle { width:34px; height:34px; flex:0 0 34px; display:inline-flex; align-items:center; justify-content:center; padding:0; border:0; border-radius:7px; color:#315d8b; background:#e5eef8; cursor:pointer; }
+        .menu-permission-toggle:hover, .menu-permission-toggle:focus { color:#fff; background:#315d8b; outline:none; }
+        .menu-permission-toggle i { transition:transform .18s ease; }
+        .menu-permission-node.is-collapsed > .menu-permission-row .menu-permission-toggle i { transform:rotate(90deg); }
         .menu-permission-children { margin:0 18px 10px 0; padding-right:12px; border-right:2px solid #d8e4f2; }
-        .menu-permission-node.depth-0 > .menu-permission-label { background:#eef5fc; color:#174a7c; font-size:16px; }
-        @media (max-width: 576px) { .permission-tree-heading { align-items:flex-start; flex-direction:column; } }
+        .menu-permission-children[hidden] { display:none !important; }
+        .menu-permission-node.depth-0 > .menu-permission-row { background:#eef5fc; color:#174a7c; font-size:16px; }
+        .permission-tree-actions { display:flex; align-items:center; gap:5px; }
+        .permission-tree-action { border:1px solid rgba(255,255,255,.7); border-radius:6px; padding:3px 7px; color:#fff; background:transparent; font-size:12px; cursor:pointer; }
+        .permission-tree-action:hover, .permission-tree-action:focus { color:#e91e63; background:#fff; outline:none; }
+        .permission-card > .card-header { flex-wrap:wrap; gap:8px; }
+        @media (max-width: 576px) {
+            .permission-tree-heading { align-items:flex-start; flex-direction:column; }
+            .permission-card > .card-header > div { width:100%; justify-content:space-between; gap:6px !important; }
+            .permission-tree-action { padding:3px 5px; }
+            .menu-permission-count { display:none; }
+        }
     </style>
 </head>
 <body class="main-body leftmenu">
@@ -1143,6 +1186,10 @@ include_once '../../temp.html';
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
                                         دسترسی‌ها و نقش‌ها
                                         <div class="d-flex align-items-center" style="gap:12px;">
+                                            <div class="permission-tree-actions">
+                                                <button type="button" class="permission-tree-action permission-tree-expand-all">باز کردن همه</button>
+                                                <button type="button" class="permission-tree-action permission-tree-collapse-all">بستن همه</button>
+                                            </div>
                                             <label class="mb-0 d-flex align-items-center" style="gap:6px;cursor:pointer;">
                                                 <input type="checkbox" class="permission-select-all">
                                                 انتخاب همه
@@ -1366,6 +1413,10 @@ include_once '../../temp.html';
                                     <div class="card-header text-white font-weight-bold rounded-top p-3 d-flex align-content-center justify-content-between" style="background-color: #e91e63;">
                                         دسترسی‌ها و نقش‌ها
                                         <div class="d-flex align-items-center" style="gap:12px;">
+                                            <div class="permission-tree-actions">
+                                                <button type="button" class="permission-tree-action permission-tree-expand-all">باز کردن همه</button>
+                                                <button type="button" class="permission-tree-action permission-tree-collapse-all">بستن همه</button>
+                                            </div>
                                             <label class="mb-0 d-flex align-items-center" style="gap:6px;cursor:pointer;">
                                                 <input type="checkbox" class="permission-select-all">
                                                 انتخاب همه
@@ -1428,6 +1479,7 @@ include_once '../../temp.html';
                 const selectAll = card.querySelector('.permission-select-all');
                 const permissions = Array.from(card.querySelectorAll('.menu-permission-check'));
                 if (!selectAll || permissions.length === 0) return;
+                const nodes = Array.from(card.querySelectorAll('[data-menu-node]'));
 
                 function refreshSelectAll() {
                     const checkedCount = permissions.filter(function (permission) {
@@ -1437,20 +1489,78 @@ include_once '../../temp.html';
                     selectAll.indeterminate = checkedCount > 0 && checkedCount < permissions.length;
                 }
 
+                function refreshHierarchy() {
+                    nodes.slice().reverse().forEach(function (node) {
+                        const own = node.querySelector(':scope > .menu-permission-row > .menu-permission-check');
+                        const descendants = Array.from(node.querySelectorAll(':scope > .menu-permission-children input.menu-permission-check'));
+                        if (!own || descendants.length === 0) return;
+                        const checked = descendants.filter(function (item) { return item.checked; }).length;
+                        own.checked = checked === descendants.length;
+                        own.indeterminate = checked > 0 && checked < descendants.length;
+                    });
+                    refreshSelectAll();
+                }
+
+                function setExpanded(node, expanded) {
+                    const children = node.querySelector(':scope > .menu-permission-children');
+                    const toggle = node.querySelector(':scope > .menu-permission-row > .menu-permission-toggle');
+                    const name = node.querySelector(':scope > .menu-permission-row > .menu-permission-name');
+                    if (!children || !toggle) return;
+                    children.hidden = !expanded;
+                    node.classList.toggle('is-collapsed', !expanded);
+                    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                    if (name) name.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                }
+
+                nodes.forEach(function (node) {
+                    const own = node.querySelector(':scope > .menu-permission-row > .menu-permission-check');
+                    const descendants = Array.from(node.querySelectorAll(':scope > .menu-permission-children input.menu-permission-check'));
+                    const toggle = node.querySelector(':scope > .menu-permission-row > .menu-permission-toggle');
+                    const name = node.querySelector(':scope > .menu-permission-row > .menu-permission-name');
+
+                    if (own && descendants.length > 0) {
+                        own.addEventListener('change', function () {
+                            descendants.forEach(function (item) {
+                                item.checked = own.checked;
+                                item.indeterminate = false;
+                            });
+                        });
+                    }
+                    if (toggle) {
+                        toggle.addEventListener('click', function () {
+                            setExpanded(node, toggle.getAttribute('aria-expanded') !== 'true');
+                        });
+                    }
+                    if (name) {
+                        name.addEventListener('click', function () {
+                            setExpanded(node, name.getAttribute('aria-expanded') !== 'true');
+                        });
+                    }
+                });
+
                 selectAll.addEventListener('change', function () {
                     const shouldCheck = selectAll.checked;
                     permissions.forEach(function (permission) {
                         permission.checked = shouldCheck;
+                        permission.indeterminate = false;
                     });
-                    permissions.forEach(function (permission) {
-                        permission.dispatchEvent(new Event('change', {bubbles: true}));
-                    });
-                    refreshSelectAll();
+                    refreshHierarchy();
                 });
-                permissions.forEach(function (permission) {
-                    permission.addEventListener('change', refreshSelectAll);
+
+                card.addEventListener('change', function (event) {
+                    if (event.target.classList.contains('menu-permission-check')) refreshHierarchy();
                 });
-                refreshSelectAll();
+
+                const expandAll = card.querySelector('.permission-tree-expand-all');
+                const collapseAll = card.querySelector('.permission-tree-collapse-all');
+                if (expandAll) expandAll.addEventListener('click', function () {
+                    nodes.forEach(function (node) { setExpanded(node, true); });
+                });
+                if (collapseAll) collapseAll.addEventListener('click', function () {
+                    nodes.forEach(function (node) { setExpanded(node, false); });
+                });
+
+                refreshHierarchy();
             });
 
             function bindCourseScope(roleSelectName, mode) {
@@ -1474,20 +1584,6 @@ include_once '../../temp.html';
 
             bindCourseScope('school_role_id', 'create');
             bindCourseScope('eschool_role_id', 'edit');
-
-            document.querySelectorAll('[data-menu-node]').forEach(function (node) {
-                const own = node.querySelector(':scope > .menu-permission-label > input');
-                const descendants = Array.from(node.querySelectorAll('.menu-permission-children input'));
-                if (!own || descendants.length === 0) return;
-                const refresh = function () {
-                    const checked = descendants.filter(function (item) { return item.checked; }).length;
-                    own.indeterminate = checked > 0 && checked < descendants.length;
-                    if (checked === descendants.length) own.checked = true;
-                };
-                own.addEventListener('change', function () { descendants.forEach(function (item) { item.checked = own.checked; item.indeterminate = false; }); });
-                descendants.forEach(function (item) { item.addEventListener('change', refresh); });
-                refresh();
-            });
 
             document.querySelectorAll('[data-permission-tree]').forEach(function (tree) {
                 const parent = tree.querySelector('.permission-parent');

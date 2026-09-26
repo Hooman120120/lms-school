@@ -39,13 +39,17 @@ if (!in_array($type, $allowedTypes, true)) {
     exit;
 }
 
-if ($urlUser === '') {
-    $currentUser = $sessionUser;
-} elseif ($urlUser === $sessionUser || $isImpersonate) {
-    $currentUser = $urlUser;
-} else {
-    echo 'دسترسی ندارید';
-    exit;
+$currentUser = $urlUser === '' ? $sessionUser : $urlUser;
+if (AdminHasAnyCurrentTreePermission()) {
+    $scopeCode = 'dashboard.summary.overview.desktop.seller-users';
+    $scopeLeaf = $currentUser === $sessionUser ? '.own' : '.others';
+    if (!AdminHasMenuPermission($scopeCode . $scopeLeaf) && !($scopeLeaf === '.own' && AdminHasMenuPermission($scopeCode . '.others'))) {
+        http_response_code(403);
+        exit('دسترسی به ثبت‌نام‌های این اپراتور تعریف نشده است.');
+    }
+} elseif ($currentUser !== $sessionUser && !$isImpersonate) {
+    http_response_code(403);
+    exit('دسترسی ندارید');
 }
 
 $users = [];

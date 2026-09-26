@@ -11,6 +11,24 @@ function AdminPermissionRegistry(): array
     return $tree;
 }
 
+/** A node's modes are inherited from its parent when the tree is indexed. */
+function AdminPermissionNodeAvailable(array $node): bool
+{
+    return in_array(inst_type(), $node['modes'] ?? ['school', 'institute'], true);
+}
+
+/** Use the existing institution vocabulary for every label in the access UI. */
+function AdminPermissionDisplayLabel(array $node): string
+{
+    $label = (string)($node['labels'][inst_type()] ?? $node['label'] ?? '');
+    if (inst_is('institute')) {
+        return str_replace(['دانش‌آموزان', 'دانش آموزان', 'دانش‌آموز', 'دانش آموز', 'پایه‌ها', 'پایه‌های', 'پایه'],
+            ['فراگیران', 'فراگیران', 'فراگیر', 'فراگیر', 'دوره‌ها', 'دوره‌های', 'دوره'], $label);
+    }
+    return str_replace(['فراگیران', 'فراگیر', 'دوره‌ها', 'دوره‌های', 'دوره'],
+        ['دانش‌آموزان', 'دانش‌آموز', 'پایه‌ها', 'پایه‌های', 'پایه'], $label);
+}
+
 function AdminPermissionActionLabel(string $control): string
 {
     $labels = [
@@ -19,8 +37,57 @@ function AdminPermissionActionLabel(string $control): string
         'import' => 'ورود اطلاعات', 'create' => 'ایجاد', 'add' => 'ایجاد',
         'save' => 'ذخیره',
     ];
-    foreach ($labels as $keyword => $label) if (stripos($control, $keyword) !== false) return $label . ' (' . $control . ')';
-    return 'عملیات (' . $control . ')';
+    foreach ($labels as $keyword => $label) if (stripos($control, $keyword) !== false) return $label . ' اطلاعات این صفحه';
+    return 'اجرای عملیات این صفحه';
+}
+
+/** Route-specific meanings take precedence over often stale HTML titles. */
+function AdminPermissionPageLabel(string $path): string
+{
+    $labels = [
+        'admin/panel/temp-users-sales.php' => 'گزارش ثبت‌نام‌های موقت فروش',
+        'admin/panel/permanet-users-sales.php' => 'گزارش ثبت‌نام‌های قطعی فروش',
+        'admin/panel/reactivate_experimental.php' => 'درخواست بازگردانی ثبت‌نام‌های موقت',
+        'admin/panel/all_users_management.php' => 'مدیریت همهٔ کاربران',
+        'admin/panel/alltypeusers.php' => 'گزارش کاربران بر اساس وضعیت',
+        'admin/panel/resell-students.php' => 'پیگیری فروش ثبت‌نام‌ها',
+        'admin/notifications/operator_notif.php' => 'اعلان‌های اپراتور',
+        'admin/notifications/studentoperator_changes_notif.php' => 'اعلان‌های تغییر اپراتور',
+        'admin/notifications/new_students.php' => 'اعلان‌های ثبت‌نام جدید',
+        'admin/notifications/new_student_tickets.php' => 'درخواست‌های مربوط به ثبت‌نام جدید',
+        'admin/notifications/suspended_student_op_ticket.php' => 'درخواست‌های تعلیق ثبت‌نام',
+        'admin/notifications/NoOperator_student_op_ticket.php' => 'درخواست‌های ثبت‌نام بدون اپراتور',
+        'admin/notifications/teachers_notif.php' => 'اعلان‌های استادان',
+        'admin/panel/tomorrow_supports.php' => 'پیگیری‌های فردا',
+        'admin/panel/mystudent_status.php' => 'وضعیت ثبت‌نام‌های من',
+        'admin/panel/late_supports.php' => 'پیگیری‌های عقب‌افتاده',
+        'admin/panel/today_supports.php' => 'پیگیری‌های امروز',
+        'admin/notifications/notif_rule_management.php' => 'مدیریت قواعد اعلان‌ها',
+        'admin/notifications/thread_list.php' => 'گفت‌وگوهای اعلان‌ها',
+        'admin/notifications/notification_view.php' => 'مشاهدهٔ اعلان',
+        'admin/notifications/notifications.php' => 'فهرست اعلان‌ها',
+        'admin/notifications/verify_by_manager.php' => 'تأیید اعلان‌ها توسط مدیر',
+        'admin/Student/suspension_history.php' => 'تاریخچهٔ تعلیق ثبت‌نام‌ها',
+        'admin/Student/cancel_operator_history.php' => 'تاریخچهٔ لغو پشتیبانی',
+        'admin/course/attendance.php' => 'ثبت حضور و غیاب',
+        'admin/course/homework_check_history.php' => 'تاریخچهٔ بررسی تکالیف',
+        'admin/course/homeworks.php' => 'تکالیف ثبت‌شده',
+        'admin/Bill/paymentinstallments.php' => 'پرداخت اقساط',
+        'admin/wallet/dashboard.php' => 'نمای کلی کیف پول',
+        'admin/wallet/exchange.php' => 'تبادل اعتبار کیف پول',
+        'admin/wallet/searchwalletview.php' => 'جست‌وجوی تراکنش‌های کیف پول',
+        'admin/Bill/payment-history.php' => 'تاریخچهٔ پرداخت‌ها',
+        'admin/Bill/payment-archive.php' => 'بایگانی پرداخت‌ها',
+        'admin/employ/download-document.php' => 'دریافت مستندات همکاران',
+    ];
+    if (isset($labels[$path])) return $labels[$path];
+    $source = @file_get_contents(BASE_PATH . '/' . $path);
+    if ($source !== false && preg_match('/<title[^>]*>(.*?)<\/title>/is', $source, $matches)) {
+        $title = trim(html_entity_decode(strip_tags(preg_replace('/<\?php.*?\?>/s', '', $matches[1]))));
+        $title = trim(preg_split('/\s*[|｜]\s*/u', $title)[0] ?? '');
+        if ($title !== '' && preg_match('/[\x{0600}-\x{06FF}]/u', $title)) return $title;
+    }
+    return 'بخش تکمیلی این صفحه';
 }
 
 /*
@@ -66,10 +133,15 @@ function AdminPermissionAttachPageActions(array $nodes): array
                 $walk($node['children']);
                 $path = $node['path'] ?? null;
                 if (!$path || !preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $path)) continue;
+                if (($node['auto_scan'] ?? true) === false) continue;
                 $source = @file_get_contents(BASE_PATH . '/' . $path);
                 if ($source === false) continue;
+                /* Ignore disabled markup and only follow real anchor tags.
+                   Matching every url() also treated login redirects as child
+                   pages, which produced a false permission hierarchy. */
+                $scanSource = preg_replace('/<!--.*?-->/s', '', $source) ?? $source;
                 $existing = array_column($node['children'], 'code');
-                preg_match_all('/\bname\s*=\s*["\']([^"\']+)["\']/i', $source, $controls);
+                preg_match_all('/\bname\s*=\s*["\']([^"\']+)["\']/i', $scanSource, $controls);
                 foreach (array_unique($controls[1]) as $control) {
                     if (!preg_match('/(?:add|create|edit|delete|remove|approve|reject|export|import|save)/i', $control)) continue;
                     $slug = trim(strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $control)), '-');
@@ -85,19 +157,23 @@ function AdminPermissionAttachPageActions(array $nodes): array
                 /* A few legacy forms submit through an unnamed button. Keep
                    them visible and protected as a final operation leaf too. */
                 $submitCode = $node['code'] . '.action-submit';
-                if (preg_match('/<form\b/i', $source) && !in_array($submitCode, $existing, true)) {
+                if (preg_match('/<form\b/i', $scanSource) && !in_array($submitCode, $existing, true)) {
                     $action = ['code' => $submitCode, 'label' => 'ثبت / ذخیرهٔ تغییرات این صفحه'];
                     if (isset($node['modes'])) $action['modes'] = $node['modes'];
                     $node['children'][] = $action;
                     $existing[] = $submitCode;
                     $changed = true;
                 }
-                preg_match_all('/(?:\bhref\s*=\s*["\']([^"\']+)|\burl\(\s*["\']([^"\']+))/i', $source, $links);
-                foreach (array_merge($links[1], $links[2]) as $target) {
+                preg_match_all('/<a\b[^>]*\bhref\s*=\s*(["\'])(.*?)\1[^>]*>/is', $scanSource, $links, PREG_SET_ORDER);
+                foreach ($links as $link) {
+                    $target = $link[2];
+                    if (preg_match('/\burl\(\s*["\']([^"\']+)/i', $target, $urlTarget)) {
+                        $target = $urlTarget[1];
+                    }
                     $targetPath = $resolvePath($target, $path);
                     if ($targetPath === null || isset($knownPaths[$targetPath])) continue;
                     $code = $node['code'] . '.page-' . substr(sha1($targetPath), 0, 10);
-                    $page = ['code' => $code, 'label' => 'صفحهٔ داخلی: ' . basename($targetPath, '.php'), 'path' => $targetPath];
+                    $page = ['code' => $code, 'label' => AdminPermissionPageLabel($targetPath), 'path' => $targetPath];
                     if (isset($node['modes'])) $page['modes'] = $node['modes'];
                     $node['children'][] = $page;
                     $knownPaths[$targetPath] = true;
@@ -112,24 +188,32 @@ function AdminPermissionAttachPageActions(array $nodes): array
     return $nodes;
 }
 
-/** @return array<string, array{parent:?string,legacy:?string}> */
+/** @return array<string, array{parent:?string,legacy:?string,modes:array}> */
 function AdminPermissionIndex(): array
 {
     static $index = null;
     if ($index !== null) return $index;
     $index = [];
-    $walk = static function (array $nodes, ?string $parent = null) use (&$walk, &$index): void {
+    $walk = static function (array $nodes, ?string $parent = null, array $parentModes = ['school', 'institute']) use (&$walk, &$index): void {
         foreach ($nodes as $node) {
             if (empty($node['code'])) continue;
+            $modes = array_values(array_intersect($parentModes, $node['modes'] ?? ['school', 'institute']));
             $index[$node['code']] = [
                 'parent' => $parent,
                 'legacy' => isset($node['legacy']) ? (string)$node['legacy'] : null,
+                'modes' => $modes,
             ];
-            $walk($node['children'] ?? [], (string)$node['code']);
+            $walk($node['children'] ?? [], (string)$node['code'], $modes);
         }
     };
     $walk(AdminPermissionRegistry());
     return $index;
+}
+
+function AdminPermissionCodeAvailable(string $code): bool
+{
+    $index = AdminPermissionIndex();
+    return isset($index[$code]) && in_array(inst_type(), $index[$code]['modes'], true);
 }
 
 /** @return string[] */
@@ -137,7 +221,7 @@ function AdminPermissionCodesForLegacy(string $legacy): array
 {
     $codes = [];
     foreach (AdminPermissionIndex() as $code => $meta) {
-        if ($meta['legacy'] === $legacy) $codes[] = $code;
+        if ($meta['legacy'] === $legacy && in_array(inst_type(), $meta['modes'], true)) $codes[] = $code;
     }
     return $codes;
 }
@@ -146,7 +230,7 @@ function SyncAdminPermissionGrants(string $username, array $codes): void
 {
     global $conn;
     $index = AdminPermissionIndex();
-    $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]))));
+    $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]) && in_array(inst_type(), $index[$code]['modes'], true))));
     try {
         $conn->beginTransaction();
         $delete = $conn->prepare('DELETE FROM admin_user_permissions WHERE admin_username = ?');
@@ -164,7 +248,7 @@ function AdminHasMenuPermission(string $code, ?string $username = null): bool
 {
     global $conn;
     $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '' || $code === '') return false;
+    if ($username === '' || !AdminPermissionCodeAvailable($code)) return false;
     try {
         $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR ? LIKE CONCAT(p.permission_code, ".%")) LIMIT 1');
         $stmt->execute([$username, $code, $code]);
@@ -177,31 +261,42 @@ function AdminHasMenuPermission(string $code, ?string $username = null): bool
  * group itself should be visible. */
 function AdminHasMenuNavigationPermission(string $code, ?string $username = null): bool
 {
+    if (!AdminPermissionCodeAvailable($code)) return false;
     if (AdminHasMenuPermission($code, $username)) return true;
     global $conn;
     $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
     if ($username === '' || $code === '') return false;
     try {
-        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%") LIMIT 1');
+        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%")');
         $stmt->execute([$username, $code]);
-        return (bool)$stmt->fetchColumn();
+        $index = AdminPermissionIndex();
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $childCode) {
+            if (isset($index[$childCode]) && in_array(inst_type(), $index[$childCode]['modes'], true)) return true;
+        }
+        return false;
     } catch (Throwable $e) { return false; }
 }
 
-function AdminPermissionCodeForPath(?string $script = null): ?string
+/** @return string[] All menu entries that lead to this page. */
+function AdminPermissionCodesForPath(?string $script = null): array
 {
     $script = str_replace('\\', '/', $script ?? ($_SERVER['SCRIPT_NAME'] ?? ''));
     $position = strpos($script, '/admin/');
     $path = $position === false ? ltrim($script, '/') : substr($script, $position + 1);
-    $walk = static function (array $nodes) use (&$walk, $path): ?string {
+    $codes = [];
+    $walk = static function (array $nodes) use (&$walk, &$codes, $path): void {
         foreach ($nodes as $node) {
-            if (($node['path'] ?? null) === $path) return (string)$node['code'];
-            $found = $walk($node['children'] ?? []);
-            if ($found !== null) return $found;
+            if (($node['path'] ?? null) === $path) $codes[] = (string)$node['code'];
+            $walk($node['children'] ?? []);
         }
-        return null;
     };
-    return $walk(AdminPermissionRegistry());
+    $walk(AdminPermissionRegistry());
+    return $codes;
+}
+
+function AdminPermissionCodeForPath(?string $script = null): ?string
+{
+    return AdminPermissionCodesForPath($script)[0] ?? null;
 }
 
 function AdminHasAnyCurrentTreePermission(?string $username = null): bool
@@ -218,15 +313,61 @@ function AdminHasAnyCurrentTreePermission(?string $username = null): bool
     return false;
 }
 
+/**
+ * Use the exact tree branch for migrated accounts and the old column(s) only
+ * for accounts that have no tree grants yet. This prevents two sibling pages
+ * that shared one legacy flag from granting access to each other.
+ *
+ * @param string[] $legacyPermissions
+ */
+function AdminCanUsePermissionScope(string $code, array $legacyPermissions = [], ?string $username = null): bool
+{
+    if (!AdminPermissionCodeAvailable($code)) return false;
+    static $treeAccounts = [];
+    static $treeScopes = [];
+    static $legacyGrants = [];
+    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
+    if (!array_key_exists($username, $treeAccounts)) {
+        $treeAccounts[$username] = AdminHasAnyCurrentTreePermission($username);
+    }
+    if ($treeAccounts[$username]) {
+        $cacheKey = $username . "\0" . $code;
+        if (!array_key_exists($cacheKey, $treeScopes)) {
+            $treeScopes[$cacheKey] = AdminHasMenuNavigationPermission($code, $username);
+        }
+        return $treeScopes[$cacheKey];
+    }
+    foreach ($legacyPermissions as $legacyPermission) {
+        $cacheKey = $username . "\0" . $legacyPermission;
+        if (!array_key_exists($cacheKey, $legacyGrants)) {
+            $legacyGrants[$cacheKey] = $username === (string)($_SESSION['admin']['user'] ?? '')
+                ? Permision($legacyPermission)
+                : PermisionUser($legacyPermission, $username);
+        }
+        if (!$legacyGrants[$cacheKey]) return false;
+    }
+    return $legacyPermissions !== [];
+}
+
+/** Resolve a record list to all records or records owned by the signed-in operator. */
+function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
+{
+    if (!AdminHasAnyCurrentTreePermission()) return $legacyAll ? 'all' : 'own';
+    if (AdminHasMenuPermission($scopeCode . '.all')) return 'all';
+    if (AdminHasMenuPermission($scopeCode . '.own')) return 'own';
+    return null;
+}
+
 /* Applied from admin/header.php. Legacy-only accounts keep their current
  * behaviour; accounts configured in the new tree are constrained by it. */
 function EnforceAdminPageTreePermission(): void
 {
     if (!AdminHasAnyCurrentTreePermission()) return;
-    $code = AdminPermissionCodeForPath();
+    $codes = AdminPermissionCodesForPath();
     // A grant for an operation also permits opening its containing page, but
     // never a sibling page (navigation helper only traverses descendants).
-    if ($code === null || AdminHasMenuNavigationPermission($code)) return;
+    if ($codes === []) return;
+    foreach ($codes as $code) if (AdminHasMenuNavigationPermission($code)) return;
     http_response_code(403);
     exit('دسترسی شما به این بخش فعال نشده است.');
 }

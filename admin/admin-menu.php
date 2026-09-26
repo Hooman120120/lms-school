@@ -208,14 +208,18 @@ else                  $c = '#15233f';
                         <i class="angle fe fe-chevron-left"></i>
                     </a>
                     <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_call.php') ?>">تماس امن
-                            </a>
-                        </li>
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_sms.php') ?>">پیامک امن
-                            </a>
-                        </li>
+                        <?php if (AdminCanUsePermissionScope('public-relations.safe-call', ['permision_viewcall'])) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_call.php') ?>">تماس امن
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if (AdminCanUsePermissionScope('public-relations.safe-sms', ['permision_viewcall'])) { ?>
+                            <li class="nav-sub-item">
+                                <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_sms.php') ?>">پیامک امن
+                                </a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </li>
             <?php } ?>
@@ -540,7 +544,7 @@ else                  $c = '#15233f';
                 </ul>
             </li>
 
-            <?php if ($schoolNotificationTypes !== [] && (!AdminHasAnyCurrentTreePermission() || AdminHasMenuNavigationPermission('school-notifications'))): ?>
+            <?php if (inst_is('school') && $schoolNotificationTypes !== [] && (!AdminHasAnyCurrentTreePermission() || AdminHasMenuNavigationPermission('school-notifications'))): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>

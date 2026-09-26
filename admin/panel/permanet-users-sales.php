@@ -38,6 +38,13 @@ $isadmin=0;
 if ($_SESSION['admin']['adminrole'] == 53 or $_SESSION['admin']['adminrole'] == 0 or $_SESSION['admin']['adminrole'] == 52 or $_SESSION['admin']['adminrole'] == 51){
     $isadmin=1;
 }
+$salesScope = 'dashboard.summary.overview.manager.page-25d387505a.' . ($type === 2 ? 'today' : 'period');
+$recordVisibility = AdminRecordVisibility($salesScope, $isadmin === 1);
+if ($recordVisibility === null) {
+    http_response_code(403);
+    exit('دسترسی به این گزارش فروش تعریف نشده است.');
+}
+$isadmin = $recordVisibility === 'all' ? 1 : 0;
 
 [$start, $end] = getJalaliYearWindowApprox(); // or getJalaliYearWindowApproxFromTir()
 

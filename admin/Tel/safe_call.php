@@ -30,7 +30,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!AdminHasMenuPermission('safe-call') && !Permision('permision_viewcall')) {
+if (!AdminCanUsePermissionScope('public-relations.safe-call', ['permision_viewcall'])) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -196,7 +196,8 @@ include_once '../../temp.html';
                     <!--                        </a>-->
                     <!--                    </div>-->
 
-                    <!-- مدیریت کل تماس امن + مرکز تبادل تماس (permision_managecall) -->
+                    <!-- مدیریت کل تماس امن -->
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.manage', ['permision_managecall'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/Tel/managecall.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -215,10 +216,13 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
-                  <?php if (AdminHasMenuPermission('safe-call.manage') || Permision('permision_managecall')) { ?>
+                    <?php } ?>
+
+                    <!-- مرکز تبادل تماس -->
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.exchange', ['permision_managecall'])) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/hamtel.php') ?>" class="safe-call-card">
-                                <div class="safe-call-card-title"
+                                <div class="safe-call-card-title">
                                     <span>مرکز تبادل تماس</span>
                                     <span class="menu-info-trigger"
                                           data-tooltip="از این بخش برای تبادل، هدایت و واگذاری تماس‌ها میان اپراتورها یا کارشناسان استفاده کنید."
@@ -230,6 +234,10 @@ include_once '../../temp.html';
 
                             </a>
                         </div>
+                    <?php } ?>
+
+                    <!-- تخصیص شماره به کارشناس -->
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.assignment', ['permision_managecall'])) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/assign-phone.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title">
@@ -245,7 +253,7 @@ include_once '../../temp.html';
 
                             </a>
                         </div>
-                        <!--                    --><?php } ?>
+                    <?php } ?>
 
                     <!-- ورودی (permision_addcall) -->
                     <!--                    --><?php //if (Permision('permision_addcall')) { ?>
@@ -260,7 +268,7 @@ include_once '../../temp.html';
                     <!--                    --><?php //} ?>
 
                     <!-- گزارش تماس و فایل صوتی (reportcall_permission) -->
-                    <?php if (AdminHasMenuPermission('safe-call.reports') || Permision('reportcall_permission')) { ?>
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.reports', ['reportcall_permission'])) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/reportcall.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title">
@@ -278,7 +286,7 @@ include_once '../../temp.html';
                     <?php } ?>
 
                 </div>
-                <?php if(permision('autodialer')){ ?>
+                <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer', ['autodialer'])) { ?>
                 <p class="p-2" style="font-size: large; font-weight: bold;">auto dialer (تماس خودکار)
                     <a class="text-success"
                        href="<?php echo url('../assets/doc/آموزش کار با تماس گروهی.pdf')?>"
@@ -288,6 +296,7 @@ include_once '../../temp.html';
 
                 <div class="row row-sm safe-call-menu">
 
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer.contacts', ['autodialer'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/autodialer/contact-management.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -306,7 +315,9 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
+                    <?php } ?>
 
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer.blacklist', ['autodialer'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/autodialer/autodialer-black-list.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -325,8 +336,9 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
+                    <?php } ?>
 
-
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer.groups', ['autodialer'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/autodialer/group-management.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -345,7 +357,9 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
+                    <?php } ?>
 
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer.voices', ['autodialer'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/autodialer/voice-management.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -364,8 +378,9 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
+                    <?php } ?>
 
-
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-call.autodialer.campaigns', ['autodialer'])) { ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/autodialer/campaign-management.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">
@@ -384,7 +399,8 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
-                    <?php if ($_SESSION['admin']['adminrole']== 0){ ?>
+                    <?php } ?>
+                    <?php if ($_SESSION['admin']['adminrole'] == 0 && AdminCanUsePermissionScope('public-relations.safe-call.autodialer.reports', ['autodialer'])) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/autodialer/autodialer-log-report.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title">

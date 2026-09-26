@@ -8,6 +8,10 @@ if (!isset($_SESSION['admin'])) {
     header('location: login.php');
     exit;
 }
+if (!inst_is('school')) {
+    http_response_code(404);
+    exit('بایگانی سال تحصیلی در نسخه آموزشگاهی فعال نیست.');
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !hash_equals($_SESSION['academic_year_token'] ?? '', $_POST['token'] ?? '')) {
     http_response_code(403);

@@ -50,6 +50,12 @@ $st = $conn->prepare($sq);
 $st->execute([$me]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
 $isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
+$ticketVisibility = AdminRecordVisibility('tickets.reactivate-requests', $isAdministrator);
+if ($ticketVisibility === null) {
+    http_response_code(403);
+    exit('دسترسی به درخواست‌های بازگردانی تعریف نشده است.');
+}
+$isAdministrator = $ticketVisibility === 'all';
 
 /* =========================
    POST: set ticket status

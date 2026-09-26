@@ -25,10 +25,10 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-//if (!Permision('permision_managecall')) {
-//    header('location: ' . url('admin/index.php'));
-//    die();
-//}
+if (!AdminCanUsePermissionScope('public-relations.safe-call.manage', ['permision_managecall'])) {
+    header('location: ' . url('admin/index.php'));
+    die();
+}
 
 if (empty($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));

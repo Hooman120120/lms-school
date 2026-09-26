@@ -13,7 +13,7 @@ $walk = static function (array $items, ?string $parent = null) use (&$walk, &$no
     foreach ($items as $item) {
         $code = $item['code'] ?? '';
         if ($code === '' || isset($nodes[$code])) throw new RuntimeException("Invalid or duplicate permission code: $code");
-        $nodes[$code] = ['parent' => $parent, 'path' => $item['path'] ?? null, 'modes' => $item['modes'] ?? ['school', 'institute']];
+        $nodes[$code] = ['parent' => $parent, 'path' => $item['path'] ?? null, 'label' => $item['label'] ?? '', 'modes' => $item['modes'] ?? ['school', 'institute']];
         $walk($item['children'] ?? [], $code);
     }
 };
@@ -48,4 +48,43 @@ foreach ($nodes as $code => $node) {
     if ($node['parent'] !== null && !isset($nodes[$node['parent']])) throw new RuntimeException("Missing parent for $code");
 }
 if (($nodes['finance.wallet']['modes'] ?? []) !== ['institute']) throw new RuntimeException('Wallet must be institute-only.');
+foreach (['dashboard.summary.cards.achievements', 'dashboard.summary.cards.learners-current', 'dashboard.summary.cards.announcements'] as $code) {
+    if (($nodes[$code]['modes'] ?? []) !== ['institute']) throw new RuntimeException("Institute dashboard card has wrong mode: $code");
+}
+foreach (['dashboard.summary.cards.messages', 'dashboard.summary.notifications', 'dashboard.summary.academic-archive', 'school-notifications'] as $code) {
+    if (($nodes[$code]['modes'] ?? []) !== ['school']) throw new RuntimeException("School-only section has wrong mode: $code");
+}
+if (count(AdminPermissionCodesForPath('/admin/notifications/school_notifications.php')) !== 2) {
+    throw new RuntimeException('Shared notification page must allow either of its two menu grants.');
+}
+foreach (['page-b9857fa208', 'page-25d387505a'] as $salesPage) {
+    $base = 'dashboard.summary.overview.manager.' . $salesPage;
+    foreach (['today', 'period'] as $period) foreach (['own', 'all'] as $scope) {
+        if (($nodes[$base . '.' . $period . '.' . $scope]['parent'] ?? null) !== $base . '.' . $period) {
+            throw new RuntimeException("Sales report scope missing: $base.$period.$scope");
+        }
+    }
+}
+foreach ($nodes as $code => $node) {
+    if (str_contains($code, '.page-') && $node['path'] && preg_match('/صفحهٔ داخلی:|[a-z]{3}/i', $node['label'])) {
+        throw new RuntimeException("Untranslated internal page label: $code");
+    }
+}
+$safeCallSiblings = [
+    'public-relations.safe-call.manage',
+    'public-relations.safe-call.exchange',
+    'public-relations.safe-call.assignment',
+    'public-relations.safe-call.reports',
+];
+foreach ($safeCallSiblings as $code) {
+    if (($nodes[$code]['parent'] ?? null) !== 'public-relations.safe-call') {
+        throw new RuntimeException("Safe-call card must be a direct sibling: $code");
+    }
+}
+if (!isset($nodes['public-relations.safe-call.manage.total-statistics'])) {
+    throw new RuntimeException('Safe-call total statistics section is missing.');
+}
+if (isset($nodes['public-relations.safe-call.manage.action-save'])) {
+    throw new RuntimeException('Reviewed manage-call sections must not be mixed with generic root actions.');
+}
 echo 'OK: ' . count($nodes) . ' nodes; ' . count($menuPaths) . ' live menu pages and ' . count(array_unique(array_filter(array_column($nodes, 'path')))) . " registered pages pass through the common backend gate.\n";
