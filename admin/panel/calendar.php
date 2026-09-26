@@ -287,6 +287,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         : (isset($_POST['is_academic']) ? (int)$_POST['is_academic'] : 0);
     $overlap = isset($_POST['overlap']) ? (int)$_POST['overlap'] : 0;
     $marker = calendarEventMarker($_POST['marker'] ?? null);
+    // چند پایه تیک خورده باشد: همان رویداد برای هر پایه جدا ساخته می شود
+    $gradeIds = array_column($weekGroups, 'id');
+    $insertGroups = array_values(array_unique(array_filter(
+        array_map('intval', (array)($_POST['calendar_groups_ids'] ?? [])),
+        static fn($id) => in_array($id, array_map('intval', $gradeIds), true)
+    )));
+    if (!$insertGroups) {
+        $insertGroups = [$calendar_groups_id];
+    }
     $start_greg = jalaliToGregorian($start_jalali);
     $end_greg = jalaliToGregorian($end_jalali);
 
@@ -391,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         // هر جلسه ی رویداد هفتگی یک رکورد مستقل با همان مخاطبان و تنظیمات است
         // جلسه های رویداد هفتگی به ترتیب شماره می گیرند: «عنوان #1»، «عنوان #2» ...
-        foreach ($occurrences as $sessionIndex => [$occStart, $occEnd]) {
+        foreach ($insertGroups as $calendar_groups_id) foreach ($occurrences as $sessionIndex => [$occStart, $occEnd]) {
             $occTitle = $is_weekly ? $title . ' #' . ($sessionIndex + 1) : $title;
 
             $stmt = $conn->prepare("
@@ -470,9 +479,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $notificationSourceId ? (string)$notificationSourceId : null
             );
         }
+        $gradeNote = count($insertGroups) > 1 ? ' برای ' . count($insertGroups) . ' پایه' : '';
         $_SESSION['calendar_message'] = ['success' => true, 'message' => $is_weekly
-            ? 'رویداد هفتگی با موفقیت ثبت شد؛ ' . count($occurrences) . ' جلسه ساخته شد.'
-            : 'رویداد با موفقیت اضافه شد.'];
+            ? 'رویداد هفتگی' . $gradeNote . ' با موفقیت ثبت شد؛ ' . count($createdEventIds) . ' جلسه ساخته شد.'
+            : 'رویداد' . $gradeNote . ' با موفقیت اضافه شد.'];
     } catch (Exception $e) {
         debug_log("Exception caught", $e->getMessage());
         $conn->rollBack();
@@ -1068,30 +1078,71 @@ function renderCalendar() {
         #transposedCalendar .wg-event:hover { filter: brightness(.95); }
         #transposedCalendar .wg-event[draggable] { cursor: grab; }
 
-        /* نشانه ی رویداد: دایره ی بزرگ گوشه ی رویداد با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
-        #transposedCalendar .wg-event,
-        #transposedCalendar .tc-allday { position: relative; }
+        /* انتخاب چند پایه در فرم رویداد */
+        .grade-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+        .grade-pick {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0;
+            padding: 3px 10px;
+            border: 2px solid var(--grade);
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .grade-pick input { accent-color: var(--grade); margin: 0; }
+        .grade-pick:has(input:checked) { background: var(--grade); color: #1d212f; font-weight: 700; }
+
+        /* نشانه ی رویداد: دایره ی بزرگ سمت راست، پیش از متن، با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
         .ev-dot {
-            position: absolute;
-            top: 3px;
-            left: 3px;
+            display: inline-block;
+            flex: none;
             width: 16px;
             height: 16px;
             border-radius: 50%;
             border: 2px solid #fff;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
-            z-index: 2;
-        }
-        .ev-dot.ev-dot-inline {
-            position: static;
-            display: inline-block;
             vertical-align: middle;
+            margin-inline-end: 5px;
+            position: relative;
+            top: -1px;
         }
-        #transposedCalendar .wg-event .ev-dot,
-        #transposedCalendar .tc-event .ev-dot,
-        #transposedCalendar .tc-allday .ev-dot { top: 50%; transform: translateY(-50%); }
-        #transposedCalendar .tc-event { padding-left: 24px; }
-        #transposedCalendar .wg-event:has(.ev-dot) { padding-left: 26px; padding-right: 26px; }
+
+        /* هفته و ماه: دایره کنار خط رنگی پایه (لبه ی راست)، جدا از متن که وسط می ماند */
+        #transposedCalendar .wg-event { position: relative; }
+        #transposedCalendar .wg-event > .ev-dot {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0;
+        }
+        #transposedCalendar .wg-event:has(> .ev-dot) { padding-right: 28px; padding-left: 28px; }
+        #transposedCalendar .tc-event > .ev-dot { margin: 0; top: 0; }
+
+        /* نمای روز: ساعت شروع سمت راست نوار، عنوان وسط، ساعت پایان سمت چپ */
+        #transposedCalendar .tc-event {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #transposedCalendar .tc-event .tc-t {
+            flex: none;
+            font-size: 12px;
+            font-weight: 600;
+            color: #000;
+            direction: ltr;
+        }
+        #transposedCalendar .tc-event .tc-name {
+            flex: 1 1 auto;
+            min-width: 0;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
         /* ماه: یک تقویم برای هر پایه، زیر هم */
         #transposedCalendar .mg-section { margin-bottom: 18px; }
@@ -1120,11 +1171,11 @@ function renderCalendar() {
         }
         #transposedCalendar .mg-event { padding: 2px 6px; }
         #transposedCalendar .mg-event .wg-title { font-size: 12px; }
-        #transposedCalendar .mg-event .wg-time { font-size: 11px; }
+        #transposedCalendar .mg-event .wg-time { font-size: 12px; }
         #transposedCalendar .wg-event.wg-dragging { opacity: .45; }
         #transposedCalendar td.wg-cell.wg-drop { background: #e4ffed; outline: 2px dashed #298680; outline-offset: -3px; }
         #transposedCalendar .wg-title { display: block; font-size: 13px; font-weight: 700; color: #1d212f; }
-        #transposedCalendar .wg-time { display: block; font-size: 12px; color: #5b6270; direction: ltr; }
+        #transposedCalendar .wg-time { display: block; font-size: 12px; font-weight: 600; color: #000; direction: ltr; }
 
         /* ---------- نوار جستجوی درون تقویم ---------- */
         .calendar-search-bar {
@@ -1243,7 +1294,17 @@ function renderCalendar() {
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="groupSelect" class="form-label"><?= $gw ?></label>
-                                    <select class="form-select" id="groupSelect" name="calendar_groups_id">
+                                    <?php /* رویداد جدید: چند پایه با تیک؛ ویرایش: همان یک پایه ی رویداد */ ?>
+                                    <div class="grade-picks" id="groupMulti">
+                                        <?php foreach ($weekGroups as $g): ?>
+                                            <label class="grade-pick" style="--grade: <?= htmlspecialchars($g['color']) ?>;">
+                                                <input type="checkbox" name="calendar_groups_ids[]" value="<?= (int)$g['id'] ?>">
+                                                <span><?= htmlspecialchars($g['title']) ?></span>
+                                            </label>
+                                        <?php endforeach; ?>
+                                        <small class="text-muted d-block mt-1">هیچ پایه‌ای تیک نخورد = بدون پایه. با چند پایه، برای هر پایه یک رویداد جدا ساخته می‌شود.</small>
+                                    </div>
+                                    <select class="form-select" id="groupSelect" name="calendar_groups_id" style="display:none">
                                         <option value="">بدون <?= $gw ?> (مشکی)</option>
                                         <?php
                                         foreach ($weekGroups as $g):
@@ -2128,6 +2189,7 @@ function renderCalendar() {
             document.getElementById('description').value = event.extendedProps.description || '';
             document.getElementById('personal_note').value = event.extendedProps.personal_note || '';
             document.getElementById('groupSelect').value = event.extendedProps.calendar_groups_id || '';
+            setGradePickMode(false);
             document.getElementById('markerSelect').value = event.extendedProps.marker || '';
             document.getElementById('formAction').value = 'update_event';
             if (typeof window.__setWeeklyBlockVisible === 'function') {
@@ -2207,6 +2269,16 @@ function renderCalendar() {
         // ------------------------------------------------------------------
         var CAL_GROUP_WORD = <?= json_encode($gw, JSON_UNESCAPED_UNICODE) ?>;
         var CAL_WEEK_GROUPS = <?= json_encode(array_map(static fn($g) => ['id' => (int)$g['id'], 'title' => $g['title'], 'color' => $g['color']], $weekGroups), JSON_UNESCAPED_UNICODE) ?>;
+        // افزودن: تیک چند پایه؛ ویرایش: انتخاب یک پایه
+        function setGradePickMode(multi) {
+            var picks = document.getElementById('groupMulti');
+            var select = document.getElementById('groupSelect');
+            if (!picks || !select) return;
+            picks.style.display = multi ? '' : 'none';
+            select.style.display = multi ? 'none' : '';
+            picks.querySelectorAll('input').forEach(function (i) { i.checked = false; i.disabled = !multi; });
+            if (multi) select.value = '';
+        }
         var CAL_MARKERS = <?= json_encode(CALENDAR_EVENT_MARKERS, JSON_UNESCAPED_UNICODE) ?>;
         // دایره ی نشانه ی رویداد (کلاس آنلاین، کنسل، ...) برای گوشه ی رویداد
         function markerDot(ev, inline) {
@@ -2248,16 +2320,24 @@ function renderCalendar() {
         }
 
         // بازه ساعت ها بر اساس رویدادهای همان بازه تعیین می شود (پیش فرض ۸ تا ۱۸)
-        function tcHourRange(events) {
-            var min = 8, max = 18;
+        // بازه ی ساعت های نمای روز از برنامه ی همان روز: دو ساعت پیش از اولین کلاس (نه زودتر از ۷)
+        // تا دو ساعت بعد از پایان آخرین کلاس (نه دیرتر از ۲۰). کلاسی که خودش بیرون این مرزهاست کامل دیده می شود.
+        function tcHourRange(events, viewStart, viewEnd) {
+            var first = null, last = null;
             events.forEach(function (ev) {
                 if (ev.allDay || !ev.start) return;
+                var e = ev.end || new Date(ev.start.getTime() + 3600000);
+                if (viewStart && (ev.start >= viewEnd || e <= viewStart)) return;
                 var sh = ev.start.getHours();
                 var eh = ev.end ? Math.ceil(tcMinutes(ev.end) / 60) : sh + 1;
-                if (sh < min) min = sh;
-                if (eh > max) max = eh;
+                if (eh <= sh) eh = 24; // تا بعد از نیمه شب
+                first = first === null ? sh : Math.min(first, sh);
+                last = last === null ? eh : Math.max(last, eh);
             });
-            min = Math.max(0, Math.min(min, 23));
+            if (first === null) return { min: 8, max: 18 };
+            var min = Math.min(first, Math.max(7, first - 2));
+            var max = Math.max(last, Math.min(20, last + 2));
+            min = Math.max(0, min);
             max = Math.min(24, Math.max(max, min + 1));
             return { min: min, max: max };
         }
@@ -2768,7 +2848,7 @@ function renderCalendar() {
                 return;
             }
 
-            var range = tcHourRange(events);
+            var range = tcHourRange(events, viewStart, viewEnd);
             var hourCount = range.max - range.min;
             var totalMin = hourCount * 60;
             var today = new Date();
@@ -2840,12 +2920,19 @@ function renderCalendar() {
                         var width = ((ev.__e - ev.__s) / totalMin) * 100;
                         var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
                         // ساعت شروع روی خود نوار نیست؛ جای نوار روی محور زمان همان را نشان می دهد
+                        var showTimes = (ev.__e - ev.__s) >= 60;
                         var tip = wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '  ' + ev.title;
                         html += '<div class="tc-event" data-ev="' + tcEscape(ev.id) + '"'
                               + ' style="right:' + offset + '%; width:' + width + '%; top:'
                               + (4 + laneIndex * 32) + 'px; background:' + bg
                               + '; color:' + tcTextColorFor(bg) + '"'
-                              + ' title="' + tcEscape(tip) + '">' + markerDot(ev) + tcEscape(ev.title) + '</div>';
+                              + ' title="' + tcEscape(tip) + '">'
+                              // نوارهای کوتاه تر از یک ساعت جای ساعت ندارند؛ ساعتشان در راهنمای نوار است
+                              + (showTimes ? '<span class="tc-t">' + wgTime(ev.start) + '</span>' : '')
+                              + markerDot(ev)
+                              + '<span class="tc-name">' + tcEscape(ev.title) + '</span>'
+                              + (showTimes && ev.end ? '<span class="tc-t">' + wgTime(ev.end) + '</span>' : '')
+                              + '</div>';
                     });
                 });
                 html += '</div></td></tr>';
@@ -3328,6 +3415,7 @@ function renderCalendar() {
                 document.getElementById('description').value = '';
                 document.getElementById('personal_note').value = '';
                 document.getElementById('markerSelect').value = '';
+                setGradePickMode(true);
                 document.getElementById('start_date').value = '';
                 document.getElementById('end_date').value = '';
                 document.getElementById('start_time').value = '00:00';
