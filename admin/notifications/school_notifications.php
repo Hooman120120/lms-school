@@ -18,6 +18,24 @@ if (empty($_SESSION['school_notification_csrf'])) {
     $_SESSION['school_notification_csrf'] = bin2hex(random_bytes(24));
 }
 
+// Opening a detail marks the notification as read first, then forwards only
+// to an internal LMS URL that the notification itself declared.
+if (isset($_GET['open']) && ctype_digit((string)$_GET['open'])) {
+    $notificationId = (int)$_GET['open'];
+    foreach (GetSchoolNotifications($currentUser, null, 300) as $candidate) {
+        if ((int)$candidate['id'] !== $notificationId) continue;
+        MarkSchoolNotificationRead($notificationId, $currentUser);
+        $target = trim((string)($candidate['target_url'] ?? ''));
+        if ($target !== '' && strpos($target, 'admin/') === 0) {
+            header('Location: ' . url($target));
+            exit;
+        }
+        break;
+    }
+    header('Location: ' . url('admin/notifications/school_notifications.php'));
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = (string)($_POST['csrf'] ?? '');
     if (!hash_equals((string)$_SESSION['school_notification_csrf'], $token)) {
@@ -44,8 +62,11 @@ $selectedType = (string)($_GET['type'] ?? '');
 if (!in_array($selectedType, $allowedTypes, true)) {
     $selectedType = '';
 }
-$notifications = GetSchoolNotifications($currentUser, $selectedType !== '' ? $selectedType : null, 200);
+$view = (string)($_GET['view'] ?? 'unread');
+if (!in_array($view, ['unread', 'read'], true)) $view = 'unread';
+$notifications = GetSchoolNotifications($currentUser, $selectedType !== '' ? $selectedType : null, 200, $view === 'read');
 $unreadCount = CountSchoolNotifications($currentUser, true);
+$typeCounts = SchoolNotificationTypeCounts($currentUser);
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -148,19 +169,40 @@ $unreadCount = CountSchoolNotifications($currentUser, true);
                     <?php endif; ?>
 
                     <div class="card custom-card mb-3">
-                        <div class="card-body d-flex flex-wrap" style="gap:8px">
-                            <a class="btn btn-sm <?= $selectedType === '' ? 'btn-primary' : 'btn-outline-primary' ?>" style="font-size: 17px;" href="<?= url('admin/notifications/school_notifications.php') ?>">همه</a>
+                        <div class="card-header border-bottom-0">
+                            <h5 class="card-title mb-0">دسته‌بندی اعلان‌ها</h5>
+                            <p class="text-muted mb-0 mt-1">روی هر دسته بزنید تا فقط اعلان‌های همان بخش را ببینید.</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
                             <?php foreach ($allowedTypes as $type): ?>
-                                <a class="btn btn-sm <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>" style="font-size: 17px;"
-                                   href="<?= url('admin/notifications/school_notifications.php?type=' . rawurlencode($type)) ?>">
-                                    <?= htmlspecialchars($catalog[$type]['title']) ?>
-                                </a>
+                                <?php $counts = $typeCounts[$type] ?? ['total' => 0, 'unread' => 0]; ?>
+                                <div class="col-md-6 col-xl-4 mb-3">
+                                    <a class="btn btn-block text-right p-3 <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>"
+                                       href="<?= url('admin/notifications/school_notifications.php?type=' . rawurlencode($type) . '&view=unread') ?>">
+                                        <i class="fe <?= htmlspecialchars($catalog[$type]['icon']) ?> ml-2"></i>
+                                        <?= htmlspecialchars($catalog[$type]['title']) ?>
+                                        <span class="float-left">
+                                            <?php if ($counts['unread'] > 0): ?><span class="badge badge-warning ml-1"><?= (int)$counts['unread'] ?> جدید</span><?php endif; ?>
+                                            <span class="badge badge-light"><?= (int)$counts['total'] ?></span>
+                                        </span>
+                                    </a>
+                                </div>
                             <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3" style="gap:8px">
+                        <h5 class="mb-0"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?></h5>
+                        <div class="btn-group">
+                            <a class="btn btn-sm <?= $view === 'unread' ? 'btn-primary' : 'btn-outline-primary' ?>" href="<?= url('admin/notifications/school_notifications.php' . ($selectedType !== '' ? '?type=' . rawurlencode($selectedType) . '&view=unread' : '')) ?>">دریافت‌های جدید<?= $unreadCount > 0 ? ' (' . $unreadCount . ')' : '' ?></a>
+                            <a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url('admin/notifications/school_notifications.php?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a>
                         </div>
                     </div>
 
                     <?php if ($notifications === []): ?>
-                        <div class="alert alert-light text-center py-5">در این بخش اعلانی برای شما وجود ندارد.</div>
+                        <div class="alert alert-light text-center py-5"><?= $view === 'read' ? 'هنوز اعلانی را نخوانده‌اید.' : 'اعلان خوانده‌نشده‌ای در این بخش ندارید.' ?></div>
                     <?php endif; ?>
 
                     <?php foreach ($notifications as $notification):
@@ -187,7 +229,7 @@ $unreadCount = CountSchoolNotifications($currentUser, true);
                                     </div>
                                     <div class="mt-3 d-flex" style="gap:8px">
                                         <?php if ($target !== '' && strpos($target, 'admin/') === 0): ?>
-                                            <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url($target)) ?>">مشاهده جزئیات</a>
+                                            <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url('admin/notifications/school_notifications.php?open=' . (int)$notification['id'])) ?>">مشاهده جزئیات</a>
                                         <?php endif; ?>
                                         <?php if ((int)$notification['is_read'] === 0): ?>
                                             <form method="post">

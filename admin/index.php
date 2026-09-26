@@ -54,7 +54,7 @@ $sql_notifs = "SELECT DISTINCT n.*
 $stmt_notifs = $conn->prepare($sql_notifs);
 $stmt_notifs->execute([':role' => $roleParam]);
 $activeNotifs = $stmt_notifs->fetchAll(PDO::FETCH_OBJ);
-$activeNotificationCount = count($activeNotifs);
+$activeNotificationCount = CountSchoolNotificationMenu((string)($_SESSION['admin']['user'] ?? ''), true);
 
 //news get
 

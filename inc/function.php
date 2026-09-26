@@ -1124,6 +1124,27 @@ function CountSchoolNotifications(?string $user = null, bool $unreadOnly = true)
     return (int)$stmt->fetchColumn();
 }
 
+/** Unread and total counts per visible notification type, for inbox cards. */
+function SchoolNotificationTypeCounts(?string $user = null): array
+{
+    global $conn;
+    $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
+    if (!SchoolNotificationsReady()) return [];
+    [$where, $args] = SchoolNotificationVisibility($user, null, false);
+    $sql = "SELECT n.event_type, COUNT(*) AS total_count,
+                   SUM(CASE WHEN nr.notification_id IS NULL THEN 1 ELSE 0 END) AS unread_count
+            FROM school_notifications n
+            LEFT JOIN school_notification_reads nr ON nr.notification_id = n.id AND nr.admin_username = ?
+            WHERE {$where} GROUP BY n.event_type";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array_merge([$user], $args));
+    $counts = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) ?: [] as $row) {
+        $counts[(string)$row['event_type']] = ['total' => (int)$row['total_count'], 'unread' => (int)$row['unread_count']];
+    }
+    return $counts;
+}
+
 /** Counts for operational notifications that pre-date school_notifications. */
 function SchoolLegacyNotificationCounts(?string $user = null): array
 {
@@ -1194,14 +1215,18 @@ function CountSchoolNotificationMenu(?string $user = null): int
     return CountSchoolNotifications($user, true) + array_sum(SchoolLegacyNotificationCounts($user));
 }
 
-function GetSchoolNotifications(?string $user = null, ?string $eventType = null, int $limit = 100): array
+function GetSchoolNotifications(?string $user = null, ?string $eventType = null, int $limit = 100, ?bool $read = null): array
 {
     global $conn;
     $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
     if (!SchoolNotificationsReady()) {
         return [];
     }
-    [$where, $args] = SchoolNotificationVisibility($user, $eventType, false);
+    [$where, $args] = SchoolNotificationVisibility($user, $eventType, $read === false);
+    if ($read === true) {
+        $where .= ' AND EXISTS (SELECT 1 FROM school_notification_reads nr_read WHERE nr_read.notification_id = n.id AND nr_read.admin_username = ?)';
+        $args[] = $user;
+    }
     $limit = max(1, min(300, $limit));
     $sql = "SELECT n.*, c.coursename, cl.name AS class_name,
                    CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, '')) AS actor_name,
@@ -3361,6 +3386,48 @@ function getSchoolAcademicYearRange(?int $timestamp = null): array
         'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $endExclusiveGregorian[0], $endExclusiveGregorian[1], $endExclusiveGregorian[2]),
         'label' => sprintf('%04d–%04d', $baseYear + 1, $baseYear),
     ];
+}
+
+/**
+ * Database identifier for the academic year currently being viewed.
+ * Returns null until database/migrate_academic_years.php has been run.
+ */
+function selectedAcademicYearId(): ?int
+{
+    global $conn;
+    static $resolved = false;
+    static $yearId = null;
+    if ($resolved) {
+        return $yearId;
+    }
+    $resolved = true;
+    try {
+        $range = getSchoolAcademicYearRange();
+        $stmt = $conn->prepare('SELECT id FROM academic_years WHERE base_jalali_year = ? LIMIT 1');
+        $stmt->execute([(int)$range['base_jalali_year']]);
+        $id = $stmt->fetchColumn();
+        $yearId = $id === false ? null : (int)$id;
+    } catch (Throwable $e) {
+        // Keep the pre-migration application usable during rollout.
+        $yearId = null;
+    }
+    return $yearId;
+}
+
+/** Make a course/base available in the academic year currently being viewed. */
+function linkCourseToSelectedAcademicYear(int $courseCode): void
+{
+    global $conn;
+    $yearId = selectedAcademicYearId();
+    if ($yearId === null || $courseCode <= 0) {
+        return;
+    }
+    try {
+        $stmt = $conn->prepare('INSERT IGNORE INTO academic_year_courses (academic_year_id, codecourse) VALUES (?, ?)');
+        $stmt->execute([$yearId, $courseCode]);
+    } catch (Throwable $e) {
+        // The archive migration may not yet be deployed.
+    }
 }
 
 /** Set or clear the academic-year view for the current administrator session. */
