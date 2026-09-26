@@ -3,7 +3,6 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
-displayError(1);
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -935,6 +934,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
     }
 }
 include_once '../../temp.html';
+displayError(1);
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
