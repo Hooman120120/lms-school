@@ -18,7 +18,7 @@ if (session_id() != ($session['session_id'] ?? null)) {
     http_response_code(401);
     exit('نشست کاربری معتبر نیست.');
 }
-if (!Permision('permision_managecall')) {
+if (!AdminHasMenuPermission('safe-call.manage') && !Permision('permision_managecall')) {
     http_response_code(403);
     exit('شما مجوز مشاهده گزارش تماس اپراتورها را ندارید.');
 }

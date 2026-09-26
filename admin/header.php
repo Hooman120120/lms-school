@@ -6,6 +6,12 @@ if (!isset($_SESSION['admin'])) {
     die();
 }
 
+// New tree-based grants are enforced for every registered admin page here.
+// Accounts that have not yet been migrated keep their existing legacy checks.
+if (function_exists('EnforceAdminPageTreePermission')) {
+    EnforceAdminPageTreePermission();
+}
+
 $canImpersonate = !empty($_SESSION['admin']['can_impersonate']) && (int)$_SESSION['admin']['can_impersonate'] === 1;
 
 // CSRF token for impersonation

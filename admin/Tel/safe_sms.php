@@ -31,7 +31,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcall')) {
+if (!AdminHasMenuPermission('safe-sms') && !Permision('permision_viewcall')) {
     header('location: ' . url('admin/index.php'));
     die();
 }

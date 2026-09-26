@@ -540,7 +540,7 @@ else                  $c = '#15233f';
                 </ul>
             </li>
 
-            <?php if ($schoolNotificationTypes !== []): ?>
+            <?php if ($schoolNotificationTypes !== [] && (!AdminHasAnyCurrentTreePermission() || AdminHasMenuNavigationPermission('school-notifications'))): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>

@@ -30,7 +30,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permision_viewcall')) {
+if (!AdminHasMenuPermission('safe-call') && !Permision('permision_viewcall')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -215,7 +215,7 @@ include_once '../../temp.html';
 
                         </a>
                     </div>
-                  <?php if (Permision('permision_managecall')) { ?>
+                  <?php if (AdminHasMenuPermission('safe-call.manage') || Permision('permision_managecall')) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/hamtel.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title"
@@ -260,7 +260,7 @@ include_once '../../temp.html';
                     <!--                    --><?php //} ?>
 
                     <!-- گزارش تماس و فایل صوتی (reportcall_permission) -->
-                    <?php if (Permision('reportcall_permission')) { ?>
+                    <?php if (AdminHasMenuPermission('safe-call.reports') || Permision('reportcall_permission')) { ?>
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/reportcall.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title">

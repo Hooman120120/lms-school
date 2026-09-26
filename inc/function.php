@@ -1,5 +1,236 @@
 <?php
 
+/** Shared menu/access tree.  Keep new administrative features in this registry. */
+function AdminPermissionRegistry(): array
+{
+    static $tree = null;
+    if ($tree === null) {
+        $tree = require BASE_PATH . '/config/admin_permission_registry.php';
+        $tree = AdminPermissionAttachPageActions($tree);
+    }
+    return $tree;
+}
+
+function AdminPermissionActionLabel(string $control): string
+{
+    $labels = [
+        'delete' => 'حذف', 'remove' => 'حذف', 'edit' => 'ویرایش',
+        'approve' => 'تأیید', 'reject' => 'رد', 'export' => 'خروجی',
+        'import' => 'ورود اطلاعات', 'create' => 'ایجاد', 'add' => 'ایجاد',
+        'save' => 'ذخیره',
+    ];
+    foreach ($labels as $keyword => $label) if (stripos($control, $keyword) !== false) return $label . ' (' . $control . ')';
+    return 'عملیات (' . $control . ')';
+}
+
+/*
+ * Pages can grow buttons without a developer remembering a second hand-made
+ * permission list. Controls with a mutating name become action leaves below
+ * their own registered page. The menu/page hierarchy stays declarative in the
+ * registry; this only fills its final operation level.
+ */
+function AdminPermissionAttachPageActions(array $nodes): array
+{
+    $knownPaths = [];
+    $collect = static function (array $items) use (&$collect, &$knownPaths): void {
+        foreach ($items as $item) {
+            if (!empty($item['path'])) $knownPaths[$item['path']] = true;
+            $collect($item['children'] ?? []);
+        }
+    };
+    $collect($nodes);
+
+    $resolvePath = static function (string $target, string $from): ?string {
+        $target = html_entity_decode(trim($target));
+        if ($target === '' || str_contains($target, '<?') || preg_match('~^(?:https?:|//|\#|javascript:)~i', $target)) return null;
+        $target = preg_split('/[?#]/', $target, 2)[0];
+        $adminOffset = strpos($target, 'admin/');
+        $candidate = $adminOffset === false ? dirname($from) . '/' . ltrim($target, '/') : substr($target, $adminOffset);
+        $parts = [];
+        foreach (explode('/', str_replace('\\', '/', $candidate)) as $part) {
+            if ($part === '' || $part === '.') continue;
+            if ($part === '..') { array_pop($parts); continue; }
+            $parts[] = $part;
+        }
+        $candidate = implode('/', $parts);
+        return preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $candidate) && is_file(BASE_PATH . '/' . $candidate) ? $candidate : null;
+    };
+
+    /* New internal pages can in turn link to another page, hence the bounded
+       fixed-point loop. The known-path set prevents cycles and duplicates. */
+    for ($pass = 0; $pass < 12; $pass++) {
+        $changed = false;
+        $walk = static function (&$items) use (&$walk, &$changed, &$knownPaths, $resolvePath): void {
+            foreach ($items as &$node) {
+                if (!isset($node['children'])) $node['children'] = [];
+                $walk($node['children']);
+                $path = $node['path'] ?? null;
+                if (!$path || !preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $path)) continue;
+                $source = @file_get_contents(BASE_PATH . '/' . $path);
+                if ($source === false) continue;
+                $existing = array_column($node['children'], 'code');
+                preg_match_all('/\bname\s*=\s*["\']([^"\']+)["\']/i', $source, $controls);
+                foreach (array_unique($controls[1]) as $control) {
+                    if (!preg_match('/(?:add|create|edit|delete|remove|approve|reject|export|import|save)/i', $control)) continue;
+                    $slug = trim(strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $control)), '-');
+                    if ($slug === '') continue;
+                    $code = $node['code'] . '.action-' . $slug;
+                    if (in_array($code, $existing, true)) continue;
+                    $action = ['code' => $code, 'label' => AdminPermissionActionLabel($control)];
+                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
+                    $node['children'][] = $action;
+                    $existing[] = $code;
+                    $changed = true;
+                }
+                /* A few legacy forms submit through an unnamed button. Keep
+                   them visible and protected as a final operation leaf too. */
+                $submitCode = $node['code'] . '.action-submit';
+                if (preg_match('/<form\b/i', $source) && !in_array($submitCode, $existing, true)) {
+                    $action = ['code' => $submitCode, 'label' => 'ثبت / ذخیرهٔ تغییرات این صفحه'];
+                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
+                    $node['children'][] = $action;
+                    $existing[] = $submitCode;
+                    $changed = true;
+                }
+                preg_match_all('/(?:\bhref\s*=\s*["\']([^"\']+)|\burl\(\s*["\']([^"\']+))/i', $source, $links);
+                foreach (array_merge($links[1], $links[2]) as $target) {
+                    $targetPath = $resolvePath($target, $path);
+                    if ($targetPath === null || isset($knownPaths[$targetPath])) continue;
+                    $code = $node['code'] . '.page-' . substr(sha1($targetPath), 0, 10);
+                    $page = ['code' => $code, 'label' => 'صفحهٔ داخلی: ' . basename($targetPath, '.php'), 'path' => $targetPath];
+                    if (isset($node['modes'])) $page['modes'] = $node['modes'];
+                    $node['children'][] = $page;
+                    $knownPaths[$targetPath] = true;
+                    $changed = true;
+                }
+            }
+            unset($node);
+        };
+        $walk($nodes);
+        if (!$changed) break;
+    }
+    return $nodes;
+}
+
+/** @return array<string, array{parent:?string,legacy:?string}> */
+function AdminPermissionIndex(): array
+{
+    static $index = null;
+    if ($index !== null) return $index;
+    $index = [];
+    $walk = static function (array $nodes, ?string $parent = null) use (&$walk, &$index): void {
+        foreach ($nodes as $node) {
+            if (empty($node['code'])) continue;
+            $index[$node['code']] = [
+                'parent' => $parent,
+                'legacy' => isset($node['legacy']) ? (string)$node['legacy'] : null,
+            ];
+            $walk($node['children'] ?? [], (string)$node['code']);
+        }
+    };
+    $walk(AdminPermissionRegistry());
+    return $index;
+}
+
+/** @return string[] */
+function AdminPermissionCodesForLegacy(string $legacy): array
+{
+    $codes = [];
+    foreach (AdminPermissionIndex() as $code => $meta) {
+        if ($meta['legacy'] === $legacy) $codes[] = $code;
+    }
+    return $codes;
+}
+
+function SyncAdminPermissionGrants(string $username, array $codes): void
+{
+    global $conn;
+    $index = AdminPermissionIndex();
+    $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]))));
+    try {
+        $conn->beginTransaction();
+        $delete = $conn->prepare('DELETE FROM admin_user_permissions WHERE admin_username = ?');
+        $delete->execute([$username]);
+        $insert = $conn->prepare('INSERT INTO admin_user_permissions(admin_username, permission_code) VALUES (?, ?)');
+        foreach ($codes as $code) $insert->execute([$username, $code]);
+        $conn->commit();
+    } catch (Throwable $e) {
+        if ($conn->inTransaction()) $conn->rollBack();
+        error_log('SyncAdminPermissionGrants: ' . $e->getMessage());
+    }
+}
+
+function AdminHasMenuPermission(string $code, ?string $username = null): bool
+{
+    global $conn;
+    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
+    if ($username === '' || $code === '') return false;
+    try {
+        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR ? LIKE CONCAT(p.permission_code, ".%")) LIMIT 1');
+        $stmt->execute([$username, $code, $code]);
+        return (bool)$stmt->fetchColumn();
+    } catch (Throwable $e) { return false; }
+}
+
+/* A child grant may reveal its ancestors in the navigation, but it must never
+ * grant a sibling page or action. Use this only when deciding whether a menu
+ * group itself should be visible. */
+function AdminHasMenuNavigationPermission(string $code, ?string $username = null): bool
+{
+    if (AdminHasMenuPermission($code, $username)) return true;
+    global $conn;
+    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
+    if ($username === '' || $code === '') return false;
+    try {
+        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%") LIMIT 1');
+        $stmt->execute([$username, $code]);
+        return (bool)$stmt->fetchColumn();
+    } catch (Throwable $e) { return false; }
+}
+
+function AdminPermissionCodeForPath(?string $script = null): ?string
+{
+    $script = str_replace('\\', '/', $script ?? ($_SERVER['SCRIPT_NAME'] ?? ''));
+    $position = strpos($script, '/admin/');
+    $path = $position === false ? ltrim($script, '/') : substr($script, $position + 1);
+    $walk = static function (array $nodes) use (&$walk, $path): ?string {
+        foreach ($nodes as $node) {
+            if (($node['path'] ?? null) === $path) return (string)$node['code'];
+            $found = $walk($node['children'] ?? []);
+            if ($found !== null) return $found;
+        }
+        return null;
+    };
+    return $walk(AdminPermissionRegistry());
+}
+
+function AdminHasAnyCurrentTreePermission(?string $username = null): bool
+{
+    global $conn;
+    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
+    if ($username === '') return false;
+    try {
+        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
+        $stmt->execute([$username]);
+        $index = AdminPermissionIndex();
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $code) if (isset($index[$code])) return true;
+    } catch (Throwable $e) { }
+    return false;
+}
+
+/* Applied from admin/header.php. Legacy-only accounts keep their current
+ * behaviour; accounts configured in the new tree are constrained by it. */
+function EnforceAdminPageTreePermission(): void
+{
+    if (!AdminHasAnyCurrentTreePermission()) return;
+    $code = AdminPermissionCodeForPath();
+    // A grant for an operation also permits opening its containing page, but
+    // never a sibling page (navigation helper only traverses descendants).
+    if ($code === null || AdminHasMenuNavigationPermission($code)) return;
+    http_response_code(403);
+    exit('دسترسی شما به این بخش فعال نشده است.');
+}
+
 function check_national_code($value)
 {
     if (!preg_match('/^[0-9]{10}$/', $value)) {
@@ -772,29 +1003,31 @@ function uncourse($student)
 function Permision($tab)
 {
     global $conn;
+    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$_SESSION['admin']['user']]);
     $result = $query->fetch();
-    if ($result[$tab] == 1) {
-        return true;
-    } else {
-        return false;
+    if ($result && !empty($result[$tab])) return true;
+    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
+        if (AdminHasMenuNavigationPermission($code)) return true;
     }
+    return false;
 }
 
 function PermisionUser($tab, $user)
 {
     global $conn;
+    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$user]);
     $result = $query->fetch();
-    if ($result[$tab] == 1) {
-        return true;
-    } else {
-        return false;
+    if ($result && !empty($result[$tab])) return true;
+    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
+        if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
     }
+    return false;
 }
 
 /**
@@ -4879,4 +5112,14 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
         if ($gid > 0) $st->execute([$eventId, $gid]);
     }
     return true;
+}
+
+/*
+ * Most admin pages execute their POST handlers before including admin/header.
+ * Run the same route gate at the end of this common bootstrap as well, so a
+ * direct POST cannot bypass the tree check. Non-admin pages and unmapped
+ * endpoints are deliberately left alone.
+ */
+if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
+    EnforceAdminPageTreePermission();
 }

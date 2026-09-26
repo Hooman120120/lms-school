@@ -38,6 +38,16 @@ if ($username !== '') {
     $adminRole = $st->fetchColumn();
 }
 
+/* Legacy accounts keep the previous manager-only dashboard. Accounts created
+ * with the new permission tree see only the dashboard leaves granted to them. */
+$dashboardUsesPermissionTree = AdminHasAnyCurrentTreePermission();
+$dashboardCan = static function (string $code) use ($dashboardUsesPermissionTree): bool {
+    return !$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission($code);
+};
+$showDashboardSummary = $dashboardUsesPermissionTree
+    ? ($dashboardCan('dashboard.summary') || $dashboardCan('dashboard.exam-system') || $dashboardCan('dashboard.online-events'))
+    : (int)$adminRole === 0;
+
 // notif get
 
 $roleParam = (string)$adminRole;
@@ -218,7 +228,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     <!-- Main Content-->
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
-            <?php if ((int)$adminRole == 0) {?>
+            <?php if ($showDashboardSummary) {?>
                 <div class="col-xxl-12 col-xl-12 col-md-12 col-lg-12">
                     <div class="dashboard-wrap">
 
@@ -247,6 +257,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                 </div>
 
                                 <div class="dashboard-actions">
+                                <?php if ($dashboardCan('dashboard.summary.overview')): ?>
                                 <div class="dropdown" style="position:relative;z-index:2;">
                                     <button aria-expanded="false"
                                             aria-haspopup="true"
@@ -257,18 +268,20 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         <i class="fe fe-hash ml-1"></i> چشم‌انداز کلی
                                     </button>
                                     <div class="dropdown-menu tx-13">
-                                        <?php if (Permision('permision_manage_suporter')): ?>
+                                        <?php if ($dashboardCan('dashboard.summary.overview.manager') && Permision('permision_manage_suporter')): ?>
                                             <a class="dropdown-item" href="<?= url('admin/panel/manager.php') ?>">
                                                 <i class="fe fe-grid ml-2"></i> داشبورد مدیریتی
                                             </a>
                                         <?php endif; ?>
-                                        <?php if (in_array((int)$adminRole, [1, 6, 52], true)): ?>
+                                        <?php if ($dashboardCan('dashboard.summary.overview.desktop') && in_array((int)$adminRole, [1, 6, 52], true)): ?>
                                             <a class="dropdown-item" href="<?= url('admin/panel/desktop.php') ?>">
                                                 <i class="fe fe-monitor ml-2"></i> میزکار من
                                             </a>
                                         <?php endif; ?>
                                     </div>
                                 </div>
+                                <?php endif; ?>
+                                <?php if ($dashboardCan('dashboard.summary.notifications')): ?>
                                 <a class="dashboard-notification-button <?= $activeNotificationCount > 0 ? 'has-active-notifications' : '' ?>"
                                    href="<?= url('admin/notifications/school_notifications.php') ?>"
                                    aria-label="اعلان‌ها<?= $activeNotificationCount > 0 ? '، ' . $activeNotificationCount . ' اعلان فعال' : '' ?>">
@@ -278,6 +291,8 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         <span class="notification-count"><?= number_format($activeNotificationCount) ?></span>
                                     <?php endif; ?>
                                 </a>
+                                <?php endif; ?>
+                                <?php if ($dashboardCan('dashboard.summary.academic-archive')): ?>
                                 <div class="dropdown" style="position:relative;z-index:2;">
                                     <button aria-expanded="false"
                                             aria-haspopup="true"
@@ -302,6 +317,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         </form>
                                     </div>
                                 </div>
+                                <?php endif; ?>
                                 </div>
 
                             </div>
@@ -365,6 +381,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                         <?php endif; ?>
                         <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
+                            <?php if ($dashboardCan('dashboard.summary.cards.courses')): ?>
                             <a class="stat-card link-card"
                                onclick="window.open('<?php echo url('admin/panel/course_detail.php') ?>','CourseDetail','width=1250,height=850,menubar=0,toolbar=0,resizable=0,left=100,top=50,status=0,scrollbars=1,location=0'); return false;">
                                 <div class="stat-left">
@@ -376,9 +393,11 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
                                 </div>
                             </a>
+                            <?php endif; ?>
 
                             
 
+                            <?php if ($dashboardCan('dashboard.summary.cards.staff')): ?>
                             <a class="stat-card link-card"
                                href="<?php echo url('admin/panel/staff_management.php') ?>"
                                onclick="window.open(this.href,'StaffManagement','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
@@ -391,7 +410,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm8 2c-2.33 0-7 1.17-7 3.5V21h14v-2.5C23 14.17 18.33 13 16 13z"/></svg>
                                 </div>
                             </a>
+                            <?php endif; ?>
 
+                            <?php if ($dashboardCan('dashboard.summary.cards.students')): ?>
                             <a class="stat-card link-card"
                                href="<?php echo url('admin/panel/academic_year_students.php') ?>"
                                onclick="window.open(this.href,'AcademicYearStudents','width=1450,height=850,menubar=0,toolbar=0,resizable=1,left=60,top=40,status=0,scrollbars=1,location=0'); return false;">
@@ -404,8 +425,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-3.33 0-8 1.67-8 5v1h16v-1c0-3.33-4.67-5-8-5z"/></svg>
                                 </div>
                             </a>
+                            <?php endif; ?>
 
-                            <?php if ($isInstitute): ?>
+                            <?php if ($isInstitute && $dashboardCan('dashboard.summary.cards.achievements')): ?>
                                 <div class="stat-card">
                                     <div class="stat-left">
                                         <p class="stat-label">افتخارآفرینان کل</p>
@@ -424,6 +446,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                         <?php endif; ?>
                         <div class="stats-grid <?= $isInstitute ? 'stats-grid-four' : 'stats-grid-three' ?>">
                             
+                            <?php if ($dashboardCan('dashboard.summary.cards.classes')): ?>
                             <div class="stat-card">
                                 <div class="stat-left">
                                     <p class="stat-label">تعداد کل کلاس‌های برگزار شده</p>
@@ -433,8 +456,10 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zM19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z"/></svg>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             
 
+                            <?php if ($dashboardCan('dashboard.summary.cards.quizzes')): ?>
                             <div class="stat-card">
                                 <div class="stat-left">
                                     <p class="stat-label"><?= $isInstitute ? 'آزمون‌های برگزار شده' : 'آزمون‌های برگزار شده امسال' ?></p>
@@ -444,8 +469,10 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
                             
+                            <?php if ($dashboardCan('dashboard.summary.cards.messages')): ?>
                             <div class="stat-card">
                                 <div class="stat-left">
                                     <p class="stat-label"><?= $isInstitute ? 'فراگیران' : 'پیامک‌های ارسالی امسال' ?></p>
@@ -455,8 +482,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <?php if ($isInstitute): ?>
+                            <?php if ($isInstitute && $dashboardCan('dashboard.summary.cards.messages')): ?>
                                 <div class="stat-card">
                                     <div class="stat-left">
                                         <p class="stat-label">اطلاع‌رسانی‌ها</p>
@@ -480,7 +508,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
         <div class="row" style="gap:0;">
 
             <!-- ورود به پنل آزمون: رنگ مدرسه طلایی و رنگ آموزشگاه یاسی است. -->
-            <?php if (function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
+            <?php if ($dashboardCan('dashboard.exam-system') && function_exists('cross_panel_secret') && cross_panel_secret() !== ''): ?>
                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <div class="card card-box h-100"
                          style="background: <?= $isInstituteDashboard ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : '#E8A752' ?>;
@@ -495,7 +523,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                     <i class="fe fe-external-link" style="font-size:24px; color:#fff;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به پنل آزمون</h5>
+                                    <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به سامانه آزمون</h5>
                                     <p class="mb-0" style="color:rgba(255,255,255,0.85); font-size:13px;">
                                         مدیریت آزمون‌ها و مشاهده نتایج
                                     </p>
@@ -518,6 +546,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
             <?php endif; ?>
 
             <!-- بخش چپ: ورود به پنل کلاس آنلاین (رنگ سبز جنگلی) -->
+            <?php if ($dashboardCan('dashboard.online-events')): ?>
             <div class="col-12 col-md-6">
                 <div class="card card-box h-100"
                      style="background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
@@ -532,7 +561,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                 <i class="fe fe-video" style="font-size:24px; color:#fff;"></i>
                             </div>
                             <div>
-                                <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به کلاس آنلاین</h5>
+                                <h5 class="mb-1" style="color:#fff; font-weight:700;">ورود به سامانه برگزاری رویدادهای آنلاین</h5>
                                 <p class="mb-0" style="color:rgba(255,255,255,0.85); font-size:13px;">
                                     برگزاری و مدیریت کلاس‌های آنلاین
                                 </p>
@@ -552,6 +581,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
         </div>
     </div>
@@ -566,6 +596,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
             <div class="row mt-4 mb-4">
 
                 <!-- ستون تابلو اعلانات -->
+                <?php if ($dashboardCan('dashboard.notice-board')): ?>
                 <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                     <div class="card card-box h-100" style="background:#fff;color:#000;">
                         <div class="card-body p-4">
@@ -639,7 +670,9 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                     </div>
                 </div>
 
+                <?php endif; ?>
                 <!-- ستون اخبار -->
+                <?php if ($dashboardCan('dashboard.news-board')): ?>
                 <div class="col-12 col-lg-6">
                     <div class="card card-box h-100" style="background:#fff;color:#000;">
                         <div class="card-body p-4">
@@ -719,6 +752,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                     </div>
                 </div>
 
+                <?php endif; ?>
                 <!-- Modal (placed once outside the row) -->
                 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
