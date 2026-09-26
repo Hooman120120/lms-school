@@ -1095,30 +1095,42 @@ function renderCalendar() {
         .grade-pick input { accent-color: var(--grade); margin: 0; }
         .grade-pick:has(input:checked) { background: var(--grade); color: #1d212f; font-weight: 700; }
 
-        /* نشانه ی رویداد: دایره ی بزرگ گوشه ی رویداد با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
-        #transposedCalendar .wg-event,
-        #transposedCalendar .tc-allday { position: relative; }
+        /* نشانه ی رویداد: دایره ی بزرگ سمت راست، پیش از متن، با حلقه ی سفید تا روی هر رنگ پایه دیده شود */
         .ev-dot {
-            position: absolute;
-            top: 3px;
-            left: 3px;
+            display: inline-block;
+            flex: none;
             width: 16px;
             height: 16px;
             border-radius: 50%;
             border: 2px solid #fff;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
-            z-index: 2;
-        }
-        .ev-dot.ev-dot-inline {
-            position: static;
-            display: inline-block;
             vertical-align: middle;
+            margin-inline-end: 5px;
+            position: relative;
+            top: -1px;
         }
-        #transposedCalendar .wg-event .ev-dot,
-        #transposedCalendar .tc-event .ev-dot,
-        #transposedCalendar .tc-allday .ev-dot { top: 50%; transform: translateY(-50%); }
-        #transposedCalendar .tc-event { padding-left: 24px; }
-        #transposedCalendar .wg-event:has(.ev-dot) { padding-left: 26px; padding-right: 26px; }
+
+        /* نمای روز: ساعت شروع سمت راست نوار، عنوان وسط، ساعت پایان سمت چپ */
+        #transposedCalendar .tc-event {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #transposedCalendar .tc-event .tc-t {
+            flex: none;
+            font-size: 11px;
+            font-weight: 400;
+            opacity: .85;
+            direction: ltr;
+        }
+        #transposedCalendar .tc-event .tc-name {
+            flex: 1 1 auto;
+            min-width: 0;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
         /* ماه: یک تقویم برای هر پایه، زیر هم */
         #transposedCalendar .mg-section { margin-bottom: 18px; }
@@ -2296,16 +2308,24 @@ function renderCalendar() {
         }
 
         // بازه ساعت ها بر اساس رویدادهای همان بازه تعیین می شود (پیش فرض ۸ تا ۱۸)
-        function tcHourRange(events) {
-            var min = 8, max = 18;
+        // بازه ی ساعت های نمای روز از برنامه ی همان روز: دو ساعت پیش از اولین کلاس (نه زودتر از ۷)
+        // تا دو ساعت بعد از پایان آخرین کلاس (نه دیرتر از ۲۰). کلاسی که خودش بیرون این مرزهاست کامل دیده می شود.
+        function tcHourRange(events, viewStart, viewEnd) {
+            var first = null, last = null;
             events.forEach(function (ev) {
                 if (ev.allDay || !ev.start) return;
+                var e = ev.end || new Date(ev.start.getTime() + 3600000);
+                if (viewStart && (ev.start >= viewEnd || e <= viewStart)) return;
                 var sh = ev.start.getHours();
                 var eh = ev.end ? Math.ceil(tcMinutes(ev.end) / 60) : sh + 1;
-                if (sh < min) min = sh;
-                if (eh > max) max = eh;
+                if (eh <= sh) eh = 24; // تا بعد از نیمه شب
+                first = first === null ? sh : Math.min(first, sh);
+                last = last === null ? eh : Math.max(last, eh);
             });
-            min = Math.max(0, Math.min(min, 23));
+            if (first === null) return { min: 8, max: 18 };
+            var min = Math.min(first, Math.max(7, first - 2));
+            var max = Math.max(last, Math.min(20, last + 2));
+            min = Math.max(0, min);
             max = Math.min(24, Math.max(max, min + 1));
             return { min: min, max: max };
         }
@@ -2502,8 +2522,8 @@ function renderCalendar() {
                         var bg = ev.backgroundColor || ev.borderColor || g.color || '#B5B5B5';
                         html += '<div class="wg-event mg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
                               + (hasCalendarPermission ? ' draggable="true"' : '')
-                              + ' style="border-inline-start-color:' + tcEscape(bg) + '" title="' + tcEscape(ev.title) + '">' + markerDot(ev)
-                              + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
+                              + ' style="border-inline-start-color:' + tcEscape(bg) + '" title="' + tcEscape(ev.title) + '">'
+                              + '<span class="wg-title">' + markerDot(ev) + tcEscape(ev.title) + '</span>'
                               + (ev.allDay ? '' : '<span class="wg-time">' + wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '</span>')
                               + '</div>';
                     });
@@ -2599,8 +2619,8 @@ function renderCalendar() {
                             : (ev.end ? wgTime(ev.start) + ' - ' + wgTime(ev.end) : wgTime(ev.start));
                         html += '<div class="wg-event" data-ev="' + tcEscape(ev.id) + '" data-group="' + g.id + '"'
                               + (hasCalendarPermission ? ' draggable="true"' : '') + ' style="border-inline-start-color:' + tcEscape(bg) + '"'
-                              + ' title="' + tcEscape(ev.title) + '">' + markerDot(ev)
-                              + '<span class="wg-title">' + tcEscape(ev.title) + '</span>'
+                              + ' title="' + tcEscape(ev.title) + '">'
+                              + '<span class="wg-title">' + markerDot(ev) + tcEscape(ev.title) + '</span>'
                               + '<span class="wg-time">' + when + '</span></div>';
                     });
                     html += '</td>';
@@ -2816,7 +2836,7 @@ function renderCalendar() {
                 return;
             }
 
-            var range = tcHourRange(events);
+            var range = tcHourRange(events, viewStart, viewEnd);
             var hourCount = range.max - range.min;
             var totalMin = hourCount * 60;
             var today = new Date();
@@ -2888,12 +2908,18 @@ function renderCalendar() {
                         var width = ((ev.__e - ev.__s) / totalMin) * 100;
                         var bg = ev.backgroundColor || ev.borderColor || '#B5B5B5';
                         // ساعت شروع روی خود نوار نیست؛ جای نوار روی محور زمان همان را نشان می دهد
+                        var showTimes = (ev.__e - ev.__s) >= 60;
                         var tip = wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') + '  ' + ev.title;
                         html += '<div class="tc-event" data-ev="' + tcEscape(ev.id) + '"'
                               + ' style="right:' + offset + '%; width:' + width + '%; top:'
                               + (4 + laneIndex * 32) + 'px; background:' + bg
                               + '; color:' + tcTextColorFor(bg) + '"'
-                              + ' title="' + tcEscape(tip) + '">' + markerDot(ev) + tcEscape(ev.title) + '</div>';
+                              + ' title="' + tcEscape(tip) + '">'
+                              // نوارهای کوتاه تر از یک ساعت جای ساعت ندارند؛ ساعتشان در راهنمای نوار است
+                              + (showTimes ? '<span class="tc-t">' + wgTime(ev.start) + '</span>' : '')
+                              + '<span class="tc-name">' + markerDot(ev) + tcEscape(ev.title) + '</span>'
+                              + (showTimes && ev.end ? '<span class="tc-t">' + wgTime(ev.end) + '</span>' : '')
+                              + '</div>';
                     });
                 });
                 html += '</div></td></tr>';
