@@ -1134,6 +1134,9 @@ function renderCalendar() {
             <button type="button" class="cs-clear" id="calendarSearchClear" title="پاک کردن جستجو" style="display:none;">&#10005;</button>
         </div>
         <span class="calendar-search-info" id="calendarSearchInfo"></span>
+        <button type="button" class="btn btn-success ms-auto" id="exportViewBtn" title="همان جدولی که الان روی صفحه است (ماه، هفته یا روز)">
+            📥 خروجی اکسل همین صفحه
+        </button>
     </div>
     <div id="calendar"></div>
 
@@ -2453,6 +2456,104 @@ function renderCalendar() {
                 })
                 .catch(function () { alert('خطا در ارتباط با سرور.'); });
         }
+
+        // ------------------------------ خروجی اکسل همین صفحه ------------------------------
+        // جدولِ نمای فعلی به همان شکل: هفته = روز × پایه، ماه = هفته × روز، روز = فهرست ساعت به ساعت
+        function viewEventLine(ev) {
+            if (ev.allDay) return ev.title + '\n(تمام روز)';
+            return ev.title + '\n' + wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '');
+        }
+
+        function eventsOnDay(day) {
+            var dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+            var dayEnd = new Date(dayStart.getTime() + 86400000);
+            return visibleCalendarEvents().filter(function (ev) {
+                if (!ev.start) return false;
+                var e = ev.end || new Date(ev.start.getTime() + 1);
+                return ev.start < dayEnd && e > dayStart;
+            }).sort(function (a, b) { return (b.allDay - a.allDay) || (a.start - b.start); });
+        }
+
+        function buildViewTable() {
+            var view = calendar.view;
+            var titleEl = document.querySelector('#calendar .fc-toolbar-title');
+            var out = { title: titleEl ? titleEl.textContent.trim() : view.title, header: [], rows: [] };
+
+            if (view.type === 'timeGridWeek') {
+                var table = document.querySelector('#transposedCalendar table.wg-table');
+                if (!table) return null;
+                table.querySelectorAll('thead th').forEach(function (th) {
+                    out.header.push({ text: th.textContent.trim(), bg: th.style.background || '' });
+                });
+                table.querySelectorAll('tbody tr').forEach(function (tr) {
+                    var row = [];
+                    tr.querySelectorAll('td').forEach(function (td) {
+                        if (td.classList.contains('wg-day')) {
+                            row.push({ text: td.querySelector('.tc-dayname').textContent + '\n' + td.querySelector('.tc-daydate').textContent, bg: '#e4ffed', bold: true });
+                        } else {
+                            row.push({ text: Array.prototype.map.call(td.querySelectorAll('.wg-event'), function (n) {
+                                return n.querySelector('.wg-title').textContent + '\n' + n.querySelector('.wg-time').textContent;
+                            }).join('\n\n') });
+                        }
+                    });
+                    out.rows.push(row);
+                });
+                out.file = 'تقویم-هفته-' + out.title;
+            } else if (view.type === 'dayGridMonth') {
+                var names = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+                names.forEach(function (n) { out.header.push({ text: n, bg: '#e8e8e8' }); });
+                var cur = new Date(view.activeStart.getFullYear(), view.activeStart.getMonth(), view.activeStart.getDate());
+                var row = [];
+                while (cur < view.activeEnd) {
+                    var inMonth = cur >= view.currentStart && cur < view.currentEnd;
+                    var lines = eventsOnDay(cur).map(viewEventLine).join('\n\n');
+                    row.push({ text: tcJalaliDate(cur) + (lines ? '\n\n' + lines : ''), bg: inMonth ? '' : '#f2f2f2' });
+                    if (row.length === 7) { out.rows.push(row); row = []; }
+                    cur.setDate(cur.getDate() + 1);
+                }
+                out.file = 'تقویم-ماه-' + out.title;
+            } else {
+                out.header = [{ text: 'ساعت', bg: '#e8e8e8' }, { text: 'عنوان', bg: '#e8e8e8' },
+                              { text: CAL_GROUP_WORD, bg: '#e8e8e8' }, { text: 'توضیحات', bg: '#e8e8e8' }];
+                eventsOnDay(view.activeStart).forEach(function (ev) {
+                    out.rows.push([
+                        { text: ev.allDay ? 'تمام روز' : wgTime(ev.start) + (ev.end ? ' - ' + wgTime(ev.end) : '') },
+                        { text: ev.title, bold: true },
+                        { text: ev.extendedProps.group_title || '', bg: ev.extendedProps.group_title ? (ev.backgroundColor || '') : '' },
+                        { text: ev.extendedProps.description || '' }
+                    ]);
+                });
+                out.file = 'تقویم-روز-' + out.title;
+            }
+            return out;
+        }
+
+        function exportCurrentView(btn) {
+            var table = buildViewTable();
+            if (!table) { alert('جدولی برای خروجی نیست.'); return; }
+            var fd = new FormData();
+            fd.append('table', JSON.stringify(table));
+            btn.disabled = true;
+            fetch('<?php echo url('admin/panel/calendar-view-excel.php'); ?>', { method: 'POST', body: fd })
+                .then(function (res) {
+                    if (!res.ok) return res.text().then(function (t) { throw new Error(t || 'Server error'); });
+                    return res.blob();
+                })
+                .then(function (blob) {
+                    var a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = (table.file || 'calendar').replace(/[\\/:*?"<>|]+/g, '-') + '.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+                })
+                .catch(function (e) { alert('خطا در تولید فایل اکسل: ' + e.message); })
+                .finally(function () { btn.disabled = false; });
+        }
+
+        var exportViewBtn = document.getElementById('exportViewBtn');
+        if (exportViewBtn) exportViewBtn.addEventListener('click', function () { exportCurrentView(exportViewBtn); });
 
         function renderTransposed(viewStart, viewEnd, events) {
             var host = document.getElementById('transposedCalendar');
