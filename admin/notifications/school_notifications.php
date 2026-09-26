@@ -98,7 +98,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                         <h2 class="main-content-title tx-24 mg-b-5">اعلان‌های مدرسه</h2>
                         <p class="text-muted mb-0">فقط اعلان‌های مجاز برای سمت و پایه‌های تخصیص‌یافته شما نمایش داده می‌شود.</p>
                     </div>
-                    <?php if ($unreadCount > 0): ?>
+                    <?php if ($isNotificationListPage && $unreadCount > 0): ?>
                         <form method="post">
                             <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
                             <input type="hidden" name="return_type" value="<?= htmlspecialchars($selectedType) ?>">
@@ -200,6 +200,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                     </div>
                     <?php endif; ?>
 
+                    <?php if ($isNotificationListPage): ?>
                     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3" style="gap:8px">
                         <h5 class="mb-0"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?></h5>
                         <div class="btn-group">
@@ -251,6 +252,7 @@ $typeCounts = SchoolNotificationTypeCounts($currentUser);
                             </div>
                         </div>
                     <?php endforeach; ?>
+                    <?php endif; ?>
 
                     <?php if (!$isNotificationListPage && in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mt-4">
