@@ -70,6 +70,22 @@ function getEventTargetSummary($eventId, $conn) {
     return trim($roleText . ($roleText && $adminText ? ' | ' : '') . $adminText);
 }
 
+/** مخاطبان، گزینه ها و گروه های آموزشی یک رویداد را روی رویداد دیگر می نشاند (برای جلسه های هفتگی). */
+function calendarCopyEventTargets(PDO $conn, int $fromId, int $toId): void
+{
+    $tables = [
+        'calendar_admin_role_targets'   => 'adminrole',
+        'calendar_admin_user_targets'   => 'admin_id',
+        'calendar_course_targets'       => 'course_id',
+        'calendar_event_teacher_groups' => 'group_id',
+        'active_event_options'          => 'events_option, needs_reason',
+    ];
+    foreach ($tables as $table => $cols) {
+        $conn->prepare("DELETE FROM $table WHERE event_id = ?")->execute([$toId]);
+        $conn->prepare("INSERT INTO $table (event_id, $cols) SELECT ?, $cols FROM $table WHERE event_id = ?")->execute([$toId, $fromId]);
+    }
+}
+
 function jalaliToGregorian($jalaliDatetime) {
     if (empty($jalaliDatetime)) return null;
     $parts = explode(' ', trim($jalaliDatetime));
@@ -529,6 +545,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
     $isAjaxDragDrop = (isset($_POST['update_roles']) && $_POST['update_roles'] == 0);
 
+    // «رویداد هفتگی» هنگام ویرایش: تاریخ پایانِ فرم، پایانِ دوره ی تکرار است و این جلسه
+    // خودش همان روز با ساعت پایان تمام می شود؛ بقیه ی هفته ها بعد از ذخیره ساخته/به روز می شوند.
+    $editWeekly = !$isAjaxDragDrop && (($_POST['is_weekly'] ?? '') === '1') && $end_greg;
+    if ($editWeekly) {
+        $seriesEndDay = date('Y-m-d', strtotime($end_greg));
+        $weeklyStartTime = date('H:i:s', strtotime($start_greg));
+        $weeklyEndTime = date('H:i:s', strtotime($end_greg));
+        if ($seriesEndDay < date('Y-m-d', strtotime($start_greg))) {
+            $_SESSION['calendar_message'] = ['success' => false, 'message' => 'تاریخ پایان نمی تواند قبل از تاریخ شروع باشد.'];
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        }
+        $end_greg = date('Y-m-d', strtotime($start_greg)) . ' ' . $weeklyEndTime;
+        if (strtotime($end_greg) <= strtotime($start_greg)) {
+            $end_greg = null;
+        }
+    }
+
     if ($overlap && $start_greg && $end_greg) {
         $conflictError = checkOverlapConflict(
             $conn, $eventId, $start_greg, $end_greg,
@@ -563,9 +597,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $conn->prepare("UPDATE calendar_events SET calendar_groups_id=? WHERE id=?")->execute([$moveGroup, $eventId]);
             }
         } else {
-            $oldTitleStmt = $conn->prepare("SELECT title FROM calendar_events WHERE id = ?");
+            $oldTitleStmt = $conn->prepare("SELECT title, calendar_groups_id, start_date FROM calendar_events WHERE id = ?");
             $oldTitleStmt->execute([$eventId]);
-            $oldTitle = (string)$oldTitleStmt->fetchColumn();
+            $oldRow = $oldTitleStmt->fetch(PDO::FETCH_ASSOC) ?: ['title' => '', 'calendar_groups_id' => null, 'start_date' => $start_greg];
+            $oldTitle = (string)$oldRow['title'];
+            $oldGroup = $oldRow['calendar_groups_id'];
 
             // Full update from the modal
             $stmt = $conn->prepare("UPDATE calendar_events SET title=?, description=?, personal_note=? , start_date=?, end_date=?, calendar_groups_id=?, updated_by_id=?, target_type=?, visibility=?, event_type=?, overlap=?, is_academic=?, marker=? WHERE id=?");
@@ -573,7 +609,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             // فقط شماره ی جلسه عوض شده (مثلاً «ریاضی ششم #3» → «#2»): جلسه های بعدی همان
             // رویداد هفتگی (همان عنوان و همان پایه، بعد از این جلسه) از شماره ی جدید پشت سر هم شماره می گیرند.
-            if (preg_match('/^(.*\S)\s*#(\d+)$/u', trim($oldTitle), $oldM)
+            if (!$editWeekly && preg_match('/^(.*\S)\s*#(\d+)$/u', trim($oldTitle), $oldM)
                 && preg_match('/^(.*\S)\s*#(\d+)$/u', trim($title), $newM)
                 && $oldM[1] === $newM[1] && $oldM[2] !== $newM[2]) {
                 $base = $newM[1];
@@ -688,6 +724,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     $conn->prepare("UPDATE active_event_options SET needs_reason = ? WHERE event_id = ? AND events_option = ?")->execute([$needsReason, $eventId, $text]);
                 }
             }
+
+            if ($editWeekly) {
+                // عنوان پایه و شماره ی این جلسه؛ رویداد تکی از همین جا «#1» می شود
+                if (preg_match('/^(.*\S)\s*#(\d+)$/u', trim($title), $m)) {
+                    [$base, $number] = [$m[1], (int)$m[2]];
+                } else {
+                    [$base, $number] = [trim($title), 1];
+                    $conn->prepare("UPDATE calendar_events SET title = ? WHERE id = ?")->execute([$base . ' #1', $eventId]);
+                }
+                $oldBase = preg_match('/^(.*\S)\s*#(\d+)$/u', trim($oldTitle), $om) ? $om[1] : trim($oldTitle);
+
+                // جلسه های بعدیِ همین سری (عنوان و پایه ی قبلی) به ترتیب؛ هفته ی اول جلسه ی بعدی را
+                // می گیرد، هفته ی دوم جلسه ی پس از آن و ... تا عوض کردن روز یا ساعت، کل سری را جابجا کند
+                $later = [];
+                $laterStmt = $conn->prepare("SELECT id, title, start_date FROM calendar_events
+                    WHERE id <> ? AND start_date > ? AND DATE(start_date) <= ? AND calendar_groups_id <=> ? AND title LIKE ?
+                    ORDER BY start_date, id");
+                $laterStmt->execute([$eventId, min($oldRow['start_date'], $start_greg), max($seriesEndDay, date('Y-m-d', strtotime($oldRow['start_date']))), $oldGroup, $oldBase . '%']);
+                foreach ($laterStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    if (preg_match('/^(.*\S)\s*#(\d+)$/u', trim($row['title']), $rm) && $rm[1] === $oldBase
+                        && $row['start_date'] > $oldRow['start_date']) {
+                        $later[] = (int)$row['id'];
+                    }
+                }
+
+                $sessionUpdate = $conn->prepare("UPDATE calendar_events SET title=?, description=?, personal_note=?, start_date=?, end_date=?, calendar_groups_id=?, updated_by_id=?, target_type=?, visibility=?, event_type=?, overlap=?, is_academic=?, marker=? WHERE id=?");
+                $sessionInsert = $conn->prepare("INSERT INTO calendar_events (title, description, personal_note, start_date, end_date, calendar_groups_id, creator_id, updated_by_id, target_type, visibility, event_type, overlap, is_academic, marker) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $markerValue = calendarEventMarker($_POST['marker'] ?? null);
+                $day = date('Y-m-d', strtotime($start_greg));
+                $weeksDone = 0;
+                for ($k = 1; $k <= 260; $k++) {
+                    $day = date('Y-m-d', strtotime($day . ' +7 days'));
+                    if ($day > $seriesEndDay) break;
+                    $sStart = $day . ' ' . $weeklyStartTime;
+                    $sEnd = $end_greg ? $day . ' ' . $weeklyEndTime : null;
+                    $sTitle = $base . ' #' . ($number + $k);
+                    if (isset($later[$k - 1])) {
+                        $sid = $later[$k - 1];
+                        $sessionUpdate->execute([$sTitle, $description, $personal_note, $sStart, $sEnd, $calendar_groups_id, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, $markerValue, $sid]);
+                    } else {
+                        $sessionInsert->execute([$sTitle, $description, $personal_note, $sStart, $sEnd, $calendar_groups_id, $adminId, $adminId, $target_group, $visibility, $event_type, $overlap, $isAcademic, $markerValue]);
+                        $sid = (int)$conn->lastInsertId();
+                    }
+                    calendarCopyEventTargets($conn, (int)$eventId, $sid);
+                    $weeksDone++;
+                }
+            }
         }
 
         $conn->commit();
@@ -725,7 +808,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             header('Content-Type: application/json');
             echo json_encode(['success' => true]);
         } else {
-            $_SESSION['calendar_message'] = ['success' => true, 'message' => 'رویداد با موفقیت به‌روزرسانی شد.'];
+            $_SESSION['calendar_message'] = ['success' => true, 'message' => !empty($editWeekly)
+                ? 'رویداد ویرایش شد و ' . (int)$weeksDone . ' جلسه ی هفتگی بعدی تا تاریخ پایان به روز یا ساخته شد.'
+                : 'رویداد با موفقیت به‌روزرسانی شد.'];
             header('Location: ' . $_SERVER['PHP_SELF']);
         }
     } catch (Exception $e) {
@@ -1378,6 +1463,11 @@ function renderCalendar() {
                                     با فعال کردن این گزینه، رویداد در فاصله‌ی تاریخ شروع تا تاریخ پایان، هر هفته در روزِ
                                     انتخاب‌شده و با همان ساعتی که وارد کرده‌اید تکرار می‌شود؛ مانند کلاسی که هر هفته
                                     در یک روز و ساعت ثابت برگزار می‌شود.
+                                </small>
+                                <small class="text-primary d-block mt-2" id="weeklyEditHint" style="display:none !important;">
+                                    در ویرایش: «تاریخ پایان» را آخرین هفته‌ی تکرار بگذارید. این تغییرات روی همین جلسه و
+                                    جلسه‌های هفته‌های بعد (هر هفته در همین روز) تا تاریخ پایان اعمال می‌شود و هفته‌های
+                                    خالی ساخته می‌شوند. رویداد تکی «#1» می‌شود و بقیه شماره می‌گیرند.
                                 </small>
                                 <div class="mt-3" id="weeklyDayContainer" style="display:none;">
                                     <label for="weeklyDay" class="form-label">روز هفته</label>
@@ -2202,8 +2292,8 @@ function renderCalendar() {
             setGradePickMode(false);
             document.getElementById('markerSelect').value = event.extendedProps.marker || '';
             document.getElementById('formAction').value = 'update_event';
-            if (typeof window.__setWeeklyBlockVisible === 'function') {
-                window.__setWeeklyBlockVisible(false);
+            if (typeof window.__setWeeklyEditMode === 'function') {
+                window.__setWeeklyEditMode(event.start ? event.start.getDay() : null);
             }
             document.getElementById('formEventId').value = eventId;
             document.getElementById('visibilitySelect').value = visibility;
@@ -3417,7 +3507,7 @@ function renderCalendar() {
         // دراپ‌داون روز هفته فقط وقتی تیک خورده باشد دیده می شود
         function syncWeeklyDayVisibility() {
             if (!isWeeklyCheckbox || !weeklyDayContainer) return;
-            weeklyDayContainer.style.display = isWeeklyCheckbox.checked ? 'block' : 'none';
+            weeklyDayContainer.style.display = (isWeeklyCheckbox.checked && !window.__weeklyEditMode) ? 'block' : 'none';
         }
         if (isWeeklyCheckbox) {
             isWeeklyCheckbox.addEventListener('change', syncWeeklyDayVisibility);
@@ -3432,6 +3522,20 @@ function renderCalendar() {
                 isWeeklyCheckbox.checked = false;
                 syncWeeklyDayVisibility();
             }
+            window.__weeklyEditMode = false;
+            var hint = document.getElementById('weeklyEditHint');
+            if (hint) hint.style.setProperty('display', 'none', 'important');
+        };
+        // ویرایش: همان جعبه ی هفتگی، ولی روزِ هفته همان روز خود رویداد است
+        window.__setWeeklyEditMode = function (weekday) {
+            window.__setWeeklyBlockVisible(true);
+            if (isWeeklyCheckbox) isWeeklyCheckbox.checked = false;
+            window.__weeklyEditMode = true;
+            var daySel = document.getElementById('weeklyDay');
+            if (daySel && weekday !== null) daySel.value = String(weekday);
+            syncWeeklyDayVisibility();
+            var hint = document.getElementById('weeklyEditHint');
+            if (hint) hint.style.setProperty('display', 'block', 'important');
         };
 
         // دکمه ی «افزودن رویداد جدید» فرم را به حالت افزودن بر می گرداند
