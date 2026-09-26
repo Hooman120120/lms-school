@@ -130,19 +130,16 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
     <style>
         .dashboard-wrap {
             overflow: visible;
-            z-index: 30;
         }
         .dashboard-hero {
             background: linear-gradient(135deg, <?= $dashboardHeroColor ?>, <?= $dashboardHeroColor ?>) !important;
             border-radius: 18px 18px 0 0;
-            z-index: 31;
         }
         .dashboard-actions {
             display: flex;
             align-items: center;
             gap: 10px;
             position: relative;
-            z-index: 32;
         }
         .dashboard-actions .dropdown-menu { z-index: 1050; }
         .dashboard-notification-button {
