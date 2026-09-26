@@ -5384,8 +5384,10 @@ const CALENDAR_RETIRED_GRADES = ['پایه دهم', 'پایه یازدهم', 'پ
  * همیشه حلقه‌ی سفید دارد.
  */
 const CALENDAR_EVENT_MARKERS = [
-    'online'         => ['label' => 'کلاس آنلاین',           'color' => '#1CBFFF'],
+    'online'         => ['label' => 'کلاس آنلاین استودیویی',  'color' => '#1CBFFF'],
+    'online_home'    => ['label' => 'کلاس آنلاین غیر استودیویی', 'color' => '#C2410C'],
     'offline'        => ['label' => 'کلاس آفلاین',           'color' => '#6B7280'],
+    'animation'      => ['label' => 'کلاس پویانمایی',         'color' => '#B8860B'],
     'cancel_school'  => ['label' => 'کنسل توسط آموزشگاه',    'color' => '#B00020'],
     'cancel_teacher' => ['label' => 'کنسل توسط معلم',        'color' => '#FFB3D9'],
     'extra'          => ['label' => 'فوق برنامه',            'color' => '#111111'],
