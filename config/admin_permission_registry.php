@@ -253,6 +253,7 @@ $registry = [
     ['code'=>'settings','label'=>'تنظیمات','legacy'=>'permision_viewsetting','children'=>[
         ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
         ['code'=>'settings.levels','label'=>'سطوح دسترسی','path'=>'admin/setting/levels.php'],
+        ['code'=>'settings.blacklist','label'=>'بلک‌لیست','path'=>'admin/setting/blacklist.php'],
         ['code'=>'settings.messages','label'=>'پیام‌های آماده','path'=>'admin/setting/ready-message.php'],
     ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
