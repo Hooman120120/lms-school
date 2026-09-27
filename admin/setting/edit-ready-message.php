@@ -24,7 +24,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_manage_chat')) {
+if (!AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages.edit', ['permision_manage_chat'])) {
     header('location: ' . url('admin/index.php'));
     die();
 }

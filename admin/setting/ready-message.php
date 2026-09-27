@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_chat')) {
+if (!AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages', ['permision_manage_chat'])) {
     header('location: ' . url('admin/index.php'));
     die();
 }

@@ -1182,7 +1182,7 @@ else                  $c = '#15233f';
                             تنظیمات
 
                             <span class="menu-info-trigger"
-                                data-tooltip="در این بخش می‌توانید تنظیمات عمومی سامانه را مدیریت کنید. امکاناتی مانند تنظیمات کلی سیستم، مدیریت بلک‌لیست، پشتیبان‌گیری از اطلاعات و مدیریت پیام‌های آماده از طریق این قسمت در دسترس است."
+                                data-tooltip="در این بخش می‌توانید تنظیمات عمومی سامانه را مدیریت کنید. امکاناتی مانند تنظیمات کلی سیستم، مدیریت بلک‌لیست و پشتیبان‌گیری از اطلاعات از طریق این قسمت در دسترس است."
                                 aria-label="راهنمای تنظیمات"
                                 onclick="event.preventDefault(); event.stopPropagation();">
 
@@ -1204,11 +1204,7 @@ else                  $c = '#15233f';
                                 <?php echo m('levels.page_title') ?> </a>
                         </li>
 
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/setting/ready-message.php') ?>"> پیام
-                                های آماده
-                                <span class="badge badge-light "></span></a>
-                        </li>
+
 
 
                     </ul>

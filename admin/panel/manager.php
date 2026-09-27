@@ -911,7 +911,7 @@ include_once '../../temp.html';
                                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <div class="card custom-card overflow-hidden">
                                             <div class="card-header  border-bottom-0 pb-0">
-                                                <div style="display:flex; align-items:center; gap:12px;">
+                                                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
                                                     <label class="main-content-label my-auto pt-2">
                                                         جابجایی پشتیبان‌ها
                                                     </label>
@@ -922,6 +922,12 @@ include_once '../../temp.html';
                                                           onclick="event.preventDefault(); event.stopPropagation();">
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
+                                                    <?php if (AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages', ['permision_manage_chat'])): ?>
+                                                        <a class="btn btn-primary mr-auto" href="<?= url('admin/setting/ready-message.php') ?>">
+                                                            <i class="fe fe-message-square" aria-hidden="true"></i>
+                                                            مدیریت پیام‌های آماده
+                                                        </a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                             <div class="card-body">

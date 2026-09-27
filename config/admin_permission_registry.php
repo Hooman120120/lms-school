@@ -13,6 +13,9 @@ $registry = [
         ['code'=>'dashboard.summary','label'=>'خلاصه وضعیت','children'=>[
             ['code'=>'dashboard.summary.overview','label'=>'چشم‌انداز کلی','children'=>[
                 ['code'=>'dashboard.summary.overview.manager','label'=>'داشبورد مدیریتی','path'=>'admin/panel/manager.php','children'=>[
+                    ['code'=>'dashboard.summary.overview.manager.ready-messages','label'=>'مدیریت پیام‌های آماده','path'=>'admin/setting/ready-message.php','children'=>[
+                        ['code'=>'dashboard.summary.overview.manager.ready-messages.edit','label'=>'ویرایش پیام آماده','path'=>'admin/setting/edit-ready-message.php'],
+                    ]],
                     ['code'=>'dashboard.summary.overview.manager.page-b9857fa208','label'=>'گزارش ثبت‌نام‌های موقت فروش','path'=>'admin/panel/temp-users-sales.php','children'=>[
                         ['code'=>'dashboard.summary.overview.manager.page-b9857fa208.today','label'=>'ثبت‌های امروز','children'=>[
                             ['code'=>'dashboard.summary.overview.manager.page-b9857fa208.today.own','label'=>'فقط ثبت‌های خود اپراتور'],
@@ -253,7 +256,6 @@ $registry = [
     ['code'=>'settings','label'=>'تنظیمات','legacy'=>'permision_viewsetting','children'=>[
         ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
         ['code'=>'settings.levels','label'=>'سطوح دسترسی','path'=>'admin/setting/levels.php'],
-        ['code'=>'settings.messages','label'=>'پیام‌های آماده','path'=>'admin/setting/ready-message.php'],
     ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],
