@@ -356,7 +356,7 @@ include_once '../../temp.html';
                                     <!-- we removed نوع جستجو, no need anymore -->
 
                                     <div class="col-md-3">
-                                        <label>شماره (دانش‌آموز یا اپراتور):</label>
+                                        <label><?= inst_is('school') ? 'شماره (دانش آموز یا مشاور):' : 'شماره (دانش‌آموز یا اپراتور):' ?></label>
                                         <input type="text"
                                                class="form-control"
                                                name="phone"
