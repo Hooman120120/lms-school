@@ -132,6 +132,7 @@ $registry = [
             ]],
         ]],
         ['code'=>'public-relations.safe-sms','label'=>'پیامک امن','path'=>'admin/Tel/safe_sms.php','children'=>[
+            ['code'=>'public-relations.safe-sms.credit','label'=>'مشاهده اعتبار سامانه پیامک'],
             ['code'=>'public-relations.safe-sms.search','label'=>'جست‌وجو و گزارش پیامک‌ها'],
             ['code'=>'public-relations.safe-sms.unread','label'=>'پیامک‌های خوانده‌نشده','path'=>'admin/notifications/unread_sms.php'],
             ['code'=>'public-relations.safe-sms.send','label'=>'ارسال پیامک گروهی','path'=>'admin/Tel/bulk_sms.php'],

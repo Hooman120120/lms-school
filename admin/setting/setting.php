@@ -198,67 +198,6 @@ include_once '../../temp.html';
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                        <div class="card custom-card">
-                            <div class="card-body">
-
-                                <div class="col-12">
-                                    <div>
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
-
-                                            <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید اعتبار باقی‌مانده سامانه پیامک را مشاهده کنید. این اعتبار برای ارسال پیامک‌های سامانه مانند پیامک‌های اطلاع‌رسانی، احراز هویت، اعلان‌ها و سایر پیام‌های ارسالی استفاده می‌شود. در صورت کاهش یا اتمام اعتبار، لازم است حساب سامانه پیامک شارژ شود تا ارسال پیامک‌ها بدون وقفه ادامه یابد."
-                                                  aria-label="راهنمای اعتبار سامانه پیامک"
-                                                  onclick="event.preventDefault(); event.stopPropagation();">
-
-                                                    <i class="fe fe-info fs-4"></i>
-                                                </span>
-                                        </div>
-
-                                        <p class="text-muted card-sub-title">
-                                            مشاهده اعتبار باقی‌مانده سامانه پیامک
-                                        </p>
-                                    </div>
-                                </div>
-                                <ul class="top-selling-products pb-0 mb-0 pr-0">
-                                    <li class="product-item pb-0">
-                                        <div class="product-info">
-                                            <div class="product-name">اعتبار باقیمانده پیامک</div>
-                                            <div class="price">از پیامک</div>
-                                        </div>
-                                        <?php
-                                        $username = __USERSMS;
-                                        $password = __PASSSMS;
-                                        $data = array('username' => $username, 'password' => $password );
-                                        $post_data = http_build_query($data);
-                                        $handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/GetCredit');
-                                        curl_setopt($handle, CURLOPT_HTTPHEADER, array(
-                                            'content-type' => 'application/x-www-form-urlencoded'
-                                        ));
-                                        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-                                        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
-                                        curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-                                        curl_setopt($handle, CURLOPT_POST, true);
-                                        curl_setopt($handle, CURLOPT_POSTFIELDS, $post_data);
-                                        $response = curl_exec($handle);
-                                        $response = json_decode($response);
-                                        $response = intval($response->Value);
-
-
-                                        ?>
-                                        <div class="product-amount">
-                                            <div class="product-price"><span
-                                                        class="font-weight-semibold"> <?php  echo number_format($response); ?></span>
-                                            </div>
-                                            <div class="items-sold"></div>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

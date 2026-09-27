@@ -456,6 +456,73 @@ include_once '../../temp.html';
                 </div>
                 <!-- ========================================= -->
 
+                <?php if (AdminCanUsePermissionScope('public-relations.safe-sms.credit', ['permision_viewcall'])): ?>
+                <div class="row row-sm">
+                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+                        <div class="card custom-card">
+                            <div class="card-body">
+
+                                <div class="col-12">
+                                    <div>
+                                        <div style="display:flex; align-items:center; gap:12px;">
+                                            <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
+
+                                            <span class="menu-info-trigger"
+                                                  data-tooltip="در این بخش می‌توانید اعتبار باقی‌مانده سامانه پیامک را مشاهده کنید. این اعتبار برای ارسال پیامک‌های سامانه مانند پیامک‌های اطلاع‌رسانی، احراز هویت، اعلان‌ها و سایر پیام‌های ارسالی استفاده می‌شود. در صورت کاهش یا اتمام اعتبار، لازم است حساب سامانه پیامک شارژ شود تا ارسال پیامک‌ها بدون وقفه ادامه یابد."
+                                                  aria-label="راهنمای اعتبار سامانه پیامک"
+                                                  onclick="event.preventDefault(); event.stopPropagation();">
+
+                                                    <i class="fe fe-info fs-4"></i>
+                                                </span>
+                                        </div>
+
+                                        <p class="text-muted card-sub-title">
+                                            مشاهده اعتبار باقی‌مانده سامانه پیامک
+                                        </p>
+                                    </div>
+                                </div>
+                                <ul class="top-selling-products pb-0 mb-0 pr-0">
+                                    <li class="product-item pb-0">
+                                        <div class="product-info">
+                                            <div class="product-name">اعتبار باقیمانده پیامک</div>
+                                            <div class="price">از پیامک</div>
+                                        </div>
+                                        <?php
+                                        $smsCredit_username = __USERSMS;
+                                        $smsCredit_password = __PASSSMS;
+                                        $smsCredit_data = array('username' => $smsCredit_username, 'password' => $smsCredit_password );
+                                        $smsCredit_post_data = http_build_query($smsCredit_data);
+                                        $smsCredit_handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/GetCredit');
+                                        curl_setopt($smsCredit_handle, CURLOPT_HTTPHEADER, array(
+                                            'content-type' => 'application/x-www-form-urlencoded'
+                                        ));
+                                        curl_setopt($smsCredit_handle, CURLOPT_RETURNTRANSFER, true);
+                                        curl_setopt($smsCredit_handle, CURLOPT_CONNECTTIMEOUT, 5);
+                                        curl_setopt($smsCredit_handle, CURLOPT_TIMEOUT, 10);
+                                        curl_setopt($smsCredit_handle, CURLOPT_POST, true);
+                                        curl_setopt($smsCredit_handle, CURLOPT_POSTFIELDS, $smsCredit_post_data);
+                                        $smsCredit_response = curl_exec($smsCredit_handle);
+                                        $smsCredit_response = json_decode($smsCredit_response);
+                                        $smsCredit_value = isset($smsCredit_response->Value) && is_numeric($smsCredit_response->Value) ? (float) $smsCredit_response->Value : null;
+                                        curl_close($smsCredit_handle);
+
+
+                                        ?>
+                                        <div class="product-amount">
+                                            <div class="product-price"><span
+                                                        class="font-weight-semibold"> <?php  echo ($smsCredit_value === null ? 'اعتبار در دسترس نیست' : number_format($smsCredit_value)); ?></span>
+                                            </div>
+                                            <div class="items-sold"></div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- ===== بخش جستجو (قابل نمایش/مخفی‌سازی) ===== -->
                 <div id="searchSection" class="<?php echo ($isSearchRequest) ? 'active' : ''; ?> search-container" style="display: <?php echo ($isSearchRequest) ? 'block' : 'none'; ?>;">
                     <div class="row row-sm mt-4">
