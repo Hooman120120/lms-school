@@ -365,6 +365,35 @@ const STAFF_ADMINROLE_TITLES = [
 // institute access level -> school post, only where the two clearly mean the same job
 const STAFF_ADMINROLE_SCHOOL_ROLE = [0 => 'manager', 51 => 'executive_deputy', 54 => 'technical_deputy', 55 => 'financial_deputy'];
 
+/*
+ * Default permissions ticked when a post is picked on the «add» form (the admin
+ * can still change them before saving). '*' = everything. Keys are the school
+ * post keys; institute access levels point at the closest one below.
+ */
+const STAFF_ROLE_PERMISSION_PRESETS = [
+    'manager' => ['*'],
+    'general_deputy' => ['dashboard', 'public-relations', 'students', 'executive', 'courses', 'school-notifications', 'tickets',
+        'documents', 'staff.directory', 'staff.teachers', 'assigned-tasks', 'referrers', 'reports', 'homework-approval',
+        'finance.pending', 'finance.unpaid', 'finance.returned', 'finance.wallet', 'finance.statement', 'finance.installments'],
+    'executive_deputy' => ['dashboard', 'public-relations', 'students', 'executive', 'school-notifications', 'tickets',
+        'documents', 'staff.directory', 'staff.teachers', 'assigned-tasks', 'reports.students'],
+    'grade_deputy' => ['dashboard', 'students', 'executive.academic-calendar', 'executive.daily-notices', 'executive.news',
+        'courses.main', 'school-notifications', 'tickets', 'documents', 'staff.teachers', 'homework-approval', 'reports.students'],
+    'cultural_disciplinary_deputy' => ['dashboard', 'students', 'executive.academic-calendar', 'executive.daily-notices',
+        'executive.news', 'school-notifications', 'tickets', 'documents'],
+    'counselor' => ['dashboard', 'public-relations.safe-call', 'public-relations.safe-sms', 'students',
+        'executive.academic-calendar', 'school-notifications', 'tickets.inbox', 'tickets.open', 'documents'],
+    'technical_deputy' => ['dashboard', 'executive', 'documents', 'assigned-tasks', 'school-notifications', 'tickets', 'staff.directory'],
+    'financial_deputy' => ['dashboard', 'finance', 'school-notifications.financial', 'documents', 'staff.directory'],
+    'sales_deputy' => ['dashboard', 'public-relations', 'students', 'referrers', 'finance.pending', 'finance.unpaid',
+        'reports.students', 'tickets', 'documents'],
+    'sales_expert' => ['dashboard', 'public-relations', 'students', 'referrers', 'tickets.inbox', 'documents'],
+];
+const STAFF_ADMINROLE_PRESET = [
+    0 => 'manager', 51 => 'general_deputy', 52 => 'grade_deputy', 53 => 'sales_deputy', 54 => 'technical_deputy',
+    55 => 'financial_deputy', 2 => 'cultural_disciplinary_deputy', 6 => 'sales_expert', 1 => 'counselor',
+];
+
 function staffRoleOptions(array $schoolRoles, array $courseScopedRoleKeys, $current = null): array
 {
     $top = (int)($_SESSION['admin']['adminrole'] ?? -1) === 0;
@@ -379,7 +408,7 @@ function staffRoleOptions(array $schoolRoles, array $courseScopedRoleKeys, $curr
             $isCurrent = $current && (int)($current->school_role_id ?? 0) === (int)$role->id;
             if (in_array($adminrole, [0, 51], true) && !$top && !$isCurrent) continue;
             $options[$value] = ['label' => (string)$role->title, 'adminrole' => $adminrole, 'school_role_id' => (int)$role->id,
-                'role_key' => $key, 'course_scope' => in_array($key, $courseScopedRoleKeys, true)];
+                'role_key' => $key, 'course_scope' => in_array($key, $courseScopedRoleKeys, true), 'preset' => $key];
         }
     } else {
         foreach (STAFF_ADMINROLE_TITLES as $adminrole => $title) {
@@ -388,7 +417,7 @@ function staffRoleOptions(array $schoolRoles, array $courseScopedRoleKeys, $curr
             if (in_array($adminrole, [0, 51], true) && !$top && !$isCurrent) continue;
             $key = STAFF_ADMINROLE_SCHOOL_ROLE[$adminrole] ?? null;
             $options[$value] = ['label' => $title, 'adminrole' => $adminrole, 'school_role_id' => $key !== null ? ($idByKey[$key] ?? null) : null,
-                'role_key' => (string)$key, 'course_scope' => false];
+                'role_key' => (string)$key, 'course_scope' => false, 'preset' => STAFF_ADMINROLE_PRESET[$adminrole] ?? ''];
         }
     }
     return $options;
@@ -1203,6 +1232,7 @@ displayError(1);
                                                         <option value="<?= htmlspecialchars($staffRoleValue) ?>"
                                                                 data-role-key="<?= htmlspecialchars($staffRoleOption['role_key']) ?>"
                                                                 data-course-scope="<?= $staffRoleOption['course_scope'] ? '1' : '0' ?>"
+                                                                data-preset="<?= htmlspecialchars($staffRoleOption['preset'] ?? '') ?>"
                                                             <?php if ('' === $staffRoleValue) { echo 'selected'; } ?>>
                                                             <?= htmlspecialchars($staffRoleOption['label']) ?>
                                                         </option>
@@ -1411,6 +1441,7 @@ displayError(1);
                                                         <option value="<?= htmlspecialchars($staffRoleValue) ?>"
                                                                 data-role-key="<?= htmlspecialchars($staffRoleOption['role_key']) ?>"
                                                                 data-course-scope="<?= $staffRoleOption['course_scope'] ? '1' : '0' ?>"
+                                                                data-preset="<?= htmlspecialchars($staffRoleOption['preset'] ?? '') ?>"
                                                             <?php if (staffRoleCurrentValue($retadmin) === $staffRoleValue) { echo 'selected'; } ?>>
                                                             <?= htmlspecialchars($staffRoleOption['label']) ?>
                                                         </option>
@@ -1678,6 +1709,34 @@ displayError(1);
                     }
                 });
             }
+
+            // «add» form: picking a post ticks its default permissions in the tree
+            const STAFF_PERMISSION_PRESETS = <?= json_encode(STAFF_ROLE_PERMISSION_PRESETS, JSON_UNESCAPED_UNICODE) ?>;
+            (function () {
+                const roleSelect = document.querySelector('select[name="staff_role"]');
+                if (!roleSelect || !roleSelect.form) return;
+                roleSelect.addEventListener('change', function () {
+                    const option = roleSelect.options[roleSelect.selectedIndex];
+                    const codes = STAFF_PERMISSION_PRESETS[option ? option.dataset.preset : ''];
+                    if (!codes) return;
+                    const boxes = Array.from(roleSelect.form.querySelectorAll('input.menu-permission-check'));
+                    if (!boxes.length) return;
+                    const all = codes.indexOf('*') !== -1;
+                    boxes.forEach(function (box) { box.checked = all; box.indeterminate = false; });
+                    if (!all) {
+                        boxes.forEach(function (box) {
+                            if (codes.indexOf(box.value) === -1) return;
+                            const node = box.closest('[data-menu-node]');
+                            box.checked = true;
+                            node.querySelectorAll('.menu-permission-children input.menu-permission-check').forEach(function (child) {
+                                child.checked = true;
+                            });
+                        });
+                    }
+                    // let the tree recompute parent (partly ticked) states and «select all»
+                    boxes[0].dispatchEvent(new Event('change', {bubbles: true}));
+                });
+            })();
 
             // the access level now comes with the chosen post (no separate dropdown)
             bindSchoolRoleDefaults('staff_role', 'adminrole', false);
