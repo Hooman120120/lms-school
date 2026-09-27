@@ -4068,7 +4068,7 @@ include_once '../../temp.html';
                                                                     <div class="form-group ">
                                                                         <div class="row row-sm">
                                                                             <div class="col-xl-3">
-                                                                                <label class="form-label">پایه
+                                                                                <label class="form-label" data-keep-terms>پایه
                                                                                     تحصیلی <span
                                                                                             class="text-danger">*</span>
                                                                                 </label>
