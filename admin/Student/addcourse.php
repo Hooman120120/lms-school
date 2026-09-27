@@ -788,8 +788,8 @@ include_once '../../temp.html';
                                                                 <thead>
                                                                 <tr>
                                                                     <th>ردیف</th>
-                                                                    <th>پشتیبان</th>
-                                                                    <th><?php echo m('label.count_person_course') ?></th>
+                                                                    <th><?= inst_is('school') ? 'مشاور' : 'پشتیبان' ?></th>
+                                                                    <th><?= inst_is('school') ? 'تعداد' : m('label.count_person_course') ?></th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
