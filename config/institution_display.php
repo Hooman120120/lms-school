@@ -26,7 +26,25 @@ function inst_display_html(string $html): string
         $html, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
     if ($parts === false) return $html;
     $out = '';
+    // Inside an element marked data-keep-terms (the calendar's «پایه», used by
+    // both types) nothing is rewritten; nesting of that element's tag is followed.
+    $keepTag = null;
+    $keepDepth = 0;
     foreach ($parts as $part) {
+        if ($keepTag !== null) {
+            if (preg_match('~^<(/?)([a-z][a-z0-9]*)\b~i', $part, $t) && strtolower($t[2]) === $keepTag && substr($part, -2) !== '/>') {
+                $keepDepth += $t[1] === '/' ? -1 : 1;
+                if ($keepDepth === 0) $keepTag = null;
+            }
+            $out .= $part;
+            continue;
+        }
+        if ($part[0] === '<' && preg_match('~^<([a-z][a-z0-9]*)\b[^>]*\sdata-keep-terms\b~i', $part, $t)) {
+            $keepTag = strtolower($t[1]);
+            $keepDepth = 1;
+            $out .= $part;
+            continue;
+        }
         if ($part[0] !== '<') {
             $out .= inst_display_text($part);
         } elseif (preg_match('~^<(?:script|style|textarea)\b|^<!--~i', $part)) {
@@ -37,7 +55,7 @@ function inst_display_html(string $html): string
         }
     }
     if (stripos($out, '</body>') !== false && function_exists('url')) {
-        $script = '<script src="' . htmlspecialchars(url('assets/js/institution-display.js'), ENT_QUOTES, 'UTF-8')
+        $script = '<script src="' . htmlspecialchars(url('assets/js/institution-display.js') . '?v=' . (int) @filemtime(__DIR__ . '/../assets/js/institution-display.js'), ENT_QUOTES, 'UTF-8')
             . '" data-institution-type="' . inst_type() . '"></script>';
         $out = preg_replace('~</body>~i', $script . '</body>', $out, 1);
     }
