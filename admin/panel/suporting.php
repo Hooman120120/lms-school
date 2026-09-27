@@ -27,6 +27,18 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
+// پشتیبانی از لینک‌های قدیمی (Id/code) و لینک‌های جدید (user/course)
+$requestedStudent = trim((string)($_GET['Id'] ?? $_GET['user'] ?? ''));
+$requestedCourse = trim((string)($_GET['code'] ?? $_GET['course'] ?? ''));
+if ($requestedStudent === '') {
+    http_response_code(400);
+    exit('شناسه دانش‌آموز ارسال نشده است.');
+}
+$_GET['Id'] = $requestedStudent;
+if ($requestedCourse !== '') {
+    $_GET['code'] = $requestedCourse;
+}
+
 //if (isset($_GET['generate'])) {
 //    if (!act_classSkyroomDemo($_GET['code'])) {
 //        // If false, alert the user and refresh/redirect back
@@ -643,8 +655,8 @@ if (isset($_POST['send-sms'])) {
 
         if (!empty($sms_text)) {
             // تنظیمات ارسال پیامک
-            $username = (string) getenv('SMS_USERNAME'); // نام کاربری پیامکی
-            $password = (string) getenv('SMS_PASSWORD'); // پسورد پیامکی
+            $username = '09127945631'; // نام کاربری پیامکی
+            $password = '&Amoozesh!1404%'; // پسورد پیامکی
             $from = '50004001945631'; // شماره خط پیامکی
 
             $recipients = [];

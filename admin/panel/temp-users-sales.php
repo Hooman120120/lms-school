@@ -48,7 +48,6 @@ if (isset($_GET['ajax_get_admins'])) {
     }
     exit; // IMPORTANT: Stop the rest of the page from rendering in the AJAX response
 }
-
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
 $isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
