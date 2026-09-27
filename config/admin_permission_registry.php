@@ -293,6 +293,7 @@ $registry = [
             ['code'=>'finance.advanced-report.all','label'=>'گزارش فاکتورهای همهٔ ایجادکنندگان'],
         ]],
         ['code'=>'finance.installments','label'=>'موارد اقساطی','legacy'=>'installment_permission','path'=>'admin/Bill/payment.php','children'=>[
+            ['code'=>'finance.installments.create','label'=>'افزودن قسط'],
             ['code'=>'finance.installments.own','label'=>'فقط پرونده‌های قسط ثبت‌شده توسط خود کاربر'],
             ['code'=>'finance.installments.all','label'=>'پرونده‌های قسط ثبت‌شده توسط همهٔ ایجادکنندگان'],
             ['code'=>'finance.installments.edit','label'=>'ویرایش یا حذف پروندهٔ قسط'],

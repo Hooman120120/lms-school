@@ -47,7 +47,9 @@ try {
 } catch (PDOException $e) {
     error_log("Permission check failed: " . $e->getMessage());
 }
+$canCreateInstallments = AdminCanUsePermissionScope('finance.installments.create', ['permision_viewbill']);
 $installmentScope = AdminRecordVisibility('finance.installments', $canViewAll);
+if ($installmentScope === null && $canCreateInstallments) $installmentScope = 'own';
 if ($installmentScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ پرونده‌های قسط برای شما فعال نشده است.');
 }
@@ -58,10 +60,48 @@ list($jalaliStart, $jalaliEnd) = getJalaliYearWindowApprox();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        if (!$canEditInstallments) {
+        if (!isset($_POST['create_payment']) && !$canEditInstallments) {
             throw new Exception('مجوز ویرایش پرونده‌های قسط فعال نشده است.');
         }
-        if (isset($_POST['update_payment'])) {
+        if (isset($_POST['create_payment'])) {
+            if (!$canCreateInstallments) throw new Exception('مجوز افزودن قسط فعال نشده است.');
+            $codemeli = trim($_POST['codemeli']);
+            $total_amount = intval($_POST['total_amount']);
+            $comment = trim($_POST['comment']);
+
+            // Validate inputs
+            if (empty($codemeli) || !preg_match('/^\d{10}$/', $codemeli)) {
+                throw new Exception("کدملی باید ۱۰ رقم باشد.");
+            }
+            if ($total_amount <= 0) {
+                throw new Exception("مبلغ کل باید بیشتر از صفر باشد.");
+            }
+
+            // Check student existence
+            $checkStudent = $conn->prepare("SELECT COUNT(*) FROM dbpersonal WHERE codemeli = :codemeli");
+            $checkStudent->execute(['codemeli' => $codemeli]);
+            $studentExists = $checkStudent->fetchColumn();
+
+            if (!$studentExists) {
+                throw new Exception("کدملی وارد شده در سیستم وجود ندارد.");
+            }
+
+                // Insert new payment
+                $insert = "
+                    INSERT INTO payments (codemeli, operator_username, total_amount, paid_amount, status, comment, created_at, updated_at)
+                    VALUES (:codemeli, :username, :total_amount, 0, 'active', :comment, NOW(), NOW())
+                ";
+                $stmt = $conn->prepare($insert);
+                $stmt->execute([
+                    'codemeli' => $codemeli,
+                    'username' => $username,
+                    'total_amount' => $total_amount,
+                    'comment' => $comment
+                ]);
+
+                $_SESSION['payment_message'] = "<div class='alert alert-success mt-3'>پرونده قسط با موفقیت ثبت شد.</div>";
+
+        } elseif (isset($_POST['update_payment'])) {
             $codemeli = trim($_POST['codemeli']);
             $total_amount = intval($_POST['total_amount']);
             $comment = trim($_POST['comment']);
@@ -360,7 +400,10 @@ catch (PDOException $e) {
                                     <i class="fe fe-info fs-4"></i>
                                 </span>
                             </div>
-                            <div class="d-flex flex-row gap-2 col-3">
+                            <div class="d-flex flex-row flex-wrap gap-2">
+                                <?php if ($canCreateInstallments): ?>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-bs-action="create">+ افزودن قسط</button>
+                                <?php endif; ?>
                                 <a class="badge bg-info rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-history.php') ?>">لیست بازگشت وجه</a>
                                 <a class="badge bg-warning rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-archive.php') ?>">آرشیو</a>
                             </div>
@@ -409,7 +452,7 @@ catch (PDOException $e) {
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                                            <button type="submit" id="submitButton" name="create_payment" class="btn btn-primary">به روز رسانی</button>
+                                            <button type="submit" id="submitButton" name="update_payment" class="btn btn-primary">به روز رسانی</button>
                                         </div>
                                     </form>
                                 </div>
@@ -652,7 +695,19 @@ catch (PDOException $e) {
 
         if (paymentModal) {
             paymentModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget; // Always the edit button
+                const button = event.relatedTarget;
+                if (!button || button.getAttribute('data-bs-action') !== 'update') {
+                    document.getElementById('paymentForm').reset();
+                    document.getElementById('payment_id').value = '';
+                    modalTitle.textContent = 'افزودن قسط';
+                    submitButton.textContent = 'ثبت قسط';
+                    submitButton.name = 'create_payment';
+                    if (statusDiv && statusSelect) {
+                        statusDiv.style.display = 'none';
+                        statusSelect.value = 'active';
+                    }
+                    return;
+                }
 
                 // Set update mode
                 modalTitle.textContent = '✏️ ویرایش پرداخت';
