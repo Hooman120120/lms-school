@@ -900,7 +900,7 @@ if (isset($_POST['save-update'])) {
                                             </select>
                                         </div>
 
-                                        <div class="col-md-2 mb-3">
+                                        <div class="col-md-2 mb-3" data-keep-terms>
                                             <label class="form-label">پایه تحصیلی</label>
                                             <select name="grade" id="grade_select" class="form-control">
                                                 <option value="">انتخاب پایه</option>
@@ -1005,7 +1005,7 @@ if (isset($_POST['save-update'])) {
                                                 <th data-sort="text">شهر <span class="sort-icon"></span></th>
                                                 <th data-sort="text">جنسیت <span class="sort-icon"></span></th>
                                                 <th data-sort="text">مدرسه <span class="sort-icon"></span></th>
-                                                <th data-sort="number">پایه <span class="sort-icon"></span></th>
+                                                <th data-sort="number" data-keep-terms>پایه <span class="sort-icon"></span></th>
                                                 <th data-sort="text">رشته <span class="sort-icon"></span></th>
                                                 <th data-sort="text">وضعیت تخصیص <span class="sort-icon"></span></th>
                                             </tr>
