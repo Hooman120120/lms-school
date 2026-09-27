@@ -93,9 +93,13 @@ $rule = $conn->query("
     LIMIT 1
 ")->fetch(PDO::FETCH_ASSOC);
 
-$periodDays = max(1, (int)($rule['period_days'] ?? 1));
-$MIN_CALLS  = (int)($rule['min_calls'] ?? 5);      // successful calls threshold
-$MIN_TALK   = (int)($rule['min_talk_time'] ?? 300);  // seconds threshold
+if (!$rule || $rule['period_days'] === null || $rule['min_calls'] === null || $rule['min_talk_time'] === null) {
+    die('خطا: قوانین اعلان ناقص است (period_days/min_calls/min_talk_time نباید NULL باشد).');
+}
+
+$periodDays = max(1, (int)$rule['period_days']);
+$MIN_CALLS  = (int)$rule['min_calls'];      // successful calls threshold
+$MIN_TALK   = (int)$rule['min_talk_time'];  // seconds threshold
 
 // -------- filters
 $status    = trim($_GET['status'] ?? '');

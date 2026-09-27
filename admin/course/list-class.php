@@ -75,10 +75,18 @@ if (isset($_POST['addclass'])) {
         $channel = $_POST['chanel'];
 
         // ثبت کلاس در دیتابیس LMS
-        $sql = "INSERT INTO classes (codecourse, name, description, is_active, link_eita) VALUES (?,?,?,?,?)";
+        $academicYearId = selectedAcademicYearId();
+        $sql = $academicYearId === null
+            ? "INSERT INTO classes (codecourse, name, description, is_active, link_eita) VALUES (?,?,?,?,?)"
+            : "INSERT INTO classes (codecourse, name, description, is_active, link_eita, academic_year_id) VALUES (?,?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$_GET['code'], $name, $description, 1, $channel]);
+        $params = [$_GET['code'], $name, $description, 1, $channel];
+        if ($academicYearId !== null) {
+            $params[] = $academicYearId;
+        }
+        $stmt->execute($params);
         $classId = $conn->lastInsertId();
+        linkCourseToSelectedAcademicYear((int)$_GET['code']);
 
         if (isset($_POST['activity-quiz'])) {
             include_once '../../inc/function-quiz.php';
@@ -648,17 +656,20 @@ include_once '../../temp.html';
                                         </div>
                                         <?php
                                         $currentUser = $_SESSION['admin']['user'] ?? '';
+                                        $academicYearId = selectedAcademicYearId();
                                         if ($adminRole === 3) {
-                                            $sql = 'SELECT c.* FROM classes c 
-                                                        INNER JOIN course_teacher t ON t.class_id = c.id 
-                                                        WHERE c.codecourse = ? AND t.teacher_username = ?';
+                                            $sql = 'SELECT c.* FROM classes c
+                                                        INNER JOIN course_teacher t ON t.class_id = c.id
+                                                        WHERE c.codecourse = ? AND t.teacher_username = ?' . ($academicYearId === null ? '' : ' AND c.academic_year_id = ?');
                                             $query = $conn->prepare($sql);
-                                            $query->execute([$_GET['code'], $currentUser]);
+                                            $params = [$_GET['code'], $currentUser];
                                         } else {
-                                            $sql = 'SELECT * FROM classes WHERE codecourse = ?';
+                                            $sql = 'SELECT * FROM classes WHERE codecourse = ?' . ($academicYearId === null ? '' : ' AND academic_year_id = ?');
                                             $query = $conn->prepare($sql);
-                                            $query->execute([$_GET['code']]);
+                                            $params = [$_GET['code']];
                                         }
+                                        if ($academicYearId !== null) $params[] = $academicYearId;
+                                        $query->execute($params);
                                         $result = $query->fetchAll(PDO::FETCH_OBJ);
                                         ?>
                                         <?php if ($adminRole !== 3 && !in_array($adminRole, [1, 6]) && TeacherPermission('teacher_perm_content')) { ?>

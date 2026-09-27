@@ -149,9 +149,9 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/alert.php') ?>">اطلاعیه های ارسالی</a>
                     </li>
-                    <li class="nav-sub-item">
+                    <?php if (inst_feature('wallet')): ?><li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/Wallet.php') ?>">کیف پول</a>
-                    </li>
+                    </li><?php endif; ?>
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/ranking.php') ?>">امتیاز دهی</a>
                     </li>
@@ -189,7 +189,7 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
             </li>
         </ul>
         <ul class="nav" style="margin-left: 10px;">
-            <li class="text-center text-white">
+            <?php if (inst_feature('wallet')): ?><li class="text-center text-white">
                 <hr>
                 <?php $wallet=NULL;
                 $wallet=totalWallet($_SESSION['auth']['user']);
@@ -213,7 +213,7 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
                         <div class="dropdown-divider"></div><a class="dropdown-item" href="#">درخواست بازگشت وجه</a>
                     </div>
                 </div>
-            </li>
+            </li><?php endif; ?>
         </ul>
 
 

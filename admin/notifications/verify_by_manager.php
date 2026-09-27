@@ -387,6 +387,10 @@ include_once '../../temp.html';
                                                                             <i class="fe fe-search"></i>
                                                                             مشاهده فاکتور
                                                                         </div>
+                                                                        <button class="dropdown-item" type="button">
+                                                                            <i class="fe fe-file-text"></i>
+                                                                            فیش‌های واریزی
+                                                                        </button>
                                                                     </div>
 
                                                                 </div>

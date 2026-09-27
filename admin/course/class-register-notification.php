@@ -35,7 +35,7 @@ if (!$event) {
 
 $eventTypeCode = (int)$event['type'];
 $notificationType = in_array($eventTypeCode, [0, 2], true) ? 'attendance'
-    : (in_array($eventTypeCode, [1, 4, 5], true) ? 'exam' : '');
+    : (in_array($eventTypeCode, [1, 4], true) ? 'exam' : '');
 
 if ($notificationType === '' || !in_array($notificationType, SchoolNotificationAllowedTypes(), true)) {
     http_response_code(403);

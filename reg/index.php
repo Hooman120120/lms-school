@@ -3,10 +3,10 @@ define('BASE_PATH', __DIR__);
 //define('CURRENT_DOMAIN', currentDomain().'/my' ); // این بخش در هنگام تحویل پروژه تغییر یابد
 define('DISPLAY_ERROR', true); // این قسمت در هنگام تحویل پروژه فالس شود
 define('PERMISION_FILE', '0600'); // سطح دسترسی فایل های بارگزاری شده
-define('DB_HOST', 'localhost');
-define('DB_USER', 'myhona_account');
-define('DB_PASS', 'N@staran1362@#');
-define('DB_NAME', 'myhona_myhonar');
+define('DB_HOST', getenv('LMS_DB_HOST') ?: 'localhost'); // login from the server settings, as in dbconfig.php
+define('DB_USER', getenv('LMS_DB_USER') ?: '');
+define('DB_PASS', getenv('LMS_DB_PASS') !== false ? (string) getenv('LMS_DB_PASS') : '');
+define('DB_NAME', getenv('LMS_DB_NAME') ?: 'myhona_myhonar');
 
 //include_once 'language/fa_IR.php'; // فایل زبان انتخاب شود
 

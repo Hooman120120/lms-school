@@ -3,6 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+if (!inst_feature('wallet')) { http_response_code(404); exit('کیف پول در نسخه مدرسه‌ای فعال نیست.'); }
 displayError(0);
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';

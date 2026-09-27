@@ -196,8 +196,8 @@ if (isset($_POST['general-sms'])) {
         $mobile = $sms_info['mob1'];
 
         if (!empty($mobile)) {
-            $username = '09127945631'; // نام کاربری پیامکی
-            $password = '&Amoozesh!1404%'; // پسورد پیامکی
+            $username = (string) getenv('SMS_USERNAME'); // نام کاربری پیامکی
+            $password = (string) getenv('SMS_PASSWORD'); // پسورد پیامکی
 
             $data = [
                 'username' => $username,

@@ -119,7 +119,42 @@ function hf_control_store_license(PDO $conn, array $response): array
         $service['capacity_total'] ?? null,
         (int) ($service['capacity_used'] ?? 0),
     ]);
+    // A profile that cannot be written must not cost the school its access;
+    // the next licence read tries again.
+    try {
+        hf_control_apply_settings($conn, $license['panel']['settings'] ?? null);
+    } catch (Throwable $e) {
+        error_log('hf_control: school profile not applied: ' . $e->getMessage());
+    }
     return $license;
+}
+
+/**
+ * The school profile hf sends with the licence: type (school / institute) and
+ * gender (boys / girls). hf is where it is set, so it overwrites whatever the
+ * row holds; a value hf has not set yet is left alone. The gender column is
+ * newer than most school databases, so it is added the first time it is needed.
+ */
+function hf_control_apply_settings(PDO $conn, $settings): void
+{
+    if (!is_array($settings)) return;
+    $values = [];
+    if (in_array($settings['institution_type'] ?? null, ['school', 'institute'], true)) {
+        $values['institution_type'] = $settings['institution_type'];
+    }
+    if (in_array($settings['gender'] ?? null, ['boys', 'girls'], true)) {
+        $values['gender'] = $settings['gender'];
+    }
+    if (!$values) return;
+
+    if (isset($values['gender'])) {
+        $has = $conn->query("SHOW COLUMNS FROM setting_public LIKE 'gender'")->fetch();
+        if (!$has) {
+            $conn->exec("ALTER TABLE setting_public ADD COLUMN gender ENUM('boys','girls') DEFAULT NULL");
+        }
+    }
+    $set = implode(', ', array_map(fn($column) => "`$column` = ?", array_keys($values)));
+    $conn->prepare("UPDATE setting_public SET $set ORDER BY id LIMIT 1")->execute(array_values($values));
 }
 
 function hf_control_fetch_license(PDO $conn): array

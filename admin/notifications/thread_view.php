@@ -633,42 +633,33 @@ if (!$isTeacherViewer && isset($_POST['action']) && $_POST['action'] === 'set_st
 // Send message (teacher + responders) while NOT resolved
 if (isset($_POST['action']) && $_POST['action'] === 'send_message' && $token_ok()) {
 
-    if (isset($_FILES['fileto']) && $_FILES['fileto']['error'] !== UPLOAD_ERR_NO_FILE) {
-        $maxSize = 4 * 1024 * 1024;
+    if ($_FILES['fileto'] and $_FILES['fileto']['error'] === 0 and $_FILES['fileto']['size'] > 0) {
+        $maxSize = 20 * 1024 * 1024;
         $file = $_FILES['fileto'];
 
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $_SESSION['flash'] = 'خطا در بارگذاری فایل؛ حجم فایل را بررسی کنید.';
-            $_SESSION['flash_type'] = 'danger';
-            header('Location: thread_view.php?type=teacher&id=' . (int)$threadId);
-            exit;
-        }
-        if ((int)$file['size'] > $maxSize) {
-            $_SESSION['flash'] = 'حجم فایل نباید بیشتر از ۴ مگابایت باشد.';
-            $_SESSION['flash_type'] = 'danger';
-            header('Location: thread_view.php?type=teacher&id=' . (int)$threadId);
-            exit;
-        }
+        if ($_FILES['fileto']['size'] > $maxSize) {
+            $error = 1;
+            $errorMessage = 'حجم فایل نباید بیشتر از 20 مگابایت باشد.';
 
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/assets/teacher_file';
-        $fileName = uniqid() . '_' . basename($file['name']);
-        $uploadPath = $uploadDir . '/' . $fileName;
-        $upload_path_for_db = '/assets/teacher_file/' . $fileName;
+        } else {
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/assets/teacher_file';
+            $fileName = uniqid() . '_' . basename($file['name']);
+            $uploadPath = $uploadDir . '/' . $fileName;
+            $upload_path_for_db = '/assets/teacher_file/' . $fileName;
 
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0775, true);
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0775, true);
+            }
+        }
+        if (!empty($_FILES['fileto']['name']) and $_FILES['fileto']['error']){
+            $error = 1;
+            $errorMessage = 'خطای غیرمنتظره در بارگزاری فایل ! حجم و فرمت فایل را چک نمایید';
         }
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
             $ins = $conn->prepare("
         INSERT INTO teacher_ticket_messages (teacher_ticket_id, sender_username, body, file_path, created_at)
         VALUES (?, ?, ?,?, NOW())
-    ");
-        } else {
-            $_SESSION['flash'] = 'فایل بارگذاری نشد؛ دوباره تلاش کنید.';
-            $_SESSION['flash_type'] = 'danger';
-            header('Location: thread_view.php?type=teacher&id=' . (int)$threadId);
-            exit;
-        }
+    ");}
     }
 
 
@@ -950,7 +941,7 @@ include_once '../../temp.html';
                                     <?php echo m('label.teacher_ticket') ?> #<?= (int)$teacherTicket['id'] ?>
                                     — <?= h($teacherTicket['title'] ?? '—') ?>
                                     </div>
-                                    <div ><a class="nav-link" data-bs-toggle="tooltip" href="#" title="محدودیت حجم آپلود 4 مگابایت است و فایل های قابل آپلود به این صورت هستند: .pdf,doc,docx,jpg,png,zip,rar">
+                                    <div ><a class="nav-link" data-bs-toggle="tooltip" href="#" title="محدودیت حجم آپلود 20 مگابایت است و فایل های قابل آپلود به این صورت هستند: .pdf,doc,docx,jpg,png,zip,rar">
                                         <i class="fe fe-info fs-4" style="color: gray;" title="">
                                         </i>
                                         </a>
@@ -1090,7 +1081,7 @@ include_once '../../temp.html';
                                 </div>
 
                                 <?php if (($teacherTicket['status'] ?? '') !== 'resolved'): ?>
-                                    <form id="teacherMessageForm" method="post" class="mt-2" enctype="multipart/form-data">
+                                    <form method="post" class="mt-2" enctype="multipart/form-data">
                                         <input type="hidden" name="token" value="<?= h($_SESSION['token']) ?>">
                                         <input type="hidden" name="action" value="send_message">
                                         <div class="input-group">
@@ -1106,7 +1097,7 @@ include_once '../../temp.html';
                                                     <p style="background-color: green; padding: 5px; border-radius: 10px; color: white; ">
                                                         آپلود فایل</p>
 
-                                                    <input id="teacherMessageFile" type="file" name="fileto" style="display: none;" multiple="" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip,.rar" >
+                                                    <input type="file" name="fileto" style="display: none;" multiple="" >
                                                 </a>
                                                 </label>
                                             </nav>
@@ -1156,18 +1147,6 @@ include_once '../../temp.html';
     document.addEventListener('DOMContentLoaded', function () {
         const chat = document.getElementById('ChatBody');
         if (chat) chat.scrollTop = chat.scrollHeight;
-
-        const messageForm = document.getElementById('teacherMessageForm');
-        const messageFile = document.getElementById('teacherMessageFile');
-        if (messageForm && messageFile) {
-            messageForm.addEventListener('submit', function (event) {
-                if (messageFile.files[0] && messageFile.files[0].size > 4 * 1024 * 1024) {
-                    event.preventDefault();
-                    alert('حجم فایل نباید بیشتر از ۴ مگابایت باشد.');
-                    messageFile.value = '';
-                }
-            });
-        }
     });
 </script>
 </body>

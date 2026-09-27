@@ -31,14 +31,14 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcall')) {
+if (!AdminHasMenuPermission('safe-sms') && !Permision('permision_viewcall')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
 
 // -------------------- تنظیمات --------------------
 if (!defined('__USERSMS')) define('__USERSMS', 'your_username_here');
-if (!defined('__PASSSMS')) define('__PASSSMS', 'your_password_here');
+if (!defined('__PASSSMS')) define('__PASSSMS', (string) getenv('PASSSMS'));
 
 if (!extension_loaded('soap')) {
     die('خطا: اکستنشن SOAP در PHP فعال نیست.');

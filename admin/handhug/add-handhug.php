@@ -96,6 +96,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$currentCourseId]);
                 $currentCode = $stmt->fetchColumn();
+                linkCourseToSelectedAcademicYear((int)$currentCode);
                 //
                 $addquiz = 'INSERT INTO `_ugroups`(aid,ugtitle,ugdescription) VALUES (?,?,?)';
                 global $ponn;

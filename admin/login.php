@@ -17,9 +17,7 @@ if (isset($_SESSION['admin'])){
     die();
 }
 if (isset($_POST['loginadmin'])) {
-
-
-if (isset($_SESSION['token']) and $_SESSION['token'] === $_POST['token']) {  // Token UnFailed
+    if (isset($_SESSION['token']) and $_SESSION['token'] === $_POST['token']) {  // Token UnFailed
         if ($_POST['user'] != '' and $_POST['pass'] != '') {                     // Input Field Not empty
             if ($_POST['user'] != NULL and $_POST['pass'] != NULL) {                  // Input Field Not Null
                 if (GetAdminUsername($_POST['user'])) {                                //Check Username Valid
@@ -151,8 +149,6 @@ if (is_file($templateFile)) {
             overflow: hidden;
         }
     </style>
-
-
 </head>
 
 <body>
@@ -168,7 +164,7 @@ if (is_file($templateFile)) {
                         <div class="mt-5 pt-4 p-2 pos-absolute">
                             <img src="../assets/img/logo-white.png" class="header-brand-img mb-4" alt="logo">
                             <div class="clearfix"></div>
-                            <img src="../assets/img/svgs/user.svg" class="ht-100 mb-0" alt="user">
+                            <img src="../assets/img/svgs/user.png" class="mb-0" style="width: 140px; height: 140px;" alt="user">
 
                         </div>
                     </div>
@@ -198,7 +194,10 @@ if (is_file($templateFile)) {
                                         ?>
                                         <input type="hidden" name="token" value="<?php echo $hash ?>">
                                         <button name="loginadmin"
-                                                class="btn ripple btn-main-primary btn-block">ورود</button>
+        class="btn ripple btn-main-primary btn-block"
+        style="background-color: #1a3b4c; border-color: #1a3b4c; color: #fff;">
+    ورود
+</button>
                                     </form>
                                     <div class="text-center mt-5 ml-0 text-warning">
                                         <?php

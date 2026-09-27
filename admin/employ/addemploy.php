@@ -228,12 +228,25 @@ function renderEmployeePermissionColumns(array $columns, $admin = null): void
     foreach ($columns as $groups) { ?>
         <div class="col-md-6">
             <?php foreach ($groups as $groupIndex => $group) { ?>
-                <h6 class="text-primary font-weight-bold mb-2 <?= $groupIndex > 0 ? 'mt-3' : '' ?>">
-                    <?= htmlspecialchars($group['title']) ?>
-                </h6>
-                <div class="form-group">
-                    <?php foreach ($group['items'] as $permission) {
+                <?php $parent = $group['items'][0] ?? null; ?>
+                <section class="permission-tree <?= $groupIndex > 0 ? 'mt-3' : '' ?>" data-permission-tree>
+                    <div class="permission-tree-heading">
+                        <div>
+                            <h6 class="mb-1"><?= htmlspecialchars($group['title']) ?></h6>
+                            <small>فعال‌کردن دسترسی اصلی، زیرمجموعه‌ها را هم فعال می‌کند. انتخاب جزئی، وضعیت «بخشی» را نشان می‌دهد.</small>
+                        </div>
+                        <?php if ($parent): [$parentCreate, $parentEdit, $parentColumn, $parentLabel, $parentHelp] = $parent; $parentChecked = $isEdit ? (int)($admin->{$parentColumn} ?? 0) === 1 : !empty($parent[5]); ?>
+                            <label class="permission-master mb-0">
+                                <input class="permission-parent" name="<?= htmlspecialchars($isEdit ? $parentEdit : $parentCreate) ?>" type="checkbox" <?= $parentChecked ? 'checked' : '' ?>>
+                                دسترسی کامل این بخش
+                            </label>
+                        <?php endif; ?>
+                    </div>
+                    <div class="permission-tree-children">
+                    <?php foreach ($group['items'] as $permissionIndex => $permission) {
+                        if ($permissionIndex === 0) continue;
                         [$createName, $editName, $column, $label, $help] = $permission;
+                        if (!inst_feature('wallet') && in_array($column, ['permision_actwallet', 'permision_viewwallet'], true)) continue;
                         $defaultChecked = !empty($permission[5]);
                         $checked = $isEdit
                             ? (int)($admin->{$column} ?? 0) === 1
@@ -253,10 +266,62 @@ function renderEmployeePermissionColumns(array $columns, $admin = null): void
                             </span>
                         </div>
                     <?php } ?>
-                </div>
+                    </div>
+                </section>
             <?php } ?>
         </div>
     <?php }
+}
+
+function renderMenuPermissionNode(array $node, array $selected, ?object $admin = null, int $depth = 0): void
+{
+    $modes = $node['modes'] ?? ['school', 'institute'];
+    if (!in_array(inst_type(), $modes, true)) return;
+    /* Legacy columns are intentionally not inferred here: their old broad
+       meanings must never turn into an accidental full-tree grant. */
+    $checked = in_array($node['code'], $selected, true);
+    $children = $node['children'] ?? [];
+    ?>
+    <div class="menu-permission-node depth-<?= $depth ?>" data-menu-node>
+        <label class="menu-permission-label">
+            <input class="menu-permission-check" type="checkbox" name="access_permissions[]" value="<?= htmlspecialchars($node['code']) ?>" <?= $checked ? 'checked' : '' ?>>
+            <span><?= htmlspecialchars($node['label']) ?></span>
+            <?php if ($children): ?><small>دسترسی‌های زیرمجموعه</small><?php endif; ?>
+        </label>
+        <?php if ($children): ?><div class="menu-permission-children"><?php foreach ($children as $child) renderMenuPermissionNode($child, $selected, $admin, $depth + 1); ?></div><?php endif; ?>
+    </div>
+    <?php
+}
+
+function renderMenuPermissionTree(?object $admin = null): void
+{
+    global $conn;
+    $selected = [];
+    if ($admin && !empty($admin->username)) {
+        try {
+            $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
+            $stmt->execute([$admin->username]);
+            $selected = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
+        } catch (Throwable $e) { $selected = []; }
+    }
+    foreach (AdminPermissionRegistry() as $node) renderMenuPermissionNode($node, $selected, $admin);
+}
+
+/*
+ * The old dbadmin flags still protect a number of legacy endpoints.  They are
+ * not shown to the administrator any more, but an edit must not accidentally
+ * clear existing flags while those endpoints are progressively moved to the
+ * new tree. New grants are stored only in admin_user_permissions.
+ */
+function renderLegacyPermissionShadowFields(array $columns, ?object $admin = null): void
+{
+    if (!$admin) return;
+    foreach ($columns as $groups) foreach ($groups as $group) foreach ($group['items'] as $permission) {
+        [$createName, $editName, $column] = $permission;
+        if (!empty($admin->{$column})) {
+            echo '<input type="hidden" name="' . htmlspecialchars($editName) . '" value="1">';
+        }
+    }
 }
 
 if (isset($_POST['esave'])) {
@@ -489,7 +554,7 @@ if (isset($_POST['esave'])) {
         $schoolRoleId = isset($_POST['eschool_role_id']) && in_array((int)$_POST['eschool_role_id'], $validSchoolRoleIds, true)
             ? (int)$_POST['eschool_role_id'] : NULL;
         $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
-        if ($selectedSchoolRoleKey === 'counselor') {
+        if (inst_is('school') && $selectedSchoolRoleKey === 'counselor') {
             // مشاور از نظر قالب پنل و رفتار قدیمی سامانه همان adminrole پشتیبان است.
             $adminrole = 1;
             $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
@@ -508,6 +573,7 @@ if (isset($_POST['esave'])) {
         $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
         $schoolRoleUpdate->execute([$schoolRoleId, $_GET['edit']]);
         syncExtendedStaffPermissions($conn, (string)$_GET['edit'], true, $selectedSchoolRoleKey);
+        SyncAdminPermissionGrants((string)$_GET['edit'], $_POST['access_permissions'] ?? []);
         $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
         $registerClassUpdate->execute([$registerClassPermission, $_GET['edit']]);
         syncStaffCourseAssignments($conn, (string)$_GET['edit'], $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
@@ -752,7 +818,7 @@ if (isset($_POST['save'])) {
                 $schoolRoleId = isset($_POST['school_role_id']) && in_array((int)$_POST['school_role_id'], $validSchoolRoleIds, true)
                     ? (int)$_POST['school_role_id'] : NULL;
                 $selectedSchoolRoleKey = schoolRoleKeyById($schoolRoleId, $schoolRoles);
-                if ($selectedSchoolRoleKey === 'counselor') {
+                if (inst_is('school') && $selectedSchoolRoleKey === 'counselor') {
                     // مشاور با داشبورد و منطق پشتیبان قدیمی ایجاد می‌شود.
                     $adminrole = 1;
                     $menubill = $actbill = $notpay = $actwallet = $bill = $reportbill = $menuwallet = 0;
@@ -774,6 +840,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                 $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
                 $schoolRoleUpdate->execute([$schoolRoleId, $username]);
                 syncExtendedStaffPermissions($conn, $username, false, $selectedSchoolRoleKey);
+                SyncAdminPermissionGrants($username, $_POST['access_permissions'] ?? []);
                 $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
                 $registerClassUpdate->execute([$registerClassPermission, $username]);
                 syncStaffCourseAssignments($conn, $username, $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
@@ -885,6 +952,19 @@ include_once '../../temp.html';
             font-size: 17px;
             margin-top: 1px;
         }
+        .permission-tree { border: 1px solid #dce4ef; border-radius: 10px; overflow: hidden; background: #fff; }
+        .permission-tree-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:11px 12px; background:#f0f5fb; border-bottom:1px solid #dce4ef; }
+        .permission-tree-heading h6 { color:#214f87; font-weight:800; }
+        .permission-tree-heading small { color:#667085; line-height:1.6; display:block; }
+        .permission-master { white-space:nowrap; font-weight:700; color:#214f87; cursor:pointer; }
+        .permission-tree-children { padding:8px; }
+        .permission-tree-children .permission-option { margin-bottom:6px; }
+        .menu-permission-node { border:1px solid #e1e8f0; border-radius:8px; margin:7px 0; background:#fff; }
+        .menu-permission-label { display:flex; align-items:center; gap:9px; padding:10px 12px; margin:0; cursor:pointer; font-weight:700; }
+        .menu-permission-label small { margin-right:auto; color:#768396; font-weight:400; }
+        .menu-permission-children { margin:0 18px 10px 0; padding-right:12px; border-right:2px solid #d8e4f2; }
+        .menu-permission-node.depth-0 > .menu-permission-label { background:#eef5fc; color:#174a7c; font-size:16px; }
+        @media (max-width: 576px) { .permission-tree-heading { align-items:flex-start; flex-direction:column; } }
     </style>
 </head>
 <body class="main-body leftmenu">
@@ -1078,7 +1158,7 @@ include_once '../../temp.html';
                                     </div>
                                     <div class="card-body">
                                         <div class="row text-right">
-                                            <?php renderEmployeePermissionColumns($employeePermissionColumns); ?>
+                                            <?php renderMenuPermissionTree(); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -1301,7 +1381,8 @@ include_once '../../temp.html';
                                     </div>
                                     <div class="card-body">
                                         <div class="row text-right">
-                                            <?php renderEmployeePermissionColumns($employeePermissionColumns, $retadmin); ?>
+                                            <?php renderMenuPermissionTree($retadmin); ?>
+                                            <?php renderLegacyPermissionShadowFields($employeePermissionColumns, $retadmin); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -1345,7 +1426,7 @@ include_once '../../temp.html';
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.permission-card').forEach(function (card) {
                 const selectAll = card.querySelector('.permission-select-all');
-                const permissions = Array.from(card.querySelectorAll('.permission-option input[type="checkbox"]'));
+                const permissions = Array.from(card.querySelectorAll('.menu-permission-check'));
                 if (!selectAll || permissions.length === 0) return;
 
                 function refreshSelectAll() {
@@ -1393,6 +1474,37 @@ include_once '../../temp.html';
 
             bindCourseScope('school_role_id', 'create');
             bindCourseScope('eschool_role_id', 'edit');
+
+            document.querySelectorAll('[data-menu-node]').forEach(function (node) {
+                const own = node.querySelector(':scope > .menu-permission-label > input');
+                const descendants = Array.from(node.querySelectorAll('.menu-permission-children input'));
+                if (!own || descendants.length === 0) return;
+                const refresh = function () {
+                    const checked = descendants.filter(function (item) { return item.checked; }).length;
+                    own.indeterminate = checked > 0 && checked < descendants.length;
+                    if (checked === descendants.length) own.checked = true;
+                };
+                own.addEventListener('change', function () { descendants.forEach(function (item) { item.checked = own.checked; item.indeterminate = false; }); });
+                descendants.forEach(function (item) { item.addEventListener('change', refresh); });
+                refresh();
+            });
+
+            document.querySelectorAll('[data-permission-tree]').forEach(function (tree) {
+                const parent = tree.querySelector('.permission-parent');
+                const children = Array.from(tree.querySelectorAll('.permission-tree-children input[type="checkbox"]'));
+                if (!parent || children.length === 0) return;
+                const refresh = function () {
+                    const selected = children.filter(function (item) { return item.checked; }).length;
+                    parent.checked = selected === children.length;
+                    parent.indeterminate = selected > 0 && selected < children.length;
+                };
+                parent.addEventListener('change', function () {
+                    children.forEach(function (item) { item.checked = parent.checked; });
+                    parent.indeterminate = false;
+                });
+                children.forEach(function (item) { item.addEventListener('change', refresh); });
+                refresh();
+            });
 
             function bindSchoolRoleDefaults(roleSelectName, adminRoleName, isEdit) {
                 const roleSelect = document.querySelector('select[name="' + roleSelectName + '"]');
