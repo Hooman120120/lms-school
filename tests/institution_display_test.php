@@ -40,6 +40,6 @@ $check(inst_display_html("PK\x03\x04" . $source) === "PK\x03\x04" . $source, 'Do
 $check(m('menu.active_courses') === ($institute ? 'دوره‌های فعال' : 'پایه‌های در حال اجرا'), 'Active menu');
 if ($institute) {
     $check(m('menu.active_democourses') === 'دوره‌های موقت', 'Temporary menu');
-    $check(m('menu.course_create') === 'ثبت دوره فعال', 'Create menu');
+    $check(m('menu.course_create') === 'ایجاد دوره فعال', 'Create menu');
 }
 echo inst_type() . ": all checks passed\n";
