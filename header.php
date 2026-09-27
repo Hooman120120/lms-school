@@ -46,7 +46,7 @@ $result=$query->fetch();
 
         </div>
         <div class="main-header-right">
-            <div class="dropdown main-header-notification">
+            <!-- <div class="dropdown main-header-notification">
                 <a class="nav-link icon" href="#">
                     <i class="fe fe-bell header-icons"></i>
                     <span class="badge badge-warning nav-link-badge">1</span>
@@ -68,10 +68,10 @@ $result=$query->fetch();
                         <a href="#">مشاهده همه اعلان ها</a>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
 
-<?php if($_SESSION['auth']['role']==1){?>
+<!-- <?php if($_SESSION['auth']['role']==1){?>
             <div class="dropdown main-header-notification">
                 <a class="nav-link icon" href="#">
                     <i class="ti ti-shopping-cart header-icons"></i>
@@ -115,7 +115,7 @@ $result=$query->fetch();
                     </div>
                 </div>
             </div>
-        <?php } ?>
+        <?php } ?> -->
 
             <div class="main-header-notification">
                 <a class="nav-link icon" href="tel:+982191098185">
@@ -160,7 +160,7 @@ $result=$query->fetch();
     <div class="mb-1 navbar navbar-expand-lg  nav nav-item  navbar-nav-right responsive-navbar navbar-dark  ">
         <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
             <div class="d-flex order-lg-2 mr-auto">
-    <?php if($_SESSION['auth']['role']==1){?>
+    <!-- <?php if($_SESSION['auth']['role']==1){?>
                 <div class="dropdown main-header-notification">
                     <a class="nav-link icon" href="#">
                         <i class="ti ti-shopping-cart header-icons"></i>
@@ -203,7 +203,7 @@ $result=$query->fetch();
                         </div>
                     </div>
                 </div>
-        <?php } ?>
+        <?php } ?> -->
                 <div class="main-header-notification">
                     <a class="nav-link icon" href="tel:+982191098185">
                         <i class="fe fe-phone-call header-icons"></i>
