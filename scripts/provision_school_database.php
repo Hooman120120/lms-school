@@ -123,6 +123,14 @@ try {
     $server->exec('INSERT IGNORE INTO hf_control_state (id) VALUES (1)');
     $insert = $server->prepare('INSERT INTO dbadmin (`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', array_fill(0, count($columns), '?')) . ')');
     $insert->execute($values);
+    // The first admin also gets the whole permission tree: a granted branch covers
+    // everything under it, so the top-level codes are enough (a panel ignores the
+    // branches that are not for its institution type).
+    $registry = require dirname(__DIR__) . '/config/admin_permission_registry.php';
+    $grant = $server->prepare('INSERT IGNORE INTO admin_user_permissions (admin_username, permission_code) VALUES (?, ?)');
+    foreach ($registry as $node) {
+        if (!empty($node['code'])) $grant->execute([$username, (string) $node['code']]);
+    }
     $server->commit();
     echo $targetName . PHP_EOL;
 } finally {
