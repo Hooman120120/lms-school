@@ -140,7 +140,7 @@ include_once '../../temp.html';
     include_once '../header.php';
     ?>
 
-    <div class="main-content side-content pt-4">
+    <div class="main-content side-content pt-4" data-keep-terms>
         <div class="container-fluid">
 
             <div class="d-flex justify-content-between align-items-center mb-4">

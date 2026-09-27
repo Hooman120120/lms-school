@@ -6,7 +6,8 @@
     const pattern = new RegExp(Object.keys(terms).join('|'), 'g');
     const translate = value => value.replace(pattern, word => terms[word]);
     const attributes = ['title', 'aria-label', 'placeholder', 'alt', 'data-tooltip'];
-    const excluded = 'script,style,textarea,[contenteditable]';
+    // [data-keep-terms]: parts that use one word for both types (the calendar's «پایه»).
+    const excluded = 'script,style,textarea,[contenteditable],[data-keep-terms]';
     function normalize(node) {
         if (node.nodeType === Node.TEXT_NODE) {
             if (!node.parentElement || node.parentElement.closest(excluded)) return;

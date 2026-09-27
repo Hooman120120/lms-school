@@ -852,6 +852,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 function renderCalendar() {
     global $permission_calendar, $conn, $gw, $weekGroups;
     ?>
+    <?php /* «پایه» for school and institute alike: not rewritten by institution-display.js */ ?>
+    <div data-keep-terms>
     <style>
         /* overriding the original fulcalendar styles for customizing the calendar. for more customization change or add here. */
         #calendar {
@@ -1804,6 +1806,7 @@ function renderCalendar() {
                 </div>
             </div>
         </div>
+    </div>
     </div>
 <?php } ?>
 <script>
