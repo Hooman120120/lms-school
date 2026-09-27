@@ -794,7 +794,7 @@ if (isset($_POST['save-update'])) {
 
                 <div class="row row-sm">
                     <div class="col-lg-12">
-                        <div class="card custom-card">
+                        <div class="card custom-card" data-keep-terms>
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     <h6 class="mb-0">تعداد افراد هر پایه</h6>
@@ -974,13 +974,13 @@ if (isset($_POST['save-update'])) {
                                 <form method="POST" class="mb-3" id="assignForm">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <label class="form-label">انتخاب اپراتورها <span class="text-danger">*</span></label>
+                                            <label class="form-label"><?= inst_is('school') ? 'انتخاب مشاوران' : 'انتخاب اپراتورها' ?> <span class="text-danger">*</span></label>
                                             <select name="operator_ids[]" class="form-control select2-multiple" multiple="multiple" required style="width: 100%;">
                                                 <?php foreach ($operators as $op): ?>
                                                     <option value="<?= $op->dakheli ?>"><?= $op->username ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                            <small class="text-muted">برای انتخاب چند اپراتور، کلید Ctrl را نگه دارید یا کلیک کنید</small>
+                                            <small class="text-muted"><?= inst_is('school') ? 'برای انتخاب چند مشاور، کلید Ctrl را نگه دارید یا کلیک کنید' : 'برای انتخاب چند اپراتور، کلید Ctrl را نگه دارید یا کلیک کنید' ?></small>
                                         </div>
 
                                         <div class="col-md-4 ms-auto d-flex align-items-end">
@@ -1429,7 +1429,7 @@ if (isset($_POST['save-update'])) {
         // فعال‌سازی Select2 برای انتخاب چند اپراتور
         $(document).ready(function() {
             $('.select2-multiple').select2({
-                placeholder: 'اپراتورها را انتخاب کنید',
+                placeholder: <?= json_encode(inst_is('school') ? 'مشاور ها را انتخاب کنید' : 'اپراتورها را انتخاب کنید', JSON_UNESCAPED_UNICODE) ?>,
                 allowClear: true,
                 width: '100%'
             });
