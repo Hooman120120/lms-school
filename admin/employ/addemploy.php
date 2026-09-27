@@ -711,6 +711,22 @@ if (isset($_POST['esave'])) {
         $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
         $registerClassUpdate->execute([$registerClassPermission, $_GET['edit']]);
         syncStaffCourseAssignments($conn, (string)$_GET['edit'], $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
+        // داخلی (Simotel extension): editable here; digits only, unique among admins.
+        if (isset($_POST['edakheli'])) {
+            $newDakheli = trim(strtr((string) $_POST['edakheli'], ['۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9']));
+            if ($newDakheli !== '' && (!ctype_digit($newDakheli) || strlen($newDakheli) > 6)) {
+                $eror = 'داخلی باید عددی حداکثر ۶ رقمی باشد';
+            } else {
+                $dakheliTaken = $conn->prepare('SELECT 1 FROM dbadmin WHERE dakheli = ? AND username <> ? LIMIT 1');
+                $dakheliTaken->execute([$newDakheli, (string) $_GET['edit']]);
+                if ($newDakheli !== '' && $dakheliTaken->fetchColumn()) {
+                    $eror = 'داخلی ' . $newDakheli . ' برای همکار دیگری ثبت شده است';
+                } else {
+                    // empty = no extension (NULL: the column is unique, so '' could only be used once)
+                    $conn->prepare('UPDATE dbadmin SET dakheli = ? WHERE username = ?')->execute([$newDakheli !== '' ? $newDakheli : null, (string) $_GET['edit']]);
+                }
+            }
+        }
         $documentUploadErrors = SaveAdminDocumentUploads((string)$_GET['edit']);
         $accept = 'بروز رسانی با موفقیت انجام شد';
     }
@@ -1340,6 +1356,9 @@ displayError(1);
                 <div class="inner-body">
 
                     <!-- Success Alert Block -->
+                    <?php if (isset($eror)) { ?>
+                        <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars((string) $eror) ?></div>
+                    <?php } ?>
                     <?php if (isset($accept)) { ?>
                         <div class="alert alert-success" role="alert">
                             <span class="alert-inner--icon"><i class="mdi mdi-asterisk"></i></span>
@@ -1405,8 +1424,8 @@ displayError(1);
 
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-label">داخلی <span class="tx-danger">*</span></label>
-                                                <input class="form-control" name="edakheli" aria-describedby="basic-addon2" type="number" required disabled value="<?php echo $retadmin->dakheli ?>">
+                                                <label class="form-label">داخلی</label>
+                                                <input class="form-control" name="edakheli" aria-describedby="basic-addon2" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="<?php echo htmlspecialchars((string) $retadmin->dakheli) ?>">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label">شماره موبایل</label>
