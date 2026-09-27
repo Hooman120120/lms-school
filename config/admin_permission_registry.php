@@ -141,7 +141,9 @@ $registry = [
     ]],
     ['code'=>'students','label'=>'دانش‌آموزان','legacy'=>'permision_viewstudent','children'=>[
         ['code'=>'students.definitive','label'=>'دانش‌آموزان قطعی','children'=>[
-            ['code'=>'students.definitive.register','label'=>'ثبت‌نام','legacy'=>'permision_addstudent','path'=>'admin/Student/add.php'],
+            ['code'=>'students.definitive.register','label'=>'ثبت‌نام','legacy'=>'permision_addstudent','path'=>'admin/Student/add.php','children'=>[
+                ['code'=>'students.definitive.register.bulk','label'=>'ثبت‌نام دسته‌جمعی دانش‌آموزان','labels'=>['institute'=>'ثبت‌نام دسته‌جمعی فراگیران'],'modes'=>['school','institute'],'path'=>'admin/Student/add-group.php'],
+            ]],
             ['code'=>'students.definitive.enrolment','label'=>'ثبت پایه','legacy'=>'permision_addcourse_student','path'=>'admin/Student/addcourse.php'],
             ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','legacy'=>'permision_editstudent','path'=>'admin/Student/edit-absolute.php'],
             ['code'=>'students.definitive.my-students','label'=>'دانش‌آموزان من','path'=>'admin/panel/mystudent.php'],

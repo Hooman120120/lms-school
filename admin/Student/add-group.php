@@ -4,7 +4,7 @@ include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
 
-include_once '../../inc/bulk_upload.php';
+
 
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -28,6 +28,13 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+$canBulkRegister = AdminCanUsePermissionScope('students.definitive.register.bulk', ['permision_addstudent', 'excel_permission']);
+if (!$canBulkRegister) {
+    http_response_code(403);
+    exit('مجوز ثبت‌نام دسته‌جمعی برای شما فعال نشده است.');
+}
+include_once '../../inc/bulk_upload.php';
+
 $stmt = $conn->prepare("
     SELECT bu.id, bu.uploaded_at, bu.uploaded_by, bu.filename,bu.deleted_at,
            COUNT(dp.idpersonal) AS inserted

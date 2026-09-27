@@ -3,7 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
-include_once '../../inc/bulk_upload.php';
+
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -26,6 +26,13 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+$canBulkRegister = AdminCanUsePermissionScope('students.definitive.register.bulk', ['permision_addstudent', 'excel_permission']);
+if (!$canBulkRegister && (isset($_POST['upload']) || isset($_POST['delete_bulk_id']) || isset($_GET['download']))) {
+    http_response_code(403);
+    exit('مجوز ثبت‌نام دسته‌جمعی برای شما فعال نشده است.');
+}
+include_once '../../inc/bulk_upload.php';
+
 if (isset($_GET['change'])) {
     unset($_SESSION['add-student']);
     header('location: ' . url('admin/Student/add.php'));
@@ -481,7 +488,7 @@ include_once '../../temp.html';
                                                             </div>
                                                         </form>
                                                         <?php
-                                                        if (Permision('excel_permission')) {
+                                                        if ($canBulkRegister) {
                                                             ?>
                                                             <!-- Row -->
 
