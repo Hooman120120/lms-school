@@ -3311,67 +3311,58 @@ function reportCallLMSmanager($start, $end)
 }
 function reportCallSimotel($start, $end, $op, $count = 100000)
 {
+    $results = ['ANSWERED' => 0, 'NO ANSWERED' => 0, 'TIME ANSWERED' => '00:00:00', 'TIME NO ANSWERED' => '00:00:00', 'TIME TOTAL' => '00:00:00'];
+    if (!defined('SIMOTEL_SERVER') || !$op || !function_exists('curl_init')) {
+        return $results;
+    }
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'http://' . SIMOTEL_SERVER . '//api/v4/reports/quick/search',
+        CURLOPT_URL => 'http://' . SIMOTEL_SERVER . '/api/v4/reports/quick/search',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 15,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => '{
-		"conditions":{"from": "' . $op . '", "to": "", "cuid":"","type":"outgoing"},
-		"date_range":{"from":"' . $start . '","to":"' . $end . '"},
-		"pagination":{"start":0,"count":' . $count . ',"sorting":{}},
-		"alike":"true"
-	}',
+        CURLOPT_POSTFIELDS => json_encode([
+            'conditions' => ['from' => (string)$op, 'to' => '', 'cuid' => '', 'type' => 'outgoing'],
+            'date_range' => ['from' => $start, 'to' => $end],
+            'pagination' => ['start' => 0, 'count' => (int)$count, 'sorting' => new stdClass()],
+            'alike' => 'true',
+        ]),
         CURLOPT_HTTPHEADER => array(
-            'X-APIKEY: ' . SIMOTEL_API_KEY, 
+            'X-APIKEY: ' . SIMOTEL_API_KEY,
             'Authorization: Basic ' . SIMOTEL_BASIC_AUTH,
             'Content-Type: application/json'
         ),
     ));
-    $response = curl_exec($curl);
+    $response = json_decode((string)curl_exec($curl));
     curl_close($curl);
-    $response = json_decode($response);
-    $answered = 0;
-    $time_answered = 0;
-    $noanswered = 0;
-    $time_noanswered = 0;
-    for ($num = 0; $num < sizeof($response->data->data); $num++) {
-        if ($response->data->data[$num]->disposition == 'ANSWERED') {
+
+    // سیموتل در دسترس نباشد یا پاسخ نامعتبر بدهد: گزارش صفر، بدون هشدار
+    $calls = (isset($response->data->data) && is_array($response->data->data)) ? $response->data->data : [];
+    $answered = $noanswered = $time_answered = $time_noanswered = 0;
+    foreach ($calls as $call) {
+        $disposition = $call->disposition ?? '';
+        if ($disposition == 'ANSWERED') {
             $answered++;
-            $time_answered = $time_answered + $response->data->data[$num]->duration;
-        }
-        if ($response->data->data[$num]->disposition == 'NO ANSWER' or $response->data->data[$num]->disposition == 'BUSY') {
+            $time_answered += (int)($call->duration ?? 0);
+        } elseif ($disposition == 'NO ANSWER' || $disposition == 'BUSY') {
             $noanswered++;
-            $time_noanswered = $time_noanswered + $response->data->data[$num]->duration;
+            $time_noanswered += (int)($call->duration ?? 0);
         }
     }
-    function convertSecondsToTime($seconds)
-    {
-        $hours = floor($seconds / 3600);
-        $minutes = floor(($seconds % 3600) / 60);
-        $remainingSeconds = $seconds % 60;
+    $toTime = static fn($seconds) => sprintf('%02d:%02d:%02d', floor($seconds / 3600), floor(($seconds % 3600) / 60), $seconds % 60);
 
-        return sprintf("%02d:%02d:%02d", $hours, $minutes, $remainingSeconds);
-    }
-
-    $time_total = $time_answered + $time_noanswered;
-    $hds = convertSecondsToTime($time_answered);
-    $nohds = convertSecondsToTime($time_noanswered);
-    $totalHds = convertSecondsToTime($time_total);
-    $results = array(
+    return [
         'ANSWERED' => $answered,
         'NO ANSWERED' => $noanswered,
-        'TIME ANSWERED' => $hds,
-        'TIME NO ANSWERED' => $nohds,
-        'TIME TOTAL' => $totalHds,
-    );
-
-    return $results;
+        'TIME ANSWERED' => $toTime($time_answered),
+        'TIME NO ANSWERED' => $toTime($time_noanswered),
+        'TIME TOTAL' => $toTime($time_answered + $time_noanswered),
+    ];
 }
 function countUnseenMessages($user)
 {
