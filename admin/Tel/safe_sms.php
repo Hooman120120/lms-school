@@ -514,23 +514,16 @@ include_once '../../temp.html';
                                 <div class="card custom-card">
                                     <div class="card-body">
 
-                                        <div class="col-12 text-center">
-                                            <div>
-                                                <div style="display:flex; align-items:center; gap:12px; justify-content:center;">
-                                                    <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
-
-                                                    <span class="menu-info-trigger"
-                                                        data-tooltip="..."
-                                                        aria-label="راهنمای اعتبار سامانه پیامک"
-                                                        onclick="event.preventDefault(); event.stopPropagation();">
-                                                        <i class="fe fe-info fs-4"></i>
-                                                    </span>
-                                                </div>
-
-                                                <p class="text-muted card-sub-title">
-                                                    مشاهده اعتبار باقی‌مانده سامانه پیامک
-                                                </p>
+                                        <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+                                            <div style="display:flex; align-items:center; gap:12px;">
+                                                <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
+                                                <span class="menu-info-trigger" ...>
+                                                    <i class="fe fe-info fs-4"></i>
+                                                </span>
                                             </div>
+                                            <p class="text-muted card-sub-title mb-0">
+                                                مشاهده اعتبار باقی‌مانده سامانه پیامک
+                                            </p>
                                         </div>
                                         <ul class="top-selling-products pb-0 mb-0 pr-0">
                                             <li class="product-item pb-0">
