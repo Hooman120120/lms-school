@@ -1196,7 +1196,7 @@ displayError(1);
 
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-label">سمت سازمانی مدرسه/آموزشگاه <span class="tx-danger">*</span></label>
+                                                <label class="form-label">سمت سازمانی <?= inst_is('school') ? 'مدرسه' : 'آموزشگاه' ?> <span class="tx-danger">*</span></label>
                                                 <select class="form-control" name="staff_role" required>
                                                     <option value="">— انتخاب سمت —</option>
                                                     <?php foreach (staffRoleOptions($schoolRoles, $courseScopedRoleKeys) as $staffRoleValue => $staffRoleOption) { ?>
@@ -1404,7 +1404,7 @@ displayError(1);
 
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-label">سمت سازمانی مدرسه/آموزشگاه <span class="tx-danger">*</span></label>
+                                                <label class="form-label">سمت سازمانی <?= inst_is('school') ? 'مدرسه' : 'آموزشگاه' ?> <span class="tx-danger">*</span></label>
                                                 <select class="form-control" name="estaff_role" required>
                                                     <option value="">— انتخاب سمت —</option>
                                                     <?php foreach (staffRoleOptions($schoolRoles, $courseScopedRoleKeys, $retadmin) as $staffRoleValue => $staffRoleOption) { ?>
