@@ -1360,7 +1360,14 @@ function renderCalendar() {
             <button type="button" class="cs-clear" id="calendarSearchClear" title="پاک کردن جستجو" style="display:none;">&#10005;</button>
         </div>
         <span class="calendar-search-info" id="calendarSearchInfo"></span>
-        <button type="button" class="btn btn-success ms-auto" id="exportViewBtn" title="همان جدولی که الان روی صفحه است (ماه، هفته یا روز)">
+        <select class="form-select ms-auto" id="gradeFilter" style="width:auto;min-width:150px" title="نمایش فقط یک <?= $gw ?>">
+            <option value="">همه‌ی <?= $gw ?>‌ها</option>
+            <?php foreach ($weekGroups as $g): ?>
+                <option value="<?= (int)$g['id'] ?>"><?= htmlspecialchars($g['title']) ?></option>
+            <?php endforeach; ?>
+            <option value="0">بدون <?= $gw ?></option>
+        </select>
+        <button type="button" class="btn btn-success" id="exportViewBtn" title="همان جدولی که الان روی صفحه است (ماه، هفته یا روز)">
             📥 خروجی اکسل همین صفحه
         </button>
     </div>
@@ -2603,7 +2610,25 @@ function renderCalendar() {
 
         // هفته: روزها در سطر و پایه ها (یا دوره ها) در ستون، مثل جدول برنامه ی هفتگی.
         // روز: همان نمای ساعت به ساعت.
+        // فیلتر «پایه» بالای تقویم: '' = همه، '0' = بدون پایه، وگرنه شناسه ی پایه
+        var CAL_GRADE_FILTER = '';
+        try { CAL_GRADE_FILTER = localStorage.getItem('calGradeFilter') || ''; } catch (e) {}
+        function activeGradeGroups() {
+            if (CAL_GRADE_FILTER === '') return CAL_WEEK_GROUPS.slice();
+            return CAL_WEEK_GROUPS.filter(function (g) { return String(g.id) === CAL_GRADE_FILTER; });
+        }
+        function gradeFilterEvents(events) {
+            if (CAL_GRADE_FILTER === '') return events;
+            var known = {};
+            CAL_WEEK_GROUPS.forEach(function (g) { known[g.id] = true; });
+            return events.filter(function (ev) {
+                var id = parseInt(ev.extendedProps.calendar_groups_id, 10);
+                return String(known[id] ? id : 0) === CAL_GRADE_FILTER;
+            });
+        }
+
         function renderTimeView(view, events) {
+            events = gradeFilterEvents(events);
             if (view.type === 'dayGridMonth') {
                 renderMonthByGroup(view, events);
             } else if (view.type === 'timeGridWeek') {
@@ -2632,8 +2657,8 @@ function renderCalendar() {
                 var e = ev.end || new Date(ev.start.getTime() + 1);
                 return ev.start < view.activeEnd && e > view.activeStart;
             });
-            var sections = CAL_WEEK_GROUPS.slice();
-            if (inRange.some(function (ev) { return groupOf(ev) === 0; })) {
+            var sections = activeGradeGroups();
+            if (CAL_GRADE_FILTER === '0' || inRange.some(function (ev) { return groupOf(ev) === 0; })) {
                 sections.push({ id: 0, title: 'بدون ' + CAL_GROUP_WORD, color: '#B5B5B5' });
             }
 
@@ -2728,8 +2753,8 @@ function renderCalendar() {
                 var e = ev.end || new Date(ev.start.getTime() + 1);
                 return ev.start < viewEnd && e > viewStart;
             };
-            var columns = CAL_WEEK_GROUPS.slice();
-            if (events.some(function (ev) { return inWeek(ev) && groupOf(ev) === 0; })) {
+            var columns = activeGradeGroups();
+            if (CAL_GRADE_FILTER === '0' || events.some(function (ev) { return inWeek(ev) && groupOf(ev) === 0; })) {
                 columns.push({ id: 0, title: 'بدون ' + CAL_GROUP_WORD, color: '#B5B5B5' });
             }
             if (!columns.length) {
@@ -3426,6 +3451,16 @@ function renderCalendar() {
         });
 
         // ------------------------------ اتصال کادر جستجو ------------------------------
+        const gradeFilterSelect = document.getElementById('gradeFilter');
+        if (gradeFilterSelect) {
+            if (!Array.from(gradeFilterSelect.options).some(function (o) { return o.value === CAL_GRADE_FILTER; })) CAL_GRADE_FILTER = '';
+            gradeFilterSelect.value = CAL_GRADE_FILTER;
+            gradeFilterSelect.addEventListener('change', function () {
+                CAL_GRADE_FILTER = this.value;
+                try { localStorage.setItem('calGradeFilter', CAL_GRADE_FILTER); } catch (e) {}
+                refreshCalendarSearch();
+            });
+        }
         const calendarSearchInput = document.getElementById('calendarSearch');
         const calendarSearchClear = document.getElementById('calendarSearchClear');
         if (calendarSearchInput) {
