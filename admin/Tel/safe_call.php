@@ -225,7 +225,7 @@ include_once '../../temp.html';
                                 <div class="safe-call-card-title">
                                     <span>مرکز تبادل تماس</span>
                                     <span class="menu-info-trigger"
-                                          data-tooltip="از این بخش برای تبادل، هدایت و واگذاری تماس‌ها میان اپراتورها یا کارشناسان استفاده کنید."
+                                          data-tooltip="<?= htmlspecialchars(inst_is('school') ? 'از این بخش برای تبادل، هدایت و واگذاری تماس‌ها میان مشاوران استفاده کنید.' : 'از این بخش برای تبادل، هدایت و واگذاری تماس‌ها میان اپراتورها یا کارشناسان استفاده کنید.', ENT_QUOTES, 'UTF-8', false) ?>"
                                           aria-label="اطلاعات مرکز تبادل تماس"
                                           onclick="event.preventDefault(); event.stopPropagation();">
                                         <i class="fe fe-info fs-4"></i>
@@ -241,10 +241,10 @@ include_once '../../temp.html';
                         <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                             <a href="<?php echo url('admin/Tel/assign-phone.php') ?>" class="safe-call-card">
                                 <div class="safe-call-card-title">
-                                    <span>تخصیص شماره به کارشناس</span>
+                                    <span><?= inst_is('school') ? 'تخصیص شماره به مشاور' : 'تخصیص شماره به کارشناس' ?></span>
                                     <span class="menu-info-trigger"
-                                          data-tooltip="در این بخش می‌توانید شماره‌های واقع در مخزن تماس را به کارشناس موردنظر تخصیص دهید تا پیگیری و برقراری تماس توسط همان کارشناس انجام شود."
-                                          aria-label="راهنمای تخصیص شماره به کارشناس"
+                                          data-tooltip="<?= htmlspecialchars(inst_is('school') ? 'در این بخش می‌توانید شماره‌های واقع در مخزن تماس را به مشاور موردنظر تخصیص دهید تا پیگیری و برقراری تماس توسط همان مشاور انجام شود.' : 'در این بخش می‌توانید شماره‌های واقع در مخزن تماس را به کارشناس موردنظر تخصیص دهید تا پیگیری و برقراری تماس توسط همان کارشناس انجام شود.', ENT_QUOTES, 'UTF-8', false) ?>"
+                                          aria-label="<?= htmlspecialchars(inst_is('school') ? 'راهنمای تخصیص شماره به مشاور' : 'راهنمای تخصیص شماره به کارشناس', ENT_QUOTES, 'UTF-8', false) ?>"
                                           onclick="event.preventDefault(); event.stopPropagation();">
                                         <i class="fe fe-info fs-4"></i>
                                     </span>
