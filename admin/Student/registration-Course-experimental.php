@@ -63,7 +63,7 @@ if (isset($_POST['search'])) {
             break;
     }
 }
-if (isset($_POST['search-course'])) {
+if (inst_is('institute') && isset($_POST['search-course'])) {
     $course = $_POST['course'];
     $vip = $_POST['vip'];
     if ($vip == 'all') {
@@ -182,17 +182,17 @@ include_once '../../temp.html';
                 <div class="col-12">
                     <div class="card custom-card">
                         <div class="card-body d-flex ">
-                            <div class="col-6">
+                            <div class="<?= inst_is('institute') ? 'col-6' : 'col-12' ?>">
                                 <div>
                                     <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                         <h6 class="main-content-label mb-0">
-                                            <?php echo m('action.search_temp_student') ?>
+                                            <?php echo m(inst_is('school') ? 'action.search_student' : 'action.search_temp_student') ?>
                                         </h6>
 
                                         <span class="menu-info-trigger"
-                                              data-tooltip="<?php echo m('tooltip.search_temp_student') ?>"
-                                              aria-label="<?php echo m('aria.search_temp_student_help') ?>">
+                                              data-tooltip="<?php echo m(inst_is('school') ? 'tooltip.search_student_enrollment' : 'tooltip.search_temp_student') ?>"
+                                              aria-label="<?php echo m(inst_is('school') ? 'aria.search_student_help' : 'aria.search_temp_student_help') ?>">
 
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
@@ -200,7 +200,7 @@ include_once '../../temp.html';
                                     </div>
 
                                     <p class="text-muted card-sub-title">
-                                        <?php echo m('label.check_temp_enrollment_status') ?>
+                                        <?php echo m(inst_is('school') ? 'label.check_enrollment_status' : 'label.check_temp_enrollment_status') ?>
                                     </p>
                                 </div>
 
@@ -257,6 +257,7 @@ include_once '../../temp.html';
                                     </div>
                                 </form>
                             </div>
+                            <?php if (inst_is('institute')): ?>
                             <div class="col-6 my-auto mx-auto">
                                 <div>
                                     <div class="d-flex align-items-center mb-1" style="gap: 12px;">
@@ -333,6 +334,7 @@ include_once '../../temp.html';
 
 
                             </div>
+                            <?php endif; ?>
                         </div>
 
 
