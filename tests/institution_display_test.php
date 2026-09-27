@@ -10,6 +10,14 @@ $check = static function ($condition, $message) {
 };
 $check(inst_display_text($source) === $expected, 'Plural vocabulary');
 $check(inst_display_text($expected) === $expected, 'Idempotent vocabulary');
+$check(inst_display_text('پایه تحصیلی') === 'پایه تحصیلی', 'Academic grade stays fixed');
+$check(inst_display_text('دوره تحصیلی') === 'پایه تحصیلی', 'Legacy academic grade corrected');
+$check(inst_display_text("دوره\n    تحصیلی") === "پایه\n    تحصیلی", 'Multiline academic grade corrected');
+$gradeHtml = '<label class="form-label">پایه تحصیلی <span>*</span></label>';
+$check(inst_display_html($gradeHtml) === $gradeHtml, 'Grade label survives output normalization');
+$mixedText = 'پایه تحصیلی و دوره‌های فراگیران';
+$check(inst_display_text($mixedText) === ($institute ? $mixedText : 'پایه تحصیلی و پایه‌های دانش‌آموزان'), 'Other vocabulary still follows institution type');
+
 $html = '<div title="' . $source . '" data-code="پایه">' . $source
     . '<select><option value="پایه">' . $source . '</option></select>'
     . '<script>const key="پایه";</script><style>.پایه{}</style>'

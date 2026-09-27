@@ -3,8 +3,9 @@
     const terms = institute
         ? {'دانش‌آموزان': 'فراگیران', 'دانش آموزان': 'فراگیران', 'دانشآموزان': 'فراگیران', 'دانش‌آموز': 'فراگیر', 'دانش آموز': 'فراگیر', 'دانشآموز': 'فراگیر', 'پایه': 'دوره'}
         : {'فراگیران': 'دانش‌آموزان', 'فراگیر': 'دانش‌آموز', 'دوره': 'پایه'};
-    const pattern = new RegExp(Object.keys(terms).join('|'), 'g');
-    const translate = value => value.replace(pattern, word => terms[word]);
+    const pattern = new RegExp('(?:پایه|دوره)\\s+تحصیلی|' + Object.keys(terms).join('|'), 'g');
+    const translate = value => value.replace(pattern, word =>
+        /^(?:پایه|دوره)\s+تحصیلی$/.test(word) ? word.replace(/^(?:پایه|دوره)/, 'پایه') : terms[word]);
     const attributes = ['title', 'aria-label', 'placeholder', 'alt', 'data-tooltip'];
     // [data-keep-terms]: parts that use one word for both types (the calendar's «پایه»).
     const excluded = 'script,style,textarea,[contenteditable],[data-keep-terms]';

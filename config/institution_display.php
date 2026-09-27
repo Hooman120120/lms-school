@@ -2,6 +2,17 @@
 /** Normalize display vocabulary only; stored values and application code stay intact. */
 function inst_display_text(string $text): string
 {
+    // Academic grade is always «پایه تحصیلی», including institute profiles.
+    // Handle legacy «دوره تحصیلی» too, without changing the other course labels.
+    $parts = preg_split('/((?:پایه|دوره)\s+تحصیلی)/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+    if ($parts !== false && count($parts) > 1) {
+        foreach ($parts as $index => $part) {
+            $parts[$index] = $index % 2 === 1
+                ? preg_replace('/^(?:پایه|دوره)/u', 'پایه', $part)
+                : inst_display_text($part);
+        }
+        return implode('', $parts);
+    }
     if (inst_is('institute')) {
         return strtr($text, [
             'دانش‌آموزان' => 'فراگیران', 'دانش آموزان' => 'فراگیران', 'دانشآموزان' => 'فراگیران',
