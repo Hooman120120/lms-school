@@ -31,6 +31,13 @@ if (!Permision('permision_addcourse_student')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
+require_once BASE_PATH . '/inc/temporary_student_registration.php';
+$temporaryRegistration = inst_is('school') ? HandleTemporaryStudentRegistration(true) : null;
+if (!empty($temporaryRegistration['forbidden'])) {
+    http_response_code(403);
+    exit('دسترسی ثبت‌نام موقت دانش‌آموز برای فوق برنامه فعال نشده است.');
+}
+
 if (isset($_SESSION['courses'])) {
     $idf = $_SESSION['courses'];
     unset($_SESSION['courses']);
@@ -40,10 +47,22 @@ if (isset($_GET['change'])) {
     header('location: ' . url('admin/democourse/addstudent.php'));
     die();
 }
-if (isset($_POST['search-tel'])) {
+if (isset($_POST['search-tel']) && !isset($_POST['temporary_registration'])) {
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         if ($_POST['tel'] != '') {
             $tel = trim($_POST['tel']);
+            if (inst_is('school')) {
+                $student = ResolveExtraProgramStudent($tel);
+                if ($student['status'] === 'found') {
+                    $_SESSION['add-course2'] = ['tel' => $student['username']];
+                } elseif ($student['status'] === 'ambiguous') {
+                    $ambiguousStudent = 1;
+                } elseif ($student['status'] === 'not-student') {
+                    $erorstudent = 1;
+                } else {
+                    $notmelli = 1;
+                }
+            } else {
             // if (check_national_code($codemeli)) {
             if (checkCodemeli($tel)) {
                 if (typeUser($tel) == 1) {
@@ -61,6 +80,7 @@ if (isset($_POST['search-tel'])) {
             // } else {
             //     $erormeli = 1;
             // }
+            }
 
         }
     } else {
@@ -97,8 +117,8 @@ if (!empty($_SESSION['bulk_course_report'])) {
     unset($_SESSION['bulk_course_report']); // clear after reading
 }
 include_once '../../temp.html';
-$demoCourseLabel = inst_is('institute') ? 'دوره موقت' : 'دوره فوق برنامه';
-$demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'دوره‌های فوق برنامه';
+$demoCourseLabel = inst_is('institute') ? 'دوره موقت' : 'فوق برنامه';
+$demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'فوق برنامه‌ها';
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -131,6 +151,12 @@ $demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'دو�
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
             <div class="inner-body">
+                <?php if (inst_is('school')): ?>
+                    <div class="alert alert-info mt-3" role="alert">
+                        <?= m('msg.extra_program_registration_choices') ?>
+                    </div>
+                    <?php RenderTemporaryStudentRegistration($temporaryRegistration); ?>
+                <?php endif; ?>
                 <!-- Row -->
                 <div class="row row-sm">
                     <div class="col-lg-12">
@@ -146,7 +172,7 @@ $demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'دو�
                                                 </h6>
 
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش می‌توانید برای دانش آموز موقت، <?php echo $demoCourseLabel ?> ثبت کنید. این پایه بدون صدور فاکتور و بدون ثبت پرداخت ایجاد می‌شود و برای ارائه دسترسی موقت به دانش آموز مورد استفاده قرار می‌گیرد."
+                                                      data-tooltip="<?= inst_is('school') ? 'در این بخش می‌توانید فوق برنامه را برای دانش‌آموزی که قبلاً ثبت‌نام کرده یا در بخش بالا موقتاً ثبت‌نام شده است، بدون صدور فاکتور و ثبت پرداخت ایجاد کنید.' : 'در این بخش می‌توانید برای فراگیر موقت، دوره موقت ثبت کنید. این دوره بدون صدور فاکتور و ثبت پرداخت ایجاد می‌شود و برای ارائه دسترسی موقت به فراگیر مورد استفاده قرار می‌گیرد.' ?>"
                                                       aria-label="راهنمای ایجاد <?php echo $demoCourseLabel ?> برای دانش آموز">
 
                                                         <i class="fe fe-info fs-4"></i>
@@ -185,10 +211,15 @@ $demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'دو�
                                         <button aria-label="بستن" class="close" data-bs-dismiss="alert" type="button">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        این کدملی ، متعلق به همکارآموزشی است و یا امکان ثبت پایه برایش فراهم نیست
+                                        این کدملی، متعلق به همکار آموزشی است یا امکان ثبت <?= $demoCourseLabel ?> برایش فراهم نیست
 
                                     </div>
                                 <?php } ?>
+                                <?php if (!empty($ambiguousStudent)): ?>
+                                    <div class="alert alert-warning" role="alert">
+                                        این شماره تماس برای چند دانش‌آموز ثبت شده است؛ برای انتخاب دقیق، کد ملی دانش‌آموز را وارد کنید.
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (isset($notmelli) and $notmelli == 1) { ?>
                                     <div class="alert alert-danger" role="alert">
                                         <span class="alert-inner--icon"><i class=" mdi mdi-asterisk"></i></span>
@@ -247,7 +278,7 @@ $demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'دو�
                                                                     </label>
 
                                                                     <span class="menu-info-trigger"
-                                                                          data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک <?php echo $demoCourseLabel ?> را برای گروهی از دانش آموزان ثبت کنید. این پایه‌ها بدون صدور فاکتور و ثبت پرداخت ایجاد می‌شوند و اطلاعات فایل اکسل باید مطابق قالب تعیین‌شده باشد. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
+                                                                          data-tooltip="در این بخش می‌توانید با بارگذاری فایل اکسل، یک <?php echo $demoCourseLabel ?> را برای گروهی از دانش آموزان ثبت کنید. این <?= $demoCoursesLabel ?> بدون صدور فاکتور و ثبت پرداخت ایجاد می‌شوند و اطلاعات فایل اکسل باید مطابق قالب تعیین‌شده باشد. جهت استفاده از این بخش فایل نمونه را دانلود نمایید."
                                                                           aria-label="راهنمای ایجاد گروهی <?php echo $demoCourseLabel ?> برای دانش آموزان">
 
                                                                             <i class="fe fe-info fs-4"></i>

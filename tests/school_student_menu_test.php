@@ -107,6 +107,18 @@ if ($school) {
     $check($access->query('//input[@value="students.temporary.report"][@checked]')->length === 1, 'Old report group grant survives');
     $check($access->query('//input[@value="students.definitive.register"][@checked]')->length === 0, 'Old temporary grant does not grant ordinary registration');
 }
+$registrationCode = 'students.temporary.enrolment.register-student';
+$check(AdminPermissionCodeAvailable($registrationCode) === $school, 'Embedded temporary registration is school-only');
+$check(AdminPermissionIndex()[$registrationCode]['parent'] === 'students.temporary.enrolment', 'Registration permission belongs under extra-curricular enrolment');
+$access = $dom($renderAccess([]));
+$check($access->query('//input[@value="' . $registrationCode . '"]')->length === ($school ? 1 : 0), 'Employee permissions expose the school registration operation');
+$check(AdminPermissionCodeAvailable('students.temporary.register.action-submit') === !$school, 'Institute registration operation remains available');
+if ($school) {
+    $studentMenuGrants = [$registrationCode];
+    $xpath = $dom($renderMenu());
+    $check($xpath->query('//a[@href="/admin/democourse/addstudent.php"]')->length === 1, 'Registration child grant reveals extra-curricular menu');
+    $check(!AdminHasMenuPermission('students.definitive.register'), 'Extra-curricular registration does not grant ordinary registration');
+}
 foreach (['students.temporary.enrolment', 'students.temporary.report'] as $code) {
     $studentMenuGrants = [$code];
     $xpath = $dom($renderMenu());

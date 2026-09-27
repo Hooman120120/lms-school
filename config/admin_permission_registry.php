@@ -159,8 +159,12 @@ $registry = [
             ['code'=>'students.definitive.cancelled-operator','label'=>'لغو پشتیبانی‌شده‌ها','legacy'=>'permision_reportstudent','path'=>'admin/Student/canceled-op-student.php'],
         ]],
         ['code'=>'students.temporary','label'=>'دانش‌آموزان آزمایشی','children'=>[
-            ['code'=>'students.temporary.register','label'=>'ثبت‌نام موقت','modes'=>['institute'],'legacy'=>'permision_addstudent','path'=>'admin/Student/experimental-add.php'],
-            ['code'=>'students.temporary.enrolment','label'=>'ثبت دانش‌آموز در دوره آزمایشی','labels'=>['school'=>'ثبت فوق برنامه'],'legacy'=>'permision_addcourse_student','path'=>'admin/democourse/addstudent.php'],
+            ['code'=>'students.temporary.register','label'=>'ثبت‌نام موقت','modes'=>['institute'],'legacy'=>'permision_addstudent','path'=>'admin/Student/experimental-add.php','children'=>[
+                ['code'=>'students.temporary.register.action-submit','label'=>'ثبت / ذخیرهٔ تغییرات این صفحه'],
+            ]],
+            ['code'=>'students.temporary.enrolment','label'=>'ثبت دانش‌آموز در دوره آزمایشی','labels'=>['school'=>'ثبت فوق برنامه'],'legacy'=>'permision_addcourse_student','path'=>'admin/democourse/addstudent.php','children'=>[
+                ['code'=>'students.temporary.enrolment.register-student','label'=>'ثبت‌نام موقت دانش‌آموز برای فوق برنامه','modes'=>['school']],
+            ]],
             ['code'=>'students.temporary.edit','label'=>'ویرایش اطلاعات موقت','modes'=>['institute'],'legacy'=>'permision_editstudent','path'=>'admin/Student/edit-experimental.php'],
             ['code'=>'students.temporary.report','label'=>'گزارش تفکیکی','labels'=>['school'=>'گزارش تفکیکی فوق برنامه'],'legacy'=>'permision_reportstudent','path'=>'admin/Student/registration-Course-experimental.php'],
         ]],
