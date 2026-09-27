@@ -6,12 +6,6 @@ if (!isset($_SESSION['admin'])) {
     die();
 }
 
-// New tree-based grants are enforced for every registered admin page here.
-// Accounts that have not yet been migrated keep their existing legacy checks.
-if (function_exists('EnforceAdminPageTreePermission')) {
-    EnforceAdminPageTreePermission();
-}
-
 $canImpersonate = !empty($_SESSION['admin']['can_impersonate']) && (int)$_SESSION['admin']['can_impersonate'] === 1;
 
 // CSRF token for impersonation
@@ -98,10 +92,6 @@ if ($canImpersonate) {
 
                 <?php
                 echo jdate('l Y/m/d ') . ' - ' . __SCHOOL_NAME;
-                $selectedAcademicYear = filter_var($_SESSION['academic_year_base'] ?? null, FILTER_VALIDATE_INT);
-                if ($selectedAcademicYear !== false && $selectedAcademicYear >= 1300 && $selectedAcademicYear <= 1600) {
-                    echo ' <span class="badge bg-warning text-dark">نمای بایگانی ' . (int)$selectedAcademicYear . '–' . ((int)$selectedAcademicYear + 1) . '</span>';
-                }
                 ?>
                 
                 

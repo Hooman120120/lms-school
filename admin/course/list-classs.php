@@ -41,18 +41,10 @@ if (isset($_POST['addclass'])) {
         $channel = $_POST['chanel'];
 
         // ثبت کلاس در دیتابیس LMS
-        $academicYearId = selectedAcademicYearId();
-        $sql = $academicYearId === null
-            ? "INSERT INTO classes (codecourse, name, description, is_active, link_eita) VALUES (?,?,?,?,?)"
-            : "INSERT INTO classes (codecourse, name, description, is_active, link_eita, academic_year_id) VALUES (?,?,?,?,?,?)";
+        $sql = "INSERT INTO classes (codecourse, name, description, is_active, link_eita) VALUES (?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
-        $params = [$_GET['code'], $name, $description, 1, $channel];
-        if ($academicYearId !== null) {
-            $params[] = $academicYearId;
-        }
-        $stmt->execute($params);
+        $stmt->execute([$_GET['code'], $name, $description, 1, $channel]);
         $classId = $conn->lastInsertId();
-        linkCourseToSelectedAcademicYear((int)$_GET['code']);
 
         if (isset($_POST['activity-quiz'])) {
             include_once '../../inc/function-quiz.php';
@@ -475,12 +467,9 @@ include_once '../../temp.html';
                                         <h6 class="main-content-label mb-1">لیست کلاس های<span
                                                     class="text-dark"> <?php echo $course->coursename ?></span></h6>
                                         <?php
-                                        $academicYearId = selectedAcademicYearId();
-                                        $sql = 'SELECT * FROM classes WHERE codecourse = ?' . ($academicYearId === null ? '' : ' AND academic_year_id = ?');
+                                        $sql = 'SELECT * FROM classes WHERE codecourse = ?';
                                         $query = $conn->prepare($sql);
-                                        $params = [$_GET['code']];
-                                        if ($academicYearId !== null) $params[] = $academicYearId;
-                                        $query->execute($params);
+                                        $query->execute([$_GET['code']]);
                                         $result = $query->fetchAll(PDO::FETCH_OBJ);
                                         ?>
                                         <?php if (!in_array($adminRole, [1, 6])) { ?>

@@ -14,9 +14,9 @@ if ($amount < 1000 || !$orderId) {
 }
 
 // --- اطلاعات ثابت درگاه ملت ---
-$terminalId = (int) getenv('MELLAT_TERMINAL_ID');
-$userName = (string) getenv('MELLAT_USERNAME');
-$userPassword = (string) getenv('MELLAT_PASSWORD');
+$terminalId = 7877055;
+$userName = "7877055";
+$userPassword = "98706289";
 
 $localDate = date('Ymd');
 $localTime = date('Gis');

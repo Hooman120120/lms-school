@@ -610,19 +610,10 @@ include_once '../../temp.html';
 
                                                         $sql = 'SELECT DISTINCT c.* FROM codtbl_course c';
                                                         $params = [];
-                                                        $academicYearId = selectedAcademicYearId();
-                                                        if ($academicYearId !== null) {
-                                                            $sql .= ' INNER JOIN academic_year_courses ayc ON ayc.codecourse = c.codecourse AND ayc.academic_year_id = ?';
-                                                            $params[] = $academicYearId;
-                                                        }
 
                                                         // Teacher check: Join course_teacher -> classes -> codtbl_course
                                                         if ((int)$adminRole === 3) {
                                                             $sql .= " INNER JOIN classes cl ON cl.codecourse = c.codecourse";
-                                                            if ($academicYearId !== null) {
-                                                                $sql .= ' AND cl.academic_year_id = ?';
-                                                                $params[] = $academicYearId;
-                                                            }
                                                             $sql .= " INNER JOIN {$teacherCourseTable} t ON t.class_id = cl.id AND t.teacher_username = ?";
                                                             $params[] = $currentUser;
                                                         } elseif (StaffCourseScopeRequired($currentUser)) {

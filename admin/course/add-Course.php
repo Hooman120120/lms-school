@@ -105,7 +105,6 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$currentCourseId]);
                 $currentCode = $stmt->fetchColumn();
-                linkCourseToSelectedAcademicYear((int)$currentCode);
                 //
                 $additionalText = '';
                 if (isset($_POST['activity-quiz'])) {

@@ -81,9 +81,9 @@ die();
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/alert.php') ?>">اطلاعیه های ارسالی</a>
                     </li>
-                    <?php if (inst_feature('wallet')): ?><li class="nav-sub-item">
+                    <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/Wallet.php') ?>">کیف پول</a>
-                    </li><?php endif; ?>
+                    </li>
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Profile/ranking.php') ?>">امتیاز دهی</a>
                     </li>
@@ -106,7 +106,7 @@ die();
             </li>
         </ul>
         <ul class="nav" style="margin-left: 10px;">
-        <?php if (inst_feature('wallet')): ?><li class="text-center text-white">
+        <li class="text-center text-white">
             <hr>
 <?php $wallet=NULL;
 $wallet=totalWallet($_SESSION['auth']['user']);
@@ -131,7 +131,7 @@ if($wallet == NULL){
                 </div>
             </div>
 
-            </li><?php endif; ?>
+            </li>
         </ul>
     </div>
 </div>

@@ -67,16 +67,23 @@ if(isset($_POST['darsad'])){
     $message='تنظیمات بروز رسانی شد';
 }
 
-// نوع و جنسیت مؤسسه در هنرفناوری تعیین می‌شود و با مجوز پنل به setting_public می‌رسد
-// (hf_control_apply_settings در inc/hf_control.php)؛ این صفحه فقط آن را نشان می‌دهد.
-$current_inst_type = inst_type();
-$current_gender = null;
+// نوع مؤسسه: مدرسه یا آموزشگاه
+if (isset($_POST['save-institution-type'])) {
+    $newtype = (isset($_POST['institution_type']) && $_POST['institution_type'] === 'institute') ? 'institute' : 'school';
+    $upinst  = 'UPDATE setting_public SET institution_type=? WHERE id=?';
+    $qinst   = $conn->prepare($upinst);
+    $qinst->execute([$newtype, 1]);
+    $message = 'نوع مؤسسه تغییر کرد. برای اعمال کامل واژه‌ها صفحه را تازه کنید.';
+}
+
+// مقدار فعلی نوع مؤسسه برای نمایش در فرم
+$current_inst_type = 'school';
 try {
-    $qg = $conn->query('SELECT gender FROM setting_public ORDER BY id LIMIT 1');
-    $vg = $qg ? $qg->fetchColumn() : false;
-    if ($vg === 'boys' || $vg === 'girls') { $current_gender = $vg; }
+    $qct = $conn->query('SELECT institution_type FROM setting_public ORDER BY id LIMIT 1');
+    $vct = $qct ? $qct->fetchColumn() : false;
+    if ($vct === 'institute') { $current_inst_type = 'institute'; }
 } catch (PDOException $e) {
-    // ستون هنوز ساخته نشده؛ با اولین دریافت مجوز ساخته می‌شود
+    // ستون هنوز ساخته نشده → حالت مدرسه
 }
 include_once '../../temp.html';
 ?>
@@ -123,12 +130,40 @@ include_once '../../temp.html';
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
                         <div class="card custom-card">
                             <div class="card-body">
-                                <h6 class="main-content-label mb-1">نوع مؤسسه</h6>
-                                <p class="text-muted card-sub-title">
-                                    توسط هنرفناوری تعیین می‌شود؛ برای تغییر با پشتیبانی تماس بگیرید
-                                </p>
-                                <p class="mb-1"><?php echo $current_inst_type === 'institute' ? 'آموزشگاه &mdash; فراگیر / دوره' : 'مدرسه &mdash; دانش‌آموز / پایه'; ?></p>
-                                <p class="mb-0"><?php echo $current_gender === 'girls' ? 'دخترانه' : ($current_gender === 'boys' ? 'پسرانه' : 'جنسیت تعیین نشده'); ?></p>
+                                <form method="post">
+                                    <div class="col-10">
+                                        <div>
+                                            <div style="display:flex; align-items:center; gap:12px;">
+                                                <h6 class="main-content-label mb-1">نوع مؤسسه</h6>
+                                                <span class="menu-info-trigger"
+                                                      data-tooltip="نوع مؤسسه تعیین می‌کند که سامانه با چه واژه‌هایی صحبت کند. در حالت مدرسه از «دانش‌آموز» و «پایه» و در حالت آموزشگاه از «فراگیر» و «دوره» استفاده می‌شود. ماژول‌هایی مثل کارنامه و ولی دانش‌آموز هم فقط در حالت مدرسه فعال هستند. این تنظیم هیچ داده‌ای را حذف یا تغییر نمی‌دهد."
+                                                      aria-label="راهنمای نوع مؤسسه"
+                                                      onclick="event.preventDefault(); event.stopPropagation();">
+                                                <i class="fe fe-info fs-4"></i>
+                                            </span>
+                                            </div>
+                                            <p class="text-muted card-sub-title">
+                                                واژه‌نامهٔ سامانه بر اساس این گزینه انتخاب می‌شود
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <select name="institution_type" class="form-control">
+                                            <option value="school"<?php if ($current_inst_type === 'school') { echo ' selected'; } ?>>
+                                                مدرسه &mdash; دانش‌آموز / پایه
+                                            </option>
+                                            <option value="institute"<?php if ($current_inst_type === 'institute') { echo ' selected'; } ?>>
+                                                آموزشگاه &mdash; فراگیر / دوره
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="text-left mg-10">
+                                        <button type="submit" class="btn btn-primary"
+                                                name="save-institution-type"><i class="fa fa-save"></i>
+                                            ذخیره نوع مؤسسه
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

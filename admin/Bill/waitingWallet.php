@@ -11,10 +11,6 @@ if (!isset($_SESSION['admin'])) {
     header('location: ../login.php');
     die();
 }
-if (!inst_feature('wallet')) {
-    http_response_code(404);
-    exit('کیف پول در نسخه مدرسه‌ای فعال نیست.');
-}
 //Protecting against SESSION Hijaking
 if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()) {
     session_unset();

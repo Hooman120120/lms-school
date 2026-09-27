@@ -7,8 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
 
 $apiKey = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
 
-// An unset key must lock the API, not open it to requests that send none.
-if (SECRET_API_KEY === '' || !hash_equals(SECRET_API_KEY, (string) $apiKey)) {
+if ($apiKey !== SECRET_API_KEY) {
     http_response_code(401); 
     echo json_encode([
         'success' => false,

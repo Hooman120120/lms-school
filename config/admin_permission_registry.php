@@ -113,6 +113,12 @@ return [
     ['code'=>'documents','label'=>'مستندات','legacy'=>'permision_viewdocument','children'=>[
         ['code'=>'documents.new','label'=>'تازه‌ها','path'=>'admin/Doc/newdoc.php'],
         ['code'=>'documents.search','label'=>'جست‌وجوی مستندات','path'=>'admin/Doc/searchdoc.php'],
+        ['code'=>'documents.announcements','label'=>'اطلاعیه‌ها و بخشنامه‌ها','path'=>'admin/Doc/announcements.php','children'=>[
+            ['code'=>'documents.announcements.create','label'=>'ثبت اطلاعیه','path'=>'admin/Doc/announcement-create.php'],
+            ['code'=>'documents.announcements.edit','label'=>'ویرایش اطلاعیه','path'=>'admin/Doc/announcement-edit.php'],
+        ]],
+        ['code'=>'documents.employee-documents','label'=>'مستندات همکاران','path'=>'admin/Doc/employee-documents.php'],
+        ['code'=>'documents.special-letters','label'=>'نامه‌های اختصاصی','path'=>'admin/Doc/special-letters.php'],
     ]],
     ['code'=>'staff','label'=>'همکاران','legacy'=>'permision_viewemploy','children'=>[
         ['code'=>'staff.directory','label'=>'مشاهده همکاران','legacy'=>'permission_staff_view','path'=>'admin/employ/staff-directory.php'],

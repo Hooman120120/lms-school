@@ -30,7 +30,7 @@ if (!Permision('permision_viewcall')) {
 
 // -------------------- تنظیمات --------------------
 if (!defined('__USERSMS')) define('__USERSMS', '0912794563');
-if (!defined('__PASSSMS')) define('__PASSSMS', (string) getenv('SMS_PASSWORD'));
+if (!defined('__PASSSMS')) define('__PASSSMS', '&Amoozesh!1404%');
 
 if (!extension_loaded('soap')) {
     die('خطا: اکستنشن SOAP در PHP فعال نیست.');

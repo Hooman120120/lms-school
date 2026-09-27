@@ -184,7 +184,7 @@ if (isset($_POST['submit-student']) and isset($_SESSION['add-student'])) {
                 $sql = "INSERT INTO dbpersonal_type_vip (dbpersonal_id,type_vip_id) VALUES (?,?)";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$personalCurrentId, $typeVip]);
-            } 
+            }
 
             $rand1 = rand(1, 10);
             switch ($rand1) {

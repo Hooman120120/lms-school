@@ -1,236 +1,5 @@
 <?php
 
-/** Shared menu/access tree.  Keep new administrative features in this registry. */
-function AdminPermissionRegistry(): array
-{
-    static $tree = null;
-    if ($tree === null) {
-        $tree = require BASE_PATH . '/config/admin_permission_registry.php';
-        $tree = AdminPermissionAttachPageActions($tree);
-    }
-    return $tree;
-}
-
-function AdminPermissionActionLabel(string $control): string
-{
-    $labels = [
-        'delete' => 'حذف', 'remove' => 'حذف', 'edit' => 'ویرایش',
-        'approve' => 'تأیید', 'reject' => 'رد', 'export' => 'خروجی',
-        'import' => 'ورود اطلاعات', 'create' => 'ایجاد', 'add' => 'ایجاد',
-        'save' => 'ذخیره',
-    ];
-    foreach ($labels as $keyword => $label) if (stripos($control, $keyword) !== false) return $label . ' (' . $control . ')';
-    return 'عملیات (' . $control . ')';
-}
-
-/*
- * Pages can grow buttons without a developer remembering a second hand-made
- * permission list. Controls with a mutating name become action leaves below
- * their own registered page. The menu/page hierarchy stays declarative in the
- * registry; this only fills its final operation level.
- */
-function AdminPermissionAttachPageActions(array $nodes): array
-{
-    $knownPaths = [];
-    $collect = static function (array $items) use (&$collect, &$knownPaths): void {
-        foreach ($items as $item) {
-            if (!empty($item['path'])) $knownPaths[$item['path']] = true;
-            $collect($item['children'] ?? []);
-        }
-    };
-    $collect($nodes);
-
-    $resolvePath = static function (string $target, string $from): ?string {
-        $target = html_entity_decode(trim($target));
-        if ($target === '' || str_contains($target, '<?') || preg_match('~^(?:https?:|//|\#|javascript:)~i', $target)) return null;
-        $target = preg_split('/[?#]/', $target, 2)[0];
-        $adminOffset = strpos($target, 'admin/');
-        $candidate = $adminOffset === false ? dirname($from) . '/' . ltrim($target, '/') : substr($target, $adminOffset);
-        $parts = [];
-        foreach (explode('/', str_replace('\\', '/', $candidate)) as $part) {
-            if ($part === '' || $part === '.') continue;
-            if ($part === '..') { array_pop($parts); continue; }
-            $parts[] = $part;
-        }
-        $candidate = implode('/', $parts);
-        return preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $candidate) && is_file(BASE_PATH . '/' . $candidate) ? $candidate : null;
-    };
-
-    /* New internal pages can in turn link to another page, hence the bounded
-       fixed-point loop. The known-path set prevents cycles and duplicates. */
-    for ($pass = 0; $pass < 12; $pass++) {
-        $changed = false;
-        $walk = static function (&$items) use (&$walk, &$changed, &$knownPaths, $resolvePath): void {
-            foreach ($items as &$node) {
-                if (!isset($node['children'])) $node['children'] = [];
-                $walk($node['children']);
-                $path = $node['path'] ?? null;
-                if (!$path || !preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $path)) continue;
-                $source = @file_get_contents(BASE_PATH . '/' . $path);
-                if ($source === false) continue;
-                $existing = array_column($node['children'], 'code');
-                preg_match_all('/\bname\s*=\s*["\']([^"\']+)["\']/i', $source, $controls);
-                foreach (array_unique($controls[1]) as $control) {
-                    if (!preg_match('/(?:add|create|edit|delete|remove|approve|reject|export|import|save)/i', $control)) continue;
-                    $slug = trim(strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $control)), '-');
-                    if ($slug === '') continue;
-                    $code = $node['code'] . '.action-' . $slug;
-                    if (in_array($code, $existing, true)) continue;
-                    $action = ['code' => $code, 'label' => AdminPermissionActionLabel($control)];
-                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
-                    $node['children'][] = $action;
-                    $existing[] = $code;
-                    $changed = true;
-                }
-                /* A few legacy forms submit through an unnamed button. Keep
-                   them visible and protected as a final operation leaf too. */
-                $submitCode = $node['code'] . '.action-submit';
-                if (preg_match('/<form\b/i', $source) && !in_array($submitCode, $existing, true)) {
-                    $action = ['code' => $submitCode, 'label' => 'ثبت / ذخیرهٔ تغییرات این صفحه'];
-                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
-                    $node['children'][] = $action;
-                    $existing[] = $submitCode;
-                    $changed = true;
-                }
-                preg_match_all('/(?:\bhref\s*=\s*["\']([^"\']+)|\burl\(\s*["\']([^"\']+))/i', $source, $links);
-                foreach (array_merge($links[1], $links[2]) as $target) {
-                    $targetPath = $resolvePath($target, $path);
-                    if ($targetPath === null || isset($knownPaths[$targetPath])) continue;
-                    $code = $node['code'] . '.page-' . substr(sha1($targetPath), 0, 10);
-                    $page = ['code' => $code, 'label' => 'صفحهٔ داخلی: ' . basename($targetPath, '.php'), 'path' => $targetPath];
-                    if (isset($node['modes'])) $page['modes'] = $node['modes'];
-                    $node['children'][] = $page;
-                    $knownPaths[$targetPath] = true;
-                    $changed = true;
-                }
-            }
-            unset($node);
-        };
-        $walk($nodes);
-        if (!$changed) break;
-    }
-    return $nodes;
-}
-
-/** @return array<string, array{parent:?string,legacy:?string}> */
-function AdminPermissionIndex(): array
-{
-    static $index = null;
-    if ($index !== null) return $index;
-    $index = [];
-    $walk = static function (array $nodes, ?string $parent = null) use (&$walk, &$index): void {
-        foreach ($nodes as $node) {
-            if (empty($node['code'])) continue;
-            $index[$node['code']] = [
-                'parent' => $parent,
-                'legacy' => isset($node['legacy']) ? (string)$node['legacy'] : null,
-            ];
-            $walk($node['children'] ?? [], (string)$node['code']);
-        }
-    };
-    $walk(AdminPermissionRegistry());
-    return $index;
-}
-
-/** @return string[] */
-function AdminPermissionCodesForLegacy(string $legacy): array
-{
-    $codes = [];
-    foreach (AdminPermissionIndex() as $code => $meta) {
-        if ($meta['legacy'] === $legacy) $codes[] = $code;
-    }
-    return $codes;
-}
-
-function SyncAdminPermissionGrants(string $username, array $codes): void
-{
-    global $conn;
-    $index = AdminPermissionIndex();
-    $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]))));
-    try {
-        $conn->beginTransaction();
-        $delete = $conn->prepare('DELETE FROM admin_user_permissions WHERE admin_username = ?');
-        $delete->execute([$username]);
-        $insert = $conn->prepare('INSERT INTO admin_user_permissions(admin_username, permission_code) VALUES (?, ?)');
-        foreach ($codes as $code) $insert->execute([$username, $code]);
-        $conn->commit();
-    } catch (Throwable $e) {
-        if ($conn->inTransaction()) $conn->rollBack();
-        error_log('SyncAdminPermissionGrants: ' . $e->getMessage());
-    }
-}
-
-function AdminHasMenuPermission(string $code, ?string $username = null): bool
-{
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '' || $code === '') return false;
-    try {
-        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR ? LIKE CONCAT(p.permission_code, ".%")) LIMIT 1');
-        $stmt->execute([$username, $code, $code]);
-        return (bool)$stmt->fetchColumn();
-    } catch (Throwable $e) { return false; }
-}
-
-/* A child grant may reveal its ancestors in the navigation, but it must never
- * grant a sibling page or action. Use this only when deciding whether a menu
- * group itself should be visible. */
-function AdminHasMenuNavigationPermission(string $code, ?string $username = null): bool
-{
-    if (AdminHasMenuPermission($code, $username)) return true;
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '' || $code === '') return false;
-    try {
-        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%") LIMIT 1');
-        $stmt->execute([$username, $code]);
-        return (bool)$stmt->fetchColumn();
-    } catch (Throwable $e) { return false; }
-}
-
-function AdminPermissionCodeForPath(?string $script = null): ?string
-{
-    $script = str_replace('\\', '/', $script ?? ($_SERVER['SCRIPT_NAME'] ?? ''));
-    $position = strpos($script, '/admin/');
-    $path = $position === false ? ltrim($script, '/') : substr($script, $position + 1);
-    $walk = static function (array $nodes) use (&$walk, $path): ?string {
-        foreach ($nodes as $node) {
-            if (($node['path'] ?? null) === $path) return (string)$node['code'];
-            $found = $walk($node['children'] ?? []);
-            if ($found !== null) return $found;
-        }
-        return null;
-    };
-    return $walk(AdminPermissionRegistry());
-}
-
-function AdminHasAnyCurrentTreePermission(?string $username = null): bool
-{
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '') return false;
-    try {
-        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
-        $stmt->execute([$username]);
-        $index = AdminPermissionIndex();
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $code) if (isset($index[$code])) return true;
-    } catch (Throwable $e) { }
-    return false;
-}
-
-/* Applied from admin/header.php. Legacy-only accounts keep their current
- * behaviour; accounts configured in the new tree are constrained by it. */
-function EnforceAdminPageTreePermission(): void
-{
-    if (!AdminHasAnyCurrentTreePermission()) return;
-    $code = AdminPermissionCodeForPath();
-    // A grant for an operation also permits opening its containing page, but
-    // never a sibling page (navigation helper only traverses descendants).
-    if ($code === null || AdminHasMenuNavigationPermission($code)) return;
-    http_response_code(403);
-    exit('دسترسی شما به این بخش فعال نشده است.');
-}
-
 function check_national_code($value)
 {
     if (!preg_match('/^[0-9]{10}$/', $value)) {
@@ -1003,31 +772,29 @@ function uncourse($student)
 function Permision($tab)
 {
     global $conn;
-    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$_SESSION['admin']['user']]);
     $result = $query->fetch();
-    if ($result && !empty($result[$tab])) return true;
-    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
-        if (AdminHasMenuNavigationPermission($code)) return true;
+    if ($result[$tab] == 1) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 function PermisionUser($tab, $user)
 {
     global $conn;
-    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([$user]);
     $result = $query->fetch();
-    if ($result && !empty($result[$tab])) return true;
-    foreach (AdminPermissionCodesForLegacy($tab) as $code) {
-        if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
+    if ($result[$tab] == 1) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 /**
@@ -1175,12 +942,21 @@ function SchoolStaffRoleKey(?string $user = null): ?string
 function SchoolNotificationCatalog(): array
 {
     return [
+                // 'spatial-letter' => ['title' => 'نامه های خاص ', 'icon' => 'fe-user-plus'],
         'new_student'        => ['title' => 'دانش‌آموز جدید', 'icon' => 'fe-user-plus'],
         'attendance'         => ['title' => 'حضور و غیاب جدید', 'icon' => 'fe-check-square'],
         'exam'               => ['title' => 'آزمون و نمره جدید', 'icon' => 'fe-edit-3'],
         'discipline'         => ['title' => 'مورد انضباطی جدید', 'icon' => 'fe-alert-triangle'],
         'executive_calendar' => ['title' => 'تغییر تقویم اجرایی', 'icon' => 'fe-calendar'],
         'academic_calendar'  => ['title' => 'تغییر تقویم آموزشی', 'icon' => 'fe-book-open'],
+        'announcement'       => ['title' => 'اطلاعیه', 'icon' => 'fe-mail'],
+        'circular'           => ['title' => 'بخشنامه', 'icon' => 'fe-file-text'],
+        'special_letter'    => ['title' => 'نامه اختصاصی', 'icon' => 'fe-mail'],
+        // Existing legacy categories remain available only to roles whose
+        // policy explicitly allows every notification (manager/general deputy).
+        'pending_invoice'    => ['title' => 'فاکتور منتظر تأیید', 'icon' => 'fe-file-text'],
+        'contact_ticket'     => ['title' => 'تیکت اعلان تماس', 'icon' => 'fe-phone-call'],
+        'contact_control'    => ['title' => 'کنترل اعلان تماس', 'icon' => 'fe-sliders'],
     ];
 }
 
@@ -1202,13 +978,13 @@ function SchoolNotificationAllowedTypes(?string $roleKey = null): array
         case 'counselor':
             return ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
         case 'teacher':
-            return ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            return ['attendance', 'new_student', 'exam', 'academic_calendar', 'announcement', 'circular', 'special_letter'];
         case 'financial_deputy':
-            return ['pending_invoice', 'executive_calendar'];
+            return ['pending_invoice', 'executive_calendar', 'announcement', 'circular', 'special_letter'];
         case 'technical_deputy':
-            return ['executive_calendar', 'academic_calendar'];
+            return ['executive_calendar', 'academic_calendar', 'announcement', 'circular', 'special_letter'];
         default:
-            return [];
+            return ['announcement', 'circular', 'special_letter'];
     }
 }
 
@@ -1238,8 +1014,10 @@ function CreateSchoolNotification(
     ?int $classId = null,
     ?string $studentUsername = null,
     ?string $targetUrl = null,
-    ?string $sourceType = null,
-    ?string $sourceId = null
+        ?string $sourceType = null,
+        ?string $sourceId = null,
+        string $targetType = 'all',
+        ?string $targetValue = null
 ): bool {
     global $conn;
     if (!SchoolNotificationsReady() || !array_key_exists($eventType, SchoolNotificationCatalog())) {
@@ -1266,14 +1044,15 @@ function CreateSchoolNotification(
     try {
         $stmt = $conn->prepare('INSERT INTO school_notifications
             (event_type, title, body, actor_admin_id, actor_username, codecourse, class_id,
-             student_username, target_url, source_type, source_id, dedupe_key)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             student_username, target_url, source_type, source_id, dedupe_key, target_type, target_value)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE id = id');
         return $stmt->execute([
             $eventType, $title, $body !== '' ? $body : null, $actorAdminId,
             $actorUsername ?: null, $codecourse ?: null, $classId ?: null,
             $studentUsername ?: null, $targetUrl ?: null, $sourceType ?: null,
-            $sourceId !== null ? (string)$sourceId : null, $dedupeKey
+            $sourceId !== null ? (string)$sourceId : null, $dedupeKey,
+            $targetType, $targetValue
         ]);
     } catch (Throwable $e) {
         error_log('CreateSchoolNotification: ' . $e->getMessage());
@@ -1289,7 +1068,10 @@ function CreateSchoolNotification(
 function SchoolNotificationVisibility(string $user, ?string $eventType = null, bool $unreadOnly = false): array
 {
     global $conn;
-    $types = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($user));
+    $types = array_values(array_unique(array_merge(
+        SchoolNotificationAllowedTypes(SchoolStaffRoleKey($user)),
+        ['announcement', 'circular', 'special_letter']
+    )));
     if ($eventType !== null) {
         $types = in_array($eventType, $types, true) ? [$eventType] : [];
     }
@@ -1314,6 +1096,16 @@ function SchoolNotificationVisibility(string $user, ?string $eventType = null, b
         $where[] = '(n.actor_admin_id IS NULL OR n.actor_admin_id <> ?)';
         $args[] = $adminId;
     }
+
+    $where[] = "(n.event_type NOT IN ('special_letter') OR n.recipient_username = ?)";
+    $args[] = $user;
+    $where[] = "(n.event_type NOT IN ('announcement', 'circular') OR (
+        n.status = 'published' AND (
+            n.target_type IN ('all', 'staff', 'colleague', 'teacher', 'teachers', 'hamkar')
+            OR (n.target_type = 'user' AND n.recipient_username = ?)
+        )
+    ))";
+    $args[] = $user;
 
     $roleKey = SchoolStaffRoleKey($user);
     if (in_array($roleKey, ['grade_deputy', 'counselor'], true)) {
@@ -1352,27 +1144,6 @@ function CountSchoolNotifications(?string $user = null, bool $unreadOnly = true)
     return (int)$stmt->fetchColumn();
 }
 
-/** Unread and total counts per visible notification type, for inbox cards. */
-function SchoolNotificationTypeCounts(?string $user = null): array
-{
-    global $conn;
-    $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
-    if (!SchoolNotificationsReady()) return [];
-    [$where, $args] = SchoolNotificationVisibility($user, null, false);
-    $sql = "SELECT n.event_type, COUNT(*) AS total_count,
-                   SUM(CASE WHEN nr.notification_id IS NULL THEN 1 ELSE 0 END) AS unread_count
-            FROM school_notifications n
-            LEFT JOIN school_notification_reads nr ON nr.notification_id = n.id AND nr.admin_username = ?
-            WHERE {$where} GROUP BY n.event_type";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array_merge([$user], $args));
-    $counts = [];
-    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) ?: [] as $row) {
-        $counts[(string)$row['event_type']] = ['total' => (int)$row['total_count'], 'unread' => (int)$row['unread_count']];
-    }
-    return $counts;
-}
-
 /** Counts for operational notifications that pre-date school_notifications. */
 function SchoolLegacyNotificationCounts(?string $user = null): array
 {
@@ -1384,17 +1155,12 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
         'unread_sms' => 0,
         'contact_ticket' => 0,
         'contact_alert' => 0,
-        'wallet_charge_pending' => 0,
     ];
 
     try {
         if (in_array($roleKey, ['manager', 'general_deputy'], true)
             || ($roleKey === 'financial_deputy' && PermisionUser('permision_actfactor', $user))) {
             $counts['pending_invoice'] = (int)$conn->query("SELECT COUNT(*) FROM deposit_verifications WHERE status = 'pending'")->fetchColumn();
-        }
-        if (inst_feature('wallet') && (in_array($roleKey, ['manager', 'general_deputy'], true)
-            || ($roleKey === 'financial_deputy' && PermisionUser('permision_actwallet', $user)))) {
-            $counts['wallet_charge_pending'] = (int)$conn->query("SELECT COUNT(*) FROM db_wallet WHERE status = 'در انتظار بررسی'")->fetchColumn();
         }
         if (in_array($roleKey, ['manager', 'general_deputy', 'executive_deputy'], true)) {
             $counts['unread_sms'] = (int)$conn->query('SELECT COUNT(*) FROM sms_inbox WHERE is_read = 0')->fetchColumn();
@@ -1448,21 +1214,18 @@ function CountSchoolNotificationMenu(?string $user = null): int
     return CountSchoolNotifications($user, true) + array_sum(SchoolLegacyNotificationCounts($user));
 }
 
-function GetSchoolNotifications(?string $user = null, ?string $eventType = null, int $limit = 100, ?bool $read = null): array
+function GetSchoolNotifications(?string $user = null, ?string $eventType = null, int $limit = 100): array
 {
     global $conn;
     $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
     if (!SchoolNotificationsReady()) {
         return [];
     }
-    [$where, $args] = SchoolNotificationVisibility($user, $eventType, $read === false);
-    if ($read === true) {
-        $where .= ' AND EXISTS (SELECT 1 FROM school_notification_reads nr_read WHERE nr_read.notification_id = n.id AND nr_read.admin_username = ?)';
-        $args[] = $user;
-    }
+    [$where, $args] = SchoolNotificationVisibility($user, $eventType, false);
     $limit = max(1, min(300, $limit));
     $sql = "SELECT n.*, c.coursename, cl.name AS class_name,
-                   CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, '')) AS actor_name,
+                   NULLIF(TRIM(CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, ''))), '') AS actor_name,
+                   n.actor_username,
                    CASE WHEN nr.notification_id IS NULL THEN 0 ELSE 1 END AS is_read
             FROM school_notifications n
             LEFT JOIN codtbl_course c ON c.codecourse = n.codecourse
@@ -3588,23 +3351,11 @@ function allUsersCount(): int
  */
 function getSchoolAcademicYearRange(?int $timestamp = null): array
 {
-    // The selected archive is stored per administrator session.  Supplying a
-    // timestamp deliberately bypasses it, which keeps historical utilities
-    // that ask for a specific date deterministic.
-    $baseYear = null;
-    if ($timestamp === null && isset($_SESSION['academic_year_base'])) {
-        $selectedYear = filter_var($_SESSION['academic_year_base'], FILTER_VALIDATE_INT);
-        if ($selectedYear !== false && $selectedYear >= 1300 && $selectedYear <= 1600) {
-            $baseYear = (int)$selectedYear;
-        }
-    }
     $timestamp = $timestamp ?? time();
 
-    if ($baseYear === null) {
-        $jalaliYear = (int)jdate('Y', $timestamp, '', '', 'en');
-        $jalaliMonth = (int)jdate('m', $timestamp, '', '', 'en');
-        $baseYear = $jalaliMonth >= 4 ? $jalaliYear : $jalaliYear - 1;
-    }
+    $jalaliYear = (int)jdate('Y', $timestamp, '', '', 'en');
+    $jalaliMonth = (int)jdate('m', $timestamp, '', '', 'en');
+    $baseYear = $jalaliMonth >= 4 ? $jalaliYear : $jalaliYear - 1;
 
     $startGregorian = jalali_to_gregorian($baseYear, 4, 1);
     $endGregorian = jalali_to_gregorian($baseYear + 1, 3, 31);
@@ -3617,89 +3368,12 @@ function getSchoolAcademicYearRange(?int $timestamp = null): array
         'start_gregorian' => sprintf('%04d-%02d-%02d', $startGregorian[0], $startGregorian[1], $startGregorian[2]),
         'end_gregorian' => sprintf('%04d-%02d-%02d', $endGregorian[0], $endGregorian[1], $endGregorian[2]),
         'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $endExclusiveGregorian[0], $endExclusiveGregorian[1], $endExclusiveGregorian[2]),
-        'label' => sprintf('%04d–%04d', $baseYear + 1, $baseYear),
+        'label' => sprintf('%04d–%04d', $baseYear, $baseYear + 1),
     ];
-}
-
-/**
- * Database identifier for the academic year currently being viewed.
- * Returns null until database/migrate_academic_years.php has been run.
- */
-function selectedAcademicYearId(): ?int
-{
-    global $conn;
-    static $resolved = false;
-    static $yearId = null;
-    if ($resolved) {
-        return $yearId;
-    }
-    $resolved = true;
-    try {
-        $range = getSchoolAcademicYearRange();
-        $stmt = $conn->prepare('SELECT id FROM academic_years WHERE base_jalali_year = ? LIMIT 1');
-        $stmt->execute([(int)$range['base_jalali_year']]);
-        $id = $stmt->fetchColumn();
-        $yearId = $id === false ? null : (int)$id;
-    } catch (Throwable $e) {
-        // Keep the pre-migration application usable during rollout.
-        $yearId = null;
-    }
-    return $yearId;
-}
-
-/** Make a course/base available in the academic year currently being viewed. */
-function linkCourseToSelectedAcademicYear(int $courseCode): void
-{
-    global $conn;
-    $yearId = selectedAcademicYearId();
-    if ($yearId === null || $courseCode <= 0) {
-        return;
-    }
-    try {
-        $stmt = $conn->prepare('INSERT IGNORE INTO academic_year_courses (academic_year_id, codecourse) VALUES (?, ?)');
-        $stmt->execute([$yearId, $courseCode]);
-    } catch (Throwable $e) {
-        // The archive migration may not yet be deployed.
-    }
-}
-
-/** Set or clear the academic-year view for the current administrator session. */
-function setSelectedAcademicYear(?int $baseYear): void
-{
-    if ($baseYear === null) {
-        unset($_SESSION['academic_year_base']);
-        return;
-    }
-
-    $_SESSION['academic_year_base'] = $baseYear;
-}
-
-/** Returns selectable school years, including the current year. */
-function getSelectableAcademicYears(int $firstYear = 1400): array
-{
-    $current = getSchoolAcademicYearRange(time())['base_jalali_year'];
-    $years = [];
-    for ($year = $current; $year >= $firstYear; $year--) {
-        $start = jalali_to_gregorian($year, 4, 1);
-        $end = jalali_to_gregorian($year + 1, 4, 1);
-        $years[] = [
-            'base_jalali_year' => $year,
-            'start_jalali' => sprintf('%04d/04/01', $year),
-            'end_jalali' => sprintf('%04d/03/31', $year + 1),
-            'start_gregorian' => sprintf('%04d-%02d-%02d', $start[0], $start[1], $start[2]),
-            'end_exclusive_gregorian' => sprintf('%04d-%02d-%02d', $end[0], $end[1], $end[2]),
-            'label' => sprintf('%04d–%04d', $year, $year + 1),
-        ];
-    }
-    return $years;
 }
 //1tir to 1 tir
 function getJalaliYearWindowApprox(?string $today = null): array
 {
-    if ($today === null && isset($_SESSION['academic_year_base'])) {
-        $range = getSchoolAcademicYearRange();
-        return [$range['start_gregorian'], $range['end_exclusive_gregorian']];
-    }
     $today = $today ?: date('Y-m-d');
 
     $year = (int)substr($today, 0, 4);
@@ -4493,6 +4167,67 @@ function getTeachersList(): array
     return $st->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
 
+function registerClassEventColumnExists(string $columnName): bool
+{
+    global $conn;
+
+    try {
+        $sql = "SELECT COUNT(*)
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'register_class_events'
+                  AND column_name = ?";
+        $st = $conn->prepare($sql);
+        $st->execute([$columnName]);
+        return (int)$st->fetchColumn() > 0;
+    } catch (Throwable $e) {
+        error_log('registerClassEventColumnExists error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function registerClassEvaluationColumnExists(string $columnName): bool
+{
+    global $conn;
+
+    try {
+        $sql = "SELECT COUNT(*)
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'register_class_evaluation'
+                  AND column_name = ?";
+        $st = $conn->prepare($sql);
+        $st->execute([$columnName]);
+        return (int)$st->fetchColumn() > 0;
+    } catch (Throwable $e) {
+        error_log('registerClassEvaluationColumnExists error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+function ensureRegisterClassEventGroupUidColumn(): bool
+{
+    global $conn;
+
+    if (registerClassEventColumnExists('group_uid')) {
+        return true;
+    }
+
+    try {
+        $conn->exec("ALTER TABLE register_class_events ADD COLUMN group_uid CHAR(32) NULL AFTER event_date");
+        try {
+            $conn->exec("CREATE INDEX idx_rce_group_uid ON register_class_events (group_uid)");
+        } catch (Throwable $e) {
+            // Some MySQL versions or old schemas may already contain the index.
+            error_log('create index group_uid warning: ' . $e->getMessage());
+        }
+        return true;
+    } catch (Throwable $e) {
+        error_log('ensureRegisterClassEventGroupUidColumn error: ' . $e->getMessage());
+        return false;
+    }
+}
+
 /**
  * Create a new class event (Exam or Attendance)
  */
@@ -4500,10 +4235,10 @@ function createRegisterClassEvent(
     int $classId,
     int $createdBy,
     int $teacherId,
-    int $darsId,
     string $title,
     ?string $eventDate,
-    int $type, string $description = '', ?string $groupUid = null
+    int $type, string $description = '', ?string $groupUid = null,
+    string $homeworkNotificationTarget = 'family'
 ): bool {
     global $conn;
 
@@ -4513,23 +4248,62 @@ function createRegisterClassEvent(
 
     // تاریخ اختیاری است؛ رشته خالی به NULL تبدیل می شود
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
+    $homeworkNotificationTarget = in_array($homeworkNotificationTarget, ['family', 'family_student'], true)
+        ? $homeworkNotificationTarget
+        : 'family';
+
+    if (!registerClassEventColumnExists('homework_notification_target')) {
+        try {
+            $conn->exec("ALTER TABLE register_class_events ADD COLUMN homework_notification_target VARCHAR(20) NOT NULL DEFAULT 'family' AFTER type");
+        } catch (Throwable $e) {
+            error_log('ensure homework notification target error: ' . $e->getMessage());
+        }
+    }
+
+    $hasGroupUid = registerClassEventColumnExists('group_uid');
+    if (!$hasGroupUid) {
+        ensureRegisterClassEventGroupUidColumn();
+        $hasGroupUid = registerClassEventColumnExists('group_uid');
+    }
+
+    if ($hasGroupUid) {
+        $sql = "
+            INSERT INTO register_class_events
+                (class_id, teacher_id, title, event_date, group_uid, description, type, homework_notification_target, status, created_by)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+        ";
+
+        $st = $conn->prepare($sql);
+        return $st->execute([
+            $classId,
+            $teacherId,
+            $title,
+            $eventDate,
+            $groupUid,
+            $description,
+            $type,
+            $homeworkNotificationTarget,
+            $createdBy
+        ]);
+    }
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, status, created_by)
+            (class_id, teacher_id, title, event_date, description, type, homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
     return $st->execute([
         $classId,
-        $teacherId, $darsId,
+        $teacherId,
         $title,
         $eventDate,
-        $groupUid,
         $description,
         $type,
+        $homeworkNotificationTarget,
         $createdBy
     ]);
 }
@@ -4547,6 +4321,7 @@ function registerClassColumnKinds(): array
         // نمره کلاسی دو بخش دارد: عدد و ارزیابی کیفی
         ['type' => 1, 'title' => 'نمره کلاسی',          'date_bound' => false, 'input' => 'score',      'quality' => true],
         ['type' => 4, 'title' => 'تراز آزمون آنلاین',   'date_bound' => false, 'input' => 'score',      'quality' => false],
+        ['type' => 5, 'title' => 'نمره تکلیف',          'date_bound' => false, 'input' => 'score',      'quality' => false, 'homework' => true],
         ['type' => 3, 'title' => 'توضیحات',             'date_bound' => false, 'input' => 'note',       'quality' => false],
     ];
 }
@@ -4571,6 +4346,10 @@ function deleteRegisterClassEventGroup(int $classId, string $groupUid): bool
 {
     global $conn;
     if ($classId <= 0 || $groupUid === '') {
+        return false;
+    }
+
+    if (!registerClassEventColumnExists('group_uid')) {
         return false;
     }
 
@@ -4682,8 +4461,13 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         static fn($k) => "'" . $k['type'] . "'",
         registerClassColumnKinds()
     ));
-    // ستون های بدون تاریخ انتهای جدول قرار می گیرند
-    $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+
+    if (registerClassEventColumnExists('group_uid')) {
+        // ستون های بدون تاریخ انتهای جدول قرار می گیرند
+        $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+    } else {
+        $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, FIELD(type, $kindOrder), id ASC";
+    }
 
     $st = $conn->prepare($sql);
     $st->execute($params);
@@ -4707,7 +4491,10 @@ function saveStudentRegisterClassEntry(
         return false;
     }
 
-    if ($score !== null || $quality !== null) {
+    $hasQualityColumn = registerClassEvaluationColumnExists('quality');
+    $hasNoteColumn = registerClassEvaluationColumnExists('note');
+
+    if (($score !== null || $quality !== null) && $hasQualityColumn) {
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
                                  WHERE register_class_events_id = ? AND username = ?");
         $check->execute([$eventId, $studentUsername]);
@@ -4739,7 +4526,7 @@ function saveStudentRegisterClassEntry(
     }
 
     // ستون توضیحات؛ رشته خالی یعنی پاک کردن متن
-    if ($note !== null) {
+    if ($note !== null && $hasNoteColumn) {
         $noteValue = ($note === '') ? null : mb_substr($note, 0, 500);
 
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
@@ -4779,8 +4566,9 @@ function saveStudentRegisterClassEntry(
         }
     }
 
-    $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name,
-            ev.title AS event_title, ev.event_date, ev.type AS event_type
+        $contextStmt = $conn->prepare('SELECT c.codecourse, c.name AS class_name,
+            ev.title AS event_title, ev.event_date, ev.type AS event_type,
+            ev.homework_notification_target
         FROM register_class_events ev
         INNER JOIN classes c ON c.id = ev.class_id
         WHERE ev.id = ? AND ev.class_id = ? LIMIT 1');
@@ -4800,18 +4588,21 @@ function saveStudentRegisterClassEntry(
     $actorUsername = $actorAdminId ? null : $createdBy;
 
     if ($score !== null || $quality !== null) {
+        $isHomework = (int)($context['event_type'] ?? 0) === 5;
         CreateSchoolNotification(
             'exam',
-            'ثبت آزمون و نمره جدید' . ($className !== '' ? ' - ' . $className : ''),
+            ($isHomework ? 'ثبت نمره تکلیف جدید' : 'ثبت آزمون و نمره جدید') . ($className !== '' ? ' - ' . $className : ''),
             $eventDescription,
             $actorAdminId,
             $actorUsername,
             isset($context['codecourse']) ? (int)$context['codecourse'] : null,
             $classId,
-            null,
+            $isHomework ? $studentUsername : null,
             'admin/course/class-register-notification.php?event=' . $eventId,
-            'register_class_exam_event',
-            (string)$eventId
+            $isHomework ? 'register_class_homework_grade' : 'register_class_exam_event',
+            $isHomework ? $eventId . ':' . $studentUsername : (string)$eventId,
+            $isHomework ? ($context['homework_notification_target'] ?? 'family') : 'all',
+            $isHomework ? $studentUsername : null
         );
     }
     if ($statusCode !== null) {
@@ -4848,8 +4639,16 @@ function saveStudentRegisterClassEntry(
 function getRegisterClassEvaluations(int $classId, int $adminId, int $adminRole): array
 {
     global $conn;
+    $selectColumns = ['e.register_class_events_id AS event_id', 'e.username', 'e.score'];
+    if (registerClassEvaluationColumnExists('note')) {
+        $selectColumns[] = 'e.note';
+    }
+    if (registerClassEvaluationColumnExists('quality')) {
+        $selectColumns[] = 'e.quality';
+    }
+
     $sql = "
-        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality
+        SELECT " . implode(', ', $selectColumns) . "
         FROM register_class_evaluation e
         INNER JOIN register_class_events ev ON e.register_class_events_id = ev.id
         WHERE ev.class_id = ?
@@ -5112,14 +4911,4 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
         if ($gid > 0) $st->execute([$eventId, $gid]);
     }
     return true;
-}
-
-/*
- * Most admin pages execute their POST handlers before including admin/header.
- * Run the same route gate at the end of this common bootstrap as well, so a
- * direct POST cannot bypass the tree check. Non-admin pages and unmapped
- * endpoints are deliberately left alone.
- */
-if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
-    EnforceAdminPageTreePermission();
 }
