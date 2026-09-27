@@ -486,7 +486,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             <?php if ($dashboardCan($isInstitute ? 'dashboard.summary.cards.learners-current' : 'dashboard.summary.cards.messages')): ?>
                             <div class="stat-card">
                                 <div class="stat-left">
-                                    <p class="stat-label"><?= $isInstitute ? 'فراگیران' : 'پیامک‌های ارسالی امسال' ?></p>
+                                    <p class="stat-label"><?= $isInstitute ? 'فراگیران' : 'اطلاع رسانی ها' ?></p>
                                     <p class="stat-value text-info"><?php echo number_format($isInstitute ? $totalLearners : $countSMS); ?></p>
                                 </div>
                                 <div class="stat-icon icon-cyan" aria-hidden="true">
