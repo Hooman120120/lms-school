@@ -121,7 +121,7 @@ include_once '../../temp.html';
                                                 <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                     <h6 class="main-content-label mb-0">
-                                                        افزودن دوره فوق برنامه جدید
+                                                        افزودن دوره موقت جدید
                                                     </h6>
 
                                                     <span class="menu-info-trigger"
@@ -134,7 +134,7 @@ include_once '../../temp.html';
                                                 </div>
 
                                                 <p class="text-muted card-sub-title">
-                                                    ایجاد یک دوره فوق برنامه جدید
+                                                    ایجاد یک دوره موقت جدید
                                                 </p>
                                             </div>
                                         </div>
