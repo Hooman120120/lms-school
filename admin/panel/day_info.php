@@ -30,7 +30,8 @@ $stmt->execute([$_SESSION['admin']['user']]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId      = $admin['idadmin'];
 $adminRole    = $admin['adminrole'];
-$permCalendar = $admin['permission_calendar'];
+// Editing/deleting here follows the permission tree (executive.calendar.edit), legacy column as fallback.
+$permCalendar = AdminCanUsePermissionScope('executive.calendar.edit', ['permission_calendar']) ? 1 : 0;
 
 // Get Gregorian date from popup (YYYY-MM-DD)
 $date_greg = $_GET['date'] ?? date('Y-m-d');

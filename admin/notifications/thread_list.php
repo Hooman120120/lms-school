@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'set_s
     $meRowStmt = $conn->prepare("SELECT permision_viewalert FROM dbadmin WHERE username=? LIMIT 1");
     $meRowStmt->execute([$me]);
     $isManager = (bool)$meRowStmt->fetchColumn()
-        || in_array(SchoolStaffRoleKey($me), ['manager', 'general_deputy'], true);
+        || in_array(SchoolStaffRoleKey($me), ['manager', 'general_deputy'], true)
+        || AdminCanUsePermissionScope('school-notifications.information.tickets', ['permision_viewalert']);
 
     // CSRF check
     $csrfOk = (isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? ''));
@@ -76,9 +77,11 @@ $meRow = $meRowStmt->fetch(PDO::FETCH_ASSOC);
 
 $schoolRoleKey = SchoolStaffRoleKey($me);
 $isSchoolManager = in_array($schoolRoleKey, ['manager', 'general_deputy'], true);
-$isManager  = !empty($meRow['permision_viewalert']) || $isSchoolManager;
+// Granted on the permission tree = manager of these tickets; supporter stays a role flag.
+$isManager  = !empty($meRow['permision_viewalert']) || $isSchoolManager
+    || AdminCanUsePermissionScope('school-notifications.information.tickets', ['permision_viewalert']);
 $isOperator = !empty($meRow['permision_suporter']) || $schoolRoleKey === 'counselor';
-$canSeeAll  = $isSchoolManager || ($isManager && !empty($meRow['permision_viewemploy']));
+$canSeeAll  = $isSchoolManager || ($isManager && Permision('permision_viewemploy'));
 if (!$isManager && !$isOperator) {
     http_response_code(403);
     exit('دسترسی تیکت‌های اعلان تماس برای سمت شما تعریف نشده است.');
