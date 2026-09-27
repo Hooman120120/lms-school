@@ -20,6 +20,7 @@ $notificationList = 'admin/notifications/' . (inst_is('institute') ? 'institute_
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $isNotificationListPage = !empty($_GET['list']);
 $notificationUsesTree = AdminHasAnyCurrentTreePermission();
+$directNotificationCount = CountSchoolDirectNotifications($currentUser, false);
 $notificationCan = static function (string $suffix) use ($notificationUsesTree, $notificationPrefix): bool {
     if (!$notificationUsesTree) return true;
     // A grant for a page operation must also reveal that page's entry card.
@@ -30,16 +31,19 @@ $notificationCan = static function (string $suffix) use ($notificationUsesTree, 
 $notificationSectionCan = static function (string $suffix) use ($notificationUsesTree, $notificationPrefix): bool {
     return !$notificationUsesTree || AdminHasMenuNavigationPermission($notificationPrefix . '.' . $suffix);
 };
-if ($notificationUsesTree && !AdminHasMenuNavigationPermission($notificationPrefix)) {
+if ($notificationUsesTree && !AdminHasMenuNavigationPermission($notificationPrefix) && $directNotificationCount === 0) {
     http_response_code(403);
     exit('دسترسی شما به اعلان‌ها فعال نشده است.');
 }
 $allowedTypes = array_values(array_intersect(SchoolNotificationAllowedTypes(), array_keys(SchoolNotificationCatalog())));
 if ($notificationUsesTree) {
     $allowedTypes = array_values(array_filter($allowedTypes, static fn(string $type): bool =>
-        AdminHasMenuPermission($notificationPrefix . '.categories.' . $type)));
+        IsSchoolDirectNotificationType($type)
+        || AdminHasMenuPermission($notificationPrefix . '.categories.' . $type)));
 }
-$canCurrentNotifications = $notificationCan('current') || ($allowedTypes !== [] && $notificationSectionCan('categories'));
+$canCurrentNotifications = $directNotificationCount > 0
+    || $notificationCan('current')
+    || ($allowedTypes !== [] && $notificationSectionCan('categories'));
 if ($currentUser === '' || SchoolNotificationAllowedTypes() === []) {
     http_response_code(403);
     exit('برای سمت فعلی، دسترسی به اعلان‌ها تعریف نشده است.');
@@ -52,11 +56,14 @@ if (empty($_SESSION['school_notification_csrf'])) {
 // Opening a detail marks the notification as read first, then forwards only
 // to an internal LMS URL that the notification itself declared.
 if (isset($_GET['open']) && ctype_digit((string)$_GET['open'])) {
-    if (!$notificationCan('open')) { http_response_code(403); exit('دسترسی مشاهدهٔ جزئیات اعلان فعال نشده است.'); }
     $notificationId = (int)$_GET['open'];
     foreach (GetSchoolNotifications($currentUser, null, 300) as $candidate) {
         if ((int)$candidate['id'] !== $notificationId) continue;
         if (!in_array((string)$candidate['event_type'], $allowedTypes, true)) break;
+        if (!$notificationCan('open') && !IsSchoolDirectNotificationType((string)$candidate['event_type'])) {
+            http_response_code(403);
+            exit('دسترسی مشاهدهٔ جزئیات اعلان فعال نشده است.');
+        }
         MarkSchoolNotificationRead($notificationId, $currentUser);
         $target = trim((string)($candidate['target_url'] ?? ''));
         if ($target !== '' && strpos($target, 'admin/') === 0) {
@@ -76,18 +83,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('درخواست نامعتبر است. صفحه را تازه‌سازی کنید.');
     }
     if (isset($_POST['notification_id'])) {
-        if (!$notificationCan('mark-read')) { http_response_code(403); exit('دسترسی خواندن اعلان فعال نشده است.'); }
         foreach (GetSchoolNotifications($currentUser, null, 300) as $visibleNotification) {
             if ((int)$visibleNotification['id'] === (int)$_POST['notification_id']
                 && in_array((string)$visibleNotification['event_type'], $allowedTypes, true)) {
+                if (!$notificationCan('mark-read')
+                    && !IsSchoolDirectNotificationType((string)$visibleNotification['event_type'])) {
+                    http_response_code(403);
+                    exit('دسترسی خواندن اعلان فعال نشده است.');
+                }
                 MarkSchoolNotificationRead((int)$_POST['notification_id'], $currentUser);
                 break;
             }
         }
     } elseif (isset($_POST['mark_all'])) {
-        if (!$notificationCan('mark-all')) { http_response_code(403); exit('دسترسی خواندن همهٔ اعلان‌ها فعال نشده است.'); }
+        $canMarkAllNotifications = $notificationCan('mark-all');
         foreach (GetSchoolNotifications($currentUser, null, 300) as $visibleNotification) {
-            if (in_array((string)$visibleNotification['event_type'], $allowedTypes, true)) {
+            $visibleType = (string)$visibleNotification['event_type'];
+            if (in_array($visibleType, $allowedTypes, true)
+                && ($canMarkAllNotifications || IsSchoolDirectNotificationType($visibleType))) {
                 MarkSchoolNotificationRead((int)$visibleNotification['id'], $currentUser);
             }
         }
@@ -108,7 +121,7 @@ if (!in_array($selectedType, $allowedTypes, true)) {
 }
 $view = (string)($_GET['view'] ?? 'unread');
 if (!in_array($view, ['unread', 'read'], true)) $view = 'unread';
-if ($isNotificationListPage && !($view === 'read' ? $notificationCan('history') : $canCurrentNotifications)) {
+if ($isNotificationListPage && !($view === 'read' ? ($notificationCan('history') || $directNotificationCount > 0) : $canCurrentNotifications)) {
     http_response_code(403);
     exit('دسترسی این فهرست اعلان‌ها فعال نشده است.');
 }
@@ -145,9 +158,9 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                 <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5"><?= htmlspecialchars($notificationTitle) ?></h2>
-                        <p class="text-muted mb-0">فقط اعلان‌های مجاز برای سمت و <?= inst_is('institute') ? 'دوره‌های' : 'پایه‌های' ?> تخصیص‌یافته شما نمایش داده می‌شود.</p>
+                        <p class="text-muted mb-0">اعلان‌های مجاز سازمانی و نامه‌هایی که مستقیماً برای شما ارسال شده‌اند نمایش داده می‌شوند.</p>
                     </div>
-                    <?php if ($isNotificationListPage && $unreadCount > 0 && $notificationCan('mark-all')): ?>
+                    <?php if ($isNotificationListPage && $unreadCount > 0 && ($notificationCan('mark-all') || $directNotificationCount > 0)): ?>
                         <form method="post">
                             <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
                             <input type="hidden" name="return_type" value="<?= htmlspecialchars($selectedType) ?>">
@@ -223,18 +236,19 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!$isNotificationListPage && $allowedTypes !== [] && ($canCurrentNotifications || $notificationCan('history'))): ?><div class="card custom-card mb-3">
+                    <?php if (!$isNotificationListPage && $allowedTypes !== [] && ($canCurrentNotifications || $notificationCan('history') || $directNotificationCount > 0)): ?><div class="card custom-card mb-3">
                         <div class="card-header border-bottom-0">
-                            <h5 class="card-title mb-0"><?= inst_is('institute') ? 'اعلان‌های دوره‌ها' : 'اعلان‌های پایه‌ها' ?></h5>
-                            <p class="text-muted mb-0 mt-1">روی هر دسته بزنید تا فقط اعلان‌های همان بخش را ببینید.</p>
+                            <h5 class="card-title mb-0"><?= inst_is('institute') ? 'اعلان‌های آموزشگاه' : 'اعلان‌های مدرسه' ?></h5>
+                            <p class="text-muted mb-0 mt-1">اعلان‌های آموزشی و نامه‌های دریافتی شما در دسته‌های جدا نمایش داده می‌شوند.</p>
                         </div>
                         <div class="card-body">
                             <div class="row">
                             <?php foreach ($allowedTypes as $type): ?>
                                 <?php $counts = $typeCounts[$type] ?? ['total' => 0, 'unread' => 0]; ?>
+                                <?php $typeView = IsSchoolDirectNotificationType($type) && (int)$counts['unread'] === 0 ? 'read' : ($canCurrentNotifications ? 'unread' : 'read'); ?>
                                 <div class="col-md-6 col-xl-4 mb-3">
                                     <a class="btn btn-block text-right p-3 <?= $selectedType === $type ? 'btn-primary' : 'btn-outline-primary' ?>"
-                                       href="<?= url($notificationList . '?type=' . rawurlencode($type) . '&view=' . ($canCurrentNotifications ? 'unread' : 'read')) ?>">
+                                       href="<?= url($notificationList . '?type=' . rawurlencode($type) . '&view=' . $typeView) ?>">
                                         <i class="fe <?= htmlspecialchars($catalog[$type]['icon']) ?> ml-2"></i>
                                         <?= htmlspecialchars($catalog[$type]['title']) ?>
                                         <span class="float-left">
@@ -254,7 +268,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                         <h5 class="mb-0"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?></h5>
                         <div class="btn-group">
                             <?php if ($canCurrentNotifications): ?><a class="btn btn-sm <?= $view === 'unread' ? 'btn-primary' : 'btn-outline-primary' ?>" href="<?= url($notificationPage . ($selectedType !== '' ? '?type=' . rawurlencode($selectedType) . '&view=unread' : '')) ?>">دریافت‌های جدید<?= $unreadCount > 0 ? ' (' . $unreadCount . ')' : '' ?></a><?php endif; ?>
-                            <?php if ($notificationCan('history')): ?><a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url($notificationPage . '?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a><?php endif; ?>
+                            <?php if ($notificationCan('history') || $directNotificationCount > 0): ?><a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url($notificationPage . '?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a><?php endif; ?>
                         </div>
                     </div>
 
@@ -283,12 +297,16 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                         <?php if (!empty($notification['coursename'])): ?><span><i class="fe fe-layers"></i> <?= htmlspecialchars($notification['coursename']) ?></span><?php endif; ?>
                                         <?php if (!empty($notification['class_name'])): ?><span><i class="fe fe-users"></i> <?= htmlspecialchars($notification['class_name']) ?></span><?php endif; ?>
                                         <span><i class="fe fe-clock"></i> <?= htmlspecialchars(toJalali($notification['created_at'], 'Y/m/d H:i', 'fa')) ?></span>
+                                        <?php if (!empty($notification['priority']) && IsSchoolDirectNotificationType((string)$notification['event_type'])): ?><span><i class="fe fe-flag"></i> <?= htmlspecialchars($notification['priority']) ?></span><?php endif; ?>
                                     </div>
                                     <div class="mt-3 d-flex" style="gap:8px">
                                         <?php if ($notificationCan('open') && $target !== '' && strpos($target, 'admin/') === 0): ?>
                                             <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url($notificationHome . '?open=' . (int)$notification['id'])) ?>">مشاهده جزئیات</a>
                                         <?php endif; ?>
-                                        <?php if ($notificationCan('mark-read') && (int)$notification['is_read'] === 0): ?>
+                                        <?php if (!empty($notification['attachment']) && str_starts_with((string)$notification['attachment'], 'uploads/')): ?>
+                                            <a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener" href="<?= htmlspecialchars(url((string)$notification['attachment'])) ?>">دریافت پیوست</a>
+                                        <?php endif; ?>
+                                        <?php if (($notificationCan('mark-read') || IsSchoolDirectNotificationType((string)$notification['event_type'])) && (int)$notification['is_read'] === 0): ?>
                                             <form method="post">
                                                 <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
                                                 <input type="hidden" name="notification_id" value="<?= (int)$notification['id'] ?>">

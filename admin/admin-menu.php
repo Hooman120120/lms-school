@@ -59,9 +59,11 @@ $countPendingTicketReferrals = countPendingTicketReferrals($currentUser);
 $countPendinghomework = countPendingHomeworkAdmin();
 $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($currentUser));
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
+$schoolDirectNotificationCount = CountSchoolDirectNotifications($currentUser, false);
 if (AdminHasAnyCurrentTreePermission()) {
     $schoolNotificationTypes = array_values(array_filter($schoolNotificationTypes, static fn(string $type): bool =>
-        AdminHasMenuPermission('school-notifications.categories.' . $type)));
+        IsSchoolDirectNotificationType($type)
+        || AdminHasMenuPermission('school-notifications.categories.' . $type)));
 }
 
 
@@ -612,7 +614,7 @@ else                  $c = '#15233f';
 
             <?php endif; ?>
             <?php if (inst_is('school') && (AdminHasAnyCurrentTreePermission()
-                ? AdminHasMenuNavigationPermission('school-notifications')
+                ? (AdminHasMenuNavigationPermission('school-notifications') || $schoolDirectNotificationCount > 0)
                 : $schoolNotificationTypes !== [])): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">

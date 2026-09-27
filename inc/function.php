@@ -403,6 +403,12 @@ function AdminFilterFinanceFactors(array $rows, string $scopeCode, bool $legacyA
 function EnforceAdminPageTreePermission(): void
 {
     if (!AdminHasAnyCurrentTreePermission()) return;
+    $script = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
+    if ((str_ends_with($script, '/admin/notifications/school_notifications.php')
+            || str_ends_with($script, '/admin/notifications/institute_notifications.php'))
+        && CountSchoolDirectNotifications((string)($_SESSION['admin']['user'] ?? ''), false) > 0) {
+        return;
+    }
     $codes = AdminPermissionCodesForPath();
     // A grant for an operation also permits opening its containing page, but
     // never a sibling page (navigation helper only traverses descendants).
@@ -1374,35 +1380,60 @@ function SchoolNotificationCatalog(): array
         'discipline'         => ['title' => 'مورد انضباطی جدید', 'icon' => 'fe-alert-triangle'],
         'executive_calendar' => ['title' => 'تغییر تقویم اجرایی', 'icon' => 'fe-calendar'],
         'academic_calendar'  => ['title' => 'تغییر تقویم آموزشی', 'icon' => 'fe-book-open'],
+        'announcement'       => ['title' => 'اطلاعیه', 'icon' => 'fe-bell'],
+        'circular'           => ['title' => 'بخشنامه', 'icon' => 'fe-file-text'],
+        'special_letter'     => ['title' => 'نامه اختصاصی', 'icon' => 'fe-mail'],
     ];
+}
+
+/** Personal staff documents are always available to their exact recipient. */
+function SchoolDirectNotificationTypes(): array
+{
+    return ['announcement', 'circular', 'special_letter'];
+}
+
+function IsSchoolDirectNotificationType(string $eventType): bool
+{
+    return in_array($eventType, SchoolDirectNotificationTypes(), true);
 }
 
 function SchoolNotificationAllowedTypes(?string $roleKey = null): array
 {
     $roleKey = $roleKey ?? SchoolStaffRoleKey();
     $all = array_keys(SchoolNotificationCatalog());
+    $direct = SchoolDirectNotificationTypes();
 
     switch ($roleKey) {
         case 'manager':
         case 'general_deputy':
             return $all;
         case 'grade_deputy':
-            return ['new_student', 'executive_calendar', 'attendance', 'exam', 'discipline'];
+            $roleTypes = ['new_student', 'executive_calendar', 'attendance', 'exam', 'discipline'];
+            break;
         case 'executive_deputy':
-            return array_values(array_diff($all, ['pending_invoice', 'contact_ticket', 'contact_control', 'new_student']));
+            $roleTypes = ['attendance', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            break;
         case 'cultural_disciplinary_deputy':
-            return ['attendance', 'discipline', 'executive_calendar', 'new_student'];
+            $roleTypes = ['attendance', 'discipline', 'executive_calendar', 'new_student'];
+            break;
         case 'counselor':
-            return ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            $roleTypes = ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            break;
         case 'teacher':
-            return ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            $roleTypes = ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            break;
         case 'financial_deputy':
-            return ['pending_invoice', 'executive_calendar'];
+            $roleTypes = ['executive_calendar'];
+            break;
         case 'technical_deputy':
-            return ['executive_calendar', 'academic_calendar'];
+            $roleTypes = ['executive_calendar', 'academic_calendar'];
+            break;
         default:
-            return [];
+            $roleTypes = [];
+            break;
     }
+
+    return array_values(array_unique(array_merge($roleTypes, $direct)));
 }
 
 function SchoolNotificationsReady(): bool
@@ -1495,6 +1526,12 @@ function SchoolNotificationVisibility(string $user, ?string $eventType = null, b
     $adminId = (int)$adminStmt->fetchColumn();
     $where = ['n.event_type IN (' . implode(',', array_fill(0, count($types), '?')) . ')'];
     $args = $types;
+    // Personal documents must never leak to another colleague.
+    $where[] = '(n.recipient_username IS NULL OR n.recipient_username = ?)';
+    $args[] = $user;
+    $directTypes = SchoolDirectNotificationTypes();
+    $where[] = '(n.event_type NOT IN (' . implode(',', array_fill(0, count($directTypes), '?')) . ') OR n.status = ?)';
+    $args = array_merge($args, $directTypes, ['published']);
     // اعلان‌های نسخه قبلی برای هر دانش‌آموز جداگانه ذخیره می‌شدند.
     // آن رکوردها نگه داشته می‌شوند، اما در شمارنده و فهرست نمایش داده نمی‌شوند
     // تا از این پس هر جلسه فقط یک اعلان تجمیعی داشته باشد.
@@ -1564,6 +1601,16 @@ function SchoolNotificationTypeCounts(?string $user = null): array
         $counts[(string)$row['event_type']] = ['total' => (int)$row['total_count'], 'unread' => (int)$row['unread_count']];
     }
     return $counts;
+}
+
+function CountSchoolDirectNotifications(?string $user = null, bool $unreadOnly = false): int
+{
+    $total = 0;
+    foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
+        if (!IsSchoolDirectNotificationType((string)$type)) continue;
+        $total += (int)($counts[$unreadOnly ? 'unread' : 'total'] ?? 0);
+    }
+    return $total;
 }
 
 /** Counts for operational notifications that pre-date school_notifications. */
@@ -1644,7 +1691,8 @@ function CountSchoolNotificationMenu(?string $user = null): int
     }
     $total = 0;
     foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
-        if (AdminHasMenuPermission($prefix . '.categories.' . $type, $user)) {
+        if (IsSchoolDirectNotificationType((string)$type)
+            || AdminHasMenuPermission($prefix . '.categories.' . $type, $user)) {
             $total += (int)$counts['unread'];
         }
     }
@@ -1680,12 +1728,13 @@ function GetSchoolNotifications(?string $user = null, ?string $eventType = null,
     }
     $limit = max(1, min(300, $limit));
     $sql = "SELECT n.*, c.coursename, cl.name AS class_name,
-                   CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, '')) AS actor_name,
+                   CONCAT(COALESCE(a.fname, au.fname, ''), ' ', COALESCE(a.lname, au.lname, '')) AS actor_name,
                    CASE WHEN nr.notification_id IS NULL THEN 0 ELSE 1 END AS is_read
             FROM school_notifications n
             LEFT JOIN codtbl_course c ON c.codecourse = n.codecourse
             LEFT JOIN classes cl ON cl.id = n.class_id
             LEFT JOIN dbadmin a ON a.idadmin = n.actor_admin_id
+            LEFT JOIN dbadmin au ON au.username = n.actor_username
             LEFT JOIN school_notification_reads nr
               ON nr.notification_id = n.id AND nr.admin_username = ?
             WHERE {$where}

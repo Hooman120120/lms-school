@@ -197,13 +197,16 @@ $registry = [
         ]],
     ]],
     ['code'=>'school-notifications','label'=>'اعلان‌های مدرسه','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
-        ['code'=>'school-notifications.categories','label'=>'اعلان‌های پایه‌ها','children'=>[
+        ['code'=>'school-notifications.categories','label'=>'دسته‌های اعلان','children'=>[
             ['code'=>'school-notifications.categories.new_student','label'=>'دانش‌آموز جدید'],
             ['code'=>'school-notifications.categories.attendance','label'=>'حضور و غیاب جدید'],
             ['code'=>'school-notifications.categories.exam','label'=>'آزمون و نمره جدید'],
             ['code'=>'school-notifications.categories.discipline','label'=>'مورد انضباطی جدید'],
             ['code'=>'school-notifications.categories.executive_calendar','label'=>'تغییر تقویم اجرایی'],
             ['code'=>'school-notifications.categories.academic_calendar','label'=>'تغییر تقویم آموزشی'],
+            ['code'=>'school-notifications.categories.announcement','label'=>'اطلاعیه‌های دریافتی'],
+            ['code'=>'school-notifications.categories.circular','label'=>'بخشنامه‌های دریافتی'],
+            ['code'=>'school-notifications.categories.special_letter','label'=>'نامه‌های اختصاصی دریافتی'],
         ]],
         ['code'=>'school-notifications.current','label'=>'دریافت‌های جدید دسته‌های مجاز'],
         ['code'=>'school-notifications.history','label'=>'آرشیو خوانده‌شده'],
