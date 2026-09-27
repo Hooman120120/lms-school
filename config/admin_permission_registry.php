@@ -147,7 +147,7 @@ $registry = [
             ['code'=>'students.definitive.enrolment','label'=>'ثبت پایه','legacy'=>'permision_addcourse_student','path'=>'admin/Student/addcourse.php','children'=>[
                 ['code'=>'students.definitive.enrolment.bulk','label'=>'ایجاد پایه برای گروهی از دانش‌آموزان','labels'=>['institute'=>'ایجاد دوره برای گروهی از فراگیران'],'modes'=>['school','institute']],
             ]],
-            ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','legacy'=>'permision_editstudent','path'=>'admin/Student/edit-absolute.php'],
+            ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','labels'=>['school'=>'ویرایش اطلاعات'],'legacy'=>'permision_editstudent','path'=>'admin/Student/edit-absolute.php'],
             ['code'=>'students.definitive.my-students','label'=>'دانش‌آموزان من','path'=>'admin/panel/mystudent.php'],
             ['code'=>'students.definitive.my-courses','label'=>'فراگیران نفر دوره','modes'=>['institute'],'path'=>'admin/panel/mypersonalcourse.php'],
             ['code'=>'students.definitive.cancelled-support','label'=>'لغو پشتیبانی‌شده‌ها','path'=>'admin/panel/canceled_student_list.php'],
@@ -159,10 +159,10 @@ $registry = [
             ['code'=>'students.definitive.cancelled-operator','label'=>'لغو پشتیبانی‌شده‌ها','legacy'=>'permision_reportstudent','path'=>'admin/Student/canceled-op-student.php'],
         ]],
         ['code'=>'students.temporary','label'=>'دانش‌آموزان آزمایشی','children'=>[
-            ['code'=>'students.temporary.register','label'=>'ثبت‌نام موقت','legacy'=>'permision_addstudent','path'=>'admin/Student/experimental-add.php'],
-            ['code'=>'students.temporary.enrolment','label'=>'ثبت دانش‌آموز در دوره آزمایشی','legacy'=>'permision_addcourse_student','path'=>'admin/democourse/addstudent.php'],
-            ['code'=>'students.temporary.edit','label'=>'ویرایش اطلاعات موقت','legacy'=>'permision_editstudent','path'=>'admin/Student/edit-experimental.php'],
-            ['code'=>'students.temporary.report','label'=>'گزارش تفکیکی','legacy'=>'permision_reportstudent','path'=>'admin/Student/registration-Course-experimental.php'],
+            ['code'=>'students.temporary.register','label'=>'ثبت‌نام موقت','modes'=>['institute'],'legacy'=>'permision_addstudent','path'=>'admin/Student/experimental-add.php'],
+            ['code'=>'students.temporary.enrolment','label'=>'ثبت دانش‌آموز در دوره آزمایشی','labels'=>['school'=>'ثبت فوق برنامه'],'legacy'=>'permision_addcourse_student','path'=>'admin/democourse/addstudent.php'],
+            ['code'=>'students.temporary.edit','label'=>'ویرایش اطلاعات موقت','modes'=>['institute'],'legacy'=>'permision_editstudent','path'=>'admin/Student/edit-experimental.php'],
+            ['code'=>'students.temporary.report','label'=>'گزارش تفکیکی','labels'=>['school'=>'گزارش تفکیکی فوق برنامه'],'legacy'=>'permision_reportstudent','path'=>'admin/Student/registration-Course-experimental.php'],
         ]],
     ]],
     ['code'=>'executive','label'=>'امور اجرایی','legacy'=>'administrator','children'=>[

@@ -253,7 +253,8 @@ else                  $c = '#15233f';
                     <ul class="nav-sub">
 
                         <!-- دانش آموزان قطعی -->
-                        <?php if (AdminMenuCan('students.definitive', true)): ?>
+                        <?php if (inst_is('school') || AdminMenuCan('students.definitive', true)): ?>
+                        <?php if (inst_is('institute')): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
@@ -262,6 +263,7 @@ else                  $c = '#15233f';
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;"> <!-- فاصله زیرمنو -->
+                        <?php endif; ?>
                                 <?php if (AdminMenuCan('students.definitive.register', $adminRole !== 6)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/add.php') ?>">ثبت نام</a>
@@ -277,10 +279,14 @@ else                  $c = '#15233f';
                                     <a class="nav-sub-link" href="<?= url('admin/Student/addcourse.php') ?>"><?php echo m('menu.student_register_course') ?></a>
                                 </li>
                                 <?php endif; ?>
+                                <?php if (inst_is('school') && AdminMenuCan('students.temporary.enrolment', $adminRole !== 2)): ?>
+                                <li class="nav-sub-item" style="margin-bottom: 3px;">
+                                    <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>"><?= m('menu.register_democourse_student') ?></a>
+                                </li>
+                                <?php endif; ?>
                                 <?php if (AdminMenuCan('students.definitive.edit', true)): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
-                                    <a class="nav-sub-link" href="<?= url('admin/Student/edit-absolute.php') ?>">ویرایش
-                                        اطلاعات قطعی</a>
+                                    <a class="nav-sub-link" href="<?= url('admin/Student/edit-absolute.php') ?>"><?= inst_is('school') ? 'ویرایش اطلاعات' : 'ویرایش اطلاعات قطعی' ?></a>
                                 </li>
                                 <?php endif; ?>
 
@@ -333,6 +339,11 @@ else                  $c = '#15233f';
                                             تفکیکی</a>
                                     </li>
                                     <?php endif; ?>
+                                    <?php if (inst_is('school') && AdminMenuCan('students.temporary.report', $adminRole !== 2)): ?>
+                                    <li class="nav-sub-item" style="margin-bottom: 3px;">
+                                        <a class="nav-sub-link" href="<?= url('admin/Student/registration-Course-experimental.php') ?>">گزارش تفکیکی فوق برنامه</a>
+                                    </li>
+                                    <?php endif; ?>
                                     <?php if (AdminMenuCan('students.definitive.inactive', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/unactive-student.php') ?>">غیرفعال‌ها</a>
@@ -361,12 +372,14 @@ else                  $c = '#15233f';
                                         </li>
                                     <?php endif; ?>
                                 <?php endif; ?>
+                        <?php if (inst_is('institute')): ?>
                             </ul>
                         </li>
                         <?php endif; ?>
+                        <?php endif; ?>
 
                         <!-- دانش آموزان آزمایشی -->
-                        <?php if (AdminMenuCan('students.temporary', true)): ?>
+                        <?php if (inst_is('institute') && AdminMenuCan('students.temporary', true)): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>

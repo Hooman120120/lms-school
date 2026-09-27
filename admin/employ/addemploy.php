@@ -272,6 +272,31 @@ function renderEmployeePermissionColumns(array $columns, $admin = null): void
     <?php }
 }
 
+/** School students use one list; retain the old group grants for existing accounts. */
+function employeeMenuPermissionChildren(array $node, array $selected): array
+{
+    $children = array_values(array_filter($node['children'] ?? [], 'AdminPermissionNodeAvailable'));
+    if (!inst_is('school') || $node['code'] !== 'students') return $children;
+    $flat = [];
+    foreach ($children as $group) {
+        foreach ($group['children'] ?? [] as $child) {
+            if (!AdminPermissionNodeAvailable($child)) continue;
+            $child['_grantedByGroup'] = in_array($group['code'], $selected, true);
+            $flat[] = $child;
+        }
+    }
+    // Place the extra-curricular actions beside their ordinary counterparts.
+    foreach (['students.temporary.enrolment' => 'students.definitive.enrolment',
+              'students.temporary.report' => 'students.definitive.course-report'] as $code => $after) {
+        $position = array_search($code, array_column($flat, 'code'), true);
+        if ($position === false) continue;
+        $moved = array_splice($flat, $position, 1);
+        $position = array_search($after, array_column($flat, 'code'), true);
+        array_splice($flat, $position === false ? count($flat) : $position + 1, 0, $moved);
+    }
+    return $flat;
+}
+
 function renderMenuPermissionNode(array $node, array $selected, int $depth = 0, bool $grantedByParent = false): void
 {
     static $instance = 0;
@@ -279,7 +304,7 @@ function renderMenuPermissionNode(array $node, array $selected, int $depth = 0, 
     /* A checked parent grants its complete branch. Rendering descendants as
        checked keeps that broad grant visible when the form is edited. */
     $checked = $grantedByParent || in_array($node['code'], $selected, true);
-    $children = array_values(array_filter($node['children'] ?? [], 'AdminPermissionNodeAvailable'));
+    $children = employeeMenuPermissionChildren($node, $selected);
     $childrenId = 'permission-children-' . (++$instance) . '-' . substr(sha1($node['code']), 0, 8);
     $startsCollapsed = $children !== [];
     ?>
@@ -307,7 +332,7 @@ function renderMenuPermissionNode(array $node, array $selected, int $depth = 0, 
         </div>
         <?php if ($children): ?>
             <div class="menu-permission-children" id="<?= $childrenId ?>" <?= $startsCollapsed ? 'hidden' : '' ?>>
-                <?php foreach ($children as $child) renderMenuPermissionNode($child, $selected, $depth + 1, $checked); ?>
+                <?php foreach ($children as $child) renderMenuPermissionNode($child, $selected, $depth + 1, $checked || !empty($child['_grantedByGroup'])); ?>
             </div>
         <?php endif; ?>
     </div>
