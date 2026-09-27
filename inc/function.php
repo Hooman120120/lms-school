@@ -4758,10 +4758,13 @@ function createRegisterClassEvent(
     int $classId,
     int $createdBy,
     int $teacherId,
-    int $darsId,
     string $title,
     ?string $eventDate,
-    int $type, string $description = '', ?string $groupUid = null
+    int $type,
+    string $description = '',
+    ?string $groupUid = null,
+    string $homeworkNotificationTarget = 'family',
+    ?int $darsId = null
 ): bool {
     global $conn;
 
@@ -4772,11 +4775,16 @@ function createRegisterClassEvent(
     // تاریخ اختیاری است؛ رشته خالی به NULL تبدیل می شود
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
 
+    if (!in_array($homeworkNotificationTarget, ['family', 'family_student'], true)) {
+        $homeworkNotificationTarget = 'family';
+    }
+
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, status, created_by)
+            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type,
+             homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4788,6 +4796,7 @@ function createRegisterClassEvent(
         $groupUid,
         $description,
         $type,
+        $homeworkNotificationTarget,
         $createdBy
     ]);
 }
