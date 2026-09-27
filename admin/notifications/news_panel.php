@@ -55,20 +55,8 @@ if (isset($_SESSION['flash_msg'])) {
 // ------------------------------------------------------------------------
 // Role mapping for display
 // ------------------------------------------------------------------------
-$audienceLabels = [
-    '0'   => 'مدیریت',
-    '1'   => 'پشتیبان',
-    '2'   => 'مدیرمیانی',
-    '3'   => t('role_teacher'),
-    '6'   => 'کارشناس فروش',
-    '51'  => 'معاونت اجرایی',
-    '52'  => 'معاونت آموزشی',
-    '53'  => 'معاونت فروش',
-    '54'  => 'معاونت فنی',
-    '55'  => 'معاونت مالی',
-    '00'  => 'دانش آموزان',
-    '000' => 'همه کاربران'
-];
+$schoolAudienceRoles = inst_is('school') ? DailyNotificationSchoolRoles() : [];
+$audienceLabels = DailyNotificationAudienceLabels($schoolAudienceRoles);
 
 // ------------------------------------------------------------------------
 // Image upload function
@@ -138,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_news'])) {
 
     $text = trim($_POST['news_text']);
     $status = (int) $_POST['news_status'];
-    $audiences = isset($_POST['audience']) && is_array($_POST['audience']) ? $_POST['audience'] : [];
+    $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
     $news_id = (int) $_POST['news_id'];
 
     if (empty($text) || empty($audiences)) {
@@ -270,6 +258,7 @@ if (isset($_GET['edit_id'])) {
         $stmt_aud = $conn->prepare("SELECT audience FROM news_audience WHERE news_id = :news_id");
         $stmt_aud->execute([':news_id' => $edit_id]);
         $edit_selected_audiences = array_map('strval', $stmt_aud->fetchAll(PDO::FETCH_COLUMN));
+        $edit_selected_audiences = DailyNotificationExpandLegacyAudiences($edit_selected_audiences, $schoolAudienceRoles);
     }
 }
 ?>
@@ -431,7 +420,7 @@ if (isset($_GET['edit_id'])) {
                                                 $update_show = '<br><small class="text-muted">بروزرسانی: '.$news->updated_at.'</small>';
                                             }
 
-                                            $item_audiences = $news_audiences[$news->id] ?? [];
+                                            $item_audiences = DailyNotificationExpandLegacyAudiences($news_audiences[$news->id] ?? [], $schoolAudienceRoles);
                                             $aud_badges = [];
                                             foreach ($item_audiences as $audKey) {
                                                 $lbl = $audienceLabels[$audKey] ?? 'نامشخص';

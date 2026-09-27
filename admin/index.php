@@ -61,16 +61,7 @@ $activeNotificationCount = inst_is('school')
 
 //news get
 
-$sql_news = "SELECT DISTINCT n.* 
-             FROM `news` n
-             INNER JOIN `news_audience` na ON n.id = na.news_id
-             WHERE (na.audience = :role OR na.audience = '000') 
-               AND n.`status` = 1 
-             ORDER BY n.`id` DESC";
-
-$stmt_news = $conn->prepare($sql_news);
-$stmt_news->execute([':role' => (string)$adminRole]);
-$activeNews = $stmt_news->fetchAll(PDO::FETCH_OBJ);
+$activeNews = ActivePanelNews((string)$username);
 
 
 if (in_array(true, $dashboardCalendarKinds, true)) {

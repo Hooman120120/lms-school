@@ -1,5 +1,5 @@
 <?php
-/** Organizational recipients for daily notices, independent of access levels. */
+/** Shared organizational recipients for daily notices and news. */
 function DailyNotificationSchoolRoles(): array
 {
     global $conn;
@@ -95,6 +95,21 @@ function ActiveDailyNotifications(?string $adminUsername = null): array
         WHERE na.audience IN ($placeholders)
           AND (n.expiration_date IS NULL OR n.expiration_date >= CURRENT_TIMESTAMP
                OR n.expiration_date = '0000-00-00 00:00:00')
+        ORDER BY n.id DESC");
+    $stmt->execute($audiences);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+/** News uses the same recipient codes as notices; only published items are shown. */
+function ActivePanelNews(?string $adminUsername = null): array
+{
+    global $conn;
+    $audiences = DailyNotificationViewerAudiences($adminUsername);
+    if ($audiences === []) return [];
+    $placeholders = implode(',', array_fill(0, count($audiences), '?'));
+    $stmt = $conn->prepare("SELECT DISTINCT n.*
+        FROM news n INNER JOIN news_audience na ON n.id = na.news_id
+        WHERE na.audience IN ($placeholders) AND n.status = 1
         ORDER BY n.id DESC");
     $stmt->execute($audiences);
     return $stmt->fetchAll(PDO::FETCH_OBJ);

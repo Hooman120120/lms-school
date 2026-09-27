@@ -98,16 +98,7 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
 $activeNotifs = ActiveDailyNotifications();
 
 // news
-$sql_news = "SELECT DISTINCT n.* 
-             FROM `news` n
-             INNER JOIN `news_audience` na ON n.id = na.news_id
-             WHERE na.audience IN ('00', '000') 
-               AND n.`status` = 1 
-             ORDER BY n.`id` DESC";
-
-$stmt_news = $conn->prepare($sql_news);
-$stmt_news->execute();
-$activeNews = $stmt_news->fetchAll(PDO::FETCH_OBJ);
+$activeNews = ActivePanelNews();
 
 include_once 'panel/user_calendar.php';
 include_once 'temp.html';
