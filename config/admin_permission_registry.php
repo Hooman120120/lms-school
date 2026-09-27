@@ -263,6 +263,11 @@ $registry = [
         ['code'=>'referrers.inactive','label'=>'معرفان غیرفعال','path'=>'admin/Collague/unactive-collague.php'],
         ['code'=>'referrers.sub','label'=>'زیرمجموعه معرفان','path'=>'admin/Collague/sub-collague.php'],
     ]],
+    ['code'=>'settings','label'=>'تنظیمات','children'=>[
+        ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
+        ['code'=>'settings.levels','label'=>'مدیریت پایه‌ها','path'=>'admin/setting/levels.php'],
+        ['code'=>'settings.blacklist','label'=>'لیست سیاه','path'=>'admin/setting/blacklist.php'],
+    ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],
         ['code'=>'reports.staff','label'=>'گزارش همکاران','legacy'=>'permision_reportcollague','path'=>'admin/report/colleague.php'],
@@ -326,7 +331,9 @@ foreach ($registry as $position => $node) {
     $instituteNotifications = $copyNotificationNode($node);
     $instituteNotifications['label'] = 'اعلان‌های آموزشگاه';
     $instituteNotifications['modes'] = ['institute'];
-    $instituteNotifications['path'] = 'admin/notifications/institute_notifications.php';
+    // Both institution modes render the same guarded implementation; the
+    // lightweight institute wrapper only selects the wording and prefix.
+    $instituteNotifications['path'] = 'admin/notifications/school_notifications.php';
     array_splice($registry, $position + 1, 0, [$instituteNotifications]);
     break;
 }

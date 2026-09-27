@@ -44,7 +44,7 @@ if ($storedName === '') {
     exit('فایلی ثبت نشده است.');
 }
 
-$storageDirectory = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '  ' . DIRECTORY_SEPARATOR . 'admin_documents');
+$storageDirectory = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'admin_documents');
 $filePath = $storageDirectory !== false ? realpath($storageDirectory . DIRECTORY_SEPARATOR . $storedName) : false;
 if ($filePath === false || $storageDirectory === false || strpos($filePath, $storageDirectory . DIRECTORY_SEPARATOR) !== 0 || !is_file($filePath)) {
     http_response_code(404);

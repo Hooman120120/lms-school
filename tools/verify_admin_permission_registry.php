@@ -51,8 +51,13 @@ if (($nodes['finance.wallet']['modes'] ?? []) !== ['institute']) throw new Runti
 foreach (['dashboard.summary.cards.achievements', 'dashboard.summary.cards.learners-current', 'dashboard.summary.cards.announcements'] as $code) {
     if (($nodes[$code]['modes'] ?? []) !== ['institute']) throw new RuntimeException("Institute dashboard card has wrong mode: $code");
 }
-foreach (['dashboard.summary.cards.messages', 'dashboard.summary.notifications', 'dashboard.summary.academic-archive', 'school-notifications'] as $code) {
+foreach (['dashboard.summary.cards.messages', 'school-notifications'] as $code) {
     if (($nodes[$code]['modes'] ?? []) !== ['school']) throw new RuntimeException("School-only section has wrong mode: $code");
+}
+foreach (['dashboard.summary.notifications', 'dashboard.summary.academic-archive'] as $code) {
+    if (($nodes[$code]['modes'] ?? ['school', 'institute']) !== ['school', 'institute']) {
+        throw new RuntimeException("Shared dashboard control has wrong mode: $code");
+    }
 }
 foreach (['dashboard.calendar.executive', 'dashboard.calendar.academic'] as $code) {
     if (($nodes[$code]['parent'] ?? null) !== 'dashboard.calendar') {
