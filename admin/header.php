@@ -146,7 +146,7 @@ if ($canImpersonate) {
 
 
 
-                <div class="dropdown main-header-notification">
+                <!-- <div class="dropdown main-header-notification">
                     <a class="nav-link icon" href="#">
                         <i class="fe fe-bell header-icons"></i>
                         <span class="badge badge-warning nav-link-badge">1</span>
@@ -169,7 +169,7 @@ if ($canImpersonate) {
                             <a href="#">مشاهده همه اعلان ها</a>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
 
@@ -221,10 +221,10 @@ if ($canImpersonate) {
         <div class="mb-1 navbar navbar-expand-lg  nav nav-item  navbar-nav-right responsive-navbar navbar-dark  ">
             <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
                 <div class="d-flex order-lg-2 mr-auto">
-                    <div class="dropdown main-header-notification">
+                    <!-- <div class="dropdown main-header-notification">
 
 
-                    </div>
+                    </div> -->
                     <div class="main-header-notification">
                         <a class="nav-link icon" href="tel:+982191098185">
                             <i class="fe fe-phone-call header-icons"></i>
