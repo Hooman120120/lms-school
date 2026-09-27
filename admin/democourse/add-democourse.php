@@ -236,7 +236,7 @@ include_once '../../temp.html';
                                             </div>
 
                                             <div class="col-lg-4 mt-3">
-                                                <p class="mg-b-10"> شناسه اتاق اسکای روم <span
+                                                <p class="mg-b-10"> شناسه اتاق چهاردیواری <span
                                                             class="tx-danger">*</span></p>
                                                 <input class="form-control" name="class"
                                                        aria-describedby="basic-addon2"
