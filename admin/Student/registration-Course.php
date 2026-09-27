@@ -63,7 +63,7 @@ if (isset($_POST['search'])) {
             break;
     }
 }
-if (isset($_POST['search-course'])) {
+if (inst_is('institute') && isset($_POST['search-course'])) {
     $course = $_POST['course'];
     $vip = $_POST['vip'];
     if ($vip == 'all') {
@@ -182,7 +182,7 @@ include_once '../../temp.html';
                     <div class="col-12">
                         <div class="card custom-card">
                             <div class="card-body d-flex ">
-                                <div class="col-6">
+                                <div class="<?= inst_is('institute') ? 'col-6' : 'col-12' ?>">
                                     <div>
                                         <h6 class="main-content-label mb-1"><?php echo m('action.search_student') ?></h6>
                                         <p class="text-muted card-sub-title"> <?php echo m('search.subtitle_enrolled_any') ?></p>
@@ -241,7 +241,8 @@ include_once '../../temp.html';
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-6 my-auto mx-auto">
+                                <?php if (inst_is('institute')): ?>
+<div class="col-6 my-auto mx-auto">
                                     <div>
                                         <h6 class="main-content-label mb-1">گزارش کل</h6>
                                         <p class="text-muted card-sub-title"><?php echo m('label.by_active_courses') ?></p>
@@ -301,6 +302,7 @@ include_once '../../temp.html';
 
 
                                 </div>
+                            <?php endif; ?>
                             </div>
 
 
