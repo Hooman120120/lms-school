@@ -3,7 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
-include_once '../../inc/bulk_upload.php';
+
 
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -31,6 +31,13 @@ if (!Permision('permision_addcourse_student')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
+$canBulkEnrol = AdminCanUsePermissionScope('students.definitive.enrolment.bulk', ['permision_addcourse_student', 'excel_permission']);
+if (!$canBulkEnrol && (isset($_POST['confirm_invoice']) || isset($_POST['course_signup']))) {
+    http_response_code(403);
+    exit('مجوز ثبت گروهی پایه یا دوره برای شما فعال نشده است.');
+}
+include_once '../../inc/bulk_upload.php';
+
 if (isset($_SESSION['factorId'])) {
     $idf = $_SESSION['factorId'];
     unset($_SESSION['factorId']);
@@ -399,7 +406,7 @@ include_once '../../temp.html';
                                                         </button>
                                                     </div>
                                                 </form>
-                                                <?php if (Permision('excel_permission')) { ?>
+                                                <?php if ($canBulkEnrol) { ?>
                                                     <div class="card-body">
                                                         <form method="post" enctype="multipart/form-data" action="">
                                                             <div class="d-flex flex-column mb-3">
@@ -867,6 +874,7 @@ include_once '../../temp.html';
             const yesBtn = document.getElementById("yesBtn");
             const noBtn = document.getElementById("noBtn");
             const excelForm = document.querySelector('form[enctype="multipart/form-data"]');
+            if (!openModalBtn || !yesBtn || !noBtn || !excelForm) return;
             const fileInput = excelForm.querySelector('input[type="file"]');
             const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
 

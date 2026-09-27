@@ -144,7 +144,9 @@ $registry = [
             ['code'=>'students.definitive.register','label'=>'ثبت‌نام','legacy'=>'permision_addstudent','path'=>'admin/Student/add.php','children'=>[
                 ['code'=>'students.definitive.register.bulk','label'=>'ثبت‌نام دسته‌جمعی دانش‌آموزان','labels'=>['institute'=>'ثبت‌نام دسته‌جمعی فراگیران'],'modes'=>['school','institute'],'path'=>'admin/Student/add-group.php'],
             ]],
-            ['code'=>'students.definitive.enrolment','label'=>'ثبت پایه','legacy'=>'permision_addcourse_student','path'=>'admin/Student/addcourse.php'],
+            ['code'=>'students.definitive.enrolment','label'=>'ثبت پایه','legacy'=>'permision_addcourse_student','path'=>'admin/Student/addcourse.php','children'=>[
+                ['code'=>'students.definitive.enrolment.bulk','label'=>'ایجاد پایه برای گروهی از دانش‌آموزان','labels'=>['institute'=>'ایجاد دوره برای گروهی از فراگیران'],'modes'=>['school','institute']],
+            ]],
             ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','legacy'=>'permision_editstudent','path'=>'admin/Student/edit-absolute.php'],
             ['code'=>'students.definitive.my-students','label'=>'دانش‌آموزان من','path'=>'admin/panel/mystudent.php'],
             ['code'=>'students.definitive.my-courses','label'=>'دانش‌آموزان من به تفکیک پایه','path'=>'admin/panel/mypersonalcourse.php'],
