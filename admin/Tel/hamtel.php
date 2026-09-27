@@ -265,7 +265,7 @@ include_once '../../temp.html';
                                             style="display:inline-flex;
                                                align-items:center;
                                                gap:7px;">
-                                            <span>جابجایی خطوط اپراتور به اپراتور</span>
+                                            <span><?= inst_is('school') ? 'جابجایی خطوط بین مشاورین' : 'جابجایی خطوط اپراتور به اپراتور' ?></span>
                                             <span class="menu-info-trigger"
                                                   data-tooltip="در این بخش می‌توانید شماره‌های تماس یک اپراتور را بر اساس وضعیت تماس و گروه انتخاب کرده و به یک یا چند اپراتور دیگر منتقل کنید.&#10;&#10;هنگام انتقال، امکان تعیین گروه و وضعیت جدید تماس‌ها نیز وجود دارد."
                                                   aria-label="راهنمای جابجایی خطوط اپراتورها"
@@ -380,7 +380,7 @@ include_once '../../temp.html';
                                                 <button class="btn btn-outline-info w-100 d-flex justify-content-between align-items-center"
                                                         type="button" data-bs-toggle="dropdown" aria-expanded="false"
                                                         data-role="trigger">
-                                                    <span data-role="label">انتخاب اپراتورها</span>
+                                                    <span data-role="label"><?= inst_is('school') ? 'انتخاب مشاور' : 'انتخاب اپراتورها' ?></span>
                                                     <span class="ms-2 small text-muted">▼</span>
                                                 </button>
 
@@ -879,7 +879,7 @@ include_once '../../temp.html';
 
         document.addEventListener('DOMContentLoaded', function () {
             // فرم ۱: جابجایی خطوط اپراتور به اپراتور
-            setupMultiSelectDropdown('operatorTransferWrapper', 'recive_list', 'انتخاب اپراتورها');
+            setupMultiSelectDropdown('operatorTransferWrapper', 'recive_list', <?= json_encode(inst_is('school') ? 'انتخاب مشاور' : 'انتخاب اپراتورها', JSON_UNESCAPED_UNICODE) ?>);
 
             // فرم ۲: تخصیص کل گروه یه یک نفر
             setupMultiSelectDropdown('groupOperatorWrapper', 'operator_rec_list', 'انتخاب اپراتورها');
