@@ -509,10 +509,10 @@ include_once '../../temp.html';
                     <!-- ========================================= -->
 
                     <?php if (AdminCanUsePermissionScope('public-relations.safe-sms.credit', ['permision_viewcall'])): ?>
-                        <div class="row row-sm">
+                        <div class="row row-sm justify-content-center">
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
                                 <div class="card custom-card">
-                                    <div class="card-body">
+                                    <div class="card-body text-center">
 
                                         <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
                                             <div style="display:flex; align-items:center; gap:12px;">
@@ -526,8 +526,8 @@ include_once '../../temp.html';
                                             </p>
                                         </div>
                                         <ul class="top-selling-products pb-0 mb-0 pr-0">
-                                            <li class="product-item pb-0">
-                                                <div class="product-info">
+                                            <li class="product-item pb-0" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+                                                <div class="product-info" style="margin:0; text-align:center;">
                                                     <div class="product-name">اعتبار باقیمانده پیامک</div>
                                                     <div class="price">از پیامک</div>
                                                 </div>
@@ -552,7 +552,7 @@ include_once '../../temp.html';
 
 
                                                 ?>
-                                                <div class="product-amount">
+                                                <div class="product-amount" style="margin:0; text-align:center;">
                                                     <div class="product-price"><span
                                                             class="font-weight-semibold"> <?php echo ($smsCredit_value === null ? 'اعتبار در دسترس نیست' : number_format($smsCredit_value)); ?></span>
                                                     </div>
