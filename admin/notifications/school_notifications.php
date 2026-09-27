@@ -129,6 +129,8 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
     <title><?= htmlspecialchars($notificationTitle) ?> | <?= __TITLE ?></title>
     <?php include_once '../link.php'; ?>
     <style>
+        .notification-heading {display:flex; align-items:center; gap:10px;}
+        .notification-heading .menu-info-trigger {flex-shrink:0;}
         .school-notification {border-right:4px solid #d5d9df; transition:.15s ease;}
         .school-notification.unread {border-right-color:#0d6efd; background:#f5f9ff;}
         .school-notification:hover {box-shadow:0 6px 16px rgba(31,45,61,.09);}
@@ -138,13 +140,19 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
 </head>
 <body class="main-body leftmenu">
 <div class="page">
-    <?php include_once '../menu.php'; include_once '../header.php'; ?>
+    <?php include_once '../menu.php'; include_once __DIR__ . '/../info-tooltip.php'; include_once '../header.php'; ?>
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
             <div class="inner-body">
                 <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h2 class="main-content-title tx-24 mg-b-5"><?= htmlspecialchars($notificationTitle) ?></h2>
+                        <h2 class="main-content-title tx-24 mg-b-5 notification-heading"><?= htmlspecialchars($notificationTitle) ?>
+                            <span class="menu-info-trigger" tabindex="0"
+                                  data-tooltip="<?= htmlspecialchars(m('menu.school_notifications_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                  aria-label="<?= htmlspecialchars('راهنمای ' . $notificationTitle, ENT_QUOTES, 'UTF-8') ?>">
+                                <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                            </span>
+                        </h2>
                         <p class="text-muted mb-0">فقط اعلان‌های مجاز برای سمت و <?= inst_is('institute') ? 'دوره‌های' : 'پایه‌های' ?> تخصیص‌یافته شما نمایش داده می‌شود.</p>
                     </div>
                     <?php if ($isNotificationListPage && $unreadCount > 0 && $notificationCan('mark-all')): ?>
@@ -162,7 +170,13 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                     <?php if (!$isNotificationListPage && $notificationSectionCan('information') && in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mb-3">
                             <div class="card-header border-bottom-0">
-                                <h5 class="card-title mb-0">اعلان‌های اطلاع‌رسانی</h5>
+                                <h5 class="card-title mb-0 notification-heading">اعلان‌های اطلاع‌رسانی
+                                    <span class="menu-info-trigger" tabindex="0"
+                                          data-tooltip="<?= htmlspecialchars(m('notifications.information_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                          aria-label="راهنمای اعلان‌های اطلاع‌رسانی">
+                                        <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                                    </span>
+                                </h5>
                                 <p class="text-muted mb-0 mt-1">اعلان‌های عمومی و اطلاع‌رسانی متناسب با سمت شما</p>
                             </div>
                             <div class="card-body">
@@ -225,7 +239,13 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
 
                     <?php if (!$isNotificationListPage && $allowedTypes !== [] && ($canCurrentNotifications || $notificationCan('history'))): ?><div class="card custom-card mb-3">
                         <div class="card-header border-bottom-0">
-                            <h5 class="card-title mb-0"><?= inst_is('institute') ? 'اعلان‌های دوره‌ها' : 'اعلان‌های پایه‌ها' ?></h5>
+                            <h5 class="card-title mb-0 notification-heading"><?= inst_is('institute') ? 'اعلان‌های دوره‌ها' : 'اعلان‌های پایه‌ها' ?>
+                                    <span class="menu-info-trigger" tabindex="0"
+                                          data-tooltip="<?= htmlspecialchars(m('notifications.categories_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                          aria-label="<?= inst_is('institute') ? 'راهنمای اعلان‌های دوره‌ها' : 'راهنمای اعلان‌های پایه‌ها' ?>">
+                                        <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                                    </span>
+                                </h5>
                             <p class="text-muted mb-0 mt-1">روی هر دسته بزنید تا فقط اعلان‌های همان بخش را ببینید.</p>
                         </div>
                         <div class="card-body">
@@ -251,7 +271,13 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
 
                     <?php if ($isNotificationListPage): ?>
                     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3" style="gap:8px">
-                        <h5 class="mb-0"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?></h5>
+                        <h5 class="mb-0 notification-heading"><?= $selectedType === '' ? 'همه اعلان‌ها' : htmlspecialchars($catalog[$selectedType]['title']) ?>
+                            <span class="menu-info-trigger" tabindex="0"
+                                  data-tooltip="<?= htmlspecialchars(m('notifications.list_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                  aria-label="راهنمای فهرست اعلان‌ها">
+                                <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                            </span>
+                        </h5>
                         <div class="btn-group">
                             <?php if ($canCurrentNotifications): ?><a class="btn btn-sm <?= $view === 'unread' ? 'btn-primary' : 'btn-outline-primary' ?>" href="<?= url($notificationPage . ($selectedType !== '' ? '?type=' . rawurlencode($selectedType) . '&view=unread' : '')) ?>">دریافت‌های جدید<?= $unreadCount > 0 ? ' (' . $unreadCount . ')' : '' ?></a><?php endif; ?>
                             <?php if ($notificationCan('history')): ?><a class="btn btn-sm <?= $view === 'read' ? 'btn-secondary' : 'btn-outline-secondary' ?>" href="<?= url($notificationPage . '?view=read' . ($selectedType !== '' ? '&type=' . rawurlencode($selectedType) : '')) ?>">آرشیو خوانده‌شده</a><?php endif; ?>
@@ -305,7 +331,16 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
 
                     <?php if (!$isNotificationListPage && $notificationSectionCan('financial') && in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>
                         <div class="card custom-card mt-4">
-                            <div class="card-header border-bottom-0"><h5 class="card-title mb-0">اعلان‌های مالی</h5><p class="text-muted mb-0 mt-1">موارد مالی منتظر بررسی و تأیید</p></div>
+                            <div class="card-header border-bottom-0">
+                                <h5 class="card-title mb-0 notification-heading">اعلان‌های مالی
+                                    <span class="menu-info-trigger" tabindex="0"
+                                          data-tooltip="<?= htmlspecialchars(m('notifications.financial_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                          aria-label="راهنمای اعلان‌های مالی">
+                                        <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                                    </span>
+                                </h5>
+                                <p class="text-muted mb-0 mt-1">موارد مالی منتظر بررسی و تأیید</p>
+                            </div>
                             <div class="card-body"><div class="row">
                                 <?php if ($notificationCan('financial.invoices') && (in_array($schoolRoleKey, ['manager', 'general_deputy'], true) || ($schoolRoleKey === 'financial_deputy' && Permision('permision_actfactor')))): ?>
                                     <div class="col-md-6 col-xl-4 mb-3"><a class="btn btn-outline-warning btn-block text-right p-3" href="<?= url('admin/notifications/verify_by_manager.php') ?>"><i class="fe fe-file-text ml-2"></i> فاکتورهای منتظر تأیید<?php if ($legacyCounts['pending_invoice'] > 0): ?><span class="badge badge-warning float-left"><?= (int)$legacyCounts['pending_invoice'] ?></span><?php endif; ?></a></div>

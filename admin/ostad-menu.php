@@ -48,6 +48,7 @@ $countNewStudent = countNewStudent( $currentUser, (int)$administrator);
 $notifTotalCount = (int)$reportCount + (int)$teacherNotifCount + (int)$studentOpChangeCount + (int)$countNewStudent;
 $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
 ?>
+<?php include_once __DIR__ . '/info-tooltip.php'; ?>
 <?php if ($adminRole == 3): ?>
     <style>
         .main-sidebar .nav-link::before,
@@ -100,7 +101,15 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                     <span class="shape1"></span><span class="shape2"></span>
                     <i class="fe fe-bell sidemenu-icon"></i>
-                    <span class="sidemenu-label"><?php echo m('menu.school_notifications') ?></span>
+                    <span class="sidemenu-label" style="display:inline-flex; align-items:center; gap:12px;">
+                        <?= htmlspecialchars(m('menu.school_notifications')) ?>
+                        <span class="menu-info-trigger" tabindex="0"
+                              data-tooltip="<?= htmlspecialchars(m('menu.school_notifications_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                              aria-label="<?= htmlspecialchars('راهنمای ' . m('menu.school_notifications'), ENT_QUOTES, 'UTF-8') ?>"
+                              onclick="event.preventDefault(); event.stopPropagation();">
+                            <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                        </span>
+                    </span>
                     <?php if ($schoolNotificationCount > 0): ?>
                         <span class="badge badge-warning side-badge mg-r-20"><?= (int)$schoolNotificationCount ?></span>
                     <?php endif; ?>
