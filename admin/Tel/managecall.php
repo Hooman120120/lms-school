@@ -3925,7 +3925,7 @@ include_once '../../temp.html';
                                                             ردیف تلفن
                                                         </option>
                                                         <option value="02">
-                                                            داخلی پشتیبان
+                                                            <?= inst_is('school') ? 'داخلی مشاور' : 'داخلی پشتیبان' ?>
                                                         </option>
 
 
