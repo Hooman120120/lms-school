@@ -190,7 +190,8 @@ include_once '../../temp.html';
                                     <td><?= nl2br(htmlspecialchars($group['description'] ?? '—')) ?></td>
                                     <td>
                                         <button class="btn btn-sm btn-warning"
-                                                onclick="editGroup(<?= $group['id'] ?>, '<?= htmlspecialchars($group['title'], ENT_QUOTES) ?>', '<?= htmlspecialchars($group['color']) ?>', '<?= htmlspecialchars($group['description'] ?? '', ENT_QUOTES) ?>', '<?= htmlspecialchars($group['color2'] ?? '') ?>')"
+                                                data-group="<?= htmlspecialchars(json_encode(['id' => (int)$group['id'], 'title' => $group['title'], 'color' => $group['color'], 'description' => (string)($group['description'] ?? ''), 'color2' => (string)($group['color2'] ?? '')], JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>"
+                                                onclick="editGroupFrom(this)"
                                                 data-bs-toggle="modal" data-bs-target="#groupModal">
                                             <i class="fa fa-edit"></i> ویرایش
                                         </button>
@@ -262,6 +263,13 @@ include_once '../../temp.html';
         document.getElementById('formAction').value = 'add_group';
         document.getElementById('editGroupId').value = '';
         document.getElementById('groupModalLabel').innerText = 'افزودن <?= $gw ?> جدید';
+    }
+
+    // The row's data travels as JSON: multi-line descriptions broke the old
+    // inline string arguments, so the dialog stayed in «افزودن» with empty fields.
+    function editGroupFrom(btn) {
+        var g = JSON.parse(btn.dataset.group);
+        editGroup(g.id, g.title, g.color, g.description, g.color2);
     }
 
     function editGroup(id, title, color, description, color2) {
