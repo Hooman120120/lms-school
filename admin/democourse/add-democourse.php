@@ -30,6 +30,8 @@ if (!Permision('permision_viewcourse')) {
     die();
 }
 
+$demoCourseLabel = inst_is('institute') ? 'دوره موقت' : 'فوق برنامه';
+
 if (isset($_POST['save'])) {
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $sql = 'SELECT codecourse FROM course_demo WHERE codecourse= ? ';
@@ -45,9 +47,9 @@ if (isset($_POST['save'])) {
             $qinsert->execute([$code, $_POST['coursename'], $_POST['muted'], $paye, $_POST['class']]);
             //
 
-            $text = 'پایه ' . $_POST['coursename'] . ' با موفقیت ایجاد شد';
+            $text = $demoCourseLabel . ' ' . $_POST['coursename'] . ' با موفقیت ایجاد شد';
         } else {
-            $erordublicate = 'این کد دوره فوق برنامه، متعلق به دوره فوق برنامه دیگری است';
+            $erordublicate = 'این کد ' . $demoCourseLabel . '، متعلق به ' . $demoCourseLabel . ' دیگری است';
         }
     } else {
         $erortoken = 'خطای غیر منتظره رخ داد، لطفا مجدد امتحان کنید';
@@ -63,14 +65,14 @@ if (isset($_POST['save-update'])) {
             $qup = $conn->prepare($update);
             $qup->execute([$code, $_POST['coursename'], $_POST['muted'], $paye, $_POST['class'], $_GET['id']]);
             //
-            $text = 'پایه ' . $_POST['coursename'] . ' با موفقیت ویرایش شد';
+            $text = $demoCourseLabel . ' ' . $_POST['coursename'] . ' با موفقیت ویرایش شد';
             if (isset($_GET['id'])) {
                 $stmt = $conn->prepare("SELECT * FROM course_demo WHERE id = ?");
                 $stmt->execute([$_GET['id']]);
                 $course = $stmt->fetch(PDO::FETCH_ASSOC);
             }
         } else {
-            $erordublicate = 'این کد پایه، متعلق به پایه دیگری است';
+            $erordublicate = 'این کد ' . $demoCourseLabel . '، متعلق به ' . $demoCourseLabel . ' دیگری است';
         }
     } else {
         $erortoken = 'خطای غیر منتظره رخ داد، لطفا مجدد امتحان کنید';
@@ -89,7 +91,7 @@ include_once '../../temp.html';
     <meta name="description" content="e">
     <meta name="author" content="hamsepar.ir">
     <!-- Title -->
-    <title> ثبت پایه جدید | <?php echo __TITLE ?></title>
+    <title> <?= isset($_GET['edit']) ? 'ویرایش' : 'ایجاد' ?> <?= $demoCourseLabel ?> | <?php echo __TITLE ?></title>
     <?php include_once '../link.php'; ?>
 </head>
 
@@ -121,12 +123,12 @@ include_once '../../temp.html';
                                                 <div class="d-flex align-items-center mb-1" style="gap: 12px;">
 
                                                     <h6 class="main-content-label mb-0">
-                                                        افزودن دوره موقت جدید
+                                                        افزودن <?= $demoCourseLabel ?> جدید
                                                     </h6>
 
                                                     <span class="menu-info-trigger"
-                        data-tooltip="در این بخش می‌توانید یک دوره فوق برنامه جدید ایجاد کنید و اطلاعاتی مانند نام دوره فوق برنامه، توضیحات، مدت استفاده، وضعیت فعالیت و سایر تنظیمات موردنیاز را ثبت نمایید. این دوره فوق برنامه برای دانش آموزان موقت و بدون فرایند ثبت‌نام قطعی استفاده می‌شود."
-                                                          aria-label="راهنمای افزودن دوره فوق برنامه جدید">
+                        data-tooltip="در این بخش می‌توانید یک <?= $demoCourseLabel ?> جدید ایجاد کنید و اطلاعاتی مانند نام <?= $demoCourseLabel ?>، توضیحات، مدت استفاده، وضعیت فعالیت و سایر تنظیمات موردنیاز را ثبت نمایید. <?= inst_is('school') ? 'این فوق برنامه برای ارائه برنامه‌های تکمیلی به دانش آموزان استفاده می‌شود.' : 'این دوره موقت برای فراگیران موقت و بدون فرایند ثبت‌نام قطعی استفاده می‌شود.' ?>"
+                                                          aria-label="راهنمای افزودن <?= $demoCourseLabel ?> جدید">
 
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
@@ -134,7 +136,7 @@ include_once '../../temp.html';
                                                 </div>
 
                                                 <p class="text-muted card-sub-title">
-                                                    ایجاد یک دوره موقت جدید
+                                                    ایجاد یک <?= $demoCourseLabel ?> جدید
                                                 </p>
                                             </div>
                                         </div>
@@ -176,7 +178,7 @@ include_once '../../temp.html';
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
-                                                            کد دوره فوق برنامه:
+                                                            کد <?= $demoCourseLabel ?>:
                                                             <span
                                                                     class="tx-danger">*</span>
                                                         </div>
@@ -192,7 +194,7 @@ include_once '../../temp.html';
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
-                                                            نام دوره فوق برنامه:
+                                                            نام <?= $demoCourseLabel ?>:
                                                             <span
                                                                     class="tx-danger">*</span>
                                                         </div>
@@ -200,7 +202,7 @@ include_once '../../temp.html';
                                                     <input class="form-control" name="coursename"
                                                            aria-describedby="basic-addon2"
                                                            type="text" required
-                                                           placeholder="پایه هوش پاییزی 1402">
+                                                           placeholder="<?= $demoCourseLabel ?> هوش پاییزی 1402">
                                                 </div>
                                                 <?php
                                                 $hash = bin2hex(random_bytes(32));
@@ -248,7 +250,7 @@ include_once '../../temp.html';
                                                 <button type="submit"
                                                         name="save"
                                                         class="btn btn-primary  mr-1">
-                                                    تایید و ایجاد دوره فوق برنامه
+                                                    تایید و ایجاد <?= $demoCourseLabel ?>
                                                 </button>
 
                                             </div>
@@ -272,8 +274,8 @@ include_once '../../temp.html';
                                     <div class="row">
                                         <div class="col-9">
                                             <div>
-                                                <h6 class="main-content-label mb-1"> ویرایش دوره فوق برنامه </h6>
-                                                <p class="text-muted card-sub-title">ویرایش دوره فوق برنامه که از قبل ایجاد شده
+                                                <h6 class="main-content-label mb-1"> ویرایش <?= $demoCourseLabel ?> </h6>
+                                                <p class="text-muted card-sub-title">ویرایش <?= $demoCourseLabel ?> که از قبل ایجاد شده
                                                 </p>
                                             </div>
                                         </div>
@@ -321,7 +323,7 @@ include_once '../../temp.html';
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
-                                                            کد پایه:
+                                                            کد <?= $demoCourseLabel ?>:
                                                             <span
                                                                     class="tx-danger">*</span>
                                                         </div>
@@ -338,7 +340,7 @@ include_once '../../temp.html';
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">
-                                                            نام پایه:
+                                                            نام <?= $demoCourseLabel ?>:
                                                             <span
                                                                     class="tx-danger">*</span>
                                                         </div>
@@ -347,7 +349,7 @@ include_once '../../temp.html';
                                                            aria-describedby="basic-addon2"
                                                            type="text" required
                                                            value="<?php echo $result->coursename; ?>"
-                                                           placeholder="پایه هوش پاییزی 1402">
+                                                           placeholder="<?= $demoCourseLabel ?> هوش پاییزی 1402">
                                                 </div>
                                                 <?php
                                                 $hash = bin2hex(random_bytes(32));
@@ -400,7 +402,7 @@ include_once '../../temp.html';
                                             <button type="submit"
                                                     name="save-update"
                                                     class="btn btn-warning  mr-1">
-                                                تایید و ویرایش دوره فوق برنامه
+                                                تایید و ویرایش <?= $demoCourseLabel ?>
                                             </button>
 
                                         </div>
