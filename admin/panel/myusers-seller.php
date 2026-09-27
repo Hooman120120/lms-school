@@ -201,7 +201,7 @@ include_once '../../temp.html';
                         <div class="tab-pane fade show active" id="type1" role="tabpanel">
                             <?php if ($type==3) { ?>
                             <p class="fs-6 font-weight-bold">
-                                لیست نفر و نفر پایه کارشناس فروش
+                                <?= inst_is('school') ? 'لیست دانش‌آموزان کارشناس فروش' : 'لیست نفر و نفر دوره کارشناس فروش' ?>
                             </p>
                             <?php } ?>
                             <?php if ($type==1) { ?>

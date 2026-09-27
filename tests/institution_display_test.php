@@ -10,6 +10,10 @@ $check = static function ($condition, $message) {
 };
 $check(inst_display_text($source) === $expected, 'Plural vocabulary');
 $check(inst_display_text($expected) === $expected, 'Idempotent vocabulary');
+$check(inst_display_text('فرد (نفرپایه)') === ($institute ? 'فرد (نفردوره)' : 'فرد'), 'School enrolment unit removed');
+$check(inst_display_text('تعداد ( نفر دوره )') === ($institute ? 'تعداد ( نفر دوره )' : 'تعداد'), 'Parenthesized course unit');
+$check(inst_display_text('برحسب نفر-پایه') === ($institute ? 'برحسب نفر-دوره' : 'برحسب نفر'), 'Hyphenated enrolment unit');
+
 $check(inst_display_text('پایه تحصیلی') === 'پایه تحصیلی', 'Academic grade stays fixed');
 $check(inst_display_text('دوره تحصیلی') === 'پایه تحصیلی', 'Legacy academic grade corrected');
 $check(inst_display_text("دوره\n    تحصیلی") === "پایه\n    تحصیلی", 'Multiline academic grade corrected');

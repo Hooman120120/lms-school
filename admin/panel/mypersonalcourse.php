@@ -25,6 +25,10 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+if (!inst_is('institute')) {
+    http_response_code(404);
+    exit('این بخش در نسخه مدرسه‌ای ارائه نمی‌شود.');
+}
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>

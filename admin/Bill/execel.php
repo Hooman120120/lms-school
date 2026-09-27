@@ -482,7 +482,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
         if ($stm) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('گزارش نفر پایه');
+            $sheet->setTitle(inst_is('school') ? 'گزارش دانش‌آموزان' : 'گزارش نفر دوره');
 
             // نقشه رنگ‌ها
             $hexMap = [
@@ -802,7 +802,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
 
             // ارسال فایل
-            $filename = "گزارش نفر پایه_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
+            $filename = (inst_is('school') ? 'گزارش دانش‌آموزان_' : 'گزارش نفر دوره_') . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Cache-Control: max-age=0');
@@ -1071,7 +1071,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
             // ایجاد شیء Excel
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('گزارش تجمیعی نفر پایه');
+            $sheet->setTitle(inst_is('school') ? 'گزارش تجمیعی دانش‌آموزان' : 'گزارش تجمیعی نفر دوره');
 
             // جمع‌آوری داده‌های رنگ
             $studentIds = array_unique($codemelli);
@@ -1441,7 +1441,7 @@ WHERE dbfactor.dateresponse BETWEEN ? AND ?
 
             // $sheet->getStyle('AF1:AF' . $highestRow)->getAlignment()->setWrapText(true);
 
-            $filename = "گزارش تجمیعی نفر پایه_" . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
+            $filename = (inst_is('school') ? 'گزارش تجمیعی دانش‌آموزان_' : 'گزارش تجمیعی نفر دوره_') . ($schoolYearLabel ? $schoolYearLabel . '_' : '') . date('Y-m-d_H-i-s') . ".xlsx";
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header("Content-Disposition: attachment; filename=\"" . rawurlencode($filename) . "\"; filename*=UTF-8''" . rawurlencode($filename));
             header('Cache-Control: max-age=0');

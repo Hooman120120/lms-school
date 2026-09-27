@@ -86,7 +86,7 @@ return [
         'label.filter_active_courses'       => 'فیلتر پایه های فعال',
         'label.all_courses'                 => 'همه پایه‌ها',
         'label.price_model_this_course'     => 'مدل قیمت این پایه:',
-        'label.count_person_course'         => 'تعداد ( نفر پایه )',
+        'label.count_person_course'         => 'تعداد',
         'label.choose_class_for_course'     => 'کلاس این پایه را انتخاب کنید:',
 
         /* --- اعتبارسنجی سمت کاربر --- */
@@ -484,11 +484,11 @@ return [
         /* --- منوی پنل مدیریت --- */
         'menu.students'                    => 'دانش آموزان',
         'menu.students_aria'               => 'راهنمای مدیریت دانش آموزان',
-        'menu.students_tooltip'            => 'در این بخش امکان ثبت نام دانش آموز به صورت قطعی و موقت و همچنین ثبت نام پایه آموزشی و ویرایش اطلاعات دانش آموز وجود دارد. همچنین امکان مشاهده گزارش‌های تفکیکی، دانش آموزان فردی و نفر پایه، افراد غیرفعال، انصرافی، تعلیقی و لغو پشتیبانی‌شده وجود دارد.',
+        'menu.students_tooltip'            => 'در این بخش امکان ثبت نام دانش آموز به صورت قطعی و موقت و همچنین ثبت نام پایه آموزشی و ویرایش اطلاعات دانش آموز وجود دارد. همچنین امکان مشاهده گزارش‌های تفکیکی، دانش آموزان، افراد غیرفعال، انصرافی، تعلیقی و لغو پشتیبانی‌شده وجود دارد.',
         'menu.students_definitive'         => 'دانش آموزان قطعی',
         'menu.students_temporary'          => 'دانش آموزان موقت',
         'menu.students_individual'         => 'دانش آموزان فردی',
-        'menu.students_per_course'         => 'دانش آموزان نفر پایه',
+        'menu.students_per_course'         => 'دانش آموزان',
         'menu.students_canceled_support'   => 'دانش آموزان لغو پشتیبانی',
         'menu.students_suspended_list'     => 'دانش آموزان تعلیقی',
         'menu.student_register_course'     => 'ثبت پایه',

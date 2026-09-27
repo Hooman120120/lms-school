@@ -119,6 +119,7 @@ include_once '../../temp.html';
                     </div>
                 </div>
                 <div class="card-body row justify-content-around">
+                    <?php if (inst_is('institute')): ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/panel/mypersonalcourse.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title"> دانش آموزان نفر پایه</div>
@@ -127,6 +128,7 @@ include_once '../../temp.html';
                             </div>
                         </a>
                     </div>
+                    <?php endif; ?>
                     <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
                         <a href="<?php echo url('admin/panel/mystudent.php') ?>" class="safe-call-card">
                             <div class="safe-call-card-title">دانش آموزان فردی</div>

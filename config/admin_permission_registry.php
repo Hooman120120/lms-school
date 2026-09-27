@@ -149,7 +149,7 @@ $registry = [
             ]],
             ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','legacy'=>'permision_editstudent','path'=>'admin/Student/edit-absolute.php'],
             ['code'=>'students.definitive.my-students','label'=>'دانش‌آموزان من','path'=>'admin/panel/mystudent.php'],
-            ['code'=>'students.definitive.my-courses','label'=>'دانش‌آموزان من به تفکیک پایه','path'=>'admin/panel/mypersonalcourse.php'],
+            ['code'=>'students.definitive.my-courses','label'=>'فراگیران نفر دوره','modes'=>['institute'],'path'=>'admin/panel/mypersonalcourse.php'],
             ['code'=>'students.definitive.cancelled-support','label'=>'لغو پشتیبانی‌شده‌ها','path'=>'admin/panel/canceled_student_list.php'],
             ['code'=>'students.definitive.suspended-support','label'=>'تعلیقی‌ها','path'=>'admin/panel/suspension_list.php'],
             ['code'=>'students.definitive.course-report','label'=>'گزارش تفکیکی','legacy'=>'permision_reportstudent','path'=>'admin/Student/registration-Course-absolute.php'],

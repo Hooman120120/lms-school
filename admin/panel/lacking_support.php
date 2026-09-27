@@ -45,6 +45,8 @@ $sqlCount = "
       AND d.has_operator = 0
 ";
 
+if (inst_is('school')) $sqlCount = str_replace('COUNT(*)', 'COUNT(DISTINCT d.username)', $sqlCount);
+
 $stmtCount = $conn->prepare($sqlCount);
 $stmtCount->execute();
 $ref = $stmtCount->fetch(PDO::FETCH_ASSOC);
@@ -74,6 +76,14 @@ $sqlList = "
 $stmtList = $conn->prepare($sqlList);
 $stmtList->execute();
 $rows = $stmtList->fetchAll(PDO::FETCH_ASSOC);
+if (inst_is('school')) {
+    $students = [];
+    foreach ($rows as $row) {
+        if (!isset($students[$row['username']])) $students[$row['username']] = $row;
+    }
+    $rows = array_values($students);
+}
+
 
 include_once '../../temp.html';
 ?>

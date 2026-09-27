@@ -146,6 +146,7 @@ include_once '../../temp.html';
                                 <div class="card-order ">
                                     <?php
                                     $co_student = 'SELECT COUNT(iduser) as countstudent FROM dblogin INNER JOIN dbpersonal ON dblogin.username=dbpersonal.codemeli INNER JOIN dbcourse ON dbpersonal.codemeli=dbcourse.username  INNER JOIN codtbl_course ON dbcourse.codecourse=codtbl_course.codecourse WHERE dblogin.role=? AND dbcourse.activityuser=? AND codtbl_course.courseactive=?; ';
+                                    if (inst_is('school')) $co_student = str_replace('COUNT(iduser)', 'COUNT(DISTINCT dblogin.username)', $co_student);
                                     $query_st = $conn->prepare($co_student);
                                     $query_st->execute([1,0,1]);
                                     $result_student = $query_st->fetch(PDO::FETCH_OBJ);;

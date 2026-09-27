@@ -2,6 +2,10 @@
 /** Normalize display vocabulary only; stored values and application code stay intact. */
 function inst_display_text(string $text): string
 {
+    if (inst_is('school')) {
+        $text = preg_replace('/\s*\(\s*نفر[\s\x{200c}-]*(?:پایه|دوره)\s*\)/u', '', $text);
+        $text = preg_replace('/نفر[\s\x{200c}-]*(?:پایه|دوره)/u', 'نفر', $text);
+    }
     // Academic grade is always «پایه تحصیلی», including institute profiles.
     // Handle legacy «دوره تحصیلی» too, without changing the other course labels.
     $parts = preg_split('/((?:پایه|دوره)\s+تحصیلی)/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);

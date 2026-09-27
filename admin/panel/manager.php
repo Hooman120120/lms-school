@@ -447,7 +447,7 @@ include_once '../../temp.html';
                                                     پشتیبانی نشده
                                                 </label>
                                                 <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش تعداد پایه‌هایی نمایش داده می‌شود که دانش آموزان ثبت‌نام‌شده در آن‌ها تاکنون هیچ سابقه پشتیبانی دریافت نکرده‌اند. این آمار به تفکیک پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه ثبت‌نام کرده باشد و تنها در یکی از پایه‌ها پشتیبانی دریافت نکرده باشد، همان پایه به‌عنوان یک مورد در این شمارنده ثبت خواهد شد."
+                                                      data-tooltip="<?= htmlspecialchars(inst_is('school') ? 'در این بخش تعداد دانش‌آموزانی نمایش داده می‌شود که تاکنون هیچ سابقه دریافت پشتیبانی ندارند. هر دانش‌آموز یک بار محاسبه می‌شود.' : 'در این بخش تعداد پایه‌هایی نمایش داده می‌شود که دانش آموزان ثبت‌نام‌شده در آن‌ها تاکنون هیچ سابقه پشتیبانی دریافت نکرده‌اند. این آمار به تفکیک پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه ثبت‌نام کرده باشد و تنها در یکی از پایه‌ها پشتیبانی دریافت نکرده باشد، همان پایه به‌عنوان یک مورد در این شمارنده ثبت خواهد شد.', ENT_QUOTES, 'UTF-8') ?>"
                                                       aria-label="راهنمای پایه‌های فاقد پشتیبانی">
                                                     <i class="fe fe-info fs-4"></i>
                                                 </span>
@@ -474,6 +474,7 @@ include_once '../../temp.html';
 
                                                 <?php
                                                 $sql = 'SELECT COUNT(*) as countNotSuporter FROM dbcourse INNER JOIN codtbl_course ON dbcourse.codecourse=codtbl_course.codecourse WHERE codtbl_course.activecourse=1 AND dbcourse.activityuser=1 AND dbcourse.has_operator=0 AND dbcourse.suporter IS NULL   ';
+                                                if (inst_is('school')) $sql = str_replace('COUNT(*)', 'COUNT(DISTINCT dbcourse.username)', $sql);
 
                                                 $query_not = $conn->prepare($sql);
                                                 $query_not->execute();
@@ -484,7 +485,7 @@ include_once '../../temp.html';
                                                         فاقد پشتیبان
                                                     </label>
                                                     <span class="menu-info-trigger"
-                                                          data-tooltip="در این بخش تعداد ثبت‌نام‌های فعال در پایه‌ها نمایش داده می‌شود که برای آن‌ها نیاز به پشتیبان وجود دارد، اما هنوز هیچ پشتیبانی به آن‌ها اختصاص داده نشده است. این آمار بر اساس ثبت‌نام هر دانش آموز در هر پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه فعال بدون پشتیبان ثبت‌نام کرده باشد، هر پایه به‌صورت یک مورد مستقل در این شمارنده محاسبه خواهد شد."
+                                                          data-tooltip="<?= htmlspecialchars(inst_is('school') ? 'در این بخش تعداد دانش‌آموزانی نمایش داده می‌شود که در پایه فعال ثبت‌نام دارند و به مشاور نیاز دارند، اما هنوز مشاوری به آن‌ها اختصاص داده نشده است. هر دانش‌آموز یک بار محاسبه می‌شود.' : 'در این بخش تعداد ثبت‌نام‌های فعال در پایه‌ها نمایش داده می‌شود که برای آن‌ها نیاز به پشتیبان وجود دارد، اما هنوز هیچ پشتیبانی به آن‌ها اختصاص داده نشده است. این آمار بر اساس ثبت‌نام هر دانش آموز در هر پایه محاسبه می‌شود؛ بنابراین اگر یک دانش آموز در چند پایه فعال بدون پشتیبان ثبت‌نام کرده باشد، هر پایه به‌صورت یک مورد مستقل در این شمارنده محاسبه خواهد شد.', ENT_QUOTES, 'UTF-8') ?>"
                                                           aria-label="راهنمای پایه‌های فاقد پشتیبان">
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
@@ -493,7 +494,7 @@ include_once '../../temp.html';
                                                             class="fe fe-database icon-size float-right text-primary"></i><span
                                                             class="font-weight-bold"><?php echo $ref['countNotSuporter'] ?> </span>
                                                 </h2>
-                                                <p class="mb-0 mt-4 text-muted">نفر پایه </p>
+                                                <p class="mb-0 mt-4 text-muted"><?= inst_is('school') ? 'نفر' : 'نفر دوره' ?></p>
                                             </div>
                                         </div>
                                     </a>
@@ -656,9 +657,9 @@ include_once '../../temp.html';
                                             </div>
                                             <h2 class="text-left card-item-icon card-icon">
                                                 <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
-                                                        class="font-weight-bold">(<?php echo $rec->coreg ?>)<?php echo $id ?> </span>
+                                                        class="font-weight-bold"><?php if (inst_is('institute')): ?>(<?php echo $rec->coreg ?>)<?php endif; ?><?php echo $id ?> </span>
                                             </h2>
-                                            <p class="mb-0 mt-4 text-muted">فرد (نفرپایه)</p>
+                                            <p class="mb-0 mt-4 text-muted"><?= inst_is('school') ? 'فرد' : 'فرد (نفردوره)' ?></p>
                                         </div>
                                     </div>
                                 </a>

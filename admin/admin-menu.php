@@ -295,7 +295,7 @@ else                  $c = '#15233f';
                                     </li>
                                     <?php endif; ?>
 
-                                    <?php if (AdminMenuCan('students.definitive.my-courses', true)): ?>
+                                    <?php if (inst_is('institute') && AdminMenuCan('students.definitive.my-courses', true)): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/mypersonalcourse.php') ?>">

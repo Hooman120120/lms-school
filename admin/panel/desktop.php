@@ -314,16 +314,16 @@ include_once '../../temp.html';
                                                             دانش آموزان من
                                                         </label>
                                                         <span class="menu-info-trigger"
-                                                              data-tooltip="در این بخش تعداد دانش آموزان تحت مدیریت شما نمایش داده می‌شود. عدد اول تعداد دانش آموزان یکتا و عدد داخل پرانتز تعداد کل ثبت‌نام‌های قطعی آن‌ها در پایه‌ها (نفر-پایه) را نشان می‌دهد. اگر یک دانش آموز در چند پایه ثبت‌نام کرده باشد، در آمار نفر-پایه به ازای هر پایه یک بار محاسبه می‌شود."
+                                                              data-tooltip="<?= htmlspecialchars(inst_is('school') ? 'در این بخش تعداد دانش‌آموزان یکتای تحت مدیریت شما نمایش داده می‌شود. هر دانش‌آموز یک بار محاسبه می‌شود.' : 'در این بخش تعداد دانش آموزان تحت مدیریت شما نمایش داده می‌شود. عدد اول تعداد دانش آموزان یکتا و عدد داخل پرانتز تعداد کل ثبت‌نام‌های قطعی آن‌ها در پایه‌ها (نفر-پایه) را نشان می‌دهد. اگر یک دانش آموز در چند پایه ثبت‌نام کرده باشد، در آمار نفر-پایه به ازای هر پایه یک بار محاسبه می‌شود.', ENT_QUOTES, 'UTF-8') ?>"
                                                               aria-label="راهنمای دانش آموزان من">
                                                             <i class="fe fe-info fs-4"></i>
                                                         </span>
                                                     </div>
                                                     <h2 class="text-left card-item-icon card-icon">
                                                         <i class="mdi mdi-account-multiple icon-size float-right text-primary"></i><span
-                                                            class="font-weight-bold">(<?php echo $final_course_regs ?>)<?php echo $id ?> </span>
+                                                            class="font-weight-bold"><?php if (inst_is('institute')): ?>(<?php echo $final_course_regs ?>)<?php endif; ?><?php echo $id ?> </span>
                                                     </h2>
-                                                    <p class="mb-0 mt-4 text-muted">فرد (نفرپایه)</p>
+                                                    <p class="mb-0 mt-4 text-muted"><?= inst_is('school') ? 'فرد' : 'فرد (نفردوره)' ?></p>
                                                 </div>
                                                 <!--                                            <div class="card-order">-->
                                                 <!--                                                --><?php
