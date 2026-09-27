@@ -1224,7 +1224,7 @@ include_once '../../temp.html';
                                         <div class="col-md-6 col-sm-6 col-lg-6  col-xl-6">
                                             <div class="card custom-card overflow-hidden">
                                                 <?php
-//                                                $report = reportCallLMS($datenow, $datenow, $_SESSION['admin']['user']);
+                                               $report = reportCallLMS($datenow, $datenow, $_SESSION['admin']['user']);
                                                 ?>
                                                 <ul class="crypto-transcation list-unstyled mg-b-0">
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
@@ -1233,7 +1233,7 @@ include_once '../../temp.html';
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات توسط شما</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $report['LMS VoiceCall Successful']  ?></h5>
                                                         </div>
                                                     </li>
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
@@ -1242,7 +1242,7 @@ include_once '../../temp.html';
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات توسط شما</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $report['LMS VoiceCall NOT']  ?></h5>
                                                         </div>
                                                     </li>
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
@@ -1251,7 +1251,7 @@ include_once '../../temp.html';
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات توسط شما</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $report['LMS TEXTSUPPORT Successful']  ?></h5>
                                                         </div>
                                                     </li>
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
@@ -1260,7 +1260,7 @@ include_once '../../temp.html';
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات توسط شما</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $report['LMS TEXTSUPPORT NOT']  ?></h5>
                                                         </div>
                                                     </li>
 
