@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/daily_notifications.php';
 
 /** Shared menu/access tree.  Keep new administrative features in this registry. */
 function AdminPermissionRegistry(): array

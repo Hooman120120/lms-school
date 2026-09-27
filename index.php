@@ -95,16 +95,7 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
     ? (int)$_SESSION['auth']['suspension_mode']
     : 0;
 //notif get
-$sql_notifs = "SELECT DISTINCT n.* 
-               FROM `notif` n 
-               LEFT JOIN `notif_audience` na ON n.id = na.notif_id 
-               WHERE  na.audience IN ('00', '000')
-                 AND (n.expiration_date IS NULL OR n.expiration_date >= NOW() OR n.expiration_date = '0000-00-00 00:00:00')
-               ORDER BY n.id DESC";
-
-$stmt_notifs = $conn->prepare($sql_notifs);
-$stmt_notifs->execute();
-$activeNotifs = $stmt_notifs->fetchAll(PDO::FETCH_OBJ);
+$activeNotifs = ActiveDailyNotifications();
 
 // news
 $sql_news = "SELECT DISTINCT n.* 

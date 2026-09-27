@@ -54,20 +54,7 @@ $showDashboardSummary = $dashboardUsesPermissionTree
 
 // notif get
 
-$roleParam = (string)$adminRole;
-
-$sql_notifs = "SELECT DISTINCT n.* 
-               FROM `notif` n
-               INNER JOIN `notif_audience` na ON n.id = na.notif_id
-               WHERE (na.audience = :role OR na.audience = '000')
-                 AND (
-                     n.expiration_date >= NOW()
-                 )
-               ORDER BY n.id DESC";
-
-$stmt_notifs = $conn->prepare($sql_notifs);
-$stmt_notifs->execute([':role' => $roleParam]);
-$activeNotifs = $stmt_notifs->fetchAll(PDO::FETCH_OBJ);
+$activeNotifs = ActiveDailyNotifications((string)$username);
 $activeNotificationCount = inst_is('school')
     ? CountSchoolNotificationMenu((string)($_SESSION['admin']['user'] ?? ''))
     : CountInstituteNotificationMenu();

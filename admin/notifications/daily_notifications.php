@@ -33,20 +33,8 @@ if (!Permision('permission_news_notif')) {
 // ------------------------------------------------------------------------
 // Role mapping for display
 // ------------------------------------------------------------------------
-$audienceLabels = [
-    '0'   => 'مدیریت',
-    '1'   => 'پشتیبان',
-    '2'   => 'مدیرمیانی',
-    '3'   => t('role_teacher'),
-    '6'   => 'کارشناس فروش',
-    '51'  => 'معاونت اجرایی',
-    '52'  => 'معاونت آموزشی',
-    '53'  => 'معاونت فروش',
-    '54'  => 'معاونت فنی',
-    '55'  => 'معاونت مالی',
-    '00'  => 'دانش آموزان',
-    '000' => 'همه کاربران'
-];
+$schoolAudienceRoles = inst_is('school') ? DailyNotificationSchoolRoles() : [];
+$audienceLabels = DailyNotificationAudienceLabels($schoolAudienceRoles);
 
 // ------------------------------------------------------------------------
 // Handle success messages from redirects
@@ -106,7 +94,7 @@ function uploadNotificationImage($file, $old_image_path = null) {
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
     $text = trim($_POST['notif_text']);
-    $audiences = isset($_POST['audience']) && is_array($_POST['audience']) ? $_POST['audience'] : [];
+    $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
     $expiration_raw = trim($_POST['expiration_date'] ?? '');
 
     // Using global function from function.php (true sets time to 23:59:59)
@@ -157,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_notif'])) {
     $notif_id = intval($_POST['notif_id']);
     $text = trim($_POST['notif_text']);
-    $audiences = isset($_POST['audience']) && is_array($_POST['audience']) ? $_POST['audience'] : [];
+    $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
     $expiration_raw = trim($_POST['expiration_date'] ?? '');
 
     // Using global function from function.php (true sets time to 23:59:59)
@@ -411,10 +399,11 @@ if (isset($_GET['delete_id'])) {
                                                 $image_html = '<span class="text-muted">بدون تصویر</span>';
                                             }
 
-                                            $current_audiences = !empty($notif->audience_list)
+                                            $current_audiences = isset($notif->audience_list) && $notif->audience_list !== ''
                                                 ? explode(',', $notif->audience_list)
-                                                : [$notif->audience];
+                                                : (isset($notif->audience) ? [(string)$notif->audience] : []);
                                             $current_audiences = array_map('trim', $current_audiences);
+                                            $current_audiences = DailyNotificationExpandLegacyAudiences($current_audiences, $schoolAudienceRoles);
                                             ?>
                                             <tr>
                                                 <td><?php echo $counter++; ?></td>
