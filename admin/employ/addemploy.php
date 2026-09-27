@@ -173,7 +173,7 @@ $employeePermissionColumns = [
             ],
         ],
         [
-            'title' => 'اعلان‌ها، مستندات و تنظیمات',
+            'title' => 'اعلان‌ها و مستندات',
             'items' => [
                 ['menu-allert', 'emenu-allert', 'permision_viewalert', 'مدیریت اعلان‌ها و گفت‌وگوهای داخلی', 'امکان مشاهده و مدیریت اعلان‌ها، قواعد اعلان و گفت‌وگوهای داخلی سامانه را می‌دهد.'],
                 ['menu-doc', 'emenu-doc', 'permision_viewdocument', 'مدیریت مستندات مدرسه', 'اجازه جست‌وجو، ثبت و مدیریت مستندات داخلی مدرسه را می‌دهد.'],
@@ -508,7 +508,6 @@ if (isset($_POST['esave'])) {
         } else {
             $menuemploy = 0;
         }
-        $menusetting = 0; // مجوز تنظیمات بازنشسته شده است.
         if (isset($_POST['emenu-quiz'])) {
             $menuquiz = 1;
         } else {
@@ -586,9 +585,9 @@ if (isset($_POST['esave'])) {
         }
         $staffCourseCodes = normalizeStaffCourseCodes($conn, $_POST['ecourse_codes'] ?? []);
 
-        $uptv = 'UPDATE dbadmin SET password=?,fname=?,lname=?,adminactive=?,mobile=?,adminpic=?,gender=?,per_skyroom=?,permision_actfactor=?,permision_notpay=?,permision_actwallet=?,permision_bill=?,permision_financial_export=?,permision_viewcall=?,permision_viewstudent=?,permision_viewcollague=?,permision_reportcollague=?,permision_viewcourse=?,permision_viewbill=?,permision_viewwallet=?,permision_viewalert=?,permision_viewsupport=?,permision_viewdocument=?,permision_viewemploy=?,permision_viewsetting=?,permision_addstudent=?,permision_editstudent=?,permision_addcourse_student=?,permision_reportstudent=?,permision_refer=?,permision_allticket=?,permision_deletcourse=?,permision_discount=?,permision_addcall=?,permision_managecall=?,permision_viewtest=?,permision_suporter=?,permision_manage_suporter=?,excel_permission=?,skill_permission=?,reportcall_permission=?,installment_permission=?,olympiad_permission=?, adminrole=? ,administrator=?,history_permission=?,autodialer=?,permission_calendar=?,permission_news_notif=? WHERE username=?';
+        $uptv = 'UPDATE dbadmin SET password=?,fname=?,lname=?,adminactive=?,mobile=?,adminpic=?,gender=?,per_skyroom=?,permision_actfactor=?,permision_notpay=?,permision_actwallet=?,permision_bill=?,permision_financial_export=?,permision_viewcall=?,permision_viewstudent=?,permision_viewcollague=?,permision_reportcollague=?,permision_viewcourse=?,permision_viewbill=?,permision_viewwallet=?,permision_viewalert=?,permision_viewsupport=?,permision_viewdocument=?,permision_viewemploy=?,permision_addstudent=?,permision_editstudent=?,permision_addcourse_student=?,permision_reportstudent=?,permision_refer=?,permision_allticket=?,permision_deletcourse=?,permision_discount=?,permision_addcall=?,permision_managecall=?,permision_viewtest=?,permision_suporter=?,permision_manage_suporter=?,excel_permission=?,skill_permission=?,reportcall_permission=?,installment_permission=?,olympiad_permission=?, adminrole=? ,administrator=?,history_permission=?,autodialer=?,permission_calendar=?,permission_news_notif=? WHERE username=?';
         $exup = $conn->prepare($uptv);
-        $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar, $manage_news_notif,  $_GET['edit']]);
+        $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar, $manage_news_notif,  $_GET['edit']]);
         $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
         $schoolRoleUpdate->execute([$schoolRoleId, $_GET['edit']]);
         syncExtendedStaffPermissions($conn, (string)$_GET['edit'], true, $selectedSchoolRoleKey);
@@ -767,8 +766,7 @@ if (isset($_POST['save'])) {
                 } else {
                     $menuemploy = 0;
                 }
-                $menusetting = 0; // مجوز تنظیمات بازنشسته شده است.
-                if (isset($_POST['menu-quiz'])) {
+                        if (isset($_POST['menu-quiz'])) {
                     $menuquiz = 1;
                 } else {
                     $menuquiz = 0;
@@ -848,10 +846,10 @@ if (isset($_POST['save'])) {
 
                 $hfStaffType = $adminrole === 3 ? 'teacher' : ($adminrole === 0 ? 'admin' : 'staff');
                 hf_control_require_seat($conn, hf_control_admin_id($username), $hfStaffType);
-                $addmin = 'INSERT INTO dbadmin (username,password,fname,lname,adminactive,mobile,dakheli,adminpic,gender,per_skyroom,permision_actfactor,permision_notpay,permision_actwallet,permision_bill,permision_financial_export,permision_viewcall,permision_viewstudent,permision_viewcollague,permision_reportcollague,permision_viewcourse,permision_viewbill,permision_viewwallet,permision_viewalert,permision_viewsupport,permision_viewdocument,permision_viewemploy,permision_viewsetting,permision_addstudent,permision_editstudent,permision_addcourse_student,permision_reportstudent,permision_refer,permision_allticket,permision_deletcourse,permision_discount,permision_addcall,permision_managecall,permision_viewtest,permision_suporter,permision_manage_suporter,excel_permission,skill_permission,reportcall_permission,installment_permission,olympiad_permission,adminrole,administrator,history_permission,autodialer,permission_calendar,permission_news_notif)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+                $addmin = 'INSERT INTO dbadmin (username,password,fname,lname,adminactive,mobile,dakheli,adminpic,gender,per_skyroom,permision_actfactor,permision_notpay,permision_actwallet,permision_bill,permision_financial_export,permision_viewcall,permision_viewstudent,permision_viewcollague,permision_reportcollague,permision_viewcourse,permision_viewbill,permision_viewwallet,permision_viewalert,permision_viewsupport,permision_viewdocument,permision_viewemploy,permision_addstudent,permision_editstudent,permision_addcourse_student,permision_reportstudent,permision_refer,permision_allticket,permision_deletcourse,permision_discount,permision_addcall,permision_managecall,permision_viewtest,permision_suporter,permision_manage_suporter,excel_permission,skill_permission,reportcall_permission,installment_permission,olympiad_permission,adminrole,administrator,history_permission,autodialer,permission_calendar,permission_news_notif)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
                 $ins = $conn->prepare($addmin);
-                $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $menusetting, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar,$manage_news_notif]);
+                $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $actbill, $notpay, $actwallet, $bill, $reportbill, $menucall, $menustudent, $menucollague, $reportcollague, $menucourse, $menubill, $menuwallet, $menuallert, $menusupport, $menudoc, $menuemploy, $addstudent, $editstudent, $coursestudent, $reportstudent, $supportrefer, $supportadmin, $delcourse, $discount, $addcall, $managecall, $menuquiz, $suporter,$manage_suporter,$manageexcel,$manage_skill,$manage_reportcall,$manage_installment,$manage_olympiad,$adminrole,$administrator,$manage_history,$manage_autodialer,$manage_calendar,$manage_news_notif]);
                 $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
                 $schoolRoleUpdate->execute([$schoolRoleId, $username]);
                 syncExtendedStaffPermissions($conn, $username, false, $selectedSchoolRoleKey);
