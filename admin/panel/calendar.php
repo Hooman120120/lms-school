@@ -4,7 +4,10 @@ $stmt->execute([$_SESSION['admin']['user']]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
-$permission_calendar = $admin['permission_calendar'];
+// Same check as opening the page: accounts on the permission tree have no
+// dbadmin.permission_calendar = 1, so they could open the calendar but not add,
+// edit or export (the buttons and handlers were hidden).
+$permission_calendar = ((int)$admin['permission_calendar'] === 1 || Permision('permission_calendar')) ? 1 : 0;
 // Calendar groups are the پایه‌ها (school and institute alike): one column each in
 // the weekly view, one stacked month each in the monthly view.
 $gw = 'پایه';
