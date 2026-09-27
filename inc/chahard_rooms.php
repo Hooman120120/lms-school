@@ -1,7 +1,10 @@
 <?php
 function chahard_join_url(): string
 {
-    return 'http://localhost/chahard/api/lms-join.php';
+    // This school's chahard panel (set per tenant by provisioning); the
+    // localhost address is only the XAMPP development fallback.
+    $base = rtrim(trim((string) getenv('CROSS_PANEL_CHAHARD_URL')), '/');
+    return ($base !== '' ? $base : 'http://localhost/chahard') . '/api/lms-join.php';
 }
 
 function chahard_api_key(): string
