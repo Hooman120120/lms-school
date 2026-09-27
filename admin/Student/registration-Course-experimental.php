@@ -370,12 +370,12 @@ include_once '../../temp.html';
                                     <tr>
                                         <th class="wd-30">اقدامات</th>
                                         <th class="wd-100">نام و نام خانوادگی</th>
-                                        <th>دوره فوق برنامه</th>
+                                        <th><?= inst_is('school') ? 'فوق برنامه' : 'دوره فوق برنامه' ?></th>
                                         <th class="wd-30">وضعیت فردی</th>
                                         <th class="wd-30"><?php echo m('col.course_status') ?></th>
                                         <th class="wd-30">ایجادکننده</th>
                                         <th class="wd-30">اولین ورود</th>
-                                        <th class="wd-30">همکارآموزشی</th>
+                                        <th class="wd-30">معرف</th>
                                         <th class="wd-30"><?php echo m('col.student_type') ?></th>
                                         <th class="wd-30"><?php echo m('col.student_shift') ?></th>
 
