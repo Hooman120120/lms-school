@@ -1287,7 +1287,7 @@ include_once '../../temp.html';
                                                             <p class="tx-11 mg-b-0 tx-gray-900"> زمان
                                                                 : <?php echo $simotel['TIME ANSWERED'] ?> </p>
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات مرکز تماس</p>
-                                                        </div>
+                                                        </div> 
                                                         <div class="text-right mr-auto my-auto">
                                                             <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $simotel['ANSWERED'] ?></h5>
                                                         </div>
