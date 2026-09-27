@@ -5,6 +5,7 @@ include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
 
 require_once '../../vendor/autoload.php';
+
 use Melipayamak\MelipayamakApi;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -45,9 +46,12 @@ if (!extension_loaded('soap')) {
 }
 
 // -------------------- توابع تبدیل تاریخ --------------------
-function jalaliToGregorian($jalaliDate) {
+function jalaliToGregorian($jalaliDate)
+{
     list($jy, $jm, $jd) = explode('/', $jalaliDate);
-    $jy = (int)$jy; $jm = (int)$jm; $jd = (int)$jd;
+    $jy = (int)$jy;
+    $jm = (int)$jm;
+    $jd = (int)$jd;
     $jy += 1595;
     $days = -355668 + (365 * $jy) + (int)($jy / 33) * 8 + (int)((($jy % 33) + 3) / 4) + $jd;
     $days += ($jm < 7) ? (($jm - 1) * 31) : ((($jm - 7) * 30) + 186);
@@ -69,7 +73,10 @@ function jalaliToGregorian($jalaliDate) {
     if (($gy % 4 == 0 && $gy % 100 != 0) || ($gy % 400 == 0)) $months[2] = 29;
     $gm = 0;
     for ($i = 1; $i <= 12; $i++) {
-        if ($gd <= $months[$i]) { $gm = $i; break; }
+        if ($gd <= $months[$i]) {
+            $gm = $i;
+            break;
+        }
         $gd -= $months[$i];
     }
     return sprintf('%04d-%02d-%02d', $gy, $gm, $gd);
@@ -292,7 +299,6 @@ if ($isSearchRequest) {
             if (is_array($messages) && count($messages) == 100 && !empty($selectedPhone)) {
                 $errors[] = 'توجه: حداکثر ۱۰۰ پیام قابل دریافت است. برای مشاهده بیشتر، تاریخ را محدودتر کنید.';
             }
-
         } catch (Exception $e) {
             $errors[] = 'خطا در ارتباط با وب سرویس: ' . $e->getMessage();
             unset($_SESSION['excel_data']);
@@ -313,6 +319,7 @@ include_once '../../temp.html';
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -323,23 +330,26 @@ include_once '../../temp.html';
             margin-top: 30px;
             justify-content: center;
         }
+
         .safe-call-card {
             display: block;
             padding: 30px 20px;
             border-radius: 12px;
             text-align: center;
             background: #f7f7f7;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
             transition: all 0.2s ease-in-out;
             height: 120px;
             text-decoration: none !important;
         }
+
         .safe-call-card:hover {
             text-decoration: none;
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
             background: #ffffff;
         }
+
         .safe-call-card-title {
             font-size: 18px;
             font-weight: 600;
@@ -349,15 +359,18 @@ include_once '../../temp.html';
             justify-content: center;
             gap: 12px;
         }
+
         .safe-call-card-desc {
             font-size: 13px;
             color: #666;
         }
+
         .menu-info-trigger {
             cursor: pointer;
             display: inline-flex;
             align-items: center;
         }
+
         .badge-unread {
             background-color: #dc3545;
             color: white;
@@ -366,379 +379,433 @@ include_once '../../temp.html';
             font-size: 14px;
             margin-right: 5px;
         }
-        .msg-body { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
-        .modal-body { white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
-        .table-responsive { overflow-x: auto; }
-        .time-select-group { display: flex; align-items: center; gap: 5px; direction: ltr; }
-        .time-select-group select { width: 60px; padding: 0.375rem 0.2rem; }
-        .time-select-group span { font-weight: bold; font-size: 1.2rem; }
-        .export-btn { margin-right: 10px; }
+
+        .msg-body {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .modal-body {
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .time-select-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            direction: ltr;
+        }
+
+        .time-select-group select {
+            width: 60px;
+            padding: 0.375rem 0.2rem;
+        }
+
+        .time-select-group span {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .export-btn {
+            margin-right: 10px;
+        }
+
         .search-container {
             display: none;
         }
+
         .search-container.active {
             display: block;
         }
+
         .back-to-menu {
             margin-bottom: 15px;
         }
     </style>
 </head>
+
 <body class="main-body leftmenu">
-<div id="global-loader"><img src="<?php echo url('assets/img/media/loader.gif') ?>" class="loader-img" alt="درحال بارگذاری"></div>
-<div class="page">
-    <?php include_once '../menu.php'; include_once '../header.php'; ?>
-    <div class="main-content side-content pt-0">
-        <div class="container-fluid">
-            <div class="inner-body">
+    <div id="global-loader"><img src="<?php echo url('assets/img/media/loader.gif') ?>" class="loader-img" alt="درحال بارگذاری"></div>
+    <div class="page">
+        <?php include_once '../menu.php';
+        include_once '../header.php'; ?>
+        <div class="main-content side-content pt-0">
+            <div class="container-fluid">
+                <div class="inner-body">
 
-                <!-- ===== منوی دکمه‌ها ===== -->
-                <p class="p-2" style="font-size: large; font-weight: bold;">مدیریت پیامک‌ها</p>
-                <div class="row row-sm safe-call-menu">
+                    <!-- ===== منوی دکمه‌ها ===== -->
+                    <p class="p-2" style="font-size: large; font-weight: bold;">مدیریت پیامک‌ها</p>
+                    <div class="row row-sm safe-call-menu">
 
-                    <!-- دکمه ۱: گزارش کل پیامک‌ها -->
-                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
-                        <a href="#" class="safe-call-card" onclick="toggleSearchSection(); return false;">
-                            <div class="safe-call-card-title">
-                                <span> گزارش کل پیامک‌ها</span>
-                                <span class="menu-info-trigger"
-                                      data-tooltip="جستجو و مشاهده تمام پیامک‌های ارسالی و دریافتی بر اساس بازه زمانی، شماره و نوع پیامک. قابلیت خروجی اکسل نیز در این بخش وجود دارد."
-                                      aria-label="راهنمای گزارش کل پیامک‌ها"
-                                      onclick="event.preventDefault(); event.stopPropagation();">
-                                    <i class="fe fe-info fs-4"></i>
-                                </span>
-                            </div>
-                            <div class="safe-call-card-desc">
-                                مشاهده و جستجوی تمام پیامک‌ها
-                            </div>
-                        </a>
+                        <!-- دکمه ۱: گزارش کل پیامک‌ها -->
+                        <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                            <a href="#" class="safe-call-card" onclick="toggleSearchSection(); return false;">
+                                <div class="safe-call-card-title">
+                                    <span> گزارش کل پیامک‌ها</span>
+                                    <span class="menu-info-trigger"
+                                        data-tooltip="جستجو و مشاهده تمام پیامک‌های ارسالی و دریافتی بر اساس بازه زمانی، شماره و نوع پیامک. قابلیت خروجی اکسل نیز در این بخش وجود دارد."
+                                        aria-label="راهنمای گزارش کل پیامک‌ها"
+                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                        <i class="fe fe-info fs-4"></i>
+                                    </span>
+                                </div>
+                                <div class="safe-call-card-desc">
+                                    مشاهده و جستجوی تمام پیامک‌ها
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- دکمه ۲: پیامک‌های خوانده نشده -->
+                        <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                            <a href="<?php echo url('admin/notifications/unread_sms.php'); ?>" class="safe-call-card">
+                                <div class="safe-call-card-title">
+                                    <span> پیامک‌های خوانده نشده</span>
+                                    <span class="menu-info-trigger"
+                                        data-tooltip="مشاهده پیامک‌های دریافتی جدید که هنوز خوانده نشده‌اند. امکان علامت‌گذاری به عنوان خوانده شده و حذف پیام وجود دارد."
+                                        aria-label="راهنمای پیامک‌های خوانده نشده"
+                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                        <i class="fe fe-info fs-4"></i>
+                                    </span>
+                                    <?php if ($unreadCount > 0): ?>
+                                        <span class="badge-unread"><?php echo $unreadCount; ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="safe-call-card-desc">
+                                    مدیریت پیامک‌های جدید دریافتی
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- دکمه ۳: ارسال پیامک انبوه -->
+                        <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
+                            <a href="<?php echo url('admin/Tel/bulk_sms.php'); ?>" class="safe-call-card">
+                                <div class="safe-call-card-title">
+                                    <span> ارسال پیامک انبوه</span>
+                                    <span class="menu-info-trigger"
+                                        data-tooltip="ارسال پیامک به تعداد زیادی از مخاطبان به صورت یکجا. امکان ارسال فوری یا زمان‌بندی شده با انتخاب سرشماره و وارد کردن شماره‌ها و متن پیام."
+                                        aria-label="راهنمای ارسال پیامک انبوه"
+                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                        <i class="fe fe-info fs-4"></i>
+                                    </span>
+                                </div>
+                                <div class="safe-call-card-desc">
+                                    ارسال پیامک به تعداد زیاد
+                                </div>
+                            </a>
+                        </div>
+
                     </div>
+                    <!-- ========================================= -->
 
-                    <!-- دکمه ۲: پیامک‌های خوانده نشده -->
-                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
-                        <a href="<?php echo url('admin/notifications/unread_sms.php'); ?>" class="safe-call-card">
-                            <div class="safe-call-card-title">
-                                <span> پیامک‌های خوانده نشده</span>
-                                <span class="menu-info-trigger"
-                                      data-tooltip="مشاهده پیامک‌های دریافتی جدید که هنوز خوانده نشده‌اند. امکان علامت‌گذاری به عنوان خوانده شده و حذف پیام وجود دارد."
-                                      aria-label="راهنمای پیامک‌های خوانده نشده"
-                                      onclick="event.preventDefault(); event.stopPropagation();">
-                                    <i class="fe fe-info fs-4"></i>
-                                </span>
-                                <?php if ($unreadCount > 0): ?>
-                                    <span class="badge-unread"><?php echo $unreadCount; ?></span>
-                                <?php endif; ?>
-                            </div>
-                            <div class="safe-call-card-desc">
-                                مدیریت پیامک‌های جدید دریافتی
-                            </div>
-                        </a>
-                    </div>
+                    <?php if (AdminCanUsePermissionScope('public-relations.safe-sms.credit', ['permision_viewcall'])): ?>
+                        <div class="row row-sm">
+                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+                                <div class="card custom-card">
+                                    <div class="card-body">
 
-                    <!-- دکمه ۳: ارسال پیامک انبوه -->
-                    <div class="col-sm-6 col-md-4 col-xl-3 mb-3">
-                        <a href="<?php echo url('admin/Tel/bulk_sms.php'); ?>" class="safe-call-card">
-                            <div class="safe-call-card-title">
-                                <span> ارسال پیامک انبوه</span>
-                                <span class="menu-info-trigger"
-                                      data-tooltip="ارسال پیامک به تعداد زیادی از مخاطبان به صورت یکجا. امکان ارسال فوری یا زمان‌بندی شده با انتخاب سرشماره و وارد کردن شماره‌ها و متن پیام."
-                                      aria-label="راهنمای ارسال پیامک انبوه"
-                                      onclick="event.preventDefault(); event.stopPropagation();">
-                                    <i class="fe fe-info fs-4"></i>
-                                </span>
-                            </div>
-                            <div class="safe-call-card-desc">
-                                ارسال پیامک به تعداد زیاد
-                            </div>
-                        </a>
-                    </div>
+                                        <div class="col-12 text-center">
+                                            <div>
+                                                <div style="display:flex; align-items:center; gap:12px; justify-content:center;">
+                                                    <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
 
-                </div>
-                <!-- ========================================= -->
+                                                    <span class="menu-info-trigger"
+                                                        data-tooltip="..."
+                                                        aria-label="راهنمای اعتبار سامانه پیامک"
+                                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                                        <i class="fe fe-info fs-4"></i>
+                                                    </span>
+                                                </div>
 
-                <?php if (AdminCanUsePermissionScope('public-relations.safe-sms.credit', ['permision_viewcall'])): ?>
-                <div class="row row-sm">
-                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                        <div class="card custom-card">
-                            <div class="card-body">
-
-                                <div class="col-12">
-                                    <div>
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            <h6 class="main-content-label mb-1">اعتبار سامانه پیامک</h6>
-
-                                            <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید اعتبار باقی‌مانده سامانه پیامک را مشاهده کنید. این اعتبار برای ارسال پیامک‌های سامانه مانند پیامک‌های اطلاع‌رسانی، احراز هویت، اعلان‌ها و سایر پیام‌های ارسالی استفاده می‌شود. در صورت کاهش یا اتمام اعتبار، لازم است حساب سامانه پیامک شارژ شود تا ارسال پیامک‌ها بدون وقفه ادامه یابد."
-                                                  aria-label="راهنمای اعتبار سامانه پیامک"
-                                                  onclick="event.preventDefault(); event.stopPropagation();">
-
-                                                    <i class="fe fe-info fs-4"></i>
-                                                </span>
+                                                <p class="text-muted card-sub-title">
+                                                    مشاهده اعتبار باقی‌مانده سامانه پیامک
+                                                </p>
+                                            </div>
                                         </div>
+                                        <ul class="top-selling-products pb-0 mb-0 pr-0">
+                                            <li class="product-item pb-0">
+                                                <div class="product-info">
+                                                    <div class="product-name">اعتبار باقیمانده پیامک</div>
+                                                    <div class="price">از پیامک</div>
+                                                </div>
+                                                <?php
+                                                $smsCredit_username = __USERSMS;
+                                                $smsCredit_password = __PASSSMS;
+                                                $smsCredit_data = array('username' => $smsCredit_username, 'password' => $smsCredit_password);
+                                                $smsCredit_post_data = http_build_query($smsCredit_data);
+                                                $smsCredit_handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/GetCredit');
+                                                curl_setopt($smsCredit_handle, CURLOPT_HTTPHEADER, array(
+                                                    'content-type' => 'application/x-www-form-urlencoded'
+                                                ));
+                                                curl_setopt($smsCredit_handle, CURLOPT_RETURNTRANSFER, true);
+                                                curl_setopt($smsCredit_handle, CURLOPT_CONNECTTIMEOUT, 5);
+                                                curl_setopt($smsCredit_handle, CURLOPT_TIMEOUT, 10);
+                                                curl_setopt($smsCredit_handle, CURLOPT_POST, true);
+                                                curl_setopt($smsCredit_handle, CURLOPT_POSTFIELDS, $smsCredit_post_data);
+                                                $smsCredit_response = curl_exec($smsCredit_handle);
+                                                $smsCredit_response = json_decode($smsCredit_response);
+                                                $smsCredit_value = isset($smsCredit_response->Value) && is_numeric($smsCredit_response->Value) ? (float) $smsCredit_response->Value : null;
+                                                curl_close($smsCredit_handle);
 
-                                        <p class="text-muted card-sub-title">
-                                            مشاهده اعتبار باقی‌مانده سامانه پیامک
-                                        </p>
+
+                                                ?>
+                                                <div class="product-amount">
+                                                    <div class="product-price"><span
+                                                            class="font-weight-semibold"> <?php echo ($smsCredit_value === null ? 'اعتبار در دسترس نیست' : number_format($smsCredit_value)); ?></span>
+                                                    </div>
+                                                    <div class="items-sold"></div>
+                                                </div>
+                                            </li>
+
+                                        </ul>
                                     </div>
                                 </div>
-                                <ul class="top-selling-products pb-0 mb-0 pr-0">
-                                    <li class="product-item pb-0">
-                                        <div class="product-info">
-                                            <div class="product-name">اعتبار باقیمانده پیامک</div>
-                                            <div class="price">از پیامک</div>
-                                        </div>
-                                        <?php
-                                        $smsCredit_username = __USERSMS;
-                                        $smsCredit_password = __PASSSMS;
-                                        $smsCredit_data = array('username' => $smsCredit_username, 'password' => $smsCredit_password );
-                                        $smsCredit_post_data = http_build_query($smsCredit_data);
-                                        $smsCredit_handle = curl_init('https://rest.payamak-panel.com/api/SendSMS/GetCredit');
-                                        curl_setopt($smsCredit_handle, CURLOPT_HTTPHEADER, array(
-                                            'content-type' => 'application/x-www-form-urlencoded'
-                                        ));
-                                        curl_setopt($smsCredit_handle, CURLOPT_RETURNTRANSFER, true);
-                                        curl_setopt($smsCredit_handle, CURLOPT_CONNECTTIMEOUT, 5);
-                                        curl_setopt($smsCredit_handle, CURLOPT_TIMEOUT, 10);
-                                        curl_setopt($smsCredit_handle, CURLOPT_POST, true);
-                                        curl_setopt($smsCredit_handle, CURLOPT_POSTFIELDS, $smsCredit_post_data);
-                                        $smsCredit_response = curl_exec($smsCredit_handle);
-                                        $smsCredit_response = json_decode($smsCredit_response);
-                                        $smsCredit_value = isset($smsCredit_response->Value) && is_numeric($smsCredit_response->Value) ? (float) $smsCredit_response->Value : null;
-                                        curl_close($smsCredit_handle);
-
-
-                                        ?>
-                                        <div class="product-amount">
-                                            <div class="product-price"><span
-                                                        class="font-weight-semibold"> <?php  echo ($smsCredit_value === null ? 'اعتبار در دسترس نیست' : number_format($smsCredit_value)); ?></span>
-                                            </div>
-                                            <div class="items-sold"></div>
-                                        </div>
-                                    </li>
-
-                                </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <?php endif; ?>
+                    <?php endif; ?>
 
-                <!-- ===== بخش جستجو (قابل نمایش/مخفی‌سازی) ===== -->
-                <div id="searchSection" class="<?php echo ($isSearchRequest) ? 'active' : ''; ?> search-container" style="display: <?php echo ($isSearchRequest) ? 'block' : 'none'; ?>;">
-                    <div class="row row-sm mt-4">
-                        <div class="col-lg-12">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="mb-0">جستجوی پیامک‌ها</h4>
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="toggleSearchSection();">
-                                            <i class="fa fa-times"></i> بستن
-                                        </button>
-                                    </div>
-                                    <form method="post" class="row g-3 mb-3">
-                                        <input type="hidden" name="search_submit" value="1">
-                                        <div class="col-md-2">
-                                            <label>از تاریخ:</label>
-                                            <input type="text" class="form-control fc-datepicker" name="startdate"
-                                                   placeholder="1402/09/10" required
-                                                   value="<?php echo isset($_POST['startdate']) ? htmlspecialchars($_POST['startdate']) : ''; ?>">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <label>ساعت شروع:</label>
-                                            <div class="time-select-group">
-                                                <select class="form-control" name="start_hour">
-                                                    <?php for ($i = 0; $i <= 23; $i++): ?>
-                                                        <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($startHour == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
-                                                            <?php echo sprintf('%02d', $i); ?>
-                                                        </option>
-                                                    <?php endfor; ?>
-                                                </select>
-                                                <span>:</span>
-                                                <select class="form-control" name="start_minute">
-                                                    <?php for ($i = 0; $i <= 59; $i++): ?>
-                                                        <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($startMinute == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
-                                                            <?php echo sprintf('%02d', $i); ?>
-                                                        </option>
-                                                    <?php endfor; ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>تا تاریخ:</label>
-                                            <input type="text" class="form-control fc-datepicker" name="enddate"
-                                                   placeholder="1402/09/11" required
-                                                   value="<?php echo isset($_POST['enddate']) ? htmlspecialchars($_POST['enddate']) : ''; ?>">
-                                        </div>
-                                        <div class="col-md-1">
-                                            <label>ساعت پایان:</label>
-                                            <div class="time-select-group">
-                                                <select class="form-control" name="end_hour">
-                                                    <?php for ($i = 0; $i <= 23; $i++): ?>
-                                                        <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($endHour == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
-                                                            <?php echo sprintf('%02d', $i); ?>
-                                                        </option>
-                                                    <?php endfor; ?>
-                                                </select>
-                                                <span>:</span>
-                                                <select class="form-control" name="end_minute">
-                                                    <?php for ($i = 0; $i <= 59; $i++): ?>
-                                                        <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($endMinute == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
-                                                            <?php echo sprintf('%02d', $i); ?>
-                                                        </option>
-                                                    <?php endfor; ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>نوع پیامک:</label>
-                                            <select class="form-control" name="location">
-                                                <option value="-1" <?php echo ($selectedLocation == -1) ? 'selected' : ''; ?>>همه</option>
-                                                <option value="1" <?php echo ($selectedLocation == 1) ? 'selected' : ''; ?>>دریافتی</option>
-                                                <option value="2" <?php echo ($selectedLocation == 2) ? 'selected' : ''; ?>>ارسالی</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>شماره (فرستنده/گیرنده):</label>
-                                            <select class="form-control" name="phone" id="phoneSelect">
-                                                <option value="">همه سرشماره‌ها</option>
-                                                <?php foreach ($numbers as $num): ?>
-                                                    <option value="<?php echo htmlspecialchars($num); ?>" <?php echo ($selectedPhone == $num) ? 'selected' : ''; ?>>
-                                                        <?php echo htmlspecialchars($num); ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 align-self-end">
-                                            <button type="submit" class="btn btn-primary w-100">جستجو</button>
-                                        </div>
-                                    </form>
-
-                                    <?php if (!empty($errors)): ?>
-                                        <div class="alert alert-danger"><ul><?php foreach ($errors as $e) echo '<li>' . htmlspecialchars($e) . '</li>'; ?></ul></div>
-                                    <?php endif; ?>
-
-                                    <?php if ($result && count($result) > 0): ?>
+                    <!-- ===== بخش جستجو (قابل نمایش/مخفی‌سازی) ===== -->
+                    <div id="searchSection" class="<?php echo ($isSearchRequest) ? 'active' : ''; ?> search-container" style="display: <?php echo ($isSearchRequest) ? 'block' : 'none'; ?>;">
+                        <div class="row row-sm mt-4">
+                            <div class="col-lg-12">
+                                <div class="card custom-card">
+                                    <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <span>تعداد نتایج: <?php echo count($result); ?></span>
-                                            <a href="?export=excel" class="btn btn-success btn-sm export-btn">
-                                                <i class="fa fa-file-excel-o"></i> خروجی اکسل
-                                            </a>
+                                            <h4 class="mb-0">جستجوی پیامک‌ها</h4>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="toggleSearchSection();">
+                                                <i class="fa fa-times"></i> بستن
+                                            </button>
                                         </div>
-                                        <div class="table-responsive mt-3">
-                                            <table id="example1" class="table table-bordered table-hover text-center align-middle">
-                                                <thead class="table-light"><tr><th>شناسه</th><th>متن پیام</th><th>تاریخ ارسال</th><th>گیرنده</th><th>فرستنده</th></tr></thead>
-                                                <tbody>
-                                                <?php foreach ($result as $msg):
-                                                    $sendDate = $msg->SendDate ?? '';
-                                                    $dateTime = explode('T', $sendDate);
-                                                    $datePart = $dateTime[0] ?? '';
-                                                    $timePart = isset($dateTime[1]) ? substr($dateTime[1], 0, 8) : '';
-                                                    if ($datePart) {
-                                                        list($gy, $gm, $gd) = explode('-', $datePart);
-                                                        if (function_exists('gregorian_to_jalali')) {
-                                                            list($jy, $jm, $jd) = gregorian_to_jalali((int)$gy, (int)$gm, (int)$gd);
-                                                            $jalaliDate = sprintf('%04d/%02d/%02d', $jy, $jm, $jd);
-                                                        } else {
-                                                            $jalaliDate = $datePart;
-                                                        }
-                                                    } else {
-                                                        $jalaliDate = $sendDate;
-                                                    }
-                                                    $displayTime = $timePart ?: '';
-                                                    $body = $msg->Body ?? '';
-                                                    $shortBody = mb_substr($body, 0, 30, 'UTF-8');
-                                                    $isLong = mb_strlen($body, 'UTF-8') > 30;
-                                                    $msgId = $msg->MsgID ?? 0;
-                                                    ?>
-                                                    <tr>
-                                                        <td><?php echo htmlspecialchars($msgId); ?></td>
-                                                        <td>
-                                                            <span class="msg-body" title="<?php echo htmlspecialchars($body); ?>">
-                                                                <?php echo htmlspecialchars($shortBody) . ($isLong ? '...' : ''); ?>
-                                                            </span>
-                                                            <button type="button" class="btn btn-sm btn-info view-msg" data-msgbody="<?php echo htmlspecialchars($body); ?>">
-                                                                <i class="fa fa-eye"></i> مشاهده کامل
-                                                            </button>
-                                                        </td>
-                                                        <td><?php echo $jalaliDate . ' ' . $displayTime; ?></td>
-                                                        <td><?php echo htmlspecialchars($msg->Receiver ?? ''); ?></td>
-                                                        <td><?php echo htmlspecialchars($msg->Sender ?? ''); ?></td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                            <?php if (count($result) == 100): ?>
-                                                <div class="alert alert-warning mt-2">حداکثر ۱۰۰ پیام قابل نمایش است. برای مشاهده بیشتر، بازه تاریخی را محدودتر کنید.</div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php elseif ($isSearchRequest && empty($errors)): ?>
-                                        <p class="text-warning mt-3">هیچ پیامکی یافت نشد.</p>
-                                    <?php endif; ?>
+                                        <form method="post" class="row g-3 mb-3">
+                                            <input type="hidden" name="search_submit" value="1">
+                                            <div class="col-md-2">
+                                                <label>از تاریخ:</label>
+                                                <input type="text" class="form-control fc-datepicker" name="startdate"
+                                                    placeholder="1402/09/10" required
+                                                    value="<?php echo isset($_POST['startdate']) ? htmlspecialchars($_POST['startdate']) : ''; ?>">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label>ساعت شروع:</label>
+                                                <div class="time-select-group">
+                                                    <select class="form-control" name="start_hour">
+                                                        <?php for ($i = 0; $i <= 23; $i++): ?>
+                                                            <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($startHour == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
+                                                                <?php echo sprintf('%02d', $i); ?>
+                                                            </option>
+                                                        <?php endfor; ?>
+                                                    </select>
+                                                    <span>:</span>
+                                                    <select class="form-control" name="start_minute">
+                                                        <?php for ($i = 0; $i <= 59; $i++): ?>
+                                                            <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($startMinute == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
+                                                                <?php echo sprintf('%02d', $i); ?>
+                                                            </option>
+                                                        <?php endfor; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label>تا تاریخ:</label>
+                                                <input type="text" class="form-control fc-datepicker" name="enddate"
+                                                    placeholder="1402/09/11" required
+                                                    value="<?php echo isset($_POST['enddate']) ? htmlspecialchars($_POST['enddate']) : ''; ?>">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label>ساعت پایان:</label>
+                                                <div class="time-select-group">
+                                                    <select class="form-control" name="end_hour">
+                                                        <?php for ($i = 0; $i <= 23; $i++): ?>
+                                                            <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($endHour == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
+                                                                <?php echo sprintf('%02d', $i); ?>
+                                                            </option>
+                                                        <?php endfor; ?>
+                                                    </select>
+                                                    <span>:</span>
+                                                    <select class="form-control" name="end_minute">
+                                                        <?php for ($i = 0; $i <= 59; $i++): ?>
+                                                            <option value="<?php echo sprintf('%02d', $i); ?>" <?php echo ($endMinute == sprintf('%02d', $i)) ? 'selected' : ''; ?>>
+                                                                <?php echo sprintf('%02d', $i); ?>
+                                                            </option>
+                                                        <?php endfor; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label>نوع پیامک:</label>
+                                                <select class="form-control" name="location">
+                                                    <option value="-1" <?php echo ($selectedLocation == -1) ? 'selected' : ''; ?>>همه</option>
+                                                    <option value="1" <?php echo ($selectedLocation == 1) ? 'selected' : ''; ?>>دریافتی</option>
+                                                    <option value="2" <?php echo ($selectedLocation == 2) ? 'selected' : ''; ?>>ارسالی</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label>شماره (فرستنده/گیرنده):</label>
+                                                <select class="form-control" name="phone" id="phoneSelect">
+                                                    <option value="">همه سرشماره‌ها</option>
+                                                    <?php foreach ($numbers as $num): ?>
+                                                        <option value="<?php echo htmlspecialchars($num); ?>" <?php echo ($selectedPhone == $num) ? 'selected' : ''; ?>>
+                                                            <?php echo htmlspecialchars($num); ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 align-self-end">
+                                                <button type="submit" class="btn btn-primary w-100">جستجو</button>
+                                            </div>
+                                        </form>
+
+                                        <?php if (!empty($errors)): ?>
+                                            <div class="alert alert-danger">
+                                                <ul><?php foreach ($errors as $e) echo '<li>' . htmlspecialchars($e) . '</li>'; ?></ul>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if ($result && count($result) > 0): ?>
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <span>تعداد نتایج: <?php echo count($result); ?></span>
+                                                <a href="?export=excel" class="btn btn-success btn-sm export-btn">
+                                                    <i class="fa fa-file-excel-o"></i> خروجی اکسل
+                                                </a>
+                                            </div>
+                                            <div class="table-responsive mt-3">
+                                                <table id="example1" class="table table-bordered table-hover text-center align-middle">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>شناسه</th>
+                                                            <th>متن پیام</th>
+                                                            <th>تاریخ ارسال</th>
+                                                            <th>گیرنده</th>
+                                                            <th>فرستنده</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($result as $msg):
+                                                            $sendDate = $msg->SendDate ?? '';
+                                                            $dateTime = explode('T', $sendDate);
+                                                            $datePart = $dateTime[0] ?? '';
+                                                            $timePart = isset($dateTime[1]) ? substr($dateTime[1], 0, 8) : '';
+                                                            if ($datePart) {
+                                                                list($gy, $gm, $gd) = explode('-', $datePart);
+                                                                if (function_exists('gregorian_to_jalali')) {
+                                                                    list($jy, $jm, $jd) = gregorian_to_jalali((int)$gy, (int)$gm, (int)$gd);
+                                                                    $jalaliDate = sprintf('%04d/%02d/%02d', $jy, $jm, $jd);
+                                                                } else {
+                                                                    $jalaliDate = $datePart;
+                                                                }
+                                                            } else {
+                                                                $jalaliDate = $sendDate;
+                                                            }
+                                                            $displayTime = $timePart ?: '';
+                                                            $body = $msg->Body ?? '';
+                                                            $shortBody = mb_substr($body, 0, 30, 'UTF-8');
+                                                            $isLong = mb_strlen($body, 'UTF-8') > 30;
+                                                            $msgId = $msg->MsgID ?? 0;
+                                                        ?>
+                                                            <tr>
+                                                                <td><?php echo htmlspecialchars($msgId); ?></td>
+                                                                <td>
+                                                                    <span class="msg-body" title="<?php echo htmlspecialchars($body); ?>">
+                                                                        <?php echo htmlspecialchars($shortBody) . ($isLong ? '...' : ''); ?>
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-sm btn-info view-msg" data-msgbody="<?php echo htmlspecialchars($body); ?>">
+                                                                        <i class="fa fa-eye"></i> مشاهده کامل
+                                                                    </button>
+                                                                </td>
+                                                                <td><?php echo $jalaliDate . ' ' . $displayTime; ?></td>
+                                                                <td><?php echo htmlspecialchars($msg->Receiver ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($msg->Sender ?? ''); ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                                <?php if (count($result) == 100): ?>
+                                                    <div class="alert alert-warning mt-2">حداکثر ۱۰۰ پیام قابل نمایش است. برای مشاهده بیشتر، بازه تاریخی را محدودتر کنید.</div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php elseif ($isSearchRequest && empty($errors)): ?>
+                                            <p class="text-warning mt-3">هیچ پیامکی یافت نشد.</p>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- ============================================= -->
+
                 </div>
-                <!-- ============================================= -->
+            </div>
+        </div>
+        <?php include '../../footers.php'; ?>
+    </div>
 
+    <!-- مودال -->
+    <div class="modal fade" id="msgModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">متن کامل پیام</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="msgFullBody">در حال بارگذاری...</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                </div>
             </div>
         </div>
     </div>
-    <?php include '../../footers.php'; ?>
-</div>
 
-<!-- مودال -->
-<div class="modal fade" id="msgModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">متن کامل پیام</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="بستن">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="msgFullBody">در حال بارگذاری...</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function toggleSearchSection() {
-        var section = document.getElementById('searchSection');
-        if (section.style.display === 'none' || section.style.display === '') {
-            section.style.display = 'block';
-            section.classList.add('active');
-            // اسکرول به بخش جستجو
-            setTimeout(function() {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        } else {
-            section.style.display = 'none';
-            section.classList.remove('active');
+    <script>
+        function toggleSearchSection() {
+            var section = document.getElementById('searchSection');
+            if (section.style.display === 'none' || section.style.display === '') {
+                section.style.display = 'block';
+                section.classList.add('active');
+                // اسکرول به بخش جستجو
+                setTimeout(function() {
+                    section.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
+            } else {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            }
         }
-    }
 
-    $(document).ready(function() {
-        $('.fc-datepicker').datepicker({ format: 'yyyy/mm/dd' });
+        $(document).ready(function() {
+            $('.fc-datepicker').datepicker({
+                format: 'yyyy/mm/dd'
+            });
 
-        $(document).on('click', '.view-msg', function() {
-            var fullBody = $(this).data('msgbody');
-            $('#msgFullBody').html(fullBody || 'متن پیام موجود نیست.');
-            $('#msgModal').modal('show');
+            $(document).on('click', '.view-msg', function() {
+                var fullBody = $(this).data('msgbody');
+                $('#msgFullBody').html(fullBody || 'متن پیام موجود نیست.');
+                $('#msgModal').modal('show');
+            });
+
+            $('#msgModal .close, #msgModal .btn-secondary').on('click', function() {
+                $('#msgModal').modal('hide');
+            });
+
+            // اگر قبلاً جستجو انجام شده بود، بخش جستجو باز باشد
+            <?php if ($isSearchRequest): ?>
+                // بخش جستجو قبلاً با کلاس active نمایش داده شده
+            <?php endif; ?>
         });
-
-        $('#msgModal .close, #msgModal .btn-secondary').on('click', function() {
-            $('#msgModal').modal('hide');
-        });
-
-        // اگر قبلاً جستجو انجام شده بود، بخش جستجو باز باشد
-        <?php if ($isSearchRequest): ?>
-        // بخش جستجو قبلاً با کلاس active نمایش داده شده
-        <?php endif; ?>
-    });
-</script>
+    </script>
 </body>
+
 </html>
