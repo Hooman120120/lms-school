@@ -375,7 +375,7 @@ include_once '../../temp.html';
                                         <th class="wd-30"><?php echo m('col.course_status') ?></th>
                                         <th class="wd-30"><?= inst_is('school') ? 'مشاور' : 'پشتیبان' ?></th>
                                         <th class="wd-30">اولین ورود</th>
-                                        <th class="wd-30">همکارآموزشی</th>
+                                        <th class="wd-30">معرف</th>
                                         <th class="wd-30"><?php echo m('col.student_type') ?></th>
                                         <th class="wd-30"><?php echo m('col.student_shift') ?></th>
 
