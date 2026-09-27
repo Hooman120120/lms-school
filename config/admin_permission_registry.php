@@ -255,7 +255,6 @@ $registry = [
     ]],
     ['code'=>'settings','label'=>'تنظیمات','legacy'=>'permision_viewsetting','children'=>[
         ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
-        ['code'=>'settings.levels','label'=>'سطوح دسترسی','path'=>'admin/setting/levels.php'],
     ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],

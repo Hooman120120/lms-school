@@ -1199,10 +1199,7 @@ else                  $c = '#15233f';
                                 عمومی </a>
                         </li>
 
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/setting/levels.php') ?>">
-                                <?php echo m('levels.page_title') ?> </a>
-                        </li>
+
 
 
 
