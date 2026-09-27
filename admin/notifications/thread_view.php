@@ -95,8 +95,9 @@ $administrator = (int)($me['administrator'] ?? 0);
 $schoolRoleKey = SchoolStaffRoleKey($currentUser);
 $isSchoolManager = in_array($schoolRoleKey, ['manager', 'general_deputy'], true);
 $isOperator = !empty($me['permision_suporter']) || $schoolRoleKey === 'counselor';
-$isManager = !empty($me['permision_viewalert']) || $isSchoolManager;
-$canSeeAll = $isSchoolManager || ($isManager && !empty($me['permision_viewemploy']));
+$isManager = !empty($me['permision_viewalert']) || $isSchoolManager
+    || AdminCanUsePermissionScope('school-notifications.information.tickets', ['permision_viewalert']);
+$canSeeAll = $isSchoolManager || ($isManager && Permision('permision_viewemploy'));
 if (!$isOperator && !$isManager && $sessionRole !== 3) {
     http_response_code(403);
     exit('دسترسی مشاهده این تیکت برای سمت شما تعریف نشده است.');

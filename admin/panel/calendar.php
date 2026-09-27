@@ -4,10 +4,12 @@ $stmt->execute([$_SESSION['admin']['user']]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
-// Same check as opening the page: accounts on the permission tree have no
-// dbadmin.permission_calendar = 1, so they could open the calendar but not add,
-// edit or export (the buttons and handlers were hidden).
-$permission_calendar = ((int)$admin['permission_calendar'] === 1 || Permision('permission_calendar')) ? 1 : 0;
+// Rights come from the permission tree (executive.calendar, .create, .edit), with
+// the legacy dbadmin.permission_calendar column as the fallback for old accounts.
+$calendarCanCreate = AdminCanUsePermissionScope('executive.calendar.create', ['permission_calendar']);
+$calendarCanEdit = AdminCanUsePermissionScope('executive.calendar.edit', ['permission_calendar']);
+// $permission_calendar = manages the calendar: sees every event, the toolbar and the dialogs.
+$permission_calendar = ($calendarCanCreate || $calendarCanEdit || Permision('permission_calendar')) ? 1 : 0;
 // Calendar groups are the پایه‌ها (school and institute alike): one column each in
 // the weekly view, one stacked month each in the monthly view.
 $gw = 'پایه';
@@ -290,7 +292,7 @@ if (isset($_GET['get_events']) && $_GET['get_events'] == 1) {
 }
 
 // ---------- POST: Add event (redirect, no JSON) ----------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_event' && $permission_calendar == 1) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_event' && $permission_calendar == 1 && $calendarCanCreate) {
     debug_log("add_event started", $_POST);
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -512,7 +514,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // ---------- POST: Update event ----------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_event' && $permission_calendar == 1) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_event' && $permission_calendar == 1 && $calendarCanEdit) {
     $eventId = $_POST['event_id'] ?? 0;
 
     if (isset($_POST['start_greg']) && !empty($_POST['start_greg'])) {
@@ -829,7 +831,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 // ---------- POST: Delete event (redirect, no JSON) ----------
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_event' && $permission_calendar == 1) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_event' && $permission_calendar == 1 && $calendarCanEdit) {
     $eventId = $_POST['event_id'] ?? 0;
     if (!$eventId) {
         $_SESSION['calendar_message'] = ['success' => false, 'message' => 'شناسه رویداد نامعتبر.'];
@@ -850,7 +852,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 function renderCalendar() {
-    global $permission_calendar, $conn, $gw, $weekGroups;
+    global $permission_calendar, $conn, $gw, $weekGroups, $calendarCanCreate, $calendarCanEdit;
     ?>
     <?php /* «پایه» for school and institute alike: not rewritten by institution-display.js */ ?>
     <div data-keep-terms>
@@ -1340,9 +1342,11 @@ function renderCalendar() {
         <?php endif; ?>
         <div class="mb-3 mt-3">
             <a class="btn text-center btn-info" href="calendar_groups.php"> مدیریت <?= $gw ?>‌ها </a>
+            <?php if ($calendarCanCreate) { ?>
             <button type="button" class="btn btn-primary" id="openAddEventBtn" data-bs-toggle="modal" data-bs-target="#addEventModal">
                 + افزودن رویداد جدید
             </button>
+            <?php } ?>
             <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#exportModal">
                 📥 خروجی اکسل
             </button>
@@ -1819,7 +1823,8 @@ function renderCalendar() {
         const addEventModal = document.getElementById('addEventModal');
         const eventDetailModal = document.getElementById('eventDetailModal');
         const form = document.getElementById('addEventForm');
-        const hasCalendarPermission = <?php echo $permission_calendar == 1 ? 'true' : 'false'; ?>;
+        // editing (dialog, drag and drop) needs executive.calendar.edit
+        const hasCalendarPermission = <?php echo ($permission_calendar == 1 && !empty($calendarCanEdit)) ? 'true' : 'false'; ?>;
         const selectedCoursesInput = document.getElementById('selectedCourses');
         const selectedCoursesSummary = document.getElementById('selectedCoursesSummary');
         const requestedEventId = new URLSearchParams(window.location.search).get('event');
