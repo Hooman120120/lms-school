@@ -417,7 +417,7 @@ include_once '../../temp.html';
                                         <hr>
                                         <div class="row ">
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10">مبلغ پایه با پشتیبان<span
+                                                <p class="mg-b-10">مبلغ پایه <?= inst_is('school') ? 'با مشاور' : 'با پشتیبان' ?><span
                                                             class="tx-danger">*</span></p>
 
 
@@ -431,7 +431,7 @@ include_once '../../temp.html';
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10">مبلغ پایه بدون پشتیبان</p>
+                                                <p class="mg-b-10">مبلغ پایه <?= inst_is('school') ? 'بدون مشاور' : 'بدون پشتیبان' ?></p>
 
 
                                                 <div class="input-group mb-3">
@@ -727,7 +727,7 @@ include_once '../../temp.html';
                                         <hr>
                                         <div class="row ">
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10">مبلغ پایه با پشتیبان<span
+                                                <p class="mg-b-10">مبلغ پایه <?= inst_is('school') ? 'با مشاور' : 'با پشتیبان' ?><span
                                                             class="tx-danger">*</span></p>
 
 
@@ -742,7 +742,7 @@ include_once '../../temp.html';
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
-                                                <p class="mg-b-10">مبلغ پایه بدون پشتیبان</p>
+                                                <p class="mg-b-10">مبلغ پایه <?= inst_is('school') ? 'بدون مشاور' : 'بدون پشتیبان' ?></p>
 
 
                                                 <div class="input-group mb-3">
