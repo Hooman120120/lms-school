@@ -526,13 +526,13 @@ include_once '../../temp.html';
 
    */ ?>
                                             <div class="col-lg-4 p-3">
-                                                <p class="mg-b-10">لینک گروه دختران (ایتا)</p>
+                                                <p class="mg-b-10">لینک گروه دختران (پیام رسان)</p>
                                                 <input class="form-control" name="girls_group" type="text"
                                                        placeholder="https://eitaa.com/joinchat">
                                             </div>
 
                                             <div class="col-lg-4 p-3">
-                                                <p class="mg-b-10">لینک گروه پسران (ایتا)</p>
+                                                <p class="mg-b-10">لینک گروه پسران (پیام رسان)</p>
                                                 <input class="form-control" name="guys_group" type="text"
                                                        placeholder="https://eitaa.com/joinchat">
                                             </div>
