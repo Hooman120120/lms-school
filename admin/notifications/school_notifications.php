@@ -53,6 +53,24 @@ if (empty($_SESSION['school_notification_csrf'])) {
     $_SESSION['school_notification_csrf'] = bin2hex(random_bytes(24));
 }
 
+$detailNotification = null;
+if (isset($_GET['detail']) && ctype_digit((string)$_GET['detail'])) {
+    $detailId = (int)$_GET['detail'];
+    foreach (GetSchoolNotifications($currentUser, null, 300) as $candidate) {
+        if ((int)$candidate['id'] !== $detailId) continue;
+        $candidateType = (string)$candidate['event_type'];
+        if (!in_array($candidateType, $allowedTypes, true)) break;
+        if (!$notificationCan('open') && !IsSchoolDirectNotificationType($candidateType)) {
+            http_response_code(403);
+            exit('دسترسی مشاهدهٔ جزئیات اعلان فعال نشده است.');
+        }
+        MarkSchoolNotificationRead($detailId, $currentUser);
+        $candidate['is_read'] = 1;
+        $detailNotification = $candidate;
+        break;
+    }
+}
+
 // Opening a detail marks the notification as read first, then forwards only
 // to an internal LMS URL that the notification itself declared.
 if (isset($_GET['open']) && ctype_digit((string)$_GET['open'])) {
@@ -147,6 +165,16 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
         .school-notification:hover {box-shadow:0 6px 16px rgba(31,45,61,.09);}
         .notification-meta {display:flex; flex-wrap:wrap; gap:8px; color:#6c757d; font-size:12px;}
         .notification-icon {width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e8f1ff;color:#0d6efd;font-size:20px;flex:0 0 42px;}
+        .notification-detail-backdrop {position:fixed;inset:0;z-index:1060;background:rgba(22,29,37,.58);display:flex;align-items:center;justify-content:center;padding:20px;}
+        .notification-detail {width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 18px 55px rgba(0,0,0,.28);}
+        .notification-detail-header {display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid #e8ebf0;}
+        .notification-detail-close {font-size:28px;line-height:1;color:#6c757d;text-decoration:none;}
+        .notification-detail-body {padding:24px;}
+        .notification-detail-message {white-space:pre-wrap;line-height:2;background:#f8f9fb;border:1px solid #e8ebf0;border-radius:10px;padding:18px;color:#2f3542;}
+        .notification-detail-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px;}
+        .notification-detail-field {background:#f8f9fb;border-radius:8px;padding:11px 13px;}
+        .notification-detail-field small {display:block;color:#7b8190;margin-bottom:3px;}
+        @media (max-width:575px) {.notification-detail-grid {grid-template-columns:1fr;}}
     </style>
 </head>
 <body class="main-body leftmenu">
@@ -279,6 +307,11 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                     <?php foreach ($notifications as $notification):
                         $meta = $catalog[$notification['event_type']] ?? ['title' => $notification['event_type'], 'icon' => 'fe-bell'];
                         $target = trim((string)($notification['target_url'] ?? ''));
+                        $detailQuery = http_build_query(array_filter([
+                            'type' => $selectedType,
+                            'view' => $view,
+                            'detail' => (int)$notification['id'],
+                        ], static fn($value): bool => $value !== ''));
                     ?>
                         <div class="card custom-card school-notification <?= (int)$notification['is_read'] === 0 ? 'unread' : '' ?> mb-2">
                             <div class="card-body d-flex align-items-start" style="gap:14px">
@@ -300,6 +333,9 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                         <?php if (!empty($notification['priority']) && IsSchoolDirectNotificationType((string)$notification['event_type'])): ?><span><i class="fe fe-flag"></i> <?= htmlspecialchars($notification['priority']) ?></span><?php endif; ?>
                                     </div>
                                     <div class="mt-3 d-flex" style="gap:8px">
+                                        <?php if (IsSchoolDirectNotificationType((string)$notification['event_type'])): ?>
+                                            <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url($notificationPage . '?' . $detailQuery)) ?>">مشاهده کامل</a>
+                                        <?php endif; ?>
                                         <?php if ($notificationCan('open') && $target !== '' && strpos($target, 'admin/') === 0): ?>
                                             <a class="btn btn-sm btn-primary" href="<?= htmlspecialchars(url($notificationHome . '?open=' . (int)$notification['id'])) ?>">مشاهده جزئیات</a>
                                         <?php endif; ?>
@@ -319,6 +355,45 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                             </div>
                         </div>
                     <?php endforeach; ?>
+
+                    <?php if ($detailNotification !== null):
+                        $detailType = (string)$detailNotification['event_type'];
+                        $detailMeta = $catalog[$detailType] ?? ['title' => $detailType, 'icon' => 'fe-bell'];
+                        $detailCloseQuery = http_build_query(array_filter([
+                            'type' => $selectedType,
+                            'view' => $view,
+                        ], static fn($value): bool => $value !== ''));
+                        $detailCloseUrl = url($notificationPage . ($detailCloseQuery !== '' ? '?' . $detailCloseQuery : ''));
+                        $detailActor = trim((string)($detailNotification['actor_name'] ?? ''));
+                        if ($detailActor === '') $detailActor = trim((string)($detailNotification['actor_username'] ?? ''));
+                    ?>
+                        <div class="notification-detail-backdrop" role="presentation">
+                            <section class="notification-detail" role="dialog" aria-modal="true" aria-labelledby="notificationDetailTitle">
+                                <div class="notification-detail-header">
+                                    <div>
+                                        <span class="badge badge-primary mb-2"><?= htmlspecialchars($detailMeta['title']) ?></span>
+                                        <h4 id="notificationDetailTitle" class="mb-0"><?= htmlspecialchars((string)$detailNotification['title']) ?></h4>
+                                    </div>
+                                    <a class="notification-detail-close" href="<?= htmlspecialchars($detailCloseUrl) ?>" aria-label="بستن">&times;</a>
+                                </div>
+                                <div class="notification-detail-body">
+                                    <div class="notification-detail-message"><?= htmlspecialchars((string)($detailNotification['body'] ?? '')) ?></div>
+                                    <div class="notification-detail-grid">
+                                        <div class="notification-detail-field"><small>نوع</small><strong><?= htmlspecialchars($detailMeta['title']) ?></strong></div>
+                                        <div class="notification-detail-field"><small>فرستنده</small><strong><?= htmlspecialchars($detailActor !== '' ? $detailActor : 'سامانه') ?></strong></div>
+                                        <div class="notification-detail-field"><small>تاریخ ارسال</small><strong><?= htmlspecialchars(toJalali((string)$detailNotification['created_at'], 'Y/m/d H:i', 'fa')) ?></strong></div>
+                                        <div class="notification-detail-field"><small>اولویت</small><strong><?= htmlspecialchars(trim((string)($detailNotification['priority'] ?? '')) ?: 'عادی') ?></strong></div>
+                                    </div>
+                                    <div class="mt-4 d-flex flex-wrap" style="gap:8px">
+                                        <?php if (!empty($detailNotification['attachment']) && str_starts_with((string)$detailNotification['attachment'], 'uploads/')): ?>
+                                            <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= htmlspecialchars(url((string)$detailNotification['attachment'])) ?>"><i class="fe fe-paperclip ml-1"></i> دریافت پیوست</a>
+                                        <?php endif; ?>
+                                        <a class="btn btn-secondary" href="<?= htmlspecialchars($detailCloseUrl) ?>">بستن</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if (!$isNotificationListPage && $notificationSectionCan('financial') && in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>

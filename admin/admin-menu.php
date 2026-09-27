@@ -1026,10 +1026,7 @@ else                  $c = '#15233f';
                             </span>
 
                         </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i><?php $count2 = countCheckDoc();
-                                                                    if ($count2 > 0) { ?><span
-                                class="badge badge-warning side-badge "><?php echo $count2; ?></span><?php } ?>
+                        <i class="angle fe fe-chevron-left"></i>
                     </a>
                     <ul class="nav-sub">
                         <li class="nav-sub-item">
