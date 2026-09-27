@@ -181,7 +181,6 @@ $employeePermissionColumns = [
                 ['permission_staff_view', 'epermission_staff_view', 'permission_staff_view', 'مشاهده فهرست همکاران', 'فقط فهرست و اطلاعات عمومی همکاران را نمایش می‌دهد و اجازه تعریف یا ویرایش حساب‌ها را نمی‌دهد.'],
                 ['permission_staff_documents', 'epermission_staff_documents', 'permission_staff_documents', 'مشاهده مستندات پرسنلی همکاران', 'اجازه مشاهده و دریافت مدارک، سوابق و فایل‌های شناسایی هویت همکاران و معلمان را می‌دهد.'],
                 ['permission_insurance', 'epermission_insurance', 'permission_insurance', 'مدیریت بیمه افراد', 'اجازه ثبت و ویرایش شرکت بیمه، شماره بیمه‌نامه، بازه اعتبار و وضعیت بیمه همکاران را می‌دهد.'],
-                ['menu-setting', 'emenu-setting', 'permision_viewsetting', 'مدیریت تنظیمات عمومی سامانه', 'اجازه ورود به تنظیمات عمومی، لیست سیاه و اطلاعات مالی پایه سامانه را می‌دهد.'],
             ],
         ],
     ],
@@ -509,11 +508,7 @@ if (isset($_POST['esave'])) {
         } else {
             $menuemploy = 0;
         }
-        if (isset($_POST['emenu-setting'])) {
-            $menusetting = 1;
-        } else {
-            $menusetting = 0;
-        }
+        $menusetting = 0; // مجوز تنظیمات بازنشسته شده است.
         if (isset($_POST['emenu-quiz'])) {
             $menuquiz = 1;
         } else {
@@ -772,11 +767,7 @@ if (isset($_POST['save'])) {
                 } else {
                     $menuemploy = 0;
                 }
-                if (isset($_POST['menu-setting'])) {
-                    $menusetting = 1;
-                } else {
-                    $menusetting = 0;
-                }
+                $menusetting = 0; // مجوز تنظیمات بازنشسته شده است.
                 if (isset($_POST['menu-quiz'])) {
                     $menuquiz = 1;
                 } else {

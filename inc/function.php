@@ -120,6 +120,7 @@ function AdminPermissionAttachPageActions(array $nodes): array
             $parts[] = $part;
         }
         $candidate = implode('/', $parts);
+        if (in_array($candidate, ['admin/setting/setting.php', 'admin/setting/levels.php'], true)) return null;
         return preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $candidate) && is_file(BASE_PATH . '/' . $candidate) ? $candidate : null;
     };
 
@@ -310,7 +311,7 @@ function AdminHasAnyCurrentTreePermission(?string $username = null): bool
         $index = AdminPermissionIndex();
         foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $code) {
             // Retired notification grants must fail closed rather than enable legacy access.
-            if (isset($index[$code]) || str_starts_with($code, 'institute-notifications.')) return true;
+            if (isset($index[$code]) || $code === 'settings' || str_starts_with($code, 'settings.') || str_starts_with($code, 'institute-notifications.')) return true;
         }
     } catch (Throwable $e) { }
     return false;
@@ -1186,6 +1187,7 @@ function uncourse($student)
 
 function Permision($tab)
 {
+    if ($tab === 'permision_viewsetting') return false; // Retired settings section.
     global $conn;
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $mappedCodes = AdminPermissionCodesForLegacy($tab);
@@ -1206,6 +1208,7 @@ function Permision($tab)
 
 function PermisionUser($tab, $user)
 {
+    if ($tab === 'permision_viewsetting') return false; // Retired settings section.
     global $conn;
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $mappedCodes = AdminPermissionCodesForLegacy($tab);

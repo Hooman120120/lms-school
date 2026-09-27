@@ -1169,44 +1169,6 @@ else                  $c = '#15233f';
             <?php } ?>
 
 
-            <?php if (Permision('permision_viewsetting')) { ?>
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-settings t sidemenu-icon"></i>
-
-                        <span class="sidemenu-label"
-                            style="display:inline-flex;
-                     align-items:center;
-                     gap:12px;">
-
-                            تنظیمات
-
-                            <span class="menu-info-trigger"
-                                data-tooltip="در این بخش می‌توانید تنظیمات عمومی سامانه را مدیریت کنید. امکاناتی مانند تنظیمات کلی سیستم، مدیریت بلک‌لیست و پشتیبان‌گیری از اطلاعات از طریق این قسمت در دسترس است."
-                                aria-label="راهنمای تنظیمات"
-                                onclick="event.preventDefault(); event.stopPropagation();">
-
-                                <i class="fe fe-info fs-4"></i>
-                            </span>
-
-                        </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i>
-                    </a>
-                    <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/setting/setting.php') ?>"> تنظیمات
-                                عمومی </a>
-                        </li>
-
-
-
-
-
-
-                    </ul>
-                </li>
-            <?php } ?>
             <?php if (AdminHasAnyCurrentTreePermission() && AdminHasMenuNavigationPermission('reports')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-radio sidemenu-icon"></i><span class="sidemenu-label">آمار و گزارشات</span><i class="angle fe fe-chevron-left"></i></a>
@@ -1313,7 +1275,7 @@ else                  $c = '#15233f';
                         <?php if (AdminHasMenuNavigationPermission('finance.insurance')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/insurance.php') ?>">بیمه افراد</a></li><?php endif; ?>
                     </ul>
                 </li>
-            <?php } elseif (!AdminHasAnyCurrentTreePermission() && (Permision('permision_viewbill') || Permision('permision_viewsetting') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance'))) { ?>
+            <?php } elseif (!AdminHasAnyCurrentTreePermission() && (Permision('permision_viewbill') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance'))) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-database  sidemenu-icon"></i>
@@ -1413,7 +1375,7 @@ else                  $c = '#15233f';
                             </li>
                         <?php } ?>
 
-                        <?php if (Permision('permision_viewsetting')) { ?>
+                        <?php if (Permision('permision_viewbill')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a>
                             </li>

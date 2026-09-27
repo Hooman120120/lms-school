@@ -254,9 +254,6 @@ $registry = [
         ['code'=>'referrers.inactive','label'=>'معرفان غیرفعال','path'=>'admin/Collague/unactive-collague.php'],
         ['code'=>'referrers.sub','label'=>'زیرمجموعه معرفان','path'=>'admin/Collague/sub-collague.php'],
     ]],
-    ['code'=>'settings','label'=>'تنظیمات','legacy'=>'permision_viewsetting','children'=>[
-        ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
-    ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],
         ['code'=>'reports.staff','label'=>'گزارش همکاران','legacy'=>'permision_reportcollague','path'=>'admin/report/colleague.php'],

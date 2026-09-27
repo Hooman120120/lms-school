@@ -27,7 +27,7 @@ if (session_id() != $re['session_id']) {
 //* End Check Session JUST ONE Session
 if (AdminHasAnyCurrentTreePermission()
     ? !AdminHasMenuNavigationPermission('finance.cards')
-    : !Permision('permision_viewsetting')) {
+    : !Permision('permision_viewbill')) {
     header('location:' . url("admin/index.php"));
     die();
 }
