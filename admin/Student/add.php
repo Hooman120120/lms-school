@@ -1108,7 +1108,7 @@ include_once '../../temp.html';
                                                                             <div class="col-lg-4 mg-t-20">
 
                                                                                 <div class="input-group-prepend">
-                                                                                    <div class="input-group-text">
+                                                                                    <div class="input-group-text" data-keep-terms>
                                                                                         پایه تحصیلی: <span
                                                                                                 class="tx-danger">*</span>
                                                                                     </div>
