@@ -527,9 +527,7 @@ include_once '../../temp.html';
                                                         تحصیلی </a>
                                                     <a class="nav-link" data-bs-toggle="tab" href="#picture">تصویر
                                                         پروفایل </a>
-                                                    <a class="nav-link" data-bs-toggle="tab" href="#basij">اطلاعات
-                                                        بسیج دانش
-                                                        آموزی </a>
+
                                                     <a class="nav-link" data-bs-toggle="tab" href="#wallet">اطلاعات
                                                         حساب بانکی</a>
 
@@ -4206,12 +4204,7 @@ include_once '../../temp.html';
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="main-content-body tab-pane p-4 border-top-0"
-                                                             id="basij">
-                                                            <div class="card-body border ">
 
-                                                            </div>
-                                                        </div>
                                                         <div class="main-content-body tab-pane p-4 border-top-0"
                                                              id="wallet">
                                                             <div class="card-body border">
