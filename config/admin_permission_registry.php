@@ -279,6 +279,7 @@ $registry = [
             ['code'=>'finance.returned.manage','label'=>'ثبت و تأیید واریزی یا ویرایش فاکتور'],
         ]],
         ['code'=>'finance.wallet','label'=>'شارژهای کیف پول منتظر تأیید','legacy'=>'permision_actwallet','modes'=>['institute'],'path'=>'admin/Bill/waitingWallet.php'],
+        ['code'=>'finance.referrer-commission','label'=>'کارمزد معرف','path'=>'admin/finance/referrer-commission.php'],
         ['code'=>'finance.cards','label'=>'مدیریت شماره کارت‌های بانکی','path'=>'admin/setting/credit-card.php','children'=>[
             ['code'=>'finance.cards.create','label'=>'افزودن شماره کارت'],
             ['code'=>'finance.cards.edit','label'=>'ویرایش شماره کارت'],

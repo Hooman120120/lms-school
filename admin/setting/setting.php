@@ -60,12 +60,7 @@ if(isset($_POST['save'])){
     $qset->execute([$singup_student,$singup_collague,$signin,$sms_epay,$sms_card,1]);
     $message='تنظیمات بروز رسانی شد';
 }
-if(isset($_POST['darsad'])){
-    $upwage='UPDATE setting_public SET wage=? WHERE id=?';
-    $qwage=$conn->prepare($upwage);
-    $qwage->execute([$_POST['darsad'],1]);
-    $message='تنظیمات بروز رسانی شد';
-}
+
 
 // نوع و جنسیت مؤسسه در هنرفناوری تعیین می‌شود و با مجوز پنل به setting_public می‌رسد
 // (hf_control_apply_settings در inc/hf_control.php)؛ این صفحه فقط آن را نشان می‌دهد.
@@ -200,66 +195,6 @@ include_once '../../temp.html';
 
                                 </form>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <form method="post">
-                                    <div class="col-10">
-                                        <div>
-                                            <div style="display:flex; align-items:center; gap:12px;">
-                                                <h6 class="main-content-label mb-1">درصد کارمزد معرف برون سازمانی</h6>
-
-                                                <span class="menu-info-trigger"
-                                                      data-tooltip="در این بخش درصد کارمزد معرفان برون سازمانی را تعیین می‌کنید. هنگام صدور فاکتور برای معرف، درصد تعیین‌شده به‌عنوان کارمزد از مبلغ فاکتور کسر شده و مبلغ نهایی بر اساس این تنظیمات محاسبه می‌شود. هرگونه تغییر در این مقدار، در محاسبات فاکتورهای بعدی اعمال خواهد شد."
-                                                      aria-label="راهنمای درصد کارمزد همکار"
-                                                      onclick="event.preventDefault(); event.stopPropagation();">
-
-                                                    <i class="fe fe-info fs-4"></i>
-                                                </span>
-                                            </div>
-
-                                            <p class="text-muted card-sub-title">
-                                                میزان درصدی که از مبلغ فاکتور کسر خواهد شد.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group ">
-                                        <div class="row row-sm">
-                                            <?php
-                                            $darsad='SELECT wage FROM setting_public';
-                                            $query=$conn->prepare($darsad);
-                                            $query->execute();
-                                            $result=$query->fetch(PDO::FETCH_OBJ);
-                                            ?>
-
-                                            <div class="col-xl-12 ">
-                                                <div class="input-group-prepend">
-                                                    <input type="text"
-                                                           class="form-control text-left"
-
-                                                           name="darsad"
-                                                           value="<?php echo $result->wage ?>"
-                                                           required="">
-                                                    <div class="input-group-text">
-                                                        %
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="mt-3">
-                                        <button type="submit"
-                                                class="btn btn-light  mr-1"
-                                                name="darsad-collague">
-                                            ذخیره کارمزد همکار
-                                        </button>
-
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>

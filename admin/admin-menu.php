@@ -1310,6 +1310,7 @@ else                  $c = '#15233f';
                         <?php if (AdminHasMenuNavigationPermission('finance.unpaid')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/factor-notpay.php') ?>">فاکتورهای پرداخت‌نشده</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.returned')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/returned.php') ?>">فاکتورهای مستردشده</a></li><?php endif; ?>
                         <?php if (inst_feature('wallet') && AdminHasMenuNavigationPermission('finance.wallet')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/waitingWallet.php') ?>">شارژهای کیف پول منتظر تأیید</a></li><?php endif; ?>
+                        <?php if (AdminHasMenuNavigationPermission('finance.referrer-commission')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/referrer-commission.php') ?>">کارمزد معرف</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.cards')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.statement')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/SearchBillView.php') ?>">صورتحساب‌ها</a></li><?php endif; ?>
                         <?php if (AdminHasMenuNavigationPermission('finance.advanced-report')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/advanced-report.php') ?>">گزارش مالی پیشرفته</a></li><?php endif; ?>
@@ -1395,6 +1396,10 @@ else                  $c = '#15233f';
                                 <a class="nav-sub-link" href="<?php echo url('admin/Bill/payment.php') ?>"> موارد قسطی
                                 </a>
                             </li>
+                        <?php } ?>
+
+                        <?php if (Permision('permision_viewbill')) { ?>
+                            <li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/referrer-commission.php') ?>">کارمزد معرف</a></li>
                         <?php } ?>
 
                         <?php if (Permision('permission_monthly_payment')) { ?>
