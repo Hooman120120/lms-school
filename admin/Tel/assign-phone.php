@@ -785,7 +785,7 @@ if (isset($_POST['save-update'])) {
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">مدیریت لیست تماس ها</h2>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item">امور مشتریان</li>
+                            <li class="breadcrumb-item"><?= inst_is('institute') ? 'امور مشتریان' : 'روابط عمومی' ?></li>
                             <li class="breadcrumb-item active" aria-current="page">تماس امن</li>
                             <li class="breadcrumb-item active" aria-current="page">تخصیص شماره</li>
                         </ol>
