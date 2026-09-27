@@ -514,8 +514,7 @@ include_once '../../temp.html';
                                                 <i class="fe fe-info fs-4"></i>
                                             </span>
                                         </h6>
-                                        <p class="text-muted card-sub-title">کل مخاطبان یک گروه از اپراتور های قبلی جدا
-                                            و به اپراتور جدید متصل می شوند
+                                        <p class="text-muted card-sub-title"><?= inst_is('school') ? 'کل مخاطبان یک گروه از مشاوران قبلی جدا و به مشاور جدید متصل می‌شوند' : 'کل مخاطبان یک گروه از اپراتورهای قبلی جدا و به اپراتور جدید متصل می‌شوند' ?>
                                         </p>
                                     </div>
                                 </div>
@@ -568,14 +567,14 @@ include_once '../../temp.html';
                                         </div>
                                         <!-- انتخاب اپراتور گیرنده: MULTI-SELECT -->
                                         <div class="col-xl-6 mb-2">
-                                            <label class="form-label mg-t-15">انتخاب اپراتور گیرنده:<span
+                                            <label class="form-label mg-t-15"> <?= inst_is('school') ? 'انتخاب مشاور گیرنده:' : 'انتخاب اپراتور گیرنده:' ?><span
                                                         style="color: red">*</span></label>
 
                                             <div class="dropdown w-100" id="groupOperatorWrapper">
                                                 <button class="btn btn-outline-info w-100 d-flex justify-content-between align-items-center"
                                                         type="button" data-bs-toggle="dropdown" aria-expanded="false"
                                                         data-role="trigger">
-                                                    <span data-role="label">انتخاب اپراتورها</span>
+                                                    <span data-role="label"><?= inst_is('school') ? 'انتخاب مشاور' : 'انتخاب اپراتورها' ?></span>
                                                     <span class="ms-2 small text-muted">▼</span>
                                                 </button>
 
@@ -882,7 +881,7 @@ include_once '../../temp.html';
             setupMultiSelectDropdown('operatorTransferWrapper', 'recive_list', <?= json_encode(inst_is('school') ? 'انتخاب مشاور' : 'انتخاب اپراتورها', JSON_UNESCAPED_UNICODE) ?>);
 
             // فرم ۲: تخصیص کل گروه یه یک نفر
-            setupMultiSelectDropdown('groupOperatorWrapper', 'operator_rec_list', 'انتخاب اپراتورها');
+            setupMultiSelectDropdown('groupOperatorWrapper', 'operator_rec_list', <?= json_encode(inst_is('school') ? 'انتخاب مشاور' : 'انتخاب اپراتورها', JSON_UNESCAPED_UNICODE) ?>);
         });
     </script>
 
