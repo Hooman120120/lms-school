@@ -1040,6 +1040,18 @@ else                  $c = '#15233f';
                                 مستندات </a>
                         </li>
 
+                        <li class="nav-sub-item">
+                            <a class="nav-sub-link" href="<?php echo url('admin/Doc/announcements.php') ?>">
+                                اطلاعیه‌ها و بخشنامه‌ها
+                            </a>
+                        </li>
+
+                        <li class="nav-sub-item">
+                            <a class="nav-sub-link" href="<?php echo url('admin/Doc/special-letters.php') ?>">
+                                نامه‌های اختصاصی
+                            </a>
+                        </li>
+
 
                     </ul>
                 </li>
