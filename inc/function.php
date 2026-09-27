@@ -21,12 +21,7 @@ function AdminPermissionNodeAvailable(array $node): bool
 function AdminPermissionDisplayLabel(array $node): string
 {
     $label = (string)($node['labels'][inst_type()] ?? $node['label'] ?? '');
-    if (inst_is('institute')) {
-        return str_replace(['دانش‌آموزان', 'دانش آموزان', 'دانش‌آموز', 'دانش آموز', 'پایه‌ها', 'پایه‌های', 'پایه'],
-            ['فراگیران', 'فراگیران', 'فراگیر', 'فراگیر', 'دوره‌ها', 'دوره‌های', 'دوره'], $label);
-    }
-    return str_replace(['فراگیران', 'فراگیر', 'دوره‌ها', 'دوره‌های', 'دوره'],
-        ['دانش‌آموزان', 'دانش‌آموز', 'پایه‌ها', 'پایه‌های', 'پایه'], $label);
+    return inst_display_text($label);
 }
 
 function AdminPermissionActionLabel(string $control): string

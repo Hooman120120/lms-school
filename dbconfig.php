@@ -42,6 +42,8 @@ try {
 // نوع مؤسسه (مدرسه / آموزشگاه) + واژه‌نامه و توابع t() و m()
 // باید بعد از ساخته شدن $conn لود شود، چون نوع مؤسسه از setting_public خوانده می‌شود.
 require_once BASE_PATH . '/config/institution.php';
+require_once BASE_PATH . '/config/institution_display.php';
+if (PHP_SAPI !== 'cli') ob_start('inst_display_html');
 require_once BASE_PATH . '/inc/hf_control.php';
 require_once BASE_PATH . '/inc/cross_panel.php';
 function protocol()

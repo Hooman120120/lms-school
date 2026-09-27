@@ -175,12 +175,12 @@ $registry = [
     ]],
     ['code'=>'courses','label'=>'مدیریت پایه‌ها','legacy'=>'permision_viewcourse','children'=>[
         ['code'=>'courses.main','label'=>'پایه‌ها','children'=>[
-            ['code'=>'courses.main.create','label'=>'ایجاد پایه','legacy'=>'permision_viewcourse','path'=>'admin/course/add-Course.php'],
+            ['code'=>'courses.main.create','label'=>'ثبت پایه','labels'=>['institute'=>'ثبت دوره فعال'],'legacy'=>'permision_viewcourse','path'=>'admin/course/add-Course.php'],
             ['code'=>'courses.main.demo-create','label'=>'ایجاد دوره آزمایشی','path'=>'admin/democourse/add-democourse.php'],
             ['code'=>'courses.main.active','label'=>'پایه‌های فعال','path'=>'admin/course/Active-course.php','children'=>[
                 ['code'=>'courses.main.active.edit','label'=>'ویرایش پایه'],['code'=>'courses.main.active.delete','label'=>'حذف یا تغییر وضعیت','legacy'=>'permision_deletcourse'],
             ]],
-            ['code'=>'courses.main.demo-active','label'=>'دوره‌های آزمایشی فعال','path'=>'admin/democourse/list-democourse.php'],
+            ['code'=>'courses.main.demo-active','label'=>'پایه‌های آزمایشی فعال','labels'=>['institute'=>'دوره‌های موقت'],'path'=>'admin/democourse/list-democourse.php'],
             ['code'=>'courses.main.archive','label'=>'بایگانی سال‌های قبل','legacy'=>'permision_viewcourse','path'=>'admin/course/unactive-course.php'],
             ['code'=>'courses.main.discount','label'=>'ایجاد کد تخفیف','legacy'=>'permision_discount','path'=>'admin/course/add-discount.php'],
         ]],
