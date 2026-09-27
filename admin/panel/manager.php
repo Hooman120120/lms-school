@@ -1183,40 +1183,40 @@ include_once '../../temp.html';
                                                 $start = $datenow . ' 00:01';
                                                 $end = $datenow . ' 23:59';
 
-//                                                $simotel = reportCallSimotel($start, $end, '', 200000);
+                                               $simotel = reportCallSimotel($start, $end, '', 200000);
                                                 ?>
                                                 <ul class="crypto-transcation list-unstyled mg-b-0">
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
                                                         <div class="media-body ">
                                                             <p class="tx-medium mg-b-3 tx-13">پاسخ داده شده</p>
                                                             <p class="tx-11 mg-b-0 tx-gray-900"> زمان
-                                                                : <?php echo 1 ?> </p>
+                                                                : <?php echo $simotel['TIME ANSWERED'] ?> </p>
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات مرکز تماس</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $simotel['ANSWERED'] ?></h5>
                                                         </div>
                                                     </li>
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
                                                         <div class="media-body ">
                                                             <p class="tx-medium mg-b-3 tx-13">عدم پاسخ</p>
                                                             <p class="tx-11 mg-b-0 tx-gray-900"> زمان
-                                                                : <?php echo 1 ?> </p>
+                                                                : <?php echo $simotel['TIME NO ANSWERED'] ?> </p>
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات مرکز تماس</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1 ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $simotel['NO ANSWERED'] ?></h5>
                                                         </div>
                                                     </li>
                                                     <li class="list-item mb-0 pl-3 pr-3 mt-0 pb-3">
                                                         <div class="media-body ">
                                                             <p class="tx-medium mg-b-3 tx-13"> کل تماس شما</p>
                                                             <p class="tx-11 mg-b-0 tx-gray-900"> زمان
-                                                                : <?php echo 1 ?> </p>
+                                                                : <?php echo $simotel['TIME TOTAL'] ?> </p>
                                                             <p class="tx-11 mg-b-0 tx-gray-500">گزارشات مرکز تماس</p>
                                                         </div>
                                                         <div class="text-right mr-auto my-auto">
-                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo 1; ?></h5>
+                                                            <h5 class="font-weight-semibold tx-16 mb-0"><?php echo $simotel['ANSWERED'] + $simotel['NO ANSWERED']; ?></h5>
                                                         </div>
                                                     </li>
 
