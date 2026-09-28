@@ -1463,7 +1463,11 @@ include_once '../../temp.html';
                                                                                                             label="<?php echo m('col.student_type') ?>">
                                                                                                     </option>
                                                                                                     <?php
-                                                                                                    $sql = "SELECT * FROM type_vip";
+                                                                                                    if (inst_type() == 'school') {
+                                                                                                       $sql = "SELECT * FROM type_vip WHERE id IN (1,2,3,5,6,13,14)";
+                                                                                                    } else {
+                                                                                                        $sql = "SELECT * FROM type_vip WHERE id NOT IN (14)";
+                                                                                                    }
                                                                                                     $stmt = $conn->prepare($sql);
                                                                                                     $stmt->execute();
                                                                                                     $vips = $stmt->fetchAll(PDO::FETCH_OBJ);
