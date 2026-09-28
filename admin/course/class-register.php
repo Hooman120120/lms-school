@@ -69,6 +69,25 @@ $sees_all_columns = !$is_teacher;
 // شناسه استادی که رکوردها باید متعلق به او باشند (برای نقش های بالاتر محدودیتی نیست)
 $scope_teacher_id = $is_teacher ? (int)$admin_id : null;
 
+// درس، بخشی از زمینه دفتر کلاس است و داخل فرم ساخت ستون انتخاب نمی‌شود.
+$classDarsOptions = RegisterClassDarsOptions(
+    $class_id,
+    $is_teacher ? (string)($_SESSION['admin']['user'] ?? '') : null
+);
+$requested_dars_id = isset($_GET['dars']) ? (int)$_GET['dars'] : 0;
+$allowed_dars_ids = array_map('intval', array_column($classDarsOptions, 'id'));
+$register_dars_id = in_array($requested_dars_id, $allowed_dars_ids, true) ? $requested_dars_id : 0;
+if ($register_dars_id === 0 && count($allowed_dars_ids) === 1) {
+    $register_dars_id = $allowed_dars_ids[0];
+}
+$register_dars_name = '';
+foreach ($classDarsOptions as $darsOption) {
+    if ((int)$darsOption['id'] === $register_dars_id) {
+        $register_dars_name = (string)$darsOption['dars'];
+        break;
+    }
+}
+
 /**
  * بررسی اینکه ستون متعلق به همین کلاس (و در صورت استاد بودن، به خود کاربر) است.
  * چون حذف و ویرایش برای همه باز شده، شناسه ورودی باید سمت سرور اعتبارسنجی شود.
@@ -130,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     $jalali_date = trim($_POST['event_date'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $type        = isset($_POST['type']) ? (int)$_POST['type'] : 0;
+    $dars_id     = $register_dars_id;
     $homework_notification_target = $_POST['homework_notification_target'] ?? 'family';
     if (!in_array($homework_notification_target, ['family', 'family_student'], true)) {
         $homework_notification_target = 'family';
@@ -149,11 +169,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
     if ((int)$adminrole === 3) {
         $assigned_teacher_id = (int)$admin_id;
+        $assigned_teacher_username = (string)($_SESSION['admin']['user'] ?? '');
     } else {
         $assigned_teacher_id = (int)($_POST['teacher_id'] ?? 0);
+        $teacherUsernameStmt = $conn->prepare('SELECT username FROM dbadmin WHERE idadmin = ? LIMIT 1');
+        $teacherUsernameStmt->execute([$assigned_teacher_id]);
+        $assigned_teacher_username = (string)($teacherUsernameStmt->fetchColumn() ?: '');
     }
 
-    if (!empty($title) && $assigned_teacher_id > 0 && $admin_id > 0) {
+    $teacherHasDars = $dars_id > 0
+        && $assigned_teacher_username !== ''
+        && TeacherHasDarsAccess($class_id, $dars_id, $assigned_teacher_username);
+
+    if (!empty($title) && $assigned_teacher_id > 0 && $admin_id > 0 && $teacherHasDars) {
         $newEventId = createRegisterClassEvent(
             $class_id,
             (int)$admin_id,
@@ -163,7 +191,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             $type,
             $description,
             null,
-            $homework_notification_target
+            $homework_notification_target,
+            $dars_id
         );
 
         if ($newEventId) {
@@ -175,7 +204,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             $_SESSION['flash_msg_type'] = 'danger';
         }
     } else {
-        $_SESSION['flash_msg'] = 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : m('msg.choose_column_and_teacher')) . ' را انتخاب کنید.';
+        $_SESSION['flash_msg'] = $dars_id <= 0
+            ? 'لطفاً درس مربوط به ستون را انتخاب کنید.'
+            : (!$teacherHasDars
+                ? 'این درس برای استاد انتخاب‌شده در این کلاس فعال نیست.'
+                : 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : m('msg.choose_column_and_teacher')) . ' را انتخاب کنید.');
         $_SESSION['flash_msg_type'] = 'warning';
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -189,6 +222,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $event_id     = (int)($_POST['event_id'] ?? 0);
     $student_user = trim($_POST['student_id'] ?? '');
     $score_input  = ($_POST['grade_val'] !== '' && $_POST['grade_val'] !== null) ? (float)$_POST['grade_val'] : null;
+    $visibility_target = (string)($_POST['visibility_target'] ?? 'both');
+    if (!in_array($visibility_target, ['student', 'family', 'both'], true)) {
+        $visibility_target = 'both';
+    }
 
     // ارزیابی کیفی فقط برای ستون نمره کلاسی ارسال می شود؛ صفر یعنی پاک کردن
     $quality_input = null;
@@ -206,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     }
 
     if ($class_id > 0 && $event_id > 0 && !empty($student_user) && ($score_input !== null || $quality_input !== null)) {
-        if (saveStudentRegisterClassEntry($class_id, $event_id, $student_user, $score_input, null, null, $actor, null, $quality_input)) {
+        if (saveStudentRegisterClassEntry($class_id, $event_id, $student_user, $score_input, null, null, $actor, null, $quality_input, $visibility_target)) {
             $_SESSION['flash_msg'] = 'نمره با موفقیت ثبت شد.';
             $_SESSION['flash_msg_type'] = 'success';
         } else {
@@ -319,6 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
     $event_id     = (int)($_POST['event_id'] ?? 0);
     $jalali_date  = trim($_POST['event_date'] ?? '');
     $type         = (int)($_POST['type'] ?? 0);
+    $dars_id      = $register_dars_id;
     // تاریخ در ویرایش هم اختیاری است
     $gregorian_date = ($jalali_date !== '') ? jalaliToGregorianDate($jalali_date) : null;
 
@@ -339,8 +377,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
         }
     }
 
-    if ($event_id > 0 && !empty($title)) {
-        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type)) {
+    $eventTeacherStmt = $conn->prepare('SELECT username FROM dbadmin WHERE idadmin = ? LIMIT 1');
+    $eventTeacherStmt->execute([(int)($eventInfo['teacher_id'] ?? 0)]);
+    $eventTeacherUsername = (string)($eventTeacherStmt->fetchColumn() ?: '');
+    $teacherHasDars = $dars_id > 0 && $eventTeacherUsername !== ''
+        && TeacherHasDarsAccess($class_id, $dars_id, $eventTeacherUsername);
+
+    if ($event_id > 0 && !empty($title) && $teacherHasDars) {
+        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id)) {
             registerClassLog($class_id, $title, '', null, null, 'ویرایش ستون', $actor, 'edit_event');
             $_SESSION['flash_msg'] = 'ستون با موفقیت ویرایش شد.';
             $_SESSION['flash_msg_type'] = 'success';
@@ -349,7 +393,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
             $_SESSION['flash_msg_type'] = 'danger';
         }
     } else {
-        $_SESSION['flash_msg'] = 'لطفاً نوع ستون را انتخاب کنید.';
+        $_SESSION['flash_msg'] = $dars_id <= 0
+            ? 'لطفاً درس مربوط به ستون را انتخاب کنید.'
+            : (!$teacherHasDars ? 'این درس برای استاد این ستون فعال نیست.' : 'لطفاً نوع ستون را انتخاب کنید.');
         $_SESSION['flash_msg_type'] = 'warning';
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -534,6 +580,15 @@ if ($sees_all_columns) {
     $disciplinaries = getClassDisciplinaries($class_id, $admin_id, (int)$adminrole);
 }
 
+// هر دفتر فقط ستون‌های درس انتخاب‌شده را نشان می‌دهد.
+if ($register_dars_id > 0) {
+    $events = array_values(array_filter($events, static function ($event) use ($register_dars_id) {
+        return (int)($event['dars_id'] ?? 0) === $register_dars_id;
+    }));
+} elseif (count($classDarsOptions) > 1) {
+    $events = [];
+}
+
 // فقط ستون های همین هفته نمایش داده می شوند؛ قاعده ی تعیین هفته ی هر ستون
 // در registerClassEventWeekKey است تا خروجی اکسل هم دقیقاً همین را ببیند.
 if (!$all_weeks_selected) {
@@ -565,6 +620,7 @@ foreach ($evaluations as $row) {
     $log_lookup[$row['username']][$row['event_id']]['score']   = $row['score'];
     $log_lookup[$row['username']][$row['event_id']]['note']    = $row['note'];
     $log_lookup[$row['username']][$row['event_id']]['quality'] = $row['quality'];
+    $log_lookup[$row['username']][$row['event_id']]['visibility_target'] = $row['visibility_target'] ?? 'both';
 }
 $qualityOptions = registerClassQualityOptions();
 
@@ -1129,9 +1185,25 @@ include_once '../../temp.html';
                     <h4 class="rg-title">
                         دفتر کلاسی
                         <small><?php echo htmlspecialchars($week_scope_label . ' ( ' . $week_scope_range . ' )'); ?></small>
+                        <?php if ($register_dars_name !== ''): ?>
+                            <small>درس: <?php echo htmlspecialchars($register_dars_name); ?></small>
+                        <?php endif; ?>
                     </h4>
 
                     <div class="rg-tools">
+                        <?php if (count($classDarsOptions) > 1): ?>
+                            <div class="rg-field">
+                                <span class="rg-field-label">درس</span>
+                                <select class="rg-field-control" id="darsSelect" aria-label="انتخاب درس">
+                                    <option value="">انتخاب درس</option>
+                                    <?php foreach ($classDarsOptions as $darsOption): ?>
+                                        <option value="<?php echo (int)$darsOption['id']; ?>" <?php echo (int)$darsOption['id'] === $register_dars_id ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars((string)$darsOption['dars']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
                         <?php /* انتخاب هفته: داده های هر هفته جداگانه نمایش داده می شود */ ?>
                         <div class="rg-field">
                             <span class="rg-field-label">هفته</span>
@@ -1234,6 +1306,7 @@ include_once '../../temp.html';
                                                         data-event-id="<?php echo $evt['id']; ?>"
                                                         data-title="<?php echo htmlspecialchars($evt['title']); ?>"
                                                         data-type="<?php echo $evt['type']; ?>"
+                                                        data-dars="<?php echo (int)($evt['dars_id'] ?? 0); ?>"
                                                         data-date="<?php echo htmlspecialchars($jalali_input); ?>"
                                                         data-teacher="<?php echo $evt['teacher_id'] ?? ''; ?>"
                                                         title="ویرایش ستون"><i class="fe fe-edit"></i></button>
@@ -1246,6 +1319,9 @@ include_once '../../temp.html';
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                             <?php echo htmlspecialchars($evt['title']); ?>
+                                        </span>
+                                        <span class="rg-th-date">
+                                            درس: <?php echo htmlspecialchars((string)($evt['dars_name'] ?? 'نامشخص')); ?>
                                         </span>
                                         <?php /* تاریخ فقط وقتی ثبت شده باشد نمایش داده می شود */ ?>
                                         <?php if ($jalali_display !== ''): ?>
@@ -1271,12 +1347,16 @@ include_once '../../temp.html';
                                 <?php endif; ?>
 
                                 <th class="rg-add-head">
-                                    <button type="button" class="rg-add-btn"
-                                            data-bs-toggle="modal" data-bs-target="#createEventModal"
-                                            title="افزودن ستون جدید">+</button>
-                                    <span class="rg-add-label" data-bs-toggle="modal" data-bs-target="#createEventModal">
-                                        افزودن ستون جدید
-                                    </span>
+                                    <?php if ($register_dars_id > 0): ?>
+                                        <button type="button" class="rg-add-btn"
+                                                data-bs-toggle="modal" data-bs-target="#createEventModal"
+                                                title="افزودن ستون جدید">+</button>
+                                        <span class="rg-add-label" data-bs-toggle="modal" data-bs-target="#createEventModal">افزودن ستون جدید</span>
+                                    <?php else: ?>
+                                        <span class="rg-add-label text-danger">
+                                            <?php echo $classDarsOptions === [] ? 'برای کلاس درسی تعریف نشده است' : 'ابتدا درس را انتخاب کنید'; ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </th>
                             </tr>
                             </thead>
@@ -1345,6 +1425,7 @@ include_once '../../temp.html';
                                             $status_val = $cell_log['status_code'] ?? '';
                                             $note_val    = $cell_log['note'] ?? '';
                                             $quality_val = $cell_log['quality'] ?? '';
+                                            $visibility_target = $cell_log['visibility_target'] ?? 'both';
 
                                             $g          = $evt['group_uid'] ?? null;
                                             $is_grouped = ($g !== null && $g !== '');
@@ -1413,6 +1494,7 @@ include_once '../../temp.html';
                                                         data-existing-status="<?php echo htmlspecialchars($status_val); ?>"
                                                         data-existing-note="<?php echo htmlspecialchars((string)$note_val); ?>"
                                                         data-existing-quality="<?php echo htmlspecialchars((string)$quality_val); ?>"
+                                                        data-existing-visibility="<?php echo htmlspecialchars((string)$visibility_target); ?>"
                                                         data-has-quality="<?php echo !empty($kind['quality']) ? '1' : '0'; ?>">
                                                     <?php echo $btn_label; ?>
                                                 </button>
@@ -1545,6 +1627,16 @@ include_once '../../temp.html';
                                     <option value="<?php echo $qv; ?>"><?php echo htmlspecialchars($qlabel); ?></option>
                                 <?php endforeach; ?>
                             </select>
+                        </div>
+
+                        <div class="mb-3" id="visibility_target_container" style="display:none;">
+                            <label class="form-label small fw-bold">نمایش نمره برای:</label>
+                            <select class="form-select" id="modal_visibility_target" name="visibility_target">
+                                <option value="student">فقط دانش‌آموز</option>
+                                <option value="family">فقط خانواده</option>
+                                <option value="both" selected>دانش‌آموز و خانواده</option>
+                            </select>
+                            <div class="form-text small">این انتخاب فقط برای همین دانش‌آموز و همین نمره ذخیره می‌شود.</div>
                         </div>
 
                         <div class="mb-3" id="note_input_container" style="display:none;">
@@ -1692,6 +1784,16 @@ include_once '../../temp.html';
             }
         }
 
+        const darsSelect = document.getElementById('darsSelect');
+        if (darsSelect) {
+            darsSelect.addEventListener('change', function () {
+                const url = new URL(window.location.href);
+                if (this.value) url.searchParams.set('dars', this.value);
+                else url.searchParams.delete('dars');
+                window.location.href = url.toString();
+            });
+        }
+
         // ---------- Grade / Attendance Modal ----------
         const gradeModal = document.getElementById('saveGradeModal');
         const searchInput = document.getElementById('studentSearch');
@@ -1709,6 +1811,7 @@ include_once '../../temp.html';
                 const existingStatus = button.getAttribute('data-existing-status') || '1';
                 const existingNote    = button.getAttribute('data-existing-note') || '';
                 const existingQuality = button.getAttribute('data-existing-quality') || '0';
+                const existingVisibility = button.getAttribute('data-existing-visibility') || 'both';
                 const hasQuality      = button.getAttribute('data-has-quality') === '1';
 
                 document.getElementById('modal_student_id').value = studentId;
@@ -1731,15 +1834,18 @@ include_once '../../temp.html';
                 const isHomeworkColumn = (eventType === '5');
                 const noteContainer    = document.getElementById('note_input_container');
                 const qualityContainer = document.getElementById('quality_input_container');
+                const visibilityContainer = document.getElementById('visibility_target_container');
 
                 document.getElementById('modal_note_val').value    = existingNote;
                 document.getElementById('modal_quality_val').value = existingQuality || '0';
+                document.getElementById('modal_visibility_target').value = existingVisibility;
 
                 if (isNoteColumn) {
                     actionInput.value = 'save_note';
                     gradeContainer.style.display    = 'none';
                     statusContainer.style.display   = 'none';
                     qualityContainer.style.display  = 'none';
+                    visibilityContainer.style.display = 'none';
                     noteContainer.style.display     = 'block';
                 } else if (isScoreColumn) {
                     actionInput.value = 'save_grade';
@@ -1747,6 +1853,7 @@ include_once '../../temp.html';
                     statusContainer.style.display   = 'none';
                     // ارزیابی کیفی فقط در ستون نمره کلاسی دیده می شود
                     qualityContainer.style.display  = hasQuality ? 'block' : 'none';
+                    visibilityContainer.style.display = 'block';
                     noteContainer.style.display     = 'none';
 
                     // نمره کلاسی از ۰ تا ۲۰ است اما تراز آزمون عدد بزرگ تری دارد
@@ -1773,6 +1880,7 @@ include_once '../../temp.html';
                     gradeContainer.style.display    = 'none';
                     statusContainer.style.display   = 'block';
                     qualityContainer.style.display  = 'none';
+                    visibilityContainer.style.display = 'none';
                     noteContainer.style.display     = 'none';
                 }
 
@@ -1844,7 +1952,6 @@ include_once '../../temp.html';
                         const teacherSelect = teacherContainer.querySelector('select[name="teacher_id"]');
                         if (teacherSelect) teacherSelect.setAttribute('required', 'required');
                     }
-
                     // هنگام افزودن، عنوان از روی نوع ستون تعیین می شود و پرسیده نمی شود
                     document.getElementById('create_event_submit').textContent = 'ثبت ستون';
                     createModal.querySelector('.modal-title').textContent = 'افزودن ستون جدید به دفتر کلاسی';

@@ -318,6 +318,23 @@ include_once '../temp.html';
                 <div class="row row-sm">
                     <?php $faragir = retPerson($_SESSION['auth']['user']) ?>
                     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="card custom-card">
+                            <div class="card-header border-bottom-0 pb-0">
+                                <div>
+                                    <div class="d-flex"><label class="main-content-label my-auto pt-2">نمرات کلاسی</label></div>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">نمره‌های ثبت‌شده توسط استاد، به تفکیک درس و کلاس</span>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <?php if (!isset($_GET['demo'])): ?>
+                                    <a href="class-grades.php?code=<?php echo (int)$course->codecourse; ?>" class="btn btn-primary">مشاهده نمرات کلاسی</a>
+                                <?php else: ?>
+                                    <button class="btn btn-primary disabled">ویژه پایه ثبت‌نام‌شده</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
                         <div class="card custom-card" style="background-image: url('<?= $faragir->gender == 'خانم' ? url('../assets/img/mycourse/online-class-girl.jpg') : url('../assets/img/mycourse/online-class-boy.jpg') ?>');">
                             <div class="card-header  border-bottom-0 pb-0">
                                 <div>

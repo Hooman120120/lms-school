@@ -1338,6 +1338,27 @@ function TeacherHasDarsAccess(int $classId, int $darsId, ?string $user = null): 
     return $assignedDars === [] || in_array($darsId, $assignedDars, true);
 }
 
+/** Subjects available in a class, optionally narrowed to one teacher. */
+function RegisterClassDarsOptions(int $classId, ?string $teacherUsername = null): array
+{
+    global $conn;
+    if ($classId <= 0) return [];
+
+    $stmt = $conn->prepare('SELECT d.id, d.dars
+        FROM class_dars cd
+        INNER JOIN dbdars d ON d.id = cd.dars_id
+        WHERE cd.class_id = ?
+        ORDER BY d.dars, d.id');
+    $stmt->execute([$classId]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    if ($teacherUsername === null || $teacherUsername === '') return $rows;
+    $assigned = TeacherAssignedDarsIds($classId, $teacherUsername);
+    if ($assigned === []) return $rows;
+    return array_values(array_filter($rows, static fn(array $row): bool =>
+        in_array((int)$row['id'], $assigned, true)));
+}
+
 /**
  * Return the organizational school role key assigned to an admin account.
  */
@@ -4934,11 +4955,14 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         return [];
     }
 
-    $sql = "SELECT * FROM register_class_events WHERE class_id = ?";
+    $sql = "SELECT ev.*, d.dars AS dars_name
+            FROM register_class_events ev
+            LEFT JOIN dbdars d ON d.id = ev.dars_id
+            WHERE ev.class_id = ?";
     $params = [$classId];
 
     if ($adminrole === 3 && $createdBy > 0) {
-        $sql .= " AND teacher_id = ?";
+        $sql .= " AND ev.teacher_id = ?";
         $params[] = $createdBy;
     }
 
@@ -4950,7 +4974,8 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         registerClassColumnKinds()
     ));
     // ستون های بدون تاریخ انتهای جدول قرار می گیرند
-    $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+    $sql .= " ORDER BY (ev.event_date IS NULL) ASC, ev.event_date ASC, ev.group_uid ASC,
+              FIELD(ev.type, $kindOrder), ev.id ASC";
 
     $st = $conn->prepare($sql);
     $st->execute($params);
@@ -4966,12 +4991,17 @@ function saveStudentRegisterClassEntry(
     ?string $disciplinaryReason = null,
     string $createdBy = '',
     ?string $note = null,
-    ?int $quality = null
+    ?int $quality = null,
+    string $visibilityTarget = 'both'
 ): bool {
     global $conn;
 
     if ($classId <= 0 || $eventId <= 0 || empty($studentUsername)) {
         return false;
+    }
+
+    if (!in_array($visibilityTarget, ['student', 'family', 'both'], true)) {
+        $visibilityTarget = 'both';
     }
 
     if ($score !== null || $quality !== null) {
@@ -4987,6 +5017,8 @@ function saveStudentRegisterClassEntry(
             $vals = [];
             if ($score !== null)   { $sets[] = 'score = ?';   $vals[] = $score; }
             if ($quality !== null) { $sets[] = 'quality = ?'; $vals[] = $qualityValue; }
+            $sets[] = 'visibility_target = ?';
+            $vals[] = $visibilityTarget;
             $sets[] = 'created_by = ?';
             $vals[] = $createdBy;
             $sets[] = 'created_at = NOW()';
@@ -4999,9 +5031,9 @@ function saveStudentRegisterClassEntry(
             $stmt->execute($vals);
         } else {
             $stmt = $conn->prepare("INSERT INTO register_class_evaluation
-                                    (register_class_events_id, username, score, quality, created_by, created_at)
-                                    VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$eventId, $studentUsername, $score, $qualityValue, $createdBy]);
+                                    (register_class_events_id, username, score, quality, visibility_target, created_by, created_at)
+                                    VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$eventId, $studentUsername, $score, $qualityValue, $visibilityTarget, $createdBy]);
         }
     }
 
@@ -5116,7 +5148,8 @@ function getRegisterClassEvaluations(int $classId, int $adminId, int $adminRole)
 {
     global $conn;
     $sql = "
-        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality
+        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality,
+               e.visibility_target
         FROM register_class_evaluation e
         INNER JOIN register_class_events ev ON e.register_class_events_id = ev.id
         WHERE ev.class_id = ?
@@ -5169,11 +5202,46 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $eventId]);
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $eventId]);
+}
+
+/** Visible classroom grades for the authenticated student. */
+function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100, ?int $codecourse = null): array
+{
+    global $conn;
+    if ($studentUsername === '') return [];
+    $limit = max(1, min(300, $limit));
+
+    $sql = "SELECT DISTINCT e.id, e.score, e.quality, e.note, e.created_at, e.visibility_target,
+                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id,
+                   c.id AS class_id, c.name AS class_name, c.codecourse,
+                   cr.coursename, d.dars AS dars_name,
+                   TRIM(CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, ''))) AS teacher_name,
+                   a.username AS teacher_username
+            FROM register_class_evaluation e
+            INNER JOIN register_class_events ev ON ev.id = e.register_class_events_id
+            INNER JOIN classes c ON c.id = ev.class_id
+            INNER JOIN dbcourse dc ON dc.class_id = c.id AND dc.username = e.username
+            INNER JOIN codtbl_course cr ON cr.codecourse = c.codecourse
+            LEFT JOIN dbdars d ON d.id = ev.dars_id
+            LEFT JOIN dbadmin a ON a.idadmin = ev.teacher_id
+            WHERE e.username = ?
+              AND e.visibility_target IN ('student', 'both')
+              AND ev.type = '1'
+              AND (e.score IS NOT NULL OR e.quality IS NOT NULL)
+              AND dc.activityuser = 1
+            " . (($codecourse !== null && $codecourse > 0) ? " AND c.codecourse = ?" : "") . "
+            ORDER BY COALESCE(ev.event_date, DATE(e.created_at)) DESC, e.created_at DESC, e.id DESC
+            LIMIT {$limit}";
+    $stmt = $conn->prepare($sql);
+    $params = [$studentUsername];
+    if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
 function deleteStudentRegisterClassEntry(int $classId, int $eventId, string $studentUsername): bool {
     global $conn;

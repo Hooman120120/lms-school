@@ -36,6 +36,9 @@ $suspension_mode = isset($_SESSION['auth']['suspension_mode'])
                     <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Course/allcourse.php') ?>"> <?php echo m('menu.grade_list') ?> </a>
                     </li>
+                    <li class="nav-sub-item">
+                        <a class="nav-sub-link" href="<?php echo url('Course/class-grades.php') ?>">نمرات کلاسی من</a>
+                    </li>
  <li class="nav-sub-item">
                         <a class="nav-sub-link" href="<?php echo url('Course/allhandhugs.php') ?>"> مشاهده لیست "بغل دستی" ها </a>
                     </li>

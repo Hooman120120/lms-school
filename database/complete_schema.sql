@@ -1663,6 +1663,7 @@ CREATE TABLE IF NOT EXISTS `register_class_evaluation` (
   `score` decimal(8,2) DEFAULT NULL COMMENT '┘å┘àÏ▒┘ç ┌®┘äÏºÏ│█î (█░ Ï¬Ïº █▓█░) █îÏº Ï¬Ï▒ÏºÏ▓ ÏóÏ▓┘à┘ê┘å Ïó┘å┘äÏº█î┘å',
   `note` varchar(500) DEFAULT NULL COMMENT '┘àÏ¬┘å Ï│Ï¬┘ê┘å Ï¬┘êÏÂ█îÏ¡ÏºÏ¬',
   `quality` tinyint(3) unsigned DEFAULT NULL COMMENT '1=Ï«█î┘ä█î Ï«┘êÏ¿Ïî 2=Ï«┘êÏ¿Ïî 3=┘éÏºÏ¿┘ä ┘éÏ¿┘ê┘äÏî 4=┘å█îÏºÏ▓ Ï¿┘ç Ï¬┘äÏºÏ┤ Ï¿█îÏ┤Ï¬Ï▒',
+  `visibility_target` varchar(20) NOT NULL DEFAULT 'both' COMMENT 'student، family یا both',
   `created_by` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
