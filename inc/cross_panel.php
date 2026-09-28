@@ -61,6 +61,21 @@ function cross_panel_login_url(string $username): string
         'signature' => $signature,
     ]);
 }
+/** Signed single sign-on link into this school's chahard (online classes) panel; '' when none is set up. */
+function cross_panel_chahard_login_url(string $username): string
+{
+    $base = cross_panel_url('chahard');
+    if ($base === '' || cross_panel_secret() === '') {
+        return '';
+    }
+    $expires = time() + 60;
+    return $base . '/cross-panel-login.php?' . http_build_query([
+        'username' => $username,
+        'expires' => $expires,
+        'signature' => cross_panel_signature('login', $username, $expires),
+    ]);
+}
+
 function cross_panel_oes_url(): string
 {
     return cross_panel_url('oes');

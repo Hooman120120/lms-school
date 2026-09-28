@@ -536,7 +536,8 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
             <?php endif; ?>
 
             <!-- بخش چپ: ورود به پنل کلاس آنلاین (رنگ سبز جنگلی) -->
-            <?php if ($dashboardCan('dashboard.online-events')): ?>
+            <?php $chahardLoginUrl = cross_panel_chahard_login_url((string) $_SESSION['admin']['user']); ?>
+            <?php if ($dashboardCan('dashboard.online-events') && $chahardLoginUrl !== ''): ?>
             <div class="col-12 col-md-6">
                 <div class="card card-box h-100"
                      style="background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
@@ -558,7 +559,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                             </div>
                         </div>
 
-                        <a href="#"
+                        <a href="<?= htmlspecialchars($chahardLoginUrl, ENT_QUOTES, 'UTF-8') ?>"
                            class="btn ripple"
                            style="background:#fff; color:#1b4332; font-weight:700; padding:10px 22px; border-radius:10px; transition: all 0.3s; white-space:nowrap;"
                            onmouseover="this.style.background='#eafff3'; this.style.transform='translateY(-2px)';"
