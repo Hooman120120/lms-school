@@ -65,8 +65,15 @@ include_once '../temp.html';
         .grade-meta-item i {color:#7657e8;margin-left:5px;}
         .grade-meta-item strong {display:block;color:#25283a;font-size:13px;margin-top:3px;}
         .grade-quality {display:inline-block;padding:6px 12px;border-radius:20px;background:#eaf8ef;color:#24733d;font-weight:700;}
+        .grade-actions {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #eeeaf8;}
+        .grade-teacher-brief {color:#65697b;font-size:13px;}
+        .grade-detail-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+        .grade-detail-item {background:#f8f7fc;border:1px solid #eeebf8;border-radius:12px;padding:11px 13px;}
+        .grade-detail-item span {display:block;color:#818596;font-size:12px;margin-bottom:4px;}
+        .grade-detail-item strong {color:#292b3a;font-size:14px;overflow-wrap:anywhere;}
+        .grade-detail-item.full {grid-column:1/-1;}
         .grades-empty {border:1px dashed #cfc5f5;border-radius:16px;background:#faf9ff;}
-        @media (max-width:575px) {.grades-hero{align-items:flex-start;flex-direction:column}.grade-card .card-body{flex-direction:column}.grade-meta{grid-template-columns:1fr}.grade-score{width:100%;height:68px;flex-direction:row;gap:5px}}
+        @media (max-width:575px) {.grades-hero{align-items:flex-start;flex-direction:column}.grade-card .card-body{flex-direction:column}.grade-meta,.grade-detail-list{grid-template-columns:1fr}.grade-detail-item.full{grid-column:auto}.grade-score{width:100%;height:68px;flex-direction:row;gap:5px}}
     </style>
 </head>
 <body class="main-body leftmenu">
@@ -97,39 +104,68 @@ include_once '../temp.html';
                     <div class="row">
                         <?php foreach ($grades as $grade):
                             $score = $grade['score'] !== null ? rtrim(rtrim(number_format((float)$grade['score'], 2, '.', ''), '0'), '.') : '—';
+                            $maxScore = rtrim(rtrim(number_format((float)($grade['max_score'] ?? 20), 2, '.', ''), '0'), '.');
                             $quality = isset($qualityOptions[(int)($grade['quality'] ?? 0)])
                                 ? $qualityOptions[(int)$grade['quality']] : '';
                             $dateValue = (string)($grade['event_date'] ?: $grade['created_at']);
-                            $teacherName = trim((string)($grade['teacher_name'] ?? ''));
+                            $teacherFirstName = trim((string)($grade['teacher_fname'] ?? ''));
+                            $teacherLastName = trim((string)($grade['teacher_lname'] ?? ''));
+                            $teacherName = $teacherFirstName !== '' && $teacherFirstName === $teacherLastName
+                                ? $teacherFirstName
+                                : trim($teacherFirstName . ' ' . $teacherLastName);
+                            if ($teacherName === '') $teacherName = (string)($grade['teacher_username'] ?? 'استاد نامشخص');
                             $courseName = trim((string)($grade['coursename'] ?? ''));
                             $className = trim((string)($grade['class_name'] ?? ''));
+                            $lessonName = trim((string)($grade['dars_name'] ?? '')) ?: 'درس نامشخص';
+                            $gradeModalId = 'gradeDetails' . (int)$grade['id'];
                         ?>
                             <div class="col-12 col-xl-6 mb-3">
                                 <div class="card custom-card grade-card h-100 mb-0">
                                     <div class="card-body d-flex align-items-start" style="gap:16px">
-                                        <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از ۲۰</small></div>
+                                        <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از <?php echo htmlspecialchars($maxScore); ?></small></div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start flex-wrap mb-2" style="gap:8px">
                                                 <div>
                                                     <span class="badge badge-primary mb-2"><?php echo htmlspecialchars((string)$grade['title']); ?></span>
                                                     <div class="grade-lesson">
-                                                        <?php echo htmlspecialchars((string)($grade['dars_name'] ?: 'درس نامشخص')); ?>
+                                                        <?php echo htmlspecialchars($lessonName); ?>
                                                     </div>
                                                 </div>
                                                 <?php if ($quality !== ''): ?><span class="grade-quality"><?php echo htmlspecialchars($quality); ?></span><?php endif; ?>
                                             </div>
-                                            <div class="grade-meta">
-                                                <div class="grade-meta-item"><i class="fe fe-layers"></i> عنوان پایه<strong><?php echo htmlspecialchars($courseName); ?></strong></div>
-                                                <?php if ($className !== '' && $className !== $courseName): ?>
-                                                    <div class="grade-meta-item"><i class="fe fe-users"></i> کلاس<strong><?php echo htmlspecialchars($className); ?></strong></div>
-                                                <?php endif; ?>
-                                                <div class="grade-meta-item"><i class="fe fe-user"></i> استاد<strong><?php echo htmlspecialchars($teacherName !== '' ? $teacherName : (string)$grade['teacher_username']); ?></strong></div>
-                                                <div class="grade-meta-item"><i class="fe fe-calendar"></i> تاریخ ثبت<strong><?php echo htmlspecialchars(toJalali($dateValue, 'Y/m/d H:i', 'fa')); ?></strong></div>
+                                            <div class="grade-actions">
+                                                <span class="grade-teacher-brief"><i class="fe fe-user ml-1"></i>استاد: <strong><?php echo htmlspecialchars($teacherName); ?></strong></span>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#<?php echo $gradeModalId; ?>">
+                                                    مشاهده جزئیات
+                                                </button>
                                             </div>
-                                            <?php if (trim((string)($grade['note'] ?? '')) !== ''): ?>
-                                                <div class="alert alert-light mt-3 mb-0 py-2"><?php echo nl2br(htmlspecialchars((string)$grade['note'])); ?></div>
-                                            <?php endif; ?>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="<?php echo $gradeModalId; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">جزئیات نمره <?php echo htmlspecialchars($lessonName); ?></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="grade-detail-list">
+                                                <div class="grade-detail-item"><span>نمره</span><strong><?php echo htmlspecialchars($score); ?> از <?php echo htmlspecialchars($maxScore); ?></strong></div>
+                                                <div class="grade-detail-item"><span>ارزیابی</span><strong><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></strong></div>
+                                                <div class="grade-detail-item"><span>درس</span><strong><?php echo htmlspecialchars($lessonName); ?></strong></div>
+                                                <div class="grade-detail-item"><span>استاد</span><strong><?php echo htmlspecialchars($teacherName); ?></strong></div>
+                                                <div class="grade-detail-item full"><span>عنوان پایه</span><strong><?php echo htmlspecialchars($courseName); ?></strong></div>
+                                                <?php if ($className !== '' && $className !== $courseName): ?>
+                                                    <div class="grade-detail-item full"><span>کلاس</span><strong><?php echo htmlspecialchars($className); ?></strong></div>
+                                                <?php endif; ?>
+                                                <div class="grade-detail-item full"><span>تاریخ ثبت</span><strong><?php echo htmlspecialchars(toJalali($dateValue, 'Y/m/d H:i', 'fa')); ?></strong></div>
+                                                <div class="grade-detail-item full"><span>توضیحات استاد</span><strong><?php echo trim((string)($grade['note'] ?? '')) !== '' ? nl2br(htmlspecialchars((string)$grade['note'])) : 'توضیحی ثبت نشده است.'; ?></strong></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button></div>
                                     </div>
                                 </div>
                             </div>

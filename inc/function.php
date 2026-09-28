@@ -4785,7 +4785,8 @@ function createRegisterClassEvent(
     string $description = '',
     ?string $groupUid = null,
     string $homeworkNotificationTarget = 'family',
-    ?int $darsId = null
+    ?int $darsId = null,
+    float $maxScore = 20.0
 ): bool {
     global $conn;
 
@@ -4799,13 +4800,14 @@ function createRegisterClassEvent(
     if (!in_array($homeworkNotificationTarget, ['family', 'family_student'], true)) {
         $homeworkNotificationTarget = 'family';
     }
+    $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type,
+            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score,
              homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4817,6 +4819,7 @@ function createRegisterClassEvent(
         $groupUid,
         $description,
         $type,
+        $maxScore,
         $homeworkNotificationTarget,
         $createdBy
     ]);
@@ -5202,11 +5205,12 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $darsId, $eventId]);
+    $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $eventId]);
 }
 
 /** Visible classroom grades for the authenticated student. */
@@ -5217,9 +5221,10 @@ function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100,
     $limit = max(1, min(300, $limit));
 
     $sql = "SELECT DISTINCT e.id, e.score, e.quality, e.note, e.created_at, e.visibility_target,
-                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id,
+                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score,
                    c.id AS class_id, c.name AS class_name, c.codecourse,
                    cr.coursename, d.dars AS dars_name,
+                   a.fname AS teacher_fname, a.lname AS teacher_lname,
                    TRIM(CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, ''))) AS teacher_name,
                    a.username AS teacher_username
             FROM register_class_evaluation e

@@ -153,6 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     $description = trim($_POST['description'] ?? '');
     $type        = isset($_POST['type']) ? (int)$_POST['type'] : 0;
     $dars_id     = $register_dars_id;
+    $max_score   = isset($_POST['max_score']) ? (float)$_POST['max_score'] : 20.0;
+    if ($max_score <= 0 || $max_score > 999999) $max_score = 20.0;
     $homework_notification_target = $_POST['homework_notification_target'] ?? 'family';
     if (!in_array($homework_notification_target, ['family', 'family_student'], true)) {
         $homework_notification_target = 'family';
@@ -195,7 +197,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             $description,
             null,
             $homework_notification_target,
-            $dars_id
+            $dars_id,
+            $max_score
         );
 
         if ($newEventId) {
@@ -238,13 +241,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     }
 
     // ستون باید متعلق به همین کلاس باشد و برای استاد، متعلق به خودش
-    if (!registerClassEventInScope($event_id > 0 ? getSingleRegisterClassEvent($event_id) : null, $class_id, $scope_teacher_id)) {
+    $gradeEventInfo = $event_id > 0 ? getSingleRegisterClassEvent($event_id) : null;
+    if (!registerClassEventInScope($gradeEventInfo, $class_id, $scope_teacher_id)) {
         $_SESSION['flash_msg'] = 'این ستون در دسترس شما نیست.';
         $_SESSION['flash_msg_type'] = 'danger';
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
 
+    $eventMaxScore = max(0.01, (float)($gradeEventInfo['max_score'] ?? 20));
+    if ($score_input !== null && ($score_input < 0 || $score_input > $eventMaxScore)) {
+        $_SESSION['flash_msg'] = 'نمره باید بین صفر تا ' . rtrim(rtrim(number_format($eventMaxScore, 2, '.', ''), '0'), '.') . ' باشد.';
+        $_SESSION['flash_msg_type'] = 'warning';
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
+    }
     if ($class_id > 0 && $event_id > 0 && !empty($student_user) && ($score_input !== null || $quality_input !== null)) {
         if (saveStudentRegisterClassEntry($class_id, $event_id, $student_user, $score_input, null, null, $actor, null, $quality_input, $visibility_target)) {
             $_SESSION['flash_msg'] = 'نمره با موفقیت ثبت شد.';
@@ -360,6 +371,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
     $jalali_date  = trim($_POST['event_date'] ?? '');
     $type         = (int)($_POST['type'] ?? 0);
     $dars_id      = $register_dars_id;
+    $max_score    = isset($_POST['max_score']) ? (float)$_POST['max_score'] : 20.0;
+    if ($max_score <= 0 || $max_score > 999999) $max_score = 20.0;
     // تاریخ در ویرایش هم اختیاری است
     $gregorian_date = ($jalali_date !== '') ? jalaliToGregorianDate($jalali_date) : null;
 
@@ -387,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
         && TeacherHasDarsAccess($class_id, $dars_id, $eventTeacherUsername);
 
     if ($event_id > 0 && !empty($title) && $teacherHasDars) {
-        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id)) {
+        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id, $max_score)) {
             registerClassLog($class_id, $title, '', null, null, 'ویرایش ستون', $actor, 'edit_event');
             $_SESSION['flash_msg'] = 'ستون با موفقیت ویرایش شد.';
             $_SESSION['flash_msg_type'] = 'success';
@@ -1309,6 +1322,7 @@ include_once '../../temp.html';
                                                         data-event-id="<?php echo $evt['id']; ?>"
                                                         data-title="<?php echo htmlspecialchars($evt['title']); ?>"
                                                         data-type="<?php echo $evt['type']; ?>"
+                                                        data-max-score="<?php echo htmlspecialchars((string)($evt['max_score'] ?? 20)); ?>"
                                                         data-dars="<?php echo (int)($evt['dars_id'] ?? 0); ?>"
                                                         data-date="<?php echo htmlspecialchars($jalali_input); ?>"
                                                         data-teacher="<?php echo $evt['teacher_id'] ?? ''; ?>"
@@ -1493,6 +1507,7 @@ include_once '../../temp.html';
                                                         data-event="<?php echo $evt['id']; ?>"
                                                         data-event-title="<?php echo htmlspecialchars($evt['title']); ?>"
                                                         data-event-type="<?php echo $evt['type']; ?>"
+                                                        data-max-score="<?php echo htmlspecialchars((string)($evt['max_score'] ?? 20)); ?>"
                                                         data-existing-score="<?php echo htmlspecialchars($score_val); ?>"
                                                         data-existing-status="<?php echo htmlspecialchars($status_val); ?>"
                                                         data-existing-note="<?php echo htmlspecialchars((string)$note_val); ?>"
@@ -1579,6 +1594,12 @@ include_once '../../temp.html';
                                 <option value="family">فقط خانواده</option>
                                 <option value="family_student">خانواده و دانش‌آموز</option>
                             </select>
+                        </div>
+
+                        <div class="mb-3" id="max_score_container" style="display:none;">
+                            <label class="form-label fw-bold">نمره از چند باشد؟</label>
+                            <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="0.25">
+                            <div class="form-text">مثلاً ۱۰، ۲۰ یا ۱۰۰</div>
                         </div>
 
                         <div class="mb-3">
@@ -1809,6 +1830,7 @@ include_once '../../temp.html';
                 const eventId     = button.getAttribute('data-event');
                 const eventTitle  = button.getAttribute('data-event-title');
                 const eventType   = button.getAttribute('data-event-type');
+                const eventMaxScore = button.getAttribute('data-max-score') || '20';
 
                 const existingScore  = button.getAttribute('data-existing-score') || '';
                 const existingStatus = button.getAttribute('data-existing-status') || '1';
@@ -1873,10 +1895,10 @@ include_once '../../temp.html';
                         gradeField.placeholder = '00.00';
                         gradeLabel.textContent = 'نمره تکلیف:';
                     } else {
-                        gradeField.max  = '20';
+                        gradeField.max  = eventMaxScore;
                         gradeField.step = '0.25';
                         gradeField.placeholder = '00.00';
-                        gradeLabel.textContent = 'نمره دانش‌آموز:';
+                        gradeLabel.textContent = 'نمره دانش‌آموز (از ' + eventMaxScore.replace(/\.00$/, '') + '):';
                     }
                 } else {
                     actionInput.value = 'save_attendance';
@@ -1901,9 +1923,12 @@ include_once '../../temp.html';
 
         const columnTypeSelect = document.querySelector('#createEventModal select[name="type"]');
         const homeworkTargetContainer = document.getElementById('homework_notification_target_container');
+        const maxScoreContainer = document.getElementById('max_score_container');
+        const maxScoreInput = document.getElementById('create_event_max_score');
         if (columnTypeSelect && homeworkTargetContainer) {
             const syncHomeworkTarget = function () {
                 homeworkTargetContainer.style.display = columnTypeSelect.value === '5' ? 'block' : 'none';
+                if (maxScoreContainer) maxScoreContainer.style.display = columnTypeSelect.value === '1' ? 'block' : 'none';
             };
             columnTypeSelect.addEventListener('change', syncHomeworkTarget);
             document.getElementById('createEventModal').addEventListener('show.bs.modal', syncHomeworkTarget);
@@ -1920,6 +1945,7 @@ include_once '../../temp.html';
                     document.querySelector('#createEventModal form input[name="action"]').value = 'edit_event';
                     document.querySelector('#createEventModal form select[name="type"]').value = button.getAttribute('data-type') || '0';
                     document.querySelector('#createEventModal form input[name="event_date"]').value = button.getAttribute('data-date') || '';
+                    if (maxScoreInput) maxScoreInput.value = button.getAttribute('data-max-score') || '20';
 
                     let hidden = document.querySelector('#createEventModal form input[name="event_id"]');
                     if (!hidden) {
@@ -1943,6 +1969,7 @@ include_once '../../temp.html';
                 } else {
                     document.querySelector('#createEventModal form input[name="action"]').value = 'create_event';
                     document.querySelector('#createEventModal form select[name="type"]').value = '';
+                    if (maxScoreInput) maxScoreInput.value = '20';
                     // تاریخ پیش فرض داخل هفته ی انتخاب شده است تا ستون در همان هفته ساخته شود
                     document.querySelector('#createEventModal form input[name="event_date"]').value =
                         <?php echo json_encode($default_column_date, JSON_UNESCAPED_UNICODE); ?>;
