@@ -1335,7 +1335,14 @@ function TeacherHasDarsAccess(int $classId, int $darsId, ?string $user = null): 
     }
 
     $assignedDars = TeacherAssignedDarsIds($classId, $user);
-    return $assignedDars === [] || in_array($darsId, $assignedDars, true);
+    if ($assignedDars !== []) {
+        return in_array($darsId, $assignedDars, true);
+    }
+
+    // سازگاری با کلاس‌های قدیمی تک‌درس؛ در کلاس چنددرسی تخصیص صریح الزامی است.
+    $countStmt = $conn->prepare('SELECT COUNT(DISTINCT dars_id) FROM class_dars WHERE class_id = ?');
+    $countStmt->execute([$classId]);
+    return (int)$countStmt->fetchColumn() === 1;
 }
 
 /** Subjects available in a class, optionally narrowed to one teacher. */
@@ -1354,7 +1361,7 @@ function RegisterClassDarsOptions(int $classId, ?string $teacherUsername = null)
 
     if ($teacherUsername === null || $teacherUsername === '') return $rows;
     $assigned = TeacherAssignedDarsIds($classId, $teacherUsername);
-    if ($assigned === []) return $rows;
+    if ($assigned === []) return count($rows) === 1 ? $rows : [];
     return array_values(array_filter($rows, static fn(array $row): bool =>
         in_array((int)$row['id'], $assigned, true)));
 }

@@ -73,6 +73,7 @@ $sees_all_columns = !$is_teacher;
 $scope_teacher_id = $is_teacher ? (int)$admin_id : null;
 
 // درس، بخشی از زمینه دفتر کلاس است و داخل فرم ساخت ستون انتخاب نمی‌شود.
+$allClassDarsOptions = RegisterClassDarsOptions($class_id);
 $classDarsOptions = RegisterClassDarsOptions(
     $class_id,
     $is_teacher ? (string)($_SESSION['admin']['user'] ?? '') : null
@@ -1371,7 +1372,11 @@ include_once '../../temp.html';
                                         <span class="rg-add-label" data-bs-toggle="modal" data-bs-target="#createEventModal">افزودن ستون جدید</span>
                                     <?php else: ?>
                                         <span class="rg-add-label text-danger">
-                                            <?php echo $classDarsOptions === [] ? 'برای کلاس درسی تعریف نشده است' : 'ابتدا درس را انتخاب کنید'; ?>
+                                            <?php
+                                            echo $allClassDarsOptions === []
+                                                ? 'برای کلاس درسی تعریف نشده است'
+                                                : ($is_teacher ? 'برای شما درسی از این کلاس تخصیص داده نشده است' : 'ابتدا درس را انتخاب کنید');
+                                            ?>
                                         </span>
                                     <?php endif; ?>
                                 </th>
