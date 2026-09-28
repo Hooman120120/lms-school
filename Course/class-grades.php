@@ -53,10 +53,20 @@ include_once '../temp.html';
     <title>نمرات کلاسی من | <?php echo __TITLE; ?></title>
     <?php include_once '../inc/link.php'; ?>
     <style>
-        .grade-card {border:1px solid #e7e9f2;border-right:4px solid #7657e8;border-radius:12px;box-shadow:0 5px 16px rgba(52,45,110,.06);}
-        .grade-score {min-width:76px;height:76px;border-radius:18px;background:linear-gradient(135deg,#7657e8,#9a7cf3);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;}
-        .grade-meta {display:flex;flex-wrap:wrap;gap:8px 16px;color:#6b7280;font-size:13px;}
-        .grade-quality {display:inline-block;padding:5px 10px;border-radius:20px;background:#eef8f1;color:#287a42;font-weight:600;}
+        .grades-hero {background:linear-gradient(135deg,#fff 0%,#f6f2ff 100%);border:1px solid #ebe5ff;border-radius:18px;padding:22px 24px;margin:20px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+        .grades-count {background:#7657e8;color:#fff;border-radius:14px;padding:9px 14px;white-space:nowrap;font-weight:700;}
+        .grade-card {border:1px solid #e7e9f2;border-right:5px solid #7657e8;border-radius:16px;box-shadow:0 7px 22px rgba(52,45,110,.07);transition:transform .18s ease,box-shadow .18s ease;overflow:hidden;}
+        .grade-card:hover {transform:translateY(-2px);box-shadow:0 11px 28px rgba(52,45,110,.11);}
+        .grade-score {min-width:82px;height:82px;border-radius:20px;background:linear-gradient(135deg,#7657e8,#9a7cf3);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:25px;font-weight:800;box-shadow:0 8px 18px rgba(118,87,232,.25);}
+        .grade-score small {font-size:10px;font-weight:500;opacity:.85;margin-top:2px;}
+        .grade-lesson {font-size:18px;font-weight:700;color:#312e81;}
+        .grade-meta {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;margin-top:14px;}
+        .grade-meta-item {background:#f8f9fc;border-radius:10px;padding:9px 11px;color:#606579;font-size:12px;overflow-wrap:anywhere;}
+        .grade-meta-item i {color:#7657e8;margin-left:5px;}
+        .grade-meta-item strong {display:block;color:#25283a;font-size:13px;margin-top:3px;}
+        .grade-quality {display:inline-block;padding:6px 12px;border-radius:20px;background:#eaf8ef;color:#24733d;font-weight:700;}
+        .grades-empty {border:1px dashed #cfc5f5;border-radius:16px;background:#faf9ff;}
+        @media (max-width:575px) {.grades-hero{align-items:flex-start;flex-direction:column}.grade-card .card-body{flex-direction:column}.grade-meta{grid-template-columns:1fr}.grade-score{width:100%;height:68px;flex-direction:row;gap:5px}}
     </style>
 </head>
 <body class="main-body leftmenu">
@@ -65,15 +75,22 @@ include_once '../temp.html';
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
             <div class="inner-body">
-                <div class="page-header">
+                <div class="grades-hero">
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">نمرات کلاسی<?php echo $courseTitle !== '' ? ' - ' . htmlspecialchars($courseTitle) : ' من'; ?></h2>
                         <p class="text-muted mb-0">نمره‌هایی که استاد برای نمایش به شما منتشر کرده است.</p>
                     </div>
+                    <div class="d-flex align-items-center flex-wrap" style="gap:8px">
+                        <span class="grades-count"><?php echo count($grades); ?> نمره</span>
+                        <?php if ($codecourse > 0): ?>
+                            <a class="btn btn-outline-primary" href="mycourse.php?code=<?php echo $codecourse; ?>"><i class="fe fe-arrow-right ml-1"></i>بازگشت به پایه</a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <?php if ($grades === []): ?>
-                    <div class="card custom-card"><div class="card-body text-center py-5 text-muted">
+                    <div class="card custom-card grades-empty"><div class="card-body text-center py-5 text-muted">
+                        <i class="fe fe-award tx-40 d-block mb-3" style="opacity:.45"></i>
                         هنوز نمره کلاسی قابل نمایشی برای شما ثبت نشده است.
                     </div></div>
                 <?php else: ?>
@@ -84,27 +101,30 @@ include_once '../temp.html';
                                 ? $qualityOptions[(int)$grade['quality']] : '';
                             $dateValue = (string)($grade['event_date'] ?: $grade['created_at']);
                             $teacherName = trim((string)($grade['teacher_name'] ?? ''));
+                            $courseName = trim((string)($grade['coursename'] ?? ''));
+                            $className = trim((string)($grade['class_name'] ?? ''));
                         ?>
                             <div class="col-12 col-xl-6 mb-3">
                                 <div class="card custom-card grade-card h-100 mb-0">
                                     <div class="card-body d-flex align-items-start" style="gap:16px">
-                                        <div class="grade-score"><?php echo htmlspecialchars($score); ?></div>
+                                        <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از ۲۰</small></div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start flex-wrap mb-2" style="gap:8px">
                                                 <div>
-                                                    <span class="badge badge-primary mb-1">نمره کلاسی</span>
-                                                    <h5 class="mb-1"><?php echo htmlspecialchars((string)$grade['title']); ?></h5>
-                                                    <div class="text-primary font-weight-semibold">
+                                                    <span class="badge badge-primary mb-2"><?php echo htmlspecialchars((string)$grade['title']); ?></span>
+                                                    <div class="grade-lesson">
                                                         <?php echo htmlspecialchars((string)($grade['dars_name'] ?: 'درس نامشخص')); ?>
                                                     </div>
                                                 </div>
                                                 <?php if ($quality !== ''): ?><span class="grade-quality"><?php echo htmlspecialchars($quality); ?></span><?php endif; ?>
                                             </div>
                                             <div class="grade-meta">
-                                                <span><i class="fe fe-layers"></i> <?php echo htmlspecialchars((string)$grade['coursename']); ?></span>
-                                                <span><i class="fe fe-users"></i> <?php echo htmlspecialchars((string)$grade['class_name']); ?></span>
-                                                <span><i class="fe fe-user"></i> <?php echo htmlspecialchars($teacherName !== '' ? $teacherName : (string)$grade['teacher_username']); ?></span>
-                                                <span><i class="fe fe-calendar"></i> <?php echo htmlspecialchars(toJalali($dateValue, 'Y/m/d H:i', 'fa')); ?></span>
+                                                <div class="grade-meta-item"><i class="fe fe-layers"></i> عنوان پایه<strong><?php echo htmlspecialchars($courseName); ?></strong></div>
+                                                <?php if ($className !== '' && $className !== $courseName): ?>
+                                                    <div class="grade-meta-item"><i class="fe fe-users"></i> کلاس<strong><?php echo htmlspecialchars($className); ?></strong></div>
+                                                <?php endif; ?>
+                                                <div class="grade-meta-item"><i class="fe fe-user"></i> استاد<strong><?php echo htmlspecialchars($teacherName !== '' ? $teacherName : (string)$grade['teacher_username']); ?></strong></div>
+                                                <div class="grade-meta-item"><i class="fe fe-calendar"></i> تاریخ ثبت<strong><?php echo htmlspecialchars(toJalali($dateValue, 'Y/m/d H:i', 'fa')); ?></strong></div>
                                             </div>
                                             <?php if (trim((string)($grade['note'] ?? '')) !== ''): ?>
                                                 <div class="alert alert-light mt-3 mb-0 py-2"><?php echo nl2br(htmlspecialchars((string)$grade['note'])); ?></div>
