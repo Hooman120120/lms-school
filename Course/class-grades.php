@@ -62,12 +62,9 @@ $selectedDarsId = isset($_GET['dars']) ? (int)$_GET['dars'] : 0;
 if ($selectedDarsId > 0 && !isset($lessonFilters[$selectedDarsId])) {
     $selectedDarsId = 0;
 }
-if ($selectedDarsId === 0 && $lessonFilters !== []) {
-    $selectedDarsId = (int)array_key_first($lessonFilters);
-}
 $grades = $selectedDarsId > 0
     ? array_values(array_filter($allGrades, static fn(array $row): bool => (int)($row['dars_id'] ?? 0) === $selectedDarsId))
-    : $allGrades;
+    : [];
 $qualityOptions = registerClassQualityOptions();
 include_once '../temp.html';
 ?>
@@ -138,8 +135,12 @@ include_once '../temp.html';
 
                 <?php if ($grades === []): ?>
                     <div class="card custom-card grades-empty"><div class="card-body text-center py-5 text-muted">
-                        <i class="fe fe-award tx-40 d-block mb-3" style="opacity:.45"></i>
-                        هنوز نمره کلاسی قابل نمایشی برای شما ثبت نشده است.
+                        <i class="fe <?php echo $selectedDarsId === 0 ? 'fe-book-open' : 'fe-award'; ?> tx-40 d-block mb-3" style="opacity:.45"></i>
+                        <?php if ($selectedDarsId === 0): ?>
+                            برای مشاهده نمرات، یکی از درس‌های بالا را انتخاب کنید.
+                        <?php else: ?>
+                            هنوز نمره کلاسی قابل نمایشی برای این درس ثبت نشده است.
+                        <?php endif; ?>
                     </div></div>
                 <?php else: ?>
                     <div class="row">
