@@ -35,7 +35,10 @@ function jalaliToGregorianDate($jalaliDate) {
 }
 
 $adminrole = $_SESSION['admin']['adminrole'];
-$admin_id  = $_SESSION['admin']['idadmin'] ?? $_SESSION['admin']['id'] ?? 0;
+$effective_admin_username = (string)($_SESSION['admin']['user'] ?? '');
+$effectiveAdminStmt = $conn->prepare('SELECT idadmin FROM dbadmin WHERE username = ? LIMIT 1');
+$effectiveAdminStmt->execute([$effective_admin_username]);
+$admin_id = (int)($effectiveAdminStmt->fetchColumn() ?: ($_SESSION['admin']['idadmin'] ?? $_SESSION['admin']['id'] ?? 0));
 $class_id  = isset($_GET['class']) ? intval($_GET['class']) : 0;
 $is_teacher = ((int)$adminrole === 3);
 $school_role_key = SchoolStaffRoleKey((string)($_SESSION['admin']['user'] ?? ''));
