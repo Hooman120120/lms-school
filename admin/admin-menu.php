@@ -29,6 +29,16 @@ $stmt = $conn->prepare("
 $stmt->execute([$currentUser]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
+// The admin's school position, shown in the sidebar like the OES «سمت» badge
+$schoolRoleTitle = '';
+try {
+    $roleStmt = $conn->prepare('SELECT sr.title FROM dbadmin a JOIN school_admin_roles sr ON sr.id = a.school_role_id WHERE a.username = ? LIMIT 1');
+    $roleStmt->execute([$currentUser]);
+    $schoolRoleTitle = (string)$roleStmt->fetchColumn();
+} catch (PDOException $e) {
+    // older databases have no school roles yet
+}
+
 // ✅ Normalize role to int exactly once (safe default = 0)
 // Keep session override if it exists
 $adminRole = ($sessionRole !== null)
@@ -91,6 +101,16 @@ else                  $c = '#15233f';
     body .main-sidebar-body .nav-item.active > .nav-link::before {
         border-left: 20px solid <?= $c ?> !important;
     }
+    .school-role-badge {
+        display: block;
+        margin: 4px 18px 14px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #f0f4ff;
+        color: #3448a3;
+        text-align: center;
+        font-size: 12px;
+    }
 </style>
 
 <div class="main-sidebar main-sidebar-sticky side-menu">
@@ -103,6 +123,7 @@ else                  $c = '#15233f';
     <div class="main-sidebar-body">
         <ul class="nav">
             <li class="nav-header"><span class="nav-label" style="font-size: 15px; color: #CD964F;"><?= inst_is('institute') ? 'ویژه آموزشگاه' : 'ویژه مدارس' ?></span></li>
+            <li><div class="school-role-badge">سمت: <?= htmlspecialchars($schoolRoleTitle !== '' ? $schoolRoleTitle : 'بدون سمت', ENT_QUOTES, 'UTF-8') ?></div></li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo url('admin/index.php') ?>">
                     <span class="shape1"></span>
