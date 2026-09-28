@@ -102,6 +102,9 @@ function cross_panel_sync_oes_admin(array $admin): array
     if ($secret === '') {
         return ['ok' => false, 'message' => 'کلید ارتباط بین پنل‌ها تنظیم نشده است'];
     }
+    if (cross_panel_oes_url() === '') {
+        return ['ok' => true, 'skipped' => true]; // this school has no OES panel
+    }
 
     $body = json_encode($admin, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     $expires = time() + 60;
@@ -122,6 +125,36 @@ function cross_panel_sync_oes_admin(array $admin): array
     $response = @file_get_contents(cross_panel_oes_url() . '/cross-panel-sync-admin.php', false, $context);
     $decoded = is_string($response) ? json_decode($response, true) : null;
     return is_array($decoded) ? $decoded : ['ok' => false, 'message' => 'ارتباط با پنل آزمون برقرار نشد'];
+}
+
+/**
+ * Create or update the same admin in this school's chahard (online classes) panel.
+ * $admin['password_hash'] is a bcrypt hash made here, never the plain password.
+ */
+function cross_panel_sync_chahard_admin(array $admin): array
+{
+    $base = cross_panel_url('chahard');
+    if (cross_panel_secret() === '' || $base === '') {
+        return ['ok' => true, 'skipped' => true]; // this school has no chahard panel
+    }
+    $body = json_encode($admin, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $expires = time() + 60;
+    $username = (string) ($admin['username'] ?? '');
+    $context = stream_context_create(['http' => [
+        'method' => 'POST',
+        'header' => implode("\r\n", [
+            'Content-Type: application/json',
+            'X-Cross-Username: ' . $username,
+            'X-Cross-Expires: ' . $expires,
+            'X-Cross-Signature: ' . cross_panel_signature('sync-admin', $username, $expires, $body),
+        ]),
+        'content' => $body,
+        'timeout' => 15,
+        'ignore_errors' => true,
+    ]]);
+    $response = @file_get_contents($base . '/cross-panel-sync-admin.php', false, $context);
+    $decoded = is_string($response) ? json_decode($response, true) : null;
+    return is_array($decoded) ? $decoded : ['ok' => false, 'message' => 'ارتباط با پنل کلاس آنلاین برقرار نشد'];
 }
 
 /** Send a short-lived, signed data synchronisation request to OES. */

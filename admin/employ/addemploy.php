@@ -1049,19 +1049,43 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                     'signup_requests.manage' => $menusupport,
                     'teacher_tickets.manage' => $menusupport,
                 ];
+                // Same account in this school's OES and chahard (when it has them): same
+                // username and password, close permissions. Each panel gets its own
+                // password verifier (OES md5, chahard bcrypt), never the plain password.
+                $crossWarnings = [];
                 $oesSync = cross_panel_sync_oes_admin([
                     'username' => $username,
+                    'password_md5' => md5($password),
                     'first_name' => $name,
                     'last_name' => $famili,
                     'email' => '',
                     'mobile' => $mob,
-                    'gender' => (int) $gender,
+                    'gender' => $gender === 'آقای' ? 1 : 0,
                     'active' => (int) $activate,
                     'role' => cross_panel_oes_role($adminrole, $selectedSchoolRoleKey),
                     'permissions' => $oesPermissions,
                 ]);
                 if (empty($oesSync['ok'])) {
-                    $_SESSION['cross_panel_warning'] = (string) ($oesSync['message'] ?? 'ساخت حساب در پنل آزمون انجام نشد');
+                    $crossWarnings[] = (string) ($oesSync['message'] ?? 'ساخت حساب در پنل آزمون انجام نشد');
+                }
+                $chahardSync = cross_panel_sync_chahard_admin([
+                    'username' => $username,
+                    'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                    'first_name' => $name,
+                    'last_name' => $famili,
+                    'mobile' => $mob,
+                    'gender' => $gender === 'آقای' ? 'male' : 'female',
+                    'active' => (int) $activate,
+                    'manager' => $adminrole === 0,
+                    'permissions' => ['excel' => $manageexcel, 'history' => $manage_history],
+                ]);
+                if (empty($chahardSync['ok'])) {
+                    $crossWarnings[] = (string) ($chahardSync['message'] ?? 'ساخت حساب در پنل کلاس آنلاین انجام نشد');
+                } elseif (!empty($chahardSync['warning'])) {
+                    $crossWarnings[] = 'پنل کلاس آنلاین: ' . $chahardSync['warning'];
+                }
+                if ($crossWarnings) {
+                    $_SESSION['cross_panel_warning'] = implode(' — ', $crossWarnings);
                 }
                 $documentUploadErrors = SaveAdminDocumentUploads($username);
                 if ($documentUploadErrors) {
