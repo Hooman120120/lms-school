@@ -264,7 +264,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
     for ($num = 0; $num < sizeof($response->data->data); $num++) {
         if ($response->data->data[$num]->disposition == 'ANSWERED') {
             $answered++;
-            $time_answered = $time_answered + $response->data->data[$num]->duration;
+            $time_answered = $time_answered + $response->data->data[$num]->billsec; // talk time only, not ringing
         }
         if ($response->data->data[$num]->disposition == 'NO ANSWER' || $response->data->data[$num]->disposition == 'BUSY') {
             $noanswered++;
@@ -272,7 +272,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
         }
     }
 
-    $time_total = $time_answered + $time_noanswered;
+    $time_total = $time_answered; // missed-call ring time is not work time
 
     // ✅ Use the global helper functions you defined earlier
     $hds = secondsToTime($time_answered);
