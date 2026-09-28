@@ -109,7 +109,9 @@ if(isset($_GET['logindars'])) {
         'password' => $_SESSION['admin']['user'],
         'name'     => $student->fname,
         'lastName' => $student->lname,
-        'role'     => 'admin'
+        'role'     => 'admin',
+        // the school manager (admin id 1): «مدیر اصلی» icon in the room
+        'manager'  => (int) ($student->idadmin ?? 0) === 1
     );
 
     $ch = curl_init($apiUrl);
