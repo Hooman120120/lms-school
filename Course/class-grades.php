@@ -41,7 +41,33 @@ if ($codecourse > 0) {
         exit('این پایه در فهرست پایه‌های فعال شما نیست.');
     }
 }
-$grades = GetStudentVisibleClassGrades($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
+$allGrades = GetStudentVisibleClassGrades($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
+$lessonFilters = [];
+$studentLessons = GetStudentActiveClassLessons($studentUsername, $codecourse > 0 ? $codecourse : null);
+foreach ($studentLessons as $lessonRow) {
+    $lessonId = (int)($lessonRow['id'] ?? 0);
+    if ($lessonId > 0) {
+        $lessonFilters[$lessonId] = trim((string)($lessonRow['dars'] ?? '')) ?: 'درس بدون نام';
+    }
+}
+// نمره‌های قدیمی نیز حتی اگر اتصال درس کلاس بعداً تغییر کرده باشد در فیلتر باقی می‌مانند.
+foreach ($allGrades as $gradeRow) {
+    $lessonId = (int)($gradeRow['dars_id'] ?? 0);
+    if ($lessonId > 0) {
+        $lessonFilters[$lessonId] = trim((string)($gradeRow['dars_name'] ?? '')) ?: 'درس بدون نام';
+    }
+}
+asort($lessonFilters, SORT_NATURAL | SORT_FLAG_CASE);
+$selectedDarsId = isset($_GET['dars']) ? (int)$_GET['dars'] : 0;
+if ($selectedDarsId > 0 && !isset($lessonFilters[$selectedDarsId])) {
+    $selectedDarsId = 0;
+}
+if ($selectedDarsId === 0 && $lessonFilters !== []) {
+    $selectedDarsId = (int)array_key_first($lessonFilters);
+}
+$grades = $selectedDarsId > 0
+    ? array_values(array_filter($allGrades, static fn(array $row): bool => (int)($row['dars_id'] ?? 0) === $selectedDarsId))
+    : $allGrades;
 $qualityOptions = registerClassQualityOptions();
 include_once '../temp.html';
 ?>
@@ -55,6 +81,9 @@ include_once '../temp.html';
     <style>
         .grades-hero {background:linear-gradient(135deg,#fff 0%,#f6f2ff 100%);border:1px solid #ebe5ff;border-radius:18px;padding:22px 24px;margin:20px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;}
         .grades-count {background:#7657e8;color:#fff;border-radius:14px;padding:9px 14px;white-space:nowrap;font-weight:700;}
+        .lesson-filters {background:#fff;border:1px solid #ebe7f8;border-radius:15px;padding:13px 15px;margin:-7px 0 20px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+        .lesson-filter {border:1px solid #dcd5f6;border-radius:22px;padding:7px 14px;color:#514778;background:#faf9ff;transition:.15s ease;}
+        .lesson-filter:hover,.lesson-filter.active {background:#7657e8;border-color:#7657e8;color:#fff;text-decoration:none;}
         .grade-card {border:1px solid #e7e9f2;border-right:5px solid #7657e8;border-radius:16px;box-shadow:0 7px 22px rgba(52,45,110,.07);transition:transform .18s ease,box-shadow .18s ease;overflow:hidden;}
         .grade-card:hover {transform:translateY(-2px);box-shadow:0 11px 28px rgba(52,45,110,.11);}
         .grade-score {min-width:82px;height:82px;border-radius:20px;background:linear-gradient(135deg,#7657e8,#9a7cf3);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:25px;font-weight:800;box-shadow:0 8px 18px rgba(118,87,232,.25);}
@@ -95,6 +124,18 @@ include_once '../temp.html';
                     </div>
                 </div>
 
+                <?php if ($lessonFilters !== []): ?>
+                    <div class="lesson-filters">
+                        <strong class="ml-2"><i class="fe fe-book-open ml-1"></i>انتخاب درس:</strong>
+                        <?php $baseQuery = $codecourse > 0 ? ['code' => $codecourse] : []; ?>
+                        <?php foreach ($lessonFilters as $lessonId => $lessonLabel):
+                            $lessonQuery = $baseQuery + ['dars' => $lessonId];
+                        ?>
+                            <a class="lesson-filter<?php echo $selectedDarsId === (int)$lessonId ? ' active' : ''; ?>" href="?<?php echo htmlspecialchars(http_build_query($lessonQuery)); ?>"><?php echo htmlspecialchars($lessonLabel); ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
                 <?php if ($grades === []): ?>
                     <div class="card custom-card grades-empty"><div class="card-body text-center py-5 text-muted">
                         <i class="fe fe-award tx-40 d-block mb-3" style="opacity:.45"></i>
@@ -107,6 +148,8 @@ include_once '../temp.html';
                             $maxScore = rtrim(rtrim(number_format((float)($grade['max_score'] ?? 20), 2, '.', ''), '0'), '.');
                             $quality = isset($qualityOptions[(int)($grade['quality'] ?? 0)])
                                 ? $qualityOptions[(int)$grade['quality']] : '';
+                            $assessmentMode = (string)($grade['assessment_mode'] ?? 'score');
+                            $isQualityAssessment = $assessmentMode === 'quality';
                             $dateValue = (string)($grade['event_date'] ?: $grade['created_at']);
                             $teacherFirstName = trim((string)($grade['teacher_fname'] ?? ''));
                             $teacherLastName = trim((string)($grade['teacher_lname'] ?? ''));
@@ -122,7 +165,11 @@ include_once '../temp.html';
                             <div class="col-12 col-xl-6 mb-3">
                                 <div class="card custom-card grade-card h-100 mb-0">
                                     <div class="card-body d-flex align-items-start" style="gap:16px">
-                                        <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از <?php echo htmlspecialchars($maxScore); ?></small></div>
+                                        <?php if ($isQualityAssessment): ?>
+                                            <div class="grade-score"><span><i class="fe fe-check-circle"></i></span><small>ارزیابی کیفی</small></div>
+                                        <?php else: ?>
+                                            <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از <?php echo htmlspecialchars($maxScore); ?></small></div>
+                                        <?php endif; ?>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start flex-wrap mb-2" style="gap:8px">
                                                 <div>
@@ -131,7 +178,7 @@ include_once '../temp.html';
                                                         <?php echo htmlspecialchars($lessonName); ?>
                                                     </div>
                                                 </div>
-                                                <?php if ($quality !== ''): ?><span class="grade-quality"><?php echo htmlspecialchars($quality); ?></span><?php endif; ?>
+                                                <?php if ($isQualityAssessment): ?><span class="grade-quality"><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></span><?php endif; ?>
                                             </div>
                                             <div class="grade-actions">
                                                 <span class="grade-teacher-brief"><i class="fe fe-user ml-1"></i>استاد: <strong><?php echo htmlspecialchars($teacherName); ?></strong></span>
@@ -153,8 +200,11 @@ include_once '../temp.html';
                                         </div>
                                         <div class="modal-body">
                                             <div class="grade-detail-list">
-                                                <div class="grade-detail-item"><span>نمره</span><strong><?php echo htmlspecialchars($score); ?> از <?php echo htmlspecialchars($maxScore); ?></strong></div>
-                                                <div class="grade-detail-item"><span>ارزیابی</span><strong><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></strong></div>
+                                                <?php if ($isQualityAssessment): ?>
+                                                    <div class="grade-detail-item"><span>ارزیابی توصیفی</span><strong><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></strong></div>
+                                                <?php else: ?>
+                                                    <div class="grade-detail-item"><span>نمره</span><strong><?php echo htmlspecialchars($score); ?> از <?php echo htmlspecialchars($maxScore); ?></strong></div>
+                                                <?php endif; ?>
                                                 <div class="grade-detail-item"><span>درس</span><strong><?php echo htmlspecialchars($lessonName); ?></strong></div>
                                                 <div class="grade-detail-item"><span>استاد</span><strong><?php echo htmlspecialchars($teacherName); ?></strong></div>
                                                 <div class="grade-detail-item full"><span>عنوان پایه</span><strong><?php echo htmlspecialchars($courseName); ?></strong></div>

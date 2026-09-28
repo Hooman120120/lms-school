@@ -4793,7 +4793,8 @@ function createRegisterClassEvent(
     ?string $groupUid = null,
     string $homeworkNotificationTarget = 'family',
     ?int $darsId = null,
-    float $maxScore = 20.0
+    float $maxScore = 20.0,
+    string $assessmentMode = 'score'
 ): bool {
     global $conn;
 
@@ -4808,13 +4809,14 @@ function createRegisterClassEvent(
         $homeworkNotificationTarget = 'family';
     }
     $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score,
+            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score, assessment_mode,
              homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4827,6 +4829,7 @@ function createRegisterClassEvent(
         $description,
         $type,
         $maxScore,
+        $assessmentMode,
         $homeworkNotificationTarget,
         $createdBy
     ]);
@@ -4842,7 +4845,7 @@ function registerClassColumnKinds(): array
     return [
         ['type' => 0, 'title' => 'حضور و غیاب دستی',   'date_bound' => true,  'input' => 'attendance', 'quality' => false],
         ['type' => 2, 'title' => 'حضور و غیاب آنلاین', 'date_bound' => true,  'input' => 'attendance', 'quality' => false],
-        // نمره کلاسی دو بخش دارد: عدد و ارزیابی کیفی
+        // نوع نتیجه ستون نمره کلاسی هنگام ساخت، عددی یا کیفی انتخاب می‌شود.
         ['type' => 1, 'title' => 'نمره کلاسی',          'date_bound' => false, 'input' => 'score',      'quality' => true],
         ['type' => 4, 'title' => 'تراز آزمون آنلاین',   'date_bound' => false, 'input' => 'score',      'quality' => false],
         ['type' => 3, 'title' => 'توضیحات',             'date_bound' => false, 'input' => 'note',       'quality' => false],
@@ -5002,7 +5005,8 @@ function saveStudentRegisterClassEntry(
     string $createdBy = '',
     ?string $note = null,
     ?int $quality = null,
-    string $visibilityTarget = 'both'
+    string $visibilityTarget = 'both',
+    ?string $assessmentMode = null
 ): bool {
     global $conn;
 
@@ -5010,9 +5014,17 @@ function saveStudentRegisterClassEntry(
         return false;
     }
 
+    // گیرنده از عضویت فعال همان دانش‌آموز در کلاس تعیین می‌شود، نه از ورودی آزاد فرم.
+    $studentCheck = $conn->prepare('SELECT 1 FROM dbcourse WHERE class_id = ? AND username = ? AND activityuser = 1 LIMIT 1');
+    $studentCheck->execute([$classId, $studentUsername]);
+    if (!$studentCheck->fetchColumn()) {
+        return false;
+    }
+
     if (!in_array($visibilityTarget, ['student', 'family', 'both'], true)) {
         $visibilityTarget = 'both';
     }
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = null;
 
     if ($score !== null || $quality !== null) {
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
@@ -5027,6 +5039,8 @@ function saveStudentRegisterClassEntry(
             $vals = [];
             if ($score !== null)   { $sets[] = 'score = ?';   $vals[] = $score; }
             if ($quality !== null) { $sets[] = 'quality = ?'; $vals[] = $qualityValue; }
+            if ($assessmentMode === 'score') $sets[] = 'quality = NULL';
+            if ($assessmentMode === 'quality') $sets[] = 'score = NULL';
             $sets[] = 'visibility_target = ?';
             $vals[] = $visibilityTarget;
             $sets[] = 'created_by = ?';
@@ -5212,12 +5226,13 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score'): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
     $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $eventId]);
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $eventId]);
 }
 
 /** Visible classroom grades for the authenticated student. */
@@ -5228,7 +5243,7 @@ function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100,
     $limit = max(1, min(300, $limit));
 
     $sql = "SELECT DISTINCT e.id, e.score, e.quality, e.note, e.created_at, e.visibility_target,
-                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score,
+                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score, ev.assessment_mode,
                    c.id AS class_id, c.name AS class_name, c.codecourse,
                    cr.coursename, d.dars AS dars_name,
                    a.fname AS teacher_fname, a.lname AS teacher_lname,
@@ -5252,6 +5267,30 @@ function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100,
     $stmt = $conn->prepare($sql);
     $params = [$studentUsername];
     if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+}
+
+/** Lessons belonging to the student's active classes, optionally limited to one course. */
+function GetStudentActiveClassLessons(string $studentUsername, ?int $codecourse = null): array
+{
+    global $conn;
+    if ($studentUsername === '') return [];
+
+    $sql = "SELECT DISTINCT d.id, d.dars, c.codecourse
+            FROM dbcourse dc
+            INNER JOIN classes c ON c.id = dc.class_id
+            INNER JOIN class_dars cd ON cd.class_id = c.id
+            INNER JOIN dbdars d ON d.id = cd.dars_id AND d.codecourse = c.codecourse
+            WHERE dc.username = ? AND dc.activityuser = 1";
+    $params = [$studentUsername];
+    if ($codecourse !== null && $codecourse > 0) {
+        $sql .= ' AND c.codecourse = ?';
+        $params[] = $codecourse;
+    }
+    $sql .= ' ORDER BY d.dars, d.id';
+
+    $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }

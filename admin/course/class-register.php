@@ -156,10 +156,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     $dars_id     = $register_dars_id;
     $max_score   = isset($_POST['max_score']) ? (float)$_POST['max_score'] : 20.0;
     if ($max_score <= 0 || $max_score > 999999) $max_score = 20.0;
-    $homework_notification_target = $_POST['homework_notification_target'] ?? 'family';
-    if (!in_array($homework_notification_target, ['family', 'family_student'], true)) {
-        $homework_notification_target = 'family';
-    }
+    $assessment_mode = (string)($_POST['assessment_mode'] ?? 'score');
+    if (!in_array($assessment_mode, ['score', 'quality'], true)) $assessment_mode = 'score';
+    // مخاطب از دانش‌آموز همان ردیف تشخیص داده می‌شود؛ استاد انتخاب جداگانه‌ای ندارد.
+    $homework_notification_target = 'family_student';
 
     // عنوان ستون از روی نوع انتخاب شده تعیین می شود
     $title = '';
@@ -199,7 +199,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             null,
             $homework_notification_target,
             $dars_id,
-            $max_score
+            $max_score,
+            $assessment_mode
         );
 
         if ($newEventId) {
@@ -229,10 +230,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $event_id     = (int)($_POST['event_id'] ?? 0);
     $student_user = trim($_POST['student_id'] ?? '');
     $score_input  = ($_POST['grade_val'] !== '' && $_POST['grade_val'] !== null) ? (float)$_POST['grade_val'] : null;
-    $visibility_target = (string)($_POST['visibility_target'] ?? 'both');
-    if (!in_array($visibility_target, ['student', 'family', 'both'], true)) {
-        $visibility_target = 'both';
-    }
+    // رکورد به دانش‌آموز انتخاب‌شده تعلق دارد و برای خود او و خانواده‌اش قابل مشاهده است.
+    $visibility_target = 'both';
 
     // ارزیابی کیفی فقط برای ستون نمره کلاسی ارسال می شود؛ صفر یعنی پاک کردن
     $quality_input = null;
@@ -251,6 +250,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     }
 
     $eventMaxScore = max(0.01, (float)($gradeEventInfo['max_score'] ?? 20));
+    $assessmentMode = (string)($gradeEventInfo['assessment_mode'] ?? 'score');
+    if ($assessmentMode === 'quality') {
+        $score_input = null;
+    } else {
+        $quality_input = null;
+    }
+    if (($assessmentMode === 'quality' && empty($quality_input)) || ($assessmentMode === 'score' && $score_input === null)) {
+        $_SESSION['flash_msg'] = $assessmentMode === 'quality'
+            ? 'لطفاً یک ارزیابی توصیفی انتخاب کنید.'
+            : 'لطفاً نمره دانش‌آموز را وارد کنید.';
+        $_SESSION['flash_msg_type'] = 'warning';
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
+    }
     if ($score_input !== null && ($score_input < 0 || $score_input > $eventMaxScore)) {
         $_SESSION['flash_msg'] = 'نمره باید بین صفر تا ' . rtrim(rtrim(number_format($eventMaxScore, 2, '.', ''), '0'), '.') . ' باشد.';
         $_SESSION['flash_msg_type'] = 'warning';
@@ -258,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         exit;
     }
     if ($class_id > 0 && $event_id > 0 && !empty($student_user) && ($score_input !== null || $quality_input !== null)) {
-        if (saveStudentRegisterClassEntry($class_id, $event_id, $student_user, $score_input, null, null, $actor, null, $quality_input, $visibility_target)) {
+        if (saveStudentRegisterClassEntry($class_id, $event_id, $student_user, $score_input, null, null, $actor, null, $quality_input, $visibility_target, $assessmentMode)) {
             $_SESSION['flash_msg'] = 'نمره با موفقیت ثبت شد.';
             $_SESSION['flash_msg_type'] = 'success';
         } else {
@@ -374,6 +387,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
     $dars_id      = $register_dars_id;
     $max_score    = isset($_POST['max_score']) ? (float)$_POST['max_score'] : 20.0;
     if ($max_score <= 0 || $max_score > 999999) $max_score = 20.0;
+    $assessment_mode = (string)($_POST['assessment_mode'] ?? 'score');
+    if (!in_array($assessment_mode, ['score', 'quality'], true)) $assessment_mode = 'score';
     // تاریخ در ویرایش هم اختیاری است
     $gregorian_date = ($jalali_date !== '') ? jalaliToGregorianDate($jalali_date) : null;
 
@@ -401,7 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
         && TeacherHasDarsAccess($class_id, $dars_id, $eventTeacherUsername);
 
     if ($event_id > 0 && !empty($title) && $teacherHasDars) {
-        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id, $max_score)) {
+        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id, $max_score, $assessment_mode)) {
             registerClassLog($class_id, $title, '', null, null, 'ویرایش ستون', $actor, 'edit_event');
             $_SESSION['flash_msg'] = 'ستون با موفقیت ویرایش شد.';
             $_SESSION['flash_msg_type'] = 'success';
@@ -1324,6 +1339,7 @@ include_once '../../temp.html';
                                                         data-title="<?php echo htmlspecialchars($evt['title']); ?>"
                                                         data-type="<?php echo $evt['type']; ?>"
                                                         data-max-score="<?php echo htmlspecialchars((string)($evt['max_score'] ?? 20)); ?>"
+                                                        data-assessment-mode="<?php echo htmlspecialchars((string)($evt['assessment_mode'] ?? 'score')); ?>"
                                                         data-dars="<?php echo (int)($evt['dars_id'] ?? 0); ?>"
                                                         data-date="<?php echo htmlspecialchars($jalali_input); ?>"
                                                         data-teacher="<?php echo $evt['teacher_id'] ?? ''; ?>"
@@ -1513,6 +1529,7 @@ include_once '../../temp.html';
                                                         data-event-title="<?php echo htmlspecialchars($evt['title']); ?>"
                                                         data-event-type="<?php echo $evt['type']; ?>"
                                                         data-max-score="<?php echo htmlspecialchars((string)($evt['max_score'] ?? 20)); ?>"
+                                                        data-assessment-mode="<?php echo htmlspecialchars((string)($evt['assessment_mode'] ?? 'score')); ?>"
                                                         data-existing-score="<?php echo htmlspecialchars($score_val); ?>"
                                                         data-existing-status="<?php echo htmlspecialchars($status_val); ?>"
                                                         data-existing-note="<?php echo htmlspecialchars((string)$note_val); ?>"
@@ -1593,18 +1610,17 @@ include_once '../../temp.html';
                             </select>
                         </div>
 
-                        <div class="mb-3" id="homework_notification_target_container" style="display:none;">
-                            <label class="form-label fw-bold">مخاطب یادداشت نمره تکلیف:</label>
-                            <select class="form-select" name="homework_notification_target">
-                                <option value="family">فقط خانواده</option>
-                                <option value="family_student">خانواده و دانش‌آموز</option>
-                            </select>
-                        </div>
-
                         <div class="mb-3" id="max_score_container" style="display:none;">
-                            <label class="form-label fw-bold">نمره از چند باشد؟</label>
-                            <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="0.25">
-                            <div class="form-text">مثلاً ۱۰، ۲۰ یا ۱۰۰</div>
+                            <label class="form-label fw-bold">نوع ثبت نتیجه:</label>
+                            <select class="form-select mb-3" name="assessment_mode" id="create_event_assessment_mode">
+                                <option value="score">نمره عددی</option>
+                                <option value="quality">ارزیابی کیفی</option>
+                            </select>
+                            <div id="max_score_input_wrap">
+                                <label class="form-label fw-bold">نمره از چند باشد؟</label>
+                                <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="0.25">
+                                <div class="form-text">مثلاً ۱۰، ۲۰ یا ۱۰۰</div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -1651,21 +1667,11 @@ include_once '../../temp.html';
                         <div class="mb-3" id="quality_input_container" style="display:none;">
                             <label class="form-label small fw-bold">ارزیابی کیفی:</label>
                             <select class="form-select" id="modal_quality_val" name="quality_val">
-                                <option value="0">-- بدون ارزیابی --</option>
+                                <option value="0">-- انتخاب ارزیابی --</option>
                                 <?php foreach (registerClassQualityOptions() as $qv => $qlabel): ?>
                                     <option value="<?php echo $qv; ?>"><?php echo htmlspecialchars($qlabel); ?></option>
                                 <?php endforeach; ?>
                             </select>
-                        </div>
-
-                        <div class="mb-3" id="visibility_target_container" style="display:none;">
-                            <label class="form-label small fw-bold">نمایش نمره برای:</label>
-                            <select class="form-select" id="modal_visibility_target" name="visibility_target">
-                                <option value="student">فقط دانش‌آموز</option>
-                                <option value="family">فقط خانواده</option>
-                                <option value="both" selected>دانش‌آموز و خانواده</option>
-                            </select>
-                            <div class="form-text small">این انتخاب فقط برای همین دانش‌آموز و همین نمره ذخیره می‌شود.</div>
                         </div>
 
                         <div class="mb-3" id="note_input_container" style="display:none;">
@@ -1836,12 +1842,12 @@ include_once '../../temp.html';
                 const eventTitle  = button.getAttribute('data-event-title');
                 const eventType   = button.getAttribute('data-event-type');
                 const eventMaxScore = button.getAttribute('data-max-score') || '20';
+                const assessmentMode = button.getAttribute('data-assessment-mode') || 'score';
 
                 const existingScore  = button.getAttribute('data-existing-score') || '';
                 const existingStatus = button.getAttribute('data-existing-status') || '1';
                 const existingNote    = button.getAttribute('data-existing-note') || '';
                 const existingQuality = button.getAttribute('data-existing-quality') || '0';
-                const existingVisibility = button.getAttribute('data-existing-visibility') || 'both';
                 const hasQuality      = button.getAttribute('data-has-quality') === '1';
 
                 document.getElementById('modal_student_id').value = studentId;
@@ -1864,27 +1870,27 @@ include_once '../../temp.html';
                 const isHomeworkColumn = (eventType === '5');
                 const noteContainer    = document.getElementById('note_input_container');
                 const qualityContainer = document.getElementById('quality_input_container');
-                const visibilityContainer = document.getElementById('visibility_target_container');
 
                 document.getElementById('modal_note_val').value    = existingNote;
                 document.getElementById('modal_quality_val').value = existingQuality || '0';
-                document.getElementById('modal_visibility_target').value = existingVisibility;
+                document.getElementById('modal_grade_val').required = false;
+                document.getElementById('modal_quality_val').required = false;
 
                 if (isNoteColumn) {
                     actionInput.value = 'save_note';
                     gradeContainer.style.display    = 'none';
                     statusContainer.style.display   = 'none';
                     qualityContainer.style.display  = 'none';
-                    visibilityContainer.style.display = 'none';
                     noteContainer.style.display     = 'block';
                 } else if (isScoreColumn) {
                     actionInput.value = 'save_grade';
-                    gradeContainer.style.display    = 'block';
+                    gradeContainer.style.display    = assessmentMode === 'quality' ? 'none' : 'block';
                     statusContainer.style.display   = 'none';
-                    // ارزیابی کیفی فقط در ستون نمره کلاسی دیده می شود
-                    qualityContainer.style.display  = hasQuality ? 'block' : 'none';
-                    visibilityContainer.style.display = 'block';
+                    // ستون نمره کلاسی فقط یکی از دو حالت عددی یا کیفی را می پذیرد.
+                    qualityContainer.style.display  = hasQuality && assessmentMode === 'quality' ? 'block' : 'none';
                     noteContainer.style.display     = 'none';
+                    document.getElementById('modal_grade_val').required = assessmentMode !== 'quality';
+                    document.getElementById('modal_quality_val').required = assessmentMode === 'quality';
 
                     // نمره کلاسی از ۰ تا ۲۰ است اما تراز آزمون عدد بزرگ تری دارد
                     const gradeField = document.getElementById('modal_grade_val');
@@ -1910,8 +1916,9 @@ include_once '../../temp.html';
                     gradeContainer.style.display    = 'none';
                     statusContainer.style.display   = 'block';
                     qualityContainer.style.display  = 'none';
-                    visibilityContainer.style.display = 'none';
                     noteContainer.style.display     = 'none';
+                    document.getElementById('modal_grade_val').required = false;
+                    document.getElementById('modal_quality_val').required = false;
                 }
 
                 const deleteBtn = document.getElementById('delete_entry_btn');
@@ -1927,15 +1934,19 @@ include_once '../../temp.html';
         }
 
         const columnTypeSelect = document.querySelector('#createEventModal select[name="type"]');
-        const homeworkTargetContainer = document.getElementById('homework_notification_target_container');
         const maxScoreContainer = document.getElementById('max_score_container');
         const maxScoreInput = document.getElementById('create_event_max_score');
-        if (columnTypeSelect && homeworkTargetContainer) {
+        const assessmentModeInput = document.getElementById('create_event_assessment_mode');
+        const maxScoreInputWrap = document.getElementById('max_score_input_wrap');
+        if (columnTypeSelect) {
             const syncHomeworkTarget = function () {
-                homeworkTargetContainer.style.display = columnTypeSelect.value === '5' ? 'block' : 'none';
                 if (maxScoreContainer) maxScoreContainer.style.display = columnTypeSelect.value === '1' ? 'block' : 'none';
+                if (maxScoreInputWrap) {
+                    maxScoreInputWrap.style.display = columnTypeSelect.value === '1' && (!assessmentModeInput || assessmentModeInput.value === 'score') ? 'block' : 'none';
+                }
             };
             columnTypeSelect.addEventListener('change', syncHomeworkTarget);
+            if (assessmentModeInput) assessmentModeInput.addEventListener('change', syncHomeworkTarget);
             document.getElementById('createEventModal').addEventListener('show.bs.modal', syncHomeworkTarget);
         }
 
@@ -1951,6 +1962,8 @@ include_once '../../temp.html';
                     document.querySelector('#createEventModal form select[name="type"]').value = button.getAttribute('data-type') || '0';
                     document.querySelector('#createEventModal form input[name="event_date"]').value = button.getAttribute('data-date') || '';
                     if (maxScoreInput) maxScoreInput.value = button.getAttribute('data-max-score') || '20';
+                    if (assessmentModeInput) assessmentModeInput.value = button.getAttribute('data-assessment-mode') || 'score';
+                    columnTypeSelect.dispatchEvent(new Event('change'));
 
                     let hidden = document.querySelector('#createEventModal form input[name="event_id"]');
                     if (!hidden) {
@@ -1975,6 +1988,8 @@ include_once '../../temp.html';
                     document.querySelector('#createEventModal form input[name="action"]').value = 'create_event';
                     document.querySelector('#createEventModal form select[name="type"]').value = '';
                     if (maxScoreInput) maxScoreInput.value = '20';
+                    if (assessmentModeInput) assessmentModeInput.value = 'score';
+                    columnTypeSelect.dispatchEvent(new Event('change'));
                     // تاریخ پیش فرض داخل هفته ی انتخاب شده است تا ستون در همان هفته ساخته شود
                     document.querySelector('#createEventModal form input[name="event_date"]').value =
                         <?php echo json_encode($default_column_date, JSON_UNESCAPED_UNICODE); ?>;

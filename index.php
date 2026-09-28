@@ -178,8 +178,6 @@ include_once 'temp.html';
                 <?php if (isset($_SESSION['auth']) and $_SESSION['auth']['role'] == 1) { ?>
                     <!--                داشبورد دانش آموز-->
                     <?php
-                    $studentRecentClassGrades = GetStudentVisibleClassGrades((string)$_SESSION['auth']['user'], 5);
-                    $studentGradeQualityOptions = registerClassQualityOptions();
                     if (isset($courseregister) and $courseregister == 1) {     // این بخش درصورت فعال نبودن پایه ظاهر میشود
                         if ($_SESSION['auth']['keyactive'] != NULL and $_SESSION['auth']['truekey'] == 0) {
                             $sql = 'SELECT keyactive FROM dblogin WHERE username=?';
@@ -346,44 +344,6 @@ include_once 'temp.html';
                                                     class="h6"><?php echo $_SESSION ['auth']['paye']; ?></span></div>
                                     </div>
 
-                                </div>
-                                <div class="card custom-card mt-4" style="border-right:4px solid #7657e8;">
-                                        <div class="card-header border-bottom-0 d-flex justify-content-between align-items-center flex-wrap" style="gap:10px">
-                                            <div>
-                                                <h5 class="card-title mb-1"><i class="fe fe-award text-primary ml-2"></i>آخرین نمرات کلاسی</h5>
-                                                <span class="text-muted tx-12">نمره‌هایی که استاد برای شما منتشر کرده است</span>
-                                            </div>
-                                            <a class="btn btn-sm btn-outline-primary" href="<?php echo url('Course/class-grades.php'); ?>">مشاهده همه نمرات</a>
-                                        </div>
-                                        <div class="card-body pt-0">
-                                            <?php if ($studentRecentClassGrades === []): ?>
-                                                <div class="text-center text-muted py-4">
-                                                    <i class="fe fe-award tx-40 d-block mb-2" style="opacity:.45"></i>
-                                                    هنوز نمره کلاسی برای شما منتشر نشده است.
-                                                </div>
-                                            <?php else: ?>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover mb-0">
-                                                    <thead><tr><th>درس</th><th>عنوان</th><th>نمره</th><th>ارزیابی</th><th>تاریخ</th></tr></thead>
-                                                    <tbody>
-                                                    <?php foreach ($studentRecentClassGrades as $grade):
-                                                        $score = $grade['score'] !== null ? rtrim(rtrim(number_format((float)$grade['score'], 2, '.', ''), '0'), '.') : '—';
-                                                        $qualityLabel = $studentGradeQualityOptions[(int)($grade['quality'] ?? 0)] ?? '—';
-                                                        $gradeDate = (string)($grade['event_date'] ?: $grade['created_at']);
-                                                    ?>
-                                                        <tr>
-                                                            <td><strong><?php echo htmlspecialchars((string)($grade['dars_name'] ?: 'درس نامشخص')); ?></strong></td>
-                                                            <td><?php echo htmlspecialchars((string)$grade['title']); ?></td>
-                                                            <td><span class="badge badge-primary tx-14"><?php echo htmlspecialchars($score); ?></span></td>
-                                                            <td><?php echo htmlspecialchars($qualityLabel); ?></td>
-                                                            <td><?php echo htmlspecialchars(toJalali($gradeDate, 'Y/m/d', 'fa')); ?></td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <?php endif; ?>
-                                        </div>
                                 </div>
                                 <?php if ($suspension_mode == 0 and strlen($_SESSION['auth']['user']) != 11) :
                                     renderUserCalendar();

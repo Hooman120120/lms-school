@@ -1683,6 +1683,7 @@ CREATE TABLE IF NOT EXISTS `register_class_events` (
   `title` varchar(255) NOT NULL,
   `type` enum('0','1','2','3','4','5') NOT NULL COMMENT '0=حضور دستی، 1=نمره کلاسی، 2=حضور آنلاین، 3=توضیحات، 4=تراز آزمون آنلاین، 5=نمره تکلیف',
   `max_score` decimal(8,2) NOT NULL DEFAULT 20.00 COMMENT 'سقف نمره ستون نمره کلاسی',
+  `assessment_mode` varchar(20) NOT NULL DEFAULT 'score' COMMENT 'score یا quality',
   `homework_notification_target` varchar(20) NOT NULL DEFAULT 'family' COMMENT 'family یا family_student برای نمره تکلیف',
   `event_date` date DEFAULT NULL COMMENT 'Ï¬ÏºÏ▒█îÏ« Ï│Ï¬┘ê┘åÏø ÏºÏ«Ï¬█îÏºÏ▒█î ÏºÏ│Ï¬ ┘ê Ï»Ï▒ ÏÁ┘êÏ▒Ï¬ Ï«Ïº┘ä█î Ï¿┘êÏ»┘å ┘å┘àÏº█îÏ┤ Ï»ÏºÏ»┘ç ┘å┘à█î Ï┤┘êÏ»',
   `group_uid` char(32) DEFAULT NULL COMMENT 'Ï┤┘åÏºÏ│┘ç Ï»Ï│Ï¬┘ç Ï│Ï¬┘ê┘å ┘çÏº█î Ïº█îÏ¼ÏºÏ» Ï┤Ï»┘ç Ï»Ï▒ █î┌® ┘å┘êÏ¿Ï¬',
