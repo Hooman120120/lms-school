@@ -26,11 +26,14 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3) {
+// Teachers join the online class of a lesson assigned to them (class-detail.php);
+// every other use of this page stays with staff who may view courses.
+$isTeacher = (int)($_SESSION['admin']['adminrole'] ?? -1) === 3;
+if ($isTeacher && !isset($_GET['logindars'])) {
     http_response_code(403);
     exit(m('perm.teacher_no_online_class'));
 }
-if (!Permision('permision_viewcourse')) {
+if (!$isTeacher && !Permision('permision_viewcourse')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -95,6 +98,10 @@ if(isset($_GET['logindars'])) {
     if (!$dars or trim((string)$dars->link_class) === '') {
         die("برای این درس شناسه اتاق چهاردیواری ثبت نشده است.");
     }
+    if ($isTeacher && !TeacherHasDarsAccess((int)($_GET['class_id'] ?? 0), $darsId)) {
+        http_response_code(403);
+        exit('شما به اتاق آنلاین این درس دسترسی ندارید.');
+    }
     if (StaffCourseScopeRequired() && !StaffHasCourseAccess((int)$dars->codecourse)) {
         http_response_code(403);
         exit('شما به اتاق آنلاین این درس دسترسی ندارید.');
@@ -110,8 +117,9 @@ if(isset($_GET['logindars'])) {
         'name'     => $student->fname,
         'lastName' => $student->lname,
         'role'     => 'admin',
-        // the school manager (admin id 1): «مدیر اصلی» icon in the room
-        'manager'  => (int) ($student->idadmin ?? 0) === 1
+        // role in the room (icon and list order): the school manager (admin id 1)
+        // is «مدیر اصلی», a teacher «استاد»
+        'panelRole' => (int) ($student->idadmin ?? 0) === 1 ? 'manager' : ($isTeacher ? 'teacher' : '')
     );
 
     $ch = curl_init($apiUrl);

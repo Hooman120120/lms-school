@@ -167,6 +167,18 @@ if ($isTeacher) {
 
 ksort($groupedSyllabus);
 
+// the teacher's lessons in this class that have an online room (login_skyroom.php?logindars=)
+$teacherOnlineDars = [];
+if ($isTeacher) {
+    $onlineStmt = $conn->prepare("SELECT d.id, d.dars FROM class_dars cd INNER JOIN dbdars d ON d.id = cd.dars_id WHERE cd.class_id = ? AND TRIM(COALESCE(d.link_class, '')) <> '' ORDER BY d.dars ASC");
+    $onlineStmt->execute([$class_id]);
+    foreach ($onlineStmt->fetchAll(PDO::FETCH_OBJ) as $onlineDars) {
+        if (TeacherHasDarsAccess($class_id, (int)$onlineDars->id)) {
+            $teacherOnlineDars[] = $onlineDars;
+        }
+    }
+}
+
 $teacherContentHierarchy = [];
 if ($isTeacher && $teacherCanContent) {
     $teacherDarsStmt = $conn->prepare('SELECT d.id, d.dars FROM class_dars cd INNER JOIN dbdars d ON d.id = cd.dars_id WHERE cd.class_id = ? AND d.codecourse = ? ORDER BY d.id ASC');
@@ -329,6 +341,23 @@ include_once '../../temp.html';
                         </div>
                     </div>
 
+                    <?php if ($isTeacher && $teacherOnlineDars): ?>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <h6 class="main-content-label mb-3">ورود به کلاس آنلاین</h6>
+                                    <div class="d-flex flex-wrap" style="gap: 10px;">
+                                        <?php foreach ($teacherOnlineDars as $onlineDars): ?>
+                                            <a class="btn btn-primary" target="_blank"
+                                               href="login_skyroom.php?logindars=<?= (int)$onlineDars->id ?>&class_id=<?= (int)$class_id ?>">
+                                                <i class="fe fe-video"></i> <?= htmlspecialchars((string)$onlineDars->dars, ENT_QUOTES, 'UTF-8') ?>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($isTeacher): ?>
                         <div class="col-lg-12 col-md-12">
                             <div class="card custom-card">
