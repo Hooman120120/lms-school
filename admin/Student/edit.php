@@ -25,6 +25,10 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+if (!Permision('permision_editstudent')) {
+    http_response_code(403);
+    exit('مجوز ویرایش اطلاعات فراگیران برای شما فعال نشده است.');
+}
 if (isset($_GET['newcode'])) {
     unset($_SESSION['edit-student']);
     header('location: ' . url('admin/Student/edit.php'));

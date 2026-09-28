@@ -23,8 +23,12 @@ if (empty($_SESSION['admin']['impersonate_token'])) {
 if (!empty($_SESSION['admin']['acting_until']) && time() > (int)$_SESSION['admin']['acting_until']) {
     if (!empty($_SESSION['admin']['real_user'])) {
         $_SESSION['admin']['user'] = $_SESSION['admin']['real_user'];
+        foreach (['adminrole', 'role', 'name', 'famili'] as $key) {
+            if (array_key_exists('real_' . $key, $_SESSION['admin'])) $_SESSION['admin'][$key] = $_SESSION['admin']['real_' . $key];
+        }
     }
-    unset($_SESSION['admin']['real_user'], $_SESSION['admin']['acting_until']);
+    unset($_SESSION['admin']['real_user'], $_SESSION['admin']['real_adminrole'], $_SESSION['admin']['real_role'],
+        $_SESSION['admin']['real_name'], $_SESSION['admin']['real_famili'], $_SESSION['admin']['acting_until']);
 }
 
 $isImpersonating = !empty($_SESSION['admin']['real_user']);

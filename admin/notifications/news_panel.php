@@ -113,6 +113,7 @@ if (isset($_GET['toggle_status_id'])) {
 // Save / Edit news (with news_audience support)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_news'])) {
+    AdminRequireTreeOperation(!empty($_POST['news_id']) ? 'executive.news.edit' : 'executive.news.create');
 
     // Prevent duplicate submission using form tokens
     if (!isset($_POST['form_token']) || !isset($_SESSION['form_token']) || $_POST['form_token'] !== $_SESSION['form_token']) {
@@ -213,6 +214,7 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
 // Delete news (with image & audience records)
 // ------------------------------------------------------------------------
 if (isset($_GET['delete_id'])) {
+    AdminRequireTreeOperation('executive.news.edit');
     $del_id = (int) $_GET['delete_id'];
 
     $stmt_img = $conn->prepare("SELECT image_path FROM news WHERE id = :id");

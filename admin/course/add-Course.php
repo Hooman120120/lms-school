@@ -26,6 +26,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
+AdminRequireTreeOperation(!empty($_GET['edit']) ? 'courses.main.active.edit' : 'courses.main.create');
 if (!Permision('permision_viewcourse')) {
     header('location: ' . url('admin/index.php'));
     die();

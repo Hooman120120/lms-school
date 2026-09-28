@@ -95,6 +95,7 @@ function deadline_jalali_date_only($raw)
    Handle Approve / Reject
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequireTreeOperation('homework-approval.review');
 
     if (!isset($_POST['token_hw_check'], $_SESSION['token_hw_check']) || $_POST['token_hw_check'] !== $_SESSION['token_hw_check']) {
         $_SESSION['message'] = 'نشست نامعتبر است. دوباره تلاش کنید.';

@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $taskId = (int)($_POST['task_id'] ?? 0);
+    AdminRequireTreeOperation(isset($_POST['change_status']) ? 'assigned-tasks.status' : 'assigned-tasks.create');
     if (isset($_POST['delete_task'])) {
         if (!assignedTaskExists($conn, $taskId)) {
             $message = 'کار موردنظر یافت نشد.';

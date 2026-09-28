@@ -93,6 +93,7 @@ function uploadNotificationImage($file, $old_image_path = null) {
 // ۱. عملیات ثبت اعلان جدید (Create)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
+    AdminRequireTreeOperation('executive.daily-notices.create');
     $text = trim($_POST['notif_text']);
     $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
     $expiration_raw = trim($_POST['expiration_date'] ?? '');
@@ -143,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
 // ۲. عملیات ویرایش اعلان (Update)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_notif'])) {
+    AdminRequireTreeOperation('executive.daily-notices.edit');
     $notif_id = intval($_POST['notif_id']);
     $text = trim($_POST['notif_text']);
     $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
@@ -202,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_notif'])) {
 // ۳. عملیات حذف اعلان (Delete)
 // ------------------------------------------------------------------------
 if (isset($_GET['delete_id'])) {
+    AdminRequireTreeOperation('executive.daily-notices.edit');
     $del_id = intval($_GET['delete_id']);
 
     $sql_get_img = "SELECT `image_path` FROM `notif` WHERE `id` = :id";

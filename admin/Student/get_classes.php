@@ -1,6 +1,10 @@
 <?php
 // فایل اتصال به دیتابیس خود را اینجا ضمیمه کنید
 include_once '../../dbconfig.php';
+if (empty($_SESSION['admin'])) {
+    http_response_code(403);
+    exit;
+}
 
 if (isset($_POST['codecourse'])) {
     $codecourse = $_POST['codecourse'];

@@ -223,11 +223,17 @@ function AdminPermissionCodesForLegacy(string $legacy): array
     return $codes;
 }
 
+/* Stored for a tree account whose every box was cleared. It is not a tree node. */
+const ADMIN_PERMISSION_NONE = '__none__';
+
 function SyncAdminPermissionGrants(string $username, array $codes): void
 {
     global $conn;
     $index = AdminPermissionIndex();
     $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]) && in_array(inst_type(), $index[$code]['modes'], true))));
+    /* An account already on the tree that is saved with nothing ticked must stay
+       on the tree with no access, not fall back to its old dbadmin flags. */
+    if ($codes === [] && AdminHasAnyCurrentTreePermission($username)) $codes = [ADMIN_PERMISSION_NONE];
     try {
         $conn->beginTransaction();
         $delete = $conn->prepare('DELETE FROM admin_user_permissions WHERE admin_username = ?');
@@ -247,7 +253,7 @@ function AdminHasMenuPermission(string $code, ?string $username = null): bool
     $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
     if ($username === '' || !AdminPermissionCodeAvailable($code)) return false;
     try {
-        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR ? LIKE CONCAT(p.permission_code, ".%")) LIMIT 1');
+        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR LEFT(?, CHAR_LENGTH(p.permission_code) + 1) = CONCAT(p.permission_code, ".")) LIMIT 1');
         $stmt->execute([$username, $code, $code]);
         return (bool)$stmt->fetchColumn();
     } catch (Throwable $e) { return false; }
@@ -264,8 +270,8 @@ function AdminHasMenuNavigationPermission(string $code, ?string $username = null
     $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
     if ($username === '' || $code === '') return false;
     try {
-        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%")');
-        $stmt->execute([$username, $code]);
+        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username=? AND LEFT(permission_code, CHAR_LENGTH(?) + 1) = CONCAT(?, ".")');
+        $stmt->execute([$username, $code, $code]);
         $index = AdminPermissionIndex();
         foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $childCode) {
             if (isset($index[$childCode]) && in_array(inst_type(), $index[$childCode]['modes'], true)) return true;
@@ -302,13 +308,11 @@ function AdminHasAnyCurrentTreePermission(?string $username = null): bool
     $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
     if ($username === '') return false;
     try {
-        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
+        // Any stored row makes this a tree account. Retired or renamed codes (and
+        // the "nothing ticked" marker) must fail closed, never reopen old flags.
+        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions WHERE admin_username = ? LIMIT 1');
         $stmt->execute([$username]);
-        $index = AdminPermissionIndex();
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $code) {
-            // Retired notification grants must fail closed rather than enable legacy access.
-            if (isset($index[$code]) || $code === 'settings' || str_starts_with($code, 'settings.') || str_starts_with($code, 'institute-notifications.')) return true;
-        }
+        return (bool)$stmt->fetchColumn();
     } catch (Throwable $e) { }
     return false;
 }
@@ -407,9 +411,82 @@ function EnforceAdminPageTreePermission(): void
     // A grant for an operation also permits opening its containing page, but
     // never a sibling page (navigation helper only traverses descendants).
     if ($codes === []) return;
-    foreach ($codes as $code) if (AdminHasMenuNavigationPermission($code)) return;
+    $allowed = array_values(array_filter($codes, static fn(string $code): bool => AdminHasMenuNavigationPermission($code)));
+    if ($allowed === []) {
+        http_response_code(403);
+        exit('دسترسی شما به این بخش فعال نشده است.');
+    }
+    AdminEnforcePostedActionPermissions($allowed);
+}
+
+/*
+ * The operation leaves that AdminPermissionAttachPageActions() builds from a
+ * page's control names are enforced here: a POST carrying such a control needs
+ * that leaf (or the whole page) granted, not just some other child of the page.
+ */
+function AdminEnforcePostedActionPermissions(array $pageCodes): void
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST' || $_POST === []) return;
+    foreach ($pageCodes as $pageCode) if (AdminHasMenuPermission($pageCode)) return;
+    $index = AdminPermissionIndex();
+    foreach (array_keys($_POST) as $control) {
+        $slug = trim(strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', (string)$control)), '-');
+        // "action-submit" stands for a page's unnamed buttons, not a field called "submit".
+        if ($slug === '' || $slug === 'submit') continue;
+        foreach ($pageCodes as $pageCode) {
+            $actionCode = $pageCode . '.action-' . $slug;
+            if (!isset($index[$actionCode]) || !AdminPermissionCodeAvailable($actionCode)) continue;
+            if (!AdminHasMenuPermission($actionCode)) {
+                http_response_code(403);
+                exit('مجوز انجام این عملیات برای شما فعال نشده است.');
+            }
+        }
+    }
+}
+
+/*
+ * Tree answer for an old dbadmin flag. Normally any grant inside the mapped
+ * branch turns the flag on, because many helper pages outside the registry
+ * still check only these flags. Flags listed in ADMIN_STRICT_LEGACY_FLAGS are
+ * real extra powers: they need the whole mapped branch, or a page inside that
+ * branch which the page gate already let this account open.
+ */
+const ADMIN_STRICT_LEGACY_FLAGS = ['administrator'];
+
+function AdminLegacyFlagFromTree(array $mappedCodes, string $username, string $flag = ''): bool
+{
+    if (!in_array($flag, ADMIN_STRICT_LEGACY_FLAGS, true)) {
+        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code, $username)) return true;
+        return false;
+    }
+    foreach ($mappedCodes as $code) if (AdminHasMenuPermission($code, $username)) return true;
+    if ($username !== (string)($_SESSION['admin']['user'] ?? '')) return false;
+    foreach (AdminPermissionCodesForPath() as $pageCode) {
+        foreach ($mappedCodes as $code) {
+            if (($pageCode === $code || str_starts_with($pageCode, $code . '.'))
+                && AdminHasMenuNavigationPermission($pageCode, $username)) return true;
+        }
+    }
+    return false;
+}
+
+/*
+ * An operation leaf of the tree (create / edit / status ...). Accounts still on
+ * the old flags keep their current behaviour; tree accounts need one of the
+ * given codes itself or an ancestor of it, not merely a sibling.
+ */
+function AdminTreeOperationAllowed(string ...$codes): bool
+{
+    if (!AdminHasAnyCurrentTreePermission()) return true;
+    foreach ($codes as $code) if (AdminHasMenuPermission($code)) return true;
+    return false;
+}
+
+function AdminRequireTreeOperation(string ...$codes): void
+{
+    if (AdminTreeOperationAllowed(...$codes)) return;
     http_response_code(403);
-    exit('دسترسی شما به این بخش فعال نشده است.');
+    exit('مجوز انجام این عملیات برای شما فعال نشده است.');
 }
 
 function check_national_code($value)
@@ -1188,8 +1265,7 @@ function Permision($tab)
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $mappedCodes = AdminPermissionCodesForLegacy($tab);
     if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission()) {
-        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code)) return true;
-        return false;
+        return AdminLegacyFlagFromTree($mappedCodes, (string)$_SESSION['admin']['user'], $tab);
     }
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);
@@ -1209,8 +1285,7 @@ function PermisionUser($tab, $user)
     if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
     $mappedCodes = AdminPermissionCodesForLegacy($tab);
     if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission((string)$user)) {
-        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
-        return false;
+        return AdminLegacyFlagFromTree($mappedCodes, (string)$user, $tab);
     }
     $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
     $query = $conn->prepare($sql);

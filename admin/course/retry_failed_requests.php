@@ -1,5 +1,10 @@
 #!/usr/bin/php
 <?php
+// Cron job only; never run it from a web request.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
 include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function-quiz.php'; // توابع API شما

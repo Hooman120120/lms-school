@@ -30,12 +30,18 @@ if (!Permision('permision_notpay')) {
     echo '<script>window.close() </script>';
     die();
 }
-if (!isset($_GET['factor'])) { dd('hi');
+// Same own/all rule as the unpaid-invoice list that opens this window.
+if (!AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.unpaid', Permision('installment_permission'))) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();
 }
-if (!CheckFactorNotSuccess($_GET['factor'])) { dd(1);
+if (!isset($_GET['factor'])) {
+    echo '<strong>403</strong>';
+    echo '<script>window.close() </script>';
+    die();
+}
+if (!CheckFactorNotSuccess($_GET['factor'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();

@@ -66,6 +66,12 @@ $activeFilterSuffix = $showAllDeputies
     : ($selectedRole > 0 ? '&role=' . $selectedRole : '');
 
 if (isset($_GET['disable'])) {
+    AdminRequireTreeOperation('staff.manage.edit');
+    $disableTarget = retAdmin((string)$_GET['disable']);
+    if ($disableTarget && (int)$disableTarget->adminrole === 0 && (int)($_SESSION['admin']['adminrole'] ?? -1) !== 0) {
+        http_response_code(403);
+        exit('فقط مدیر می‌تواند حساب مدیر را غیرفعال کند.');
+    }
     if($_GET['disable']!=$_SESSION['admin']['user']) {
         $sql = 'UPDATE dbadmin SET adminactive =? WHERE username=?';
         $query = $conn->prepare($sql);

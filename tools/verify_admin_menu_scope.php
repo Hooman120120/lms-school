@@ -14,13 +14,14 @@ final class PermissionScopeStatement
     public function fetchAll(int $mode = PDO::FETCH_BOTH): array
     {
         $grants = ['students.temporary'];
-        if (str_contains($this->sql, 'permission_code LIKE')) {
+        if (str_contains($this->sql, 'CONCAT(?, ".")')) {
             return array_values(array_filter($grants, fn($code) => str_starts_with($code, $this->params[1] . '.')));
         }
         return $grants;
     }
     public function fetchColumn(): mixed
     {
+        if (count($this->params) === 1) return 1; // tree-account check: this account has grants
         foreach (['students.temporary'] as $grant) {
             if ($grant === ($this->params[1] ?? null) || str_starts_with((string)($this->params[1] ?? ''), $grant . '.')) return 1;
         }

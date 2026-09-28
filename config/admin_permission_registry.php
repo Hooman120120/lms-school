@@ -186,7 +186,7 @@ $registry = [
             ['code'=>'courses.main.create','label'=>'ایجاد پایه','labels'=>['institute'=>'ایجاد دوره فعال'],'legacy'=>'permision_viewcourse','path'=>'admin/course/add-Course.php'],
             ['code'=>'courses.main.demo-create','label'=>'ایجاد فوق برنامه','labels'=>['institute'=>'ایجاد دوره موقت'],'path'=>'admin/democourse/add-democourse.php'],
             ['code'=>'courses.main.active','label'=>'پایه‌های فعال','path'=>'admin/course/Active-course.php','children'=>[
-                ['code'=>'courses.main.active.edit','label'=>'ویرایش پایه'],['code'=>'courses.main.active.delete','label'=>'حذف یا تغییر وضعیت','legacy'=>'permision_deletcourse'],
+                ['code'=>'courses.main.active.edit','label'=>'ویرایش پایه','path'=>'admin/course/add-Course.php','auto_scan'=>false],['code'=>'courses.main.active.delete','label'=>'حذف یا تغییر وضعیت','legacy'=>'permision_deletcourse'],
             ]],
             ['code'=>'courses.main.demo-active','label'=>'کلاس‌های فوق برنامه در حال اجرا','labels'=>['institute'=>'دوره‌های موقت'],'path'=>'admin/democourse/list-democourse.php'],
             ['code'=>'courses.main.archive','label'=>'بایگانی سال‌های قبل','legacy'=>'permision_viewcourse','path'=>'admin/course/unactive-course.php'],
@@ -195,7 +195,7 @@ $registry = [
         ['code'=>'courses.handhug','label'=>'بغل‌دستی‌ها','children'=>[
             ['code'=>'courses.handhug.create','label'=>'ساخت محصول بغل‌دستی','path'=>'admin/handhug/add-handhug.php'],
             ['code'=>'courses.handhug.manage','label'=>'بغل‌دستی‌های فعال','path'=>'admin/handhug/handhug-management.php','children'=>[
-                ['code'=>'courses.handhug.manage.edit','label'=>'ویرایش یا تغییر وضعیت محصول'],
+                ['code'=>'courses.handhug.manage.edit','label'=>'ویرایش یا تغییر وضعیت محصول','path'=>'admin/handhug/add-handhug.php','auto_scan'=>false],
             ]],
             ['code'=>'courses.handhug.archive','label'=>'بایگانی سال‌های قبل بغل‌دستی‌ها','path'=>'admin/handhug/disabled-handhugs.php'],
         ]],
@@ -247,7 +247,7 @@ $registry = [
     ['code'=>'staff','label'=>'همکاران','legacy'=>'permision_viewemploy','children'=>[
         ['code'=>'staff.directory','label'=>'مشاهده همکاران','legacy'=>'permission_staff_view','path'=>'admin/employ/staff-directory.php'],
         ['code'=>'staff.manage','label'=>'مدیریت همکاران','path'=>'admin/employ/listadmin.php','children'=>[
-            ['code'=>'staff.manage.edit','label'=>'ویرایش یا غیرفعال‌سازی همکار'],
+            ['code'=>'staff.manage.edit','label'=>'ویرایش یا غیرفعال‌سازی همکار','path'=>'admin/employ/addemploy.php','auto_scan'=>false],
         ]],
         ['code'=>'staff.teachers','label'=>'مشاهده اساتید','path'=>'admin/employ/listteacher.php'],
         ['code'=>'staff.create','label'=>'ثبت همکار','path'=>'admin/employ/addemploy.php'],

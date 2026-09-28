@@ -14,6 +14,7 @@ class StudentMenuTestStatement
     public function fetchColumn()
     {
         global $studentMenuGrants;
+        if (count($this->args) === 1) return $studentMenuGrants !== [] ? 1 : false; // tree-account check
         foreach ($studentMenuGrants as $grant) {
             if ($this->args[1] === $grant || str_starts_with($this->args[1], $grant . '.')) return 1;
         }
@@ -22,7 +23,7 @@ class StudentMenuTestStatement
     public function fetchAll($mode): array
     {
         global $studentMenuGrants;
-        return str_contains($this->sql, 'LIKE CONCAT')
+        return str_contains($this->sql, 'CONCAT(?, ".")')
             ? array_values(array_filter($studentMenuGrants, fn($grant) => str_starts_with($grant, $this->args[1] . '.')))
             : $studentMenuGrants;
     }

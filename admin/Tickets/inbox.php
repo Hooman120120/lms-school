@@ -46,6 +46,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['close']) and $_GET['close'] != '') {
+    AdminRequireTreeOperation('tickets.inbox.status');
     $ticketid = intval($_GET['close']);
     $update = 'UPDATE ticket_topic SET ticket_status=?,metod=? WHERE ticket_num=?';
     $act = $conn->prepare($update);

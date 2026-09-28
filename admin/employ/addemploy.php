@@ -29,6 +29,44 @@ if (!Permision('permision_viewemploy')) {
     die();
 }
 
+/*
+ * Editing another account needs «ویرایش یا غیرفعال‌سازی همکار», adding one needs
+ * «ثبت همکار». Only the manager may open a manager's account, and an editor who
+ * is not the manager can hand out only permissions they hold themselves.
+ */
+$staffEditorIsTop = (int)($_SESSION['admin']['adminrole'] ?? -1) === 0;
+$staffEditorOnTree = AdminHasAnyCurrentTreePermission();
+if (!empty($_GET['edit'])) {
+    if ($staffEditorOnTree && !AdminHasMenuPermission('staff.manage.edit')) {
+        http_response_code(403);
+        exit('مجوز ویرایش همکاران برای شما فعال نشده است.');
+    }
+    $staffEditTargetRole = $conn->prepare('SELECT adminrole FROM dbadmin WHERE username = ? LIMIT 1');
+    $staffEditTargetRole->execute([(string)$_GET['edit']]);
+    $staffEditTargetRole = $staffEditTargetRole->fetchColumn();
+    if (!$staffEditorIsTop && $staffEditTargetRole !== false && $staffEditTargetRole !== null && (int)$staffEditTargetRole === 0) {
+        http_response_code(403);
+        exit('فقط مدیر می‌تواند حساب مدیر را ویرایش کند.');
+    }
+} elseif ($staffEditorOnTree && !AdminHasMenuPermission('staff.create')) {
+    http_response_code(403);
+    exit('مجوز ثبت همکار برای شما فعال نشده است.');
+}
+
+/** @return string[] The requested codes limited to what this editor may grant; codes they cannot manage stay as they were. */
+function staffGrantablePermissionCodes(array $requested, string $target): array
+{
+    global $conn;
+    if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 0) return $requested;
+    $kept = array_values(array_filter($requested, static fn($code): bool => is_string($code) && AdminHasMenuPermission($code)));
+    $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
+    $stmt->execute([$target]);
+    foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $existing) {
+        if (!AdminHasMenuPermission((string)$existing)) $kept[] = (string)$existing;
+    }
+    return $kept;
+}
+
 $schoolRoles = $conn->query(
     "SELECT id, role_key, title FROM school_admin_roles WHERE is_active = 1 AND role_key <> 'teacher' ORDER BY sort_order ASC, id ASC"
 )->fetchAll(PDO::FETCH_OBJ);
@@ -684,6 +722,10 @@ if (isset($_POST['esave'])) {
         } else {
             $administrator = 0;
         }
+        if (!$staffEditorIsTop) {
+            // «سرپرست اجرایی سامانه» is the manager's to give or take away.
+            $administrator = (int)(retAdmin((string)$_GET['edit'])->administrator ?? 0);
+        }
         if (isset($_POST['manage-history'])) {
             $manage_history = 1;
         } else {
@@ -732,7 +774,7 @@ if (isset($_POST['esave'])) {
         $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
         $schoolRoleUpdate->execute([$schoolRoleId, $_GET['edit']]);
         syncExtendedStaffPermissions($conn, (string)$_GET['edit'], true, $selectedSchoolRoleKey);
-        SyncAdminPermissionGrants((string)$_GET['edit'], $_POST['access_permissions'] ?? []);
+        SyncAdminPermissionGrants((string)$_GET['edit'], staffGrantablePermissionCodes((array)($_POST['access_permissions'] ?? []), (string)$_GET['edit']));
         $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
         $registerClassUpdate->execute([$registerClassPermission, $_GET['edit']]);
         syncStaffCourseAssignments($conn, (string)$_GET['edit'], $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);
@@ -958,6 +1000,7 @@ if (isset($_POST['save'])) {
                 } else {
                     $administrator = 0;
                 }
+                if (!$staffEditorIsTop) $administrator = 0;
                 if (isset($_POST['manage-history'])) {
                     $manage_history = 1;
                 } else {
@@ -1010,7 +1053,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                 $schoolRoleUpdate = $conn->prepare('UPDATE dbadmin SET school_role_id = ? WHERE username = ?');
                 $schoolRoleUpdate->execute([$schoolRoleId, $username]);
                 syncExtendedStaffPermissions($conn, $username, false, $selectedSchoolRoleKey);
-                SyncAdminPermissionGrants($username, $_POST['access_permissions'] ?? []);
+                SyncAdminPermissionGrants($username, staffGrantablePermissionCodes((array)($_POST['access_permissions'] ?? []), $username));
                 $registerClassUpdate = $conn->prepare('UPDATE dbadmin SET register_class_permission = ? WHERE username = ?');
                 $registerClassUpdate->execute([$registerClassPermission, $username]);
                 syncStaffCourseAssignments($conn, $username, $schoolRoleId, $staffCourseCodes, $schoolRoles, $courseScopedRoleKeys);

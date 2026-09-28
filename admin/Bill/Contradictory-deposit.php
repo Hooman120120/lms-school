@@ -31,6 +31,13 @@ if (!Permision('permision_actfactor')) {
     echo '<script>window.close() </script>';
     die();
 }
+// Tree accounts need the «تأیید یا رد فاکتور» operation and the invoice in their own/all scope.
+if (!AdminCanUsePermissionScope('finance.pending.verify', ['permision_actfactor'])
+    || !AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.pending')) {
+    echo '<strong>403</strong>';
+    echo '<script>window.close() </script>';
+    die();
+}
 if (!isset($_GET['factor'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

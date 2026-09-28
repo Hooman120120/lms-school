@@ -33,6 +33,14 @@ if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id']) || (int)$_GET['id']
     http_response_code(400);
     exit('شناسه فاکتور معتبر نیست.');
 }
+// Only invoices the account can see in one of the lists that link here.
+$editFactorId = (int)$_GET['id'];
+if (!AdminCanAccessFinanceFactor($editFactorId, 'finance.pending')
+    && !AdminCanAccessFinanceFactor($editFactorId, 'finance.unpaid', Permision('installment_permission'))
+    && !AdminCanAccessFinanceFactor($editFactorId, 'finance.statement')) {
+    http_response_code(403);
+    exit('به این فاکتور دسترسی ندارید.');
+}
 // if (!CheckFactorNotSuccess($_GET['id'])) {
 //     echo '<strong>403</strong>';
 //     echo '<script>window.close() </script>';

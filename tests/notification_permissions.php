@@ -14,6 +14,7 @@ class NotificationPermissionStatement
     public function fetchColumn()
     {
         global $notificationTestGrants;
+        if (count($this->args) === 1) return $notificationTestGrants !== [] ? 1 : false; // tree-account check
         foreach ($notificationTestGrants as $grant) {
             if ($this->args[1] === $grant || str_starts_with($this->args[1], $grant . '.')) return 1;
         }
@@ -22,7 +23,7 @@ class NotificationPermissionStatement
     public function fetchAll($mode): array
     {
         global $notificationTestGrants;
-        return str_contains($this->sql, 'LIKE CONCAT')
+        return str_contains($this->sql, 'CONCAT(?, ".")')
             ? array_values(array_filter($notificationTestGrants, fn($grant) => str_starts_with($grant, $this->args[1] . '.')))
             : $notificationTestGrants;
     }
