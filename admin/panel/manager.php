@@ -327,7 +327,7 @@ include_once '../../temp.html';
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <a class="card custom-card notification-alarm-card <?= $schoolNotificationCount > 0 ? 'has-alert' : '' ?>"
-                                   href="<?= url('admin/notifications/school_notifications.php') ?>"
+                                   href="<?= url(inst_is('school') ? 'admin/notifications/school_notifications.php' : 'admin/notifications/institute_notifications.php') ?>"
                                    style="color:#0a0a0a;text-decoration:none;cursor:pointer;">
                                     <div class="card-body">
                                         <div class="card-order">

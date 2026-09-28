@@ -98,7 +98,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
 
             <!--here-->
             <li class="nav-item">
-                <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
+                <a class="nav-link" href="<?= url(inst_is('school') ? 'admin/notifications/school_notifications.php' : 'admin/notifications/institute_notifications.php') ?>">
                     <span class="shape1"></span><span class="shape2"></span>
                     <i class="fe fe-bell sidemenu-icon"></i>
                     <span class="sidemenu-label" style="display:inline-flex; align-items:center; gap:12px;">
