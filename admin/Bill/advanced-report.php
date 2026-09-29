@@ -25,13 +25,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.advanced-report')
-    : !Permision('permision_bill')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-$reportScope = AdminRecordVisibility('finance.advanced-report', false);
+$reportScope = AdminScope('finance.advanced-report');
 if ($reportScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ گزارش مالی برای شما فعال نشده است.');
 }
@@ -106,15 +100,16 @@ if (isset($_POST['search'])) {
         $anycourse = 'SELECT * FROM dbfactor WHERE status=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ';
         $quap = $conn->prepare($anycourse);
         $quap->execute([$status, $startdate, $enddate]);
-        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report', false);
+        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report');
     } else {
         $anycourse = 'SELECT * FROM dbfactor INNER JOIN dbcourse ON dbcourse.numfactor=dbfactor.idfactor WHERE status=? AND codecourse=? AND ' . $qdate . ' BETWEEN ? AND ? ORDER BY ' . $qdate . ' DESC ';
         $quap = $conn->prepare($anycourse);
         $quap->execute([$status, $course, $startdate, $enddate]);
-        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report', false);
+        $rey = AdminFilterFinanceFactors($quap->fetchAll(PDO::FETCH_OBJ), 'finance.advanced-report');
     }
 }
 if (isset($_POST['sesave'])) {
+    AdminRequire('finance.advanced-report.save-search');
     $type = $_POST['typefactor'];
     $course = $_POST['course'];
     $start = $_POST['startdate'];
@@ -168,6 +163,7 @@ if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
 }
 
 if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
+    AdminRequire('finance.advanced-report.manage');
     if (CheckFactorNotSuccess($_GET['unverify'])) {
         date_default_timezone_set("Iran");
         $datenow = date("Y-m-d");
@@ -201,6 +197,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
     }
 } // عدم تایید
 if (isset($_GET['cancel']) and $_GET['cancel'] != '') {
+    AdminRequire('finance.advanced-report.manage');
     $factor = queryFactor($_GET['cancel']);
     if ($factor->status != 'موفق') {
         $_SESSION['cancel'] = 'این صورتحساب پرداخت نشده است و امکان استرداد وجود ندارد';
@@ -239,6 +236,7 @@ if (isset($_GET['cancel']) and $_GET['cancel'] != '') {
     header('location: advanced-report.php');
 } // استرداد فاکتور
 if (isset($_GET['delfactor'])) {
+    AdminRequire('finance.advanced-report.manage');
     $factorId = intval($_GET['delfactor']);
     $factor = queryFactor($factorId);
     if ($factor->status != 'موفق' and $factor->status != 'مسترد شده') {

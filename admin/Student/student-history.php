@@ -134,7 +134,7 @@ if (!function_exists('fetchTalkSecondsForRange')) {
 }
 
 // -------------------- POST HANDLER: course-status --------------------
-if (Permision('history_permission')) {
+if (AdminCan('students.record.history.manage')) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course-status'])) {
 
         if (!isset($_POST['token']) || $_SESSION['token'] !== $_POST['token']) {
@@ -223,7 +223,7 @@ if (Permision('history_permission')) {
     }
 }
 
-if (Permision('history_permission')) {
+if (AdminCan('students.record.history.manage')) {
     if (isset($_GET['delm'], $_GET['Id'])) {
         $msgId = (int)$_GET['delm'];
         $stdIdDel = $_GET['Id'];
@@ -254,7 +254,7 @@ if (Permision('history_permission')) {
 }
 
 // -------------------- POST HANDLER: student-status --------------------
-if (Permision('history_permission')) {
+if (AdminCan('students.record.history.manage')) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['student-status'])) {
 
         $student_id = trim($_POST['student_id'] ?? '');
@@ -548,7 +548,7 @@ if (!empty($years) && $hasNumbers) {
 }
 
 // DELETE HANDLERS
-if (Permision('history_permission')) {
+if (AdminCan('students.record.history.manage')) {
     if (isset($_GET['del_course'], $_GET['Id'])) {
         $courseId = (int)$_GET['del_course'];
         $stdIdDel = trim($_GET['Id']);
@@ -563,7 +563,7 @@ if (Permision('history_permission')) {
     }
 }
 
-if (Permision('history_permission')) {
+if (AdminCan('students.record.history.manage')) {
     if (isset($_GET['del_status'], $_GET['Id'])) {
         $statusId = (int)$_GET['del_status'];
         $stdIdDel = trim($_GET['Id']);
@@ -635,7 +635,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     unset($postCopy['token']);
     error_log($logPrefix . " POST data: " . print_r($postCopy, true) . "\n", 3, $debugLog);
 
-    if (!Permision('history_permission')) {
+    if (!AdminCan('students.record.history.manage')) {
         http_response_code(403);
         die('دسترسی غیرمجاز');
     }
@@ -954,7 +954,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                                 </span>
                                                                     <?php endif; ?>
 
-                                                                    <?php if (Permision('history_permission')): ?>
+                                                                    <?php if (AdminCan('students.record.history.manage')): ?>
                                                                         <a href="?Id=<?= htmlspecialchars($_GET['Id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>&del_course=<?= (int)($row['id'] ?? 0); ?>"
                                                                            onclick="return confirm('آیا از حذف این وضعیت آزمون مطمئن هستید؟')"
                                                                            title="حذف">
@@ -1028,7 +1028,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                                     <?php endif; ?>
                                                                 </div>
 
-                                                                <?php if (Permision('history_permission')): ?>
+                                                                <?php if (AdminCan('students.record.history.manage')): ?>
                                                                     <a href="?Id=<?= htmlspecialchars($_GET['Id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>&del_status=<?= (int)($row['id'] ?? 0); ?>"
                                                                        onclick="return confirm('آیا از حذف این رکورد نمرات/نظرات مطمئن هستید؟')"
                                                                        title="حذف">
@@ -1171,7 +1171,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                             </div>
                                         </div>
 
-                                        <?php if (Permision('history_permission')) { ?>
+                                        <?php if (AdminCan('students.record.history.manage')) { ?>
                                             <div class="mb-2 d-flex justify-content-between">
                                                 <button type="button"
                                                         class="btn btn-sm btn-primary"
@@ -1421,13 +1421,13 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                                                 <?php
                                                                                 $datetime = trim(($msg['message_date'] ?? '') . ' ' . ($msg['message_time'] ?? ''));
 
-                                                                                if (Permision('history_permission')) {
+                                                                                if (AdminCan('students.record.history.manage')) {
                                                                                     ?>
                                                                                     <a href="?Id=<?= htmlspecialchars($_GET['Id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>&delm=<?= (int)$msg['id']; ?>" onclick="return confirm('آیا با حذف این پیام موافقید؟')" title="حذف">
                                                                                         <i class="fe fe-trash-2 text-danger"></i>
                                                                                     </a>
                                                                                     <?php
-                                                                                } elseif (($msg['sender_type'] ?? '') === 'admin' && !Permision('permision_manage_chat')) {
+                                                                                } elseif (($msg['sender_type'] ?? '') === 'admin' && !AdminCan('students.record.history.staff-messages')) {
                                                                                     if (!empty($datetime) && (time() - strtotime($datetime) <= 3600)) {
                                                                                         ?>
                                                                                         <a href="?Id=<?= htmlspecialchars($_GET['Id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>&delm=<?= (int)$msg['id']; ?>" onclick="return confirm('آیا با حذف این پیام موافقید؟')" title="حذف">
@@ -1526,7 +1526,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                         <th>توضیح (در صورت نیاز)</th>
                                                         <th>پاسخ‌دهنده</th>
                                                         <th>تاریخ پاسخ</th>
-                                                        <?php if (Permision('history_permission')): ?>
+                                                        <?php if (AdminCan('students.record.history.manage')): ?>
                                                             <th>عملیات</th>
                                                         <?php endif; ?>
                                                     </tr>
@@ -1545,7 +1545,7 @@ while ($optRow = $optStmt->fetch(PDO::FETCH_ASSOC)) {
                                                             <td><?= $reason ?: '-' ?></td>
                                                             <td><?= $operator ?: '-' ?></td>
                                                             <td><?= $answerDate ?></td>
-                                                            <?php if (Permision('history_permission')): ?>
+                                                            <?php if (AdminCan('students.record.history.manage')): ?>
                                                                 <td>
                                                                     <button class="btn btn-sm btn-outline-warning edit-answer-btn"
                                                                             data-answer-id="<?= (int)$ans['answer_id'] ?>"

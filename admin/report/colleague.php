@@ -25,15 +25,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_reportstudent')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['call']) and $_GET['call'] != '') {
+    AdminRequire('reports.staff.call');
     $factorId = queryFactor($_GET['call']);
     if ($factorId->useradder != NULL) {
         $user = $factorId->useradder;
@@ -53,6 +46,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
+    AdminRequire('reports.staff.call');
     $semat = 'دانش آموز';
     $qau = retPerson($_GET['call-student']);
     $tel = $qau->tel1;

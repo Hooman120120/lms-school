@@ -35,7 +35,6 @@ if (!isset($_GET['id'])) {
 }
 $attendanceCourseId = (int)$_GET['id'];
 $attendanceClassId = isset($_GET['class']) ? (int)$_GET['class'] : 0;
-RequireTeacherPermission('teacher_perm_attendance', url('admin/course/Active-course.php'));
 if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3) {
     if ($attendanceClassId <= 0 || !TeacherHasClassAccess($attendanceClassId)) {
         http_response_code(403);
@@ -61,6 +60,7 @@ if (!isset($_GET['demo'])) {
     }
 }
 if (isset($_POST['addatendance'])) {
+    AdminRequire('courses.main.active.classes.attendance.manage');
     if ($_SESSION['token'] == $_POST['token']) {
         $dars = trim($_POST['dars']);
         $codecourse = intval($_GET['id']);
@@ -315,6 +315,7 @@ if (isset($_POST['addatendance'])) {
     }
 }
 if (isset($_POST['updateAtt'])) {
+    AdminRequire('courses.main.active.classes.attendance.manage');
     $id = $_GET['id'];
     $classname = $_POST['dars'];
     $duedate = $_POST['datestart'];
@@ -328,6 +329,7 @@ if (isset($_POST['updateAtt'])) {
     die();
 }
 if (isset($_GET['edit'])) {
+    AdminRequire('courses.main.active.classes.attendance.manage');
     $sql = 'SELECT * FROM tbl_attendanced WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['edit']]);
@@ -338,6 +340,7 @@ if (isset($_GET['edit'])) {
 }
 
 if (isset($_GET['delete'])) {
+    AdminRequire('courses.main.active.classes.attendance.manage');
     $del = intval($_GET['delete']);
     $sql = 'DELETE FROM tbl_attendanced WHERE id=?';
     $query = $conn->prepare($sql);
@@ -394,7 +397,7 @@ include_once '../../temp.html';
                         $stmt->execute([$_GET['id']]);
                         $course = $stmt->fetch(PDO::FETCH_OBJ);
                     } ?>
-                    <?php if (Permision('permision_viewcourse')) { ?>
+                    <?php if (AdminCan('courses.main.active.classes.attendance.manage')) { ?>
                     <div class="col-lg-3">
                         <div class="card custom-card">
 
@@ -590,7 +593,7 @@ include_once '../../temp.html';
                             } ?>
                         </div>
                     </div>
-                    <div <?php if (Permision('permision_viewcourse')) { ?> class="col-lg-9" <?php } ?>
+                    <div <?php if (AdminCan('courses.main.active.classes.attendance.manage')) { ?> class="col-lg-9" <?php } ?>
                             style="width: 100%; ">
                         <div class="card custom-card">
                             <div class="card-body">
@@ -629,7 +632,7 @@ include_once '../../temp.html';
                                         <tr>
                                             <th>ردیف</th>
                                             <th>مشاهده</th>
-                                            <?php if (Permision('permision_viewcourse')) { ?>
+                                            <?php if (AdminCan('courses.main.active.classes.attendance.export')) { ?>
                                                 <th>اکسل</th>
                                             <?php } ?>
                                             <th>نام درس و جلسه</th>
@@ -637,7 +640,7 @@ include_once '../../temp.html';
                                                 <th>گروه مربوطه</th>
                                             <?php } ?>
                                             <th>تاریخ برگزاری</th>
-                                            <?php if (Permision('permision_viewcourse')) { ?>
+                                            <?php if (AdminCan('courses.main.active.classes.attendance.manage')) { ?>
                                                 <th>حاضرین</th>
                                                 <th>غائبین</th>
                                                 <th>حذف</th>
@@ -670,7 +673,7 @@ include_once '../../temp.html';
                                                             <i class="fe fe-eye"></i>
                                                         </div>
                                                     </td>
-                                                    <?php if (Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.classes.attendance.export')) { ?>
                                                         <td class="wd-15">
                                                             <a class="btn btn-sm ripple btn-success btn-icon"
                                                                href="export-attendance.php?code=<?php echo $plr->id ?>">
@@ -723,7 +726,7 @@ include_once '../../temp.html';
                                                         );
                                                     } ?>
 
-                                                    <?php if (Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.classes.attendance.manage')) { ?>
 
                                                         <td class="wd-15"> <?php echo $count['hozor'] ?></td>
 

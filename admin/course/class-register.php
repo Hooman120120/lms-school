@@ -46,7 +46,6 @@ $school_role_key = SchoolStaffRoleKey((string)($_SESSION['admin']['user'] ?? '')
 if ($class_id <= 0) {
     die('فاقد کلاس');
 }
-RequireTeacherPermission('teacher_perm_attendance', url('admin/course/Active-course.php'));
 if ($is_teacher && !TeacherHasClassAccess($class_id)) {
     http_response_code(403);
     exit('شما به دفتر کلاسی این کلاس دسترسی ندارید.');
@@ -55,16 +54,10 @@ if (!$is_teacher && StaffCourseScopeRequired() && !StaffHasClassAccess($class_id
     http_response_code(403);
     exit('شما به دفتر کلاسی این پایه و کلاس دسترسی ندارید.');
 }
-if (!$is_teacher && !Permision('permision_viewcourse') && !Permision('register_class_permission')) {
-    http_response_code(403);
-    exit('شما به دفتر کلاسی دسترسی ندارید.');
-}
 
 // مدیر، معاون کل و معاون پایه در دامنه مجاز خود مدیریت کامل دارند.
 // معلم نیز فقط رکوردهای متعلق به خودش را مدیریت می‌کند؛ سایر سمت‌ها به مجوز صریح نیاز دارند.
-$has_full_permission = $is_teacher
-    || in_array($school_role_key, ['manager', 'general_deputy', 'grade_deputy'], true)
-    || Permision('register_class_permission');
+$has_full_permission = AdminCan('courses.main.active.classes.register.full');
 
 // استاد (نقش ۳) فقط کار خودش را می بیند؛ نقش های بالاتر همه چیز را می بینند
 $sees_all_columns = !$is_teacher;

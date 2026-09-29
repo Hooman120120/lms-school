@@ -35,7 +35,7 @@ $sq = 'SELECT administrator FROM dbadmin WHERE username = ? LIMIT 1';
 $st = $conn->prepare($sq);
 $st->execute([$me]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
-$isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
+$isAdministrator = AdminCan('notifications.all-records');
 
 /**
  * Ticket linkage:
@@ -53,6 +53,7 @@ $ticketType = 'new_students';
    POST actions for "اقدام"
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('notifications.operator.new-students.act');
     $action = $_POST['action'] ?? '';
     $csrfOk = isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? '');
 

@@ -24,14 +24,11 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 //* End Check Session JUST ONE Session
 
 
 if (isset($_POST['special_user_excel'])) {
+    AdminRequire('support.reports.special-users.excel');
     $_SESSION['special_user_excel'] = ['export' => true];
     error_log("Session set for special_user_excel");
     header('Location: ../Bill/execel.php');
@@ -76,7 +73,7 @@ include_once '../../temp.html';
                                     </div>
                                     <?php
                                     $currentUser = $_SESSION['admin']['user'] ?? '';
-                                    if (PermisionUser('excel_permission', $currentUser)):
+                                    if (AdminCan('support.reports.special-users.excel')):
                                         ?>
                                         <form action="" method="post" style="display: inline;">
                                             <input type="hidden" name="special_user_excel" value="1">

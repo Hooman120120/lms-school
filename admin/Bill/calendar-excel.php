@@ -23,13 +23,9 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     http_response_code(401);
     exit('نشست کاربری معتبر نیست.');
 }
-if (!Permision('permission_calendar')) {
-    http_response_code(403);
-    exit('مجوز دریافت خروجی تقویم برای شما تعریف نشده است.');
-}
 
 $username = $_SESSION['admin']['user'];
-$stmt = $conn->prepare("SELECT idadmin, adminrole, permission_calendar FROM dbadmin WHERE username = ?");
+$stmt = $conn->prepare("SELECT idadmin, adminrole FROM dbadmin WHERE username = ?");
 $stmt->execute([$username]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$admin) {

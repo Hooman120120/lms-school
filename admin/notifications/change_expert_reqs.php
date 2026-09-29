@@ -26,7 +26,7 @@ if (session_id() != $re['session_id']) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
+$isImpersonate = AdminCan('notifications.change-expert.pick-operator');
 //$allowedTypes = [2, 1];
 //$check = $conn->query("SELECT CURDATE() AS today")->fetch(PDO::FETCH_ASSOC);
 
@@ -37,6 +37,7 @@ $stmtReqs->execute(['pending']);
 $reqs = $stmtReqs->fetchAll(PDO::FETCH_OBJ);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reject') {
+    AdminRequire('notifications.change-expert.decide');
 
     $username = trim($_POST['codemeli'] ?? '');
     $reqId = $_POST['req_id'];
@@ -61,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'rejec
 }
 
 if (isset($_POST['change-expert'])) {
+    AdminRequire('notifications.change-expert.decide');
     $suggestedAdmin = $_POST['new_admin_id'];
     $username = $_POST['codemeli'];
     $reqId = $_POST['req_id'];
@@ -76,6 +78,7 @@ if (isset($_POST['change-expert'])) {
 }
 
 if (isset($_GET['ajax_get_admins'])) {
+    AdminRequire('notifications.change-expert.decide');
     $codemeli = $_GET['codemeli'];
 
     // Your logic: Find the person who originally requested the change

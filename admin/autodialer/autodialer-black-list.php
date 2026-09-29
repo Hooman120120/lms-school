@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     die();
 }
 
-if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.blacklist', ['autodialer'])) {
+if (!AdminCanSee('public-relations.safe-call.autodialer.blacklist')) {
     echo "دسترسی ندارید.";
     die();
 }
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ADD / EDIT (single modal)
     if (isset($_POST['blacklist_submit'])) {
+        AdminRequire('public-relations.safe-call.autodialer.blacklist.create');
 
         $mode = trim((string)($_POST['mode'] ?? 'add')); // add|edit
         $id = (int)($_POST['id'] ?? 0);
@@ -95,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // DELETE
     if (isset($_POST['blacklist_delete_submit'])) {
+        AdminRequire('public-relations.safe-call.autodialer.blacklist.delete');
         $id = (int)($_POST['id'] ?? 0);
         $phone = trim((string)($_POST['phone'] ?? ''));
         $phone = preg_replace('/\s+/', '', $phone);

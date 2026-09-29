@@ -9,10 +9,6 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
-if (!Permision('permision_viewdocument')) {
-    header('location: ' . url('admin/index.php'));
-    exit;
-}
 
 if (empty($_SESSION['special_letter_csrf'])) {
     $_SESSION['special_letter_csrf'] = bin2hex(random_bytes(24));
@@ -23,6 +19,7 @@ $errorMessage = '';
 
 // مدیریت ارسال نامه
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('documents.special-letters.send');
     $token = (string)($_POST['csrf'] ?? '');
     if (!hash_equals((string)$_SESSION['special_letter_csrf'], $token)) {
         $errorMessage = 'خطای امنیتی (CSRF Token نامعتبر). لطفا دوباره تلاش کنید.';

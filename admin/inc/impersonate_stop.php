@@ -14,12 +14,7 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 
-// Permission check: only accounts allowed to impersonate can stop
-$canImpersonateSession = !empty($_SESSION['admin']['can_impersonate']) && (int)$_SESSION['admin']['can_impersonate'] === 1;
-if (!$canImpersonateSession) {
-    http_response_code(403);
-    exit('Not allowed');
-}
+// Returning to one's own account needs no permission.
 
 // CSRF protection
 $csrf = $_POST['csrf'] ?? '';

@@ -29,7 +29,6 @@ if (session_id() != $re['session_id']) {
 $sessionUser = $_SESSION['admin']['user'];
 $urlUser     = trim($_GET['user'] ?? '');
 $urlType     = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
 
 $type = (int)($_GET['type'] ?? 0);
 
@@ -40,16 +39,10 @@ if (!in_array($type, $allowedTypes, true)) {
 }
 
 $currentUser = $urlUser === '' ? $sessionUser : $urlUser;
-if (AdminHasAnyCurrentTreePermission()) {
-    $scopeCode = 'dashboard.summary.overview.desktop.seller-users';
-    $scopeLeaf = $currentUser === $sessionUser ? '.own' : '.others';
-    if (!AdminHasMenuPermission($scopeCode . $scopeLeaf) && !($scopeLeaf === '.own' && AdminHasMenuPermission($scopeCode . '.others'))) {
-        http_response_code(403);
-        exit('دسترسی به ثبت‌نام‌های این اپراتور تعریف نشده است.');
-    }
-} elseif ($currentUser !== $sessionUser && !$isImpersonate) {
+$sellerScope = $currentUser === $sessionUser ? 'dashboard.reports.seller-users.own' : 'dashboard.reports.seller-users.others';
+if (!AdminCanAny($sellerScope, 'dashboard.reports.seller-users.others')) {
     http_response_code(403);
-    exit('دسترسی ندارید');
+    exit('دسترسی به ثبت‌نام‌های این کارشناس تعریف نشده است.');
 }
 
 $users = [];

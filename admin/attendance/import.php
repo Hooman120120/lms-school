@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('attendance.import', ['administrator'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 if (empty($_SESSION['attendance_csrf'])) $_SESSION['attendance_csrf'] = bin2hex(random_bytes(16));
 $csrf = $_SESSION['attendance_csrf'];
@@ -91,6 +87,7 @@ $cancelPending = static function () use (&$pending): void {
 };
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('attendance.import.run');
     if (!hash_equals($csrf, (string) ($_POST['csrf'] ?? ''))) {
         $error = 'نشست منقضی شده است؛ دوباره تلاش کنید.';
     } elseif (isset($_POST['cancel_import'])) {

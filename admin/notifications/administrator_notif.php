@@ -26,7 +26,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 $currentUser = (string)$_SESSION['admin']['user'];
-$administrator = (int)($row['administrator'] ?? 0);
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 $studentOpChangeCount = countStudentOperatorChanged( $currentUser, (int)$administrator);
 
 if (!function_exists('countNewStudent')) {
@@ -82,8 +82,7 @@ if (!function_exists('countNewStudent')) {
 }
 $type = filter_input(INPUT_GET, 'type', FILTER_VALIDATE_INT);
 $deputyPermissions = [1 => 'executive', 2 => 'education', 3 => 'sales', 4 => 'technical'];
-if (inst_is('institute') && AdminHasAnyCurrentTreePermission()
-    && (!isset($deputyPermissions[$type]) || !AdminHasMenuPermission('institute-notifications.deputy.' . $deputyPermissions[$type]))) {
+if (!isset($deputyPermissions[$type]) || !AdminCan('notifications.deputy.' . $deputyPermissions[$type])) {
     http_response_code(403);
     exit('دسترسی اعلان‌های این معاونت فعال نشده است.');
 }
@@ -227,8 +226,8 @@ include_once '../../temp.html';
                 <!-- ======================================================== -->
 
                 <div class="row row-sm mg-b-20">
-                    <?php $allowed_users_inadministrators = [0,51,52];
-                    if (in_array($_SESSION['admin']['adminrole']  , $allowed_users_inadministrators)) { ?>
+                    <?php
+                    if (AdminCan('notifications.deputy.block-support')) { ?>
                         <div class="col-12 ">
                             <?php if ($type == 1 or $type == 2 ) { ?>
                             <div class="card custom-card" style="background-color: #EAEDF0; ">
@@ -372,8 +371,8 @@ include_once '../../temp.html';
                     <?php } ?>
                 </div>
                 <div class="row row-sm mg-b-20">
-                    <?php $allowed_users_inadministrators = [0, 51, 52, 53];
-                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_inadministrators)) { ?>
+                    <?php
+                    if (AdminCan('notifications.deputy.block-sales')) { ?>
                     <div class="col-12 ">
                         <?php if ($type == 1 or $type == 3 ) { ?>
                         <div class="card custom-card" style="background-color: #EAEDF0; ">
@@ -432,8 +431,8 @@ include_once '../../temp.html';
                     </div>
                 </div>
                 <div class="row row-sm mg-b-20">
-                    <?php $allowed_users_inadministrators = [0, 51, 52, 53, 54];
-                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_inadministrators)) { ?>
+                    <?php
+                    if (AdminCan('notifications.deputy.block-other')) { ?>
                     <div class="col-12 ">
                         <?php if ($type == 4) { ?>
                         <div class="card custom-card" style="background-color: #EAEDF0; ">

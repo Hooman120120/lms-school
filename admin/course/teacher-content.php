@@ -27,7 +27,6 @@ if ((int)($_SESSION['admin']['adminrole'] ?? -1) !== 3) {
     exit(m('perm.teacher_only_path'));
 }
 
-RequireTeacherPermission('teacher_perm_content', url('admin/course/Active-course.php'));
 
 $classId = filter_input(INPUT_GET, 'class_id', FILTER_VALIDATE_INT);
 $contentId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

@@ -49,7 +49,6 @@ $is_teacher = ((int)$adminrole === 3);
 if ($class_id <= 0) {
     die('فاقد کلاس');
 }
-RequireTeacherPermission('teacher_perm_attendance', url('admin/course/Active-course.php'));
 if ($is_teacher && !TeacherHasClassAccess($class_id)) {
     http_response_code(403);
     exit('شما به دفتر کلاسی این کلاس دسترسی ندارید.');
@@ -57,10 +56,6 @@ if ($is_teacher && !TeacherHasClassAccess($class_id)) {
 if (!$is_teacher && StaffCourseScopeRequired() && !StaffHasClassAccess($class_id)) {
     http_response_code(403);
     exit('شما به دفتر کلاسی این پایه و کلاس دسترسی ندارید.');
-}
-if (!$is_teacher && !Permision('permision_viewcourse') && !Permision('register_class_permission')) {
-    http_response_code(403);
-    exit('شما به خروجی دفتر کلاسی دسترسی ندارید.');
 }
 
 // استاد فقط ستون ها و رکوردهای خودش را می بیند، نقش های بالاتر همه را

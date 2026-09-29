@@ -20,12 +20,6 @@ if (session_id() != $re['session_id']) {
 }
 $viewerUsername = (string)($_SESSION['admin']['user'] ?? '');
 $viewerSchoolRole = SchoolStaffRoleKey($viewerUsername);
-$viewerMayManageCalls = in_array($viewerSchoolRole, ['manager', 'general_deputy', 'counselor'], true)
-    || Permision('permision_viewalert') || Permision('permision_suporter');
-if (!$viewerMayManageCalls) {
-    http_response_code(403);
-    exit('دسترسی اعلان تماس برای سمت شما تعریف نشده است.');
-}
 
 function secToHMS($seconds): string {
     $seconds = is_numeric($seconds) ? (int)$seconds : 0;

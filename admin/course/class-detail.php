@@ -36,10 +36,10 @@ if (!isset($_GET['class_id']) || empty($_GET['class_id'])) {
 }
 $class_id = intval($_GET['class_id']);
 $isTeacher = (int)($_SESSION['admin']['adminrole'] ?? -1) === 3;
-$teacherCanContent = TeacherPermission('teacher_perm_content');
-$teacherCanStudents = TeacherPermission('teacher_perm_students');
-$teacherCanHomework = TeacherPermission('teacher_perm_homework');
-$teacherCanAttendance = TeacherPermission('teacher_perm_attendance');
+$teacherCanContent = AdminCanSee('courses.main.active.content');
+$teacherCanStudents = AdminCanSee('courses.main.active.classes.students');
+$teacherCanHomework = AdminCanSee('courses.main.active.classes.homeworks');
+$teacherCanAttendance = AdminCanSee('courses.main.active.classes.attendance') || AdminCanSee('courses.main.active.classes.register');
 
 if ($isTeacher && !$teacherCanContent && !$teacherCanStudents && !$teacherCanHomework && !$teacherCanAttendance) {
     http_response_code(403);

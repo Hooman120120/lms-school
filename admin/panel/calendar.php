@@ -1,21 +1,20 @@
 <?php
-$stmt = $conn->prepare("SELECT idadmin, adminrole, permission_calendar FROM dbadmin WHERE username = ?");
+$stmt = $conn->prepare("SELECT idadmin, adminrole FROM dbadmin WHERE username = ?");
 $stmt->execute([$_SESSION['admin']['user']]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId = $admin['idadmin'];
 $adminRole = $admin['adminrole'];
-// Rights come from the permission tree (executive.calendar, .create, .edit), with
-// the legacy dbadmin.permission_calendar column as the fallback for old accounts.
-$calendarCanCreate = AdminCanUsePermissionScope('executive.calendar.create', ['permission_calendar']);
-$calendarCanEdit = AdminCanUsePermissionScope('executive.calendar.edit', ['permission_calendar']);
+// Rights come from the permission tree: executive.calendar.create / .edit.
+$calendarCanCreate = AdminCan('executive.calendar.create');
+$calendarCanEdit = AdminCan('executive.calendar.edit');
 // $permission_calendar = manages the calendar: sees every event, the toolbar and the dialogs.
-$permission_calendar = ($calendarCanCreate || $calendarCanEdit || Permision('permission_calendar')) ? 1 : 0;
+$permission_calendar = ($calendarCanCreate || $calendarCanEdit) ? 1 : 0;
 // Calendar groups are the پایه‌ها (school and institute alike): one column each in
 // the weekly view, one stacked month each in the monthly view.
 $gw = 'پایه';
 calendarSeedDefaultGrades($conn, (int)$adminId);
 $weekGroups = $conn->query("SELECT id, title, color, color2 FROM calendar_groups WHERE is_grade = 1 ORDER BY " . calendarGroupsOrderSql())->fetchAll(PDO::FETCH_ASSOC);
-if (isset($dashboardCalendarKinds) && AdminHasAnyCurrentTreePermission()) {
+if (isset($dashboardCalendarKinds)) {
     // The index widget is view-only for tree accounts; editing belongs to the
     // separately permissioned executive/academic calendar pages.
     $permission_calendar = 0;

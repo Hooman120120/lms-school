@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 require_once BASE_PATH . '/inc/temporary_student_registration.php';
 $temporaryRegistration = inst_is('school') ? HandleTemporaryStudentRegistration(true) : null;
 if (!empty($temporaryRegistration['forbidden'])) {
@@ -267,7 +263,7 @@ $demoCoursesLabel = inst_is('institute') ? 'دوره‌های موقت' : 'فو�
                                                         </button>
                                                     </div>
                                                 </form>
-                                                <?php if (Permision('excel_permission')) { ?>
+                                                <?php if (AdminCan('students.temporary.enrolment.excel')) { ?>
                                                     <div class="card-body">
                                                         <form method="post" enctype="multipart/form-data" action="">
                                                             <div class="d-flex flex-column mb-3">

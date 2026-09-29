@@ -25,16 +25,9 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.cards')
-    : !Permision('permision_viewbill')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
-$usesPermissionTree = AdminHasAnyCurrentTreePermission();
-$canCreateCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.create');
-$canEditCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.edit');
-$canDeleteCard = !$usesPermissionTree || AdminHasMenuPermission('finance.cards.delete');
+$canCreateCard = AdminCan('finance.cards.create');
+$canEditCard = AdminCan('finance.cards.edit');
+$canDeleteCard = AdminCan('finance.cards.delete');
 if (isset($_POST['save'])) {
     if (!$canCreateCard) {
         http_response_code(403);

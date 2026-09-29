@@ -19,28 +19,22 @@ $notificationHome = 'admin/notifications/' . (inst_is('institute') ? 'institute_
 $notificationList = 'admin/notifications/' . (inst_is('institute') ? 'institute_notification_list.php' : 'school_notification_list.php');
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $isNotificationListPage = !empty($_GET['list']);
-$notificationUsesTree = AdminHasAnyCurrentTreePermission();
 $directNotificationCount = CountSchoolDirectNotifications($currentUser, false);
-$notificationCan = static function (string $suffix) use ($notificationUsesTree, $notificationPrefix): bool {
-    if (!$notificationUsesTree) return true;
+$notificationCan = static function (string $suffix) use ($notificationPrefix): bool {
     // A grant for a page operation must also reveal that page's entry card.
     return str_starts_with($suffix, 'information.') || str_starts_with($suffix, 'financial.')
-        ? AdminHasMenuNavigationPermission($notificationPrefix . '.' . $suffix)
-        : AdminHasMenuPermission($notificationPrefix . '.' . $suffix);
+        ? AdminCanSee($notificationPrefix . '.' . $suffix)
+        : AdminCan($notificationPrefix . '.' . $suffix);
 };
-$notificationSectionCan = static function (string $suffix) use ($notificationUsesTree, $notificationPrefix): bool {
-    return !$notificationUsesTree || AdminHasMenuNavigationPermission($notificationPrefix . '.' . $suffix);
-};
-if ($notificationUsesTree && !AdminHasMenuNavigationPermission($notificationPrefix) && $directNotificationCount === 0) {
+$notificationSectionCan = static fn(string $suffix): bool => AdminCanSee($notificationPrefix . '.' . $suffix);
+if (!AdminCanSee($notificationPrefix) && $directNotificationCount === 0) {
     http_response_code(403);
     exit('دسترسی شما به اعلان‌ها فعال نشده است.');
 }
 $allowedTypes = array_values(array_intersect(SchoolNotificationAllowedTypes(), array_keys(SchoolNotificationCatalog())));
-if ($notificationUsesTree) {
-    $allowedTypes = array_values(array_filter($allowedTypes, static fn(string $type): bool =>
-        IsSchoolDirectNotificationType($type)
-        || AdminHasMenuPermission($notificationPrefix . '.categories.' . $type)));
-}
+$allowedTypes = array_values(array_filter($allowedTypes, static fn(string $type): bool =>
+    IsSchoolDirectNotificationType($type)
+    || AdminCan($notificationPrefix . '.categories.' . $type)));
 $canCurrentNotifications = $directNotificationCount > 0
     || $notificationCan('current')
     || ($allowedTypes !== [] && $notificationSectionCan('categories'));
@@ -208,7 +202,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                 <?php if (!SchoolNotificationsReady()): ?>
                     <div class="alert alert-warning">ساختار دیتابیس اعلان‌ها هنوز نصب نشده است. migration مربوط به اعلان‌ها را اجرا کنید.</div>
                 <?php else: ?>
-                    <?php if (!$isNotificationListPage && $notificationSectionCan('information') && in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy', 'counselor', 'financial_deputy'], true)): ?>
+                    <?php if (!$isNotificationListPage && $notificationSectionCan('information')): ?>
                         <div class="card custom-card mb-3">
                             <div class="card-header border-bottom-0">
                                 <h5 class="card-title mb-0 notification-heading">اعلان‌های اطلاع‌رسانی
@@ -222,7 +216,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy'], true)): ?>
+                                    <?php if (true): ?>
                                         <?php if ($notificationCan('information.rules')): ?><div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-secondary btn-block text-right p-3" href="<?= url('admin/notifications/notif_rule_management.php') ?>">
                                                 <i class="fe fe-sliders ml-2"></i> کنترل قوانین اعلان تماس
@@ -241,7 +235,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                         </div><?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php if ($schoolRoleKey === 'counselor' && $notificationCan('information.my-calls')): ?>
+                                    <?php if ($notificationCan('information.my-calls')): ?>
                                         <div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-primary btn-block text-right p-3" href="<?= url('admin/notifications/notifications.php') ?>">
                                                 <i class="fe fe-phone-call ml-2"></i> <?= inst_is('institute') ? 'اعلان تماس فراگیران من' : 'اعلان تماس دانش‌آموزان من' ?>
@@ -250,16 +244,8 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if ($schoolRoleKey === 'counselor' && $notificationCan('information.tickets')): ?>
-                                        <div class="col-md-6 col-xl-4 mb-3">
-                                            <a class="btn btn-outline-danger btn-block text-right p-3" href="<?= url('admin/notifications/thread_list.php') ?>">
-                                                <i class="fe fe-inbox ml-2"></i> تیکت‌های اعلان تماس
-                                                <?php if ($legacyCounts['contact_ticket'] > 0): ?><span class="badge badge-danger float-left"><?= (int)$legacyCounts['contact_ticket'] ?></span><?php endif; ?>
-                                            </a>
-                                        </div>
-                                    <?php endif; ?>
 
-                                    <?php if (in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy'], true)): ?>
+                                    <?php if (true): ?>
                                         <?php if ($notificationCan('information.sms')): ?><div class="col-md-6 col-xl-4 mb-3">
                                             <a class="btn btn-outline-info btn-block text-right p-3" href="<?= url('admin/notifications/unread_sms.php') ?>">
                                                 <i class="fe fe-message-square ml-2"></i> پیامک‌های جدید
@@ -422,7 +408,7 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                     <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if (!$isNotificationListPage && $notificationSectionCan('financial') && in_array($schoolRoleKey, ['manager', 'general_deputy', 'financial_deputy'], true)): ?>
+                    <?php if (!$isNotificationListPage && $notificationSectionCan('financial')): ?>
                         <div class="card custom-card mt-4">
                             <div class="card-header border-bottom-0">
                                 <h5 class="card-title mb-0 notification-heading">اعلان‌های مالی
@@ -435,10 +421,10 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                 <p class="text-muted mb-0 mt-1">موارد مالی منتظر بررسی و تأیید</p>
                             </div>
                             <div class="card-body"><div class="row">
-                                <?php if ($notificationCan('financial.invoices') && (in_array($schoolRoleKey, ['manager', 'general_deputy'], true) || ($schoolRoleKey === 'financial_deputy' && Permision('permision_actfactor')))): ?>
+                                <?php if ($notificationCan('financial.invoices')): ?>
                                     <div class="col-md-6 col-xl-4 mb-3"><a class="btn btn-outline-warning btn-block text-right p-3" href="<?= url('admin/notifications/verify_by_manager.php') ?>"><i class="fe fe-file-text ml-2"></i> فاکتورهای منتظر تأیید<?php if ($legacyCounts['pending_invoice'] > 0): ?><span class="badge badge-warning float-left"><?= (int)$legacyCounts['pending_invoice'] ?></span><?php endif; ?></a></div>
                                 <?php endif; ?>
-                                <?php if ($notificationCan('financial.wallet') && inst_feature('wallet') && (in_array($schoolRoleKey, ['manager', 'general_deputy'], true) || ($schoolRoleKey === 'financial_deputy' && Permision('permision_actwallet')))): ?>
+                                <?php if ($notificationCan('financial.wallet') && inst_feature('wallet')): ?>
                                     <div class="col-md-6 col-xl-4 mb-3"><a class="btn btn-outline-success btn-block text-right p-3" href="<?= url('admin/Bill/waitingWallet.php') ?>"><i class="fe fe-credit-card ml-2"></i> تأیید شارژ کیف پول<?php if ($legacyCounts['wallet_charge_pending'] > 0): ?><span class="badge badge-success float-left"><?= (int)$legacyCounts['wallet_charge_pending'] ?></span><?php endif; ?></a></div>
                                 <?php endif; ?>
                             </div></div>

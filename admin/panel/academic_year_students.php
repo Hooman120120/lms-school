@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if ((int)($_SESSION['admin']['adminrole'] ?? -1) !== 0) {
-    echo 'دسترسی ندارید';
-    die();
-}
 
 function academicStudentsFaToEnDigits(string $value): string
 {

@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permision_manage_suporter')) {
-    echo 'دسترسی ندارید';
-    die();
-}
 
 $rolesStmt = $conn->query('
     SELECT r.id, r.role_key, r.title, COUNT(a.idadmin) AS staff_count

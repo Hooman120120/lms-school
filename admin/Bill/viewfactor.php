@@ -38,13 +38,13 @@ if (!isset($_GET['id'])) {
  * (payment.php), where "own" means payments.operator_username.
  */
 $viewFactorId = (int)$_GET['id'];
-$viewFactorAllowed = Permision('permision_bill')
+$viewFactorAllowed = AdminCanAccessFinanceFactor($viewFactorId, 'finance.statement')
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.advanced-report')
     || AdminCanAccessFinanceFactor($viewFactorId, 'finance.pending')
-    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.unpaid', Permision('installment_permission'))
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.unpaid')
     || AdminCanAccessFinanceFactor($viewFactorId, 'finance.returned');
 if (!$viewFactorAllowed && $viewFactorId > 0) {
-    $installmentScope = AdminRecordVisibility('finance.installments', Permision('installment_permission'));
-    if ($installmentScope === null && AdminCanUsePermissionScope('finance.installments.create', ['permision_viewbill'])) $installmentScope = 'own';
+    $installmentScope = AdminScope('finance.installments');
     if ($installmentScope !== null) {
         $installmentFactor = $conn->prepare('SELECT 1 FROM payments WHERE idfactor = ? AND (? = 1 OR operator_username = ?) LIMIT 1');
         $installmentFactor->execute([$viewFactorId, $installmentScope === 'all' ? 1 : 0, (string)$_SESSION['admin']['user']]);

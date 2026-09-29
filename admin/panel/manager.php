@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_POST['changesuporter'])) {
+    AdminRequire('dashboard.desks.manager.move-supporters');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $agent = $_SERVER["HTTP_USER_AGENT"];
         $mor = NULL;
@@ -83,15 +80,8 @@ if (isset($_POST['changesuporter'])) {
         }
     }
 }
-//role check
-$sq = 'SELECT adminrole FROM dbadmin WHERE username = ? LIMIT 1';
-$st = $conn->prepare($sq);
-$st->execute([$_SESSION['admin']['user']]);
-$admin = $st->fetch(PDO::FETCH_OBJ);
-$adminRole = isset($admin->adminrole) ? (int)$admin->adminrole : 0;
 $schoolNotificationCount = CountSchoolNotificationMenu((string)$_SESSION['admin']['user']);
 
-$sales_deputy=[0,51,52,53];
 
 include_once '../../temp.html';
 ?>
@@ -167,7 +157,8 @@ include_once '../../temp.html';
     <!-- Main Content-->
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
-            <?php if (!in_array($adminRole, [2, 3], true)): ?>
+            <?php if (AdminCanSee('dashboard.desks.manager.overview') || AdminCanSee('dashboard.desks.manager.support')
+                || AdminCan('dashboard.desks.manager.sales') || AdminCan('dashboard.desks.manager.move-supporters')): ?>
             <?php if (isset($icc) and $icc > 0) { ?>
                 <div class="alert alert-solid-success" role="alert">
                     <button aria-label="Close" class="close" data-bs-dismiss="alert" type="button">
@@ -210,6 +201,7 @@ include_once '../../temp.html';
                 <div class="row row-sm">
                     <div class="col-sm-12 col-lg-12 col-xl-8">
                         <!--                        here-->
+                        <?php if (AdminCanSee('dashboard.desks.manager.overview')): ?>
                         <div class="row row-sm " style="background-color: #e1e1e1; border-radius: 10px;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <p class="fs-5 fw-bold mb-0">بخش کل</p>
@@ -220,6 +212,7 @@ include_once '../../temp.html';
                                     <i class="fe fe-info fs-4"></i>
                                 </span>
                             </div>
+                            <?php if (AdminCan('dashboard.desks.manager.overview.courses')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <a class="card custom-card "
                                    style="color: #0a0a0a; cursor: pointer; text-decoration: none;"
@@ -255,8 +248,10 @@ include_once '../../temp.html';
                                     </div>
                                 </a>
                             </div>
+                            <?php endif; ?>
                             
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.overview.staff')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <a class="split-btn block" style="color: #0a0a0a; cursor: pointer;"
                                    onclick="window.open('<?php echo url('admin/panel/staff_management.php') ?>',
@@ -291,7 +286,9 @@ include_once '../../temp.html';
                                     </div>
                                 </a>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.overview.students')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 ">
                                 <a class=" split-btn block" style="color: #0a0a0a; cursor: pointer;"
                                    onclick="window.open('<?php echo url('admin/panel/all_users_management.php') ?>',
@@ -325,6 +322,8 @@ include_once '../../temp.html';
                                     </div>
                                 </a>
                             </div>
+                            <?php endif; ?>
+                            <?php if (AdminCan('dashboard.desks.manager.overview.notifications')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <a class="card custom-card notification-alarm-card <?= $schoolNotificationCount > 0 ? 'has-alert' : '' ?>"
                                    href="<?= url(inst_is('school') ? 'admin/notifications/school_notifications.php' : 'admin/notifications/institute_notifications.php') ?>"
@@ -353,9 +352,12 @@ include_once '../../temp.html';
                                     </div>
                                 </a>
                             </div>
+                            <?php endif; ?>
                         </div>
+                        <?php endif; ?>
                         <br>
                         <!--                        to here-->
+                        <?php if (AdminCanSee('dashboard.desks.manager.support')): ?>
                         <div class="row row-sm " style="background-color: #e1e1e1; border-radius: 10px;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <p class="fs-5 fw-bold mb-0">بخش پشتیبان</p>
@@ -406,6 +408,7 @@ include_once '../../temp.html';
                             <!--                            </div>-->
 
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.waiting')): ?>
                             <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                 <div class="card custom-card">
                                     <div class="card-body">
@@ -436,7 +439,9 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.unsupported')): ?>
                             <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                 <div class="card custom-card">
                                     <div class="card-body">
@@ -462,7 +467,9 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.no-supporter')): ?>
                             <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                 <div class="card custom-card pulse-zoom bg-orange">
                                     <a class="" style="color: #0a0a0a; cursor: pointer;"
@@ -500,9 +507,11 @@ include_once '../../temp.html';
                                     </a>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <?php
                             $dateconfig = delaySupportAdmin(2);
                             ?>
+                            <?php if (AdminCan('dashboard.desks.manager.support.late')): ?>
                             <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                 <div class="card custom-card bg-warning">
                                     <div class="card-body">
@@ -526,7 +535,9 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.today')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <div class="card custom-card bg-success">
                                     <div class="card-body">
@@ -553,7 +564,9 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.tomorrow')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <div class="card custom-card bg-info">
                                     <div class="card-body">
@@ -580,7 +593,9 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <!-- COL END -->
+                            <?php if (AdminCan('dashboard.desks.manager.support.count')): ?>
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                 <div class="card custom-card bg-teal pulse-zoom">
                                     <a class="" style="color: #0a0a0a; cursor: pointer;"
@@ -615,6 +630,8 @@ include_once '../../temp.html';
                                     </a>
                                 </div>
                             </div>
+                            <?php endif; ?>
+                            <?php if (AdminCan('dashboard.desks.manager.support.colors')): ?>
                             <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                                 <a class="card custom-card pulse-zoom" style="color: #0a0a0a; cursor: pointer;"
                                    onclick="window.open('<?php echo url('admin/panel/studentsummary.php/') ?>',
@@ -664,10 +681,13 @@ include_once '../../temp.html';
                                     </div>
                                 </a>
                             </div>
+                            <?php endif; ?>
 
                             <!-- COL END -->
                         </div>
+                        <?php endif; ?>
                         <br>
+                        <?php if (AdminCan('dashboard.desks.manager.sales')): ?>
                         <div class="row row-sm" style="background-color: #E1E1E1; border-radius: 10px;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <p class="fs-5 fw-bold mb-0">بخش کارشناس فروش</p>
@@ -684,13 +704,13 @@ include_once '../../temp.html';
                                     <div class="card-body p-0 h-100 d-flex flex-column">
 
                                         <!-- Top half -->
-                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
+                                        <?php if (AdminScope('dashboard.reports.temp-sales.today') !== null): ?>
                                         <a href="<?= url('admin/panel/temp-users-sales.php?type=2') ?>"
                                            class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                            style="flex:1; transition: box-shadow .2s ease;">
                                             <div class="d-flex align-items-start justify-content-between">
                                                 <div>
-                                                    <?php if(AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all'){
+                                                    <?php if(AdminScope('dashboard.reports.temp-sales.today') === 'all'){
                                                         $totalToday = countTodayUsers();
                                                     }
                                                     else{
@@ -716,12 +736,12 @@ include_once '../../temp.html';
                                         <div class="border-top"></div>
 
                                         <!-- Bottom half -->
-                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
+                                        <?php if (AdminScope('dashboard.reports.temp-sales.period') !== null): ?>
                                         <a href="<?= url('admin/panel/temp-users-sales.php?type=1') ?>"
                                            class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                            style="flex:1; transition: box-shadow .2s ease;">
                                             <?php
-                                            if (AdminRecordVisibility('dashboard.summary.overview.manager.page-b9857fa208.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
+                                            if (AdminScope('dashboard.reports.temp-sales.period') === 'all') {
                                                 $totaltemp = countUsers();
                                             } else {
                                                 $totaltemp = countUsers($_SESSION['admin']['user']);
@@ -761,13 +781,13 @@ include_once '../../temp.html';
                                     <div class="card-body p-0 h-100 d-flex flex-column">
 
                                         <!-- Top half -->
-                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
+                                        <?php if (AdminScope('dashboard.reports.permanent-sales.today') !== null): ?>
                                         <a href="<?= url('admin/panel/permanet-users-sales.php?type=2') ?>"
                                            class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                            style="flex:1; transition: box-shadow .2s ease;">
                                             <div class="d-flex align-items-start justify-content-between">
                                                 <div>
-                                                    <?php if(AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.today', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all'){
+                                                    <?php if(AdminScope('dashboard.reports.permanent-sales.today') === 'all'){
                                                         $totalpermToday = countTodayPermanetUsers();
                                                     }
                                                     else{
@@ -793,12 +813,12 @@ include_once '../../temp.html';
                                         <div class="border-top"></div>
 
                                         <!-- Bottom half -->
-                                        <?php if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null): ?>
+                                        <?php if (AdminScope('dashboard.reports.permanent-sales.period') !== null): ?>
                                         <a href="<?= url('admin/panel/permanet-users-sales.php?type=1') ?>"
                                            class="d-flex flex-column justify-content-center text-decoration-none text-dark px-3 split-btn"
                                            style="flex:1; transition: box-shadow .2s ease;">
                                             <?php
-                                            if (AdminRecordVisibility('dashboard.summary.overview.manager.page-25d387505a.period', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) === 'all') {
+                                            if (AdminScope('dashboard.reports.permanent-sales.period') === 'all') {
                                                 $totalperm = countPermanetUsers();
                                             } else {
                                                 $totalperm = countPermanetUsers($_SESSION['admin']['user']);
@@ -830,7 +850,7 @@ include_once '../../temp.html';
                             <!-- COL END -->
                             <?php
                             $dateconfig = delaySupportAdmin();
-                            if ($_SESSION['admin']['user'] !== 1 && AdminRecordVisibility('dashboard.summary.overview.manager.page-68e9102f5d', in_array($_SESSION['admin']['adminrole'], $sales_deputy)) !== null) {
+                            if (AdminScope('dashboard.reports.reactivate') !== null) {
                                 ?>
                                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                                     <a class="clickable-card2" href="<?php echo url('admin/panel/reactivate_experimental.php?type=1') ?>">
@@ -851,6 +871,7 @@ include_once '../../temp.html';
                                 </div>
                             <?php } ?>
                         </div>
+                        <?php endif; ?>
                         <br>
                         <div class="row row-sm">
                             <!--                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">-->
@@ -909,6 +930,7 @@ include_once '../../temp.html';
                             <!-- COL END -->
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
                                 <div class="row">
+                                    <?php if (AdminCan('dashboard.desks.manager.move-supporters')): ?>
                                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <div class="card custom-card overflow-hidden">
                                             <div class="card-header  border-bottom-0 pb-0">
@@ -923,7 +945,7 @@ include_once '../../temp.html';
                                                           onclick="event.preventDefault(); event.stopPropagation();">
                                                         <i class="fe fe-info fs-4"></i>
                                                     </span>
-                                                    <?php if (AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages', ['permision_manage_chat'])): ?>
+                                                    <?php if (AdminCanSee('dashboard.ready-messages')): ?>
                                                         <a class="btn btn-primary mr-auto" href="<?= url('admin/setting/ready-message.php') ?>">
                                                             <i class="fe fe-message-square" aria-hidden="true"></i>
                                                             مدیریت پیام‌های آماده
@@ -989,6 +1011,7 @@ include_once '../../temp.html';
                                             </div>
                                         </div>
                                     </div>
+                                    <?php endif; ?>
                                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <?php if (isset($_SESSION['success'])) { ?>
                                             <div class="alert alert-success" role="alert">
@@ -1090,6 +1113,7 @@ include_once '../../temp.html';
                     </div>
                     <?php endif; ?>
                     <div class="col-sm-12 col-lg-12 col-xl-4">
+                        <?php if (AdminCanSee('dashboard.desks.manager.activity')): ?>
                         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <div class="card custom-card overflow-hidden">
                                 <div class="card-header  border-bottom-0 pb-0">
@@ -1233,7 +1257,7 @@ include_once '../../temp.html';
                                         </div>
                                         <div class="row g-2">
                                             <!-- Button 1 -->
-                                            <?php if (!in_array($adminRole, [2, 3], true)): ?>
+                                            <?php if (AdminCan('dashboard.desks.manager.activity.call-report') && AdminCanSee('dashboard.reports.call-report')): ?>
                                                 <div class="col-12 col-sm-6">
                                                     <div class="btn ripple btn-outline-primary w-100"
                                                          style="white-space: nowrap; min-width: 140px;"
@@ -1247,6 +1271,7 @@ include_once '../../temp.html';
 
 
                                             <!-- Button 2 -->
+                                            <?php if (AdminCan('dashboard.desks.manager.activity.compare') && AdminCanSee('dashboard.reports.operators-compare')): ?>
                                             <div class="col-12 col-sm-6">
                                                 <div class="btn ripple btn-outline-danger w-100"
                                                      style="white-space: nowrap; min-width: 140px;"
@@ -1256,13 +1281,15 @@ include_once '../../temp.html';
                                                     مقایسه گزارشات
                                                 </div>
                                             </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <?php endif; ?>
                         <!-- COL END -->
-                        <?php if (!in_array($adminRole, [2, 3], true)): ?>
+                        <?php if (AdminCanSee('dashboard.desks.manager.activity')): ?>
 
                             <!--                        <div class="row row-sm">-->
                             <!--                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">-->

@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>

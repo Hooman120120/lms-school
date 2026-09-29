@@ -36,14 +36,10 @@ if (session_id() != $re['session_id']) {
     die();
 }
 $schoolRoleKey = SchoolStaffRoleKey((string)($_SESSION['admin']['user'] ?? ''));
-if (!in_array($schoolRoleKey, ['manager', 'general_deputy', 'executive_deputy'], true)
-    && !Permision('permision_viewalert')) {
-    http_response_code(403);
-    exit('دسترسی مشاهده پیامک‌های دریافتی برای سمت شما تعریف نشده است.');
-}
 
 // ===================== خروجی اکسل =====================
 if (isset($_GET['export']) && $_GET['export'] === 'excel') {
+    AdminRequire(AdminNotificationCode('information.sms.export'));
     // دریافت داده‌ها با همان فیلترها
     $filterPhone = isset($_GET['phone']) ? trim($_GET['phone']) : '';
     $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
@@ -185,6 +181,7 @@ try {
 // ===================== پردازش اکشن‌ها =====================
 // اکشن: علامت خوانده شده
 if (isset($_POST['action']) && $_POST['action'] === 'mark_read' && isset($_POST['id'])) {
+    AdminRequire(AdminNotificationCode('information.sms.manage'));
     header('Content-Type: application/json');
     try {
         $stmt = $conn->prepare("UPDATE sms_inbox SET is_read = 1 WHERE id = :id");
@@ -198,6 +195,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'mark_read' && isset($_POST[
 
 // اکشن: حذف پیام
 if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
+    AdminRequire(AdminNotificationCode('information.sms.manage'));
     header('Content-Type: application/json');
     try {
         $stmt = $conn->prepare("DELETE FROM sms_inbox WHERE id = :id");

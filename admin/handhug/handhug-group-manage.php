@@ -35,6 +35,7 @@ $handhugStmt->execute([$_GET['code']]);
 $thishandhug = $handhugStmt->fetch(PDO::FETCH_OBJ);
 
 if (isset($_POST['add-group'])) {
+    AdminRequire('courses.handhug.groups.manage');
 
     $sql = "INSERT INTO handhug_groups
     (codecourse, group_name, is_active, link_room, supporter, max_users, creator)
@@ -57,6 +58,7 @@ if (isset($_POST['add-group'])) {
     ]);
 }
 if (isset($_POST['edit-group'])) {
+    AdminRequire('courses.handhug.groups.manage');
 
     $sql = "UPDATE handhug_groups
             SET group_name = ?,
@@ -122,6 +124,7 @@ $result = groupshow($conn);
 
 
 if (isset($_GET['toggle_group'], $_GET['to'])) {
+    AdminRequire('courses.handhug.groups.manage');
 
     $groupId = intval($_GET['toggle_group']);
     $to      = intval($_GET['to']);
@@ -151,6 +154,7 @@ $stmt->execute();
 $supporters = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 if (isset($_POST['change-supporter'])) {
+    AdminRequire('courses.handhug.groups.manage');
 
     $group_id  = intval($_POST['group_id']);
     $supporter = trim($_POST['supporter']);
@@ -291,7 +295,7 @@ include_once '../../temp.html';
                                                         <th>سرگروه</th>
                                                         <th>حداکثر تعداد دانش آموز</th>
                                                         <th>وضعیت گروه</th>
-                                                        <?php if (Permision('administrator')) { ?>
+                                                        <?php if (AdminCan('courses.handhug.groups.manage')) { ?>
                                                         <th>پشتیبان</th>
                                                         <?php } ?>
                                                     </tr>
@@ -402,7 +406,7 @@ include_once '../../temp.html';
                                                                   <?php } else { ?>
                                                                       <span class="badge bg-warning text-dark">مشکل</span>
                                                                   <?php } ?></td>
-                                                                <?php if (Permision('administrator')) { ?>
+                                                                <?php if (AdminCan('courses.handhug.groups.manage')) { ?>
                                                                     <td ><?= $res->supporter ?></td>
                                                                 <?php } ?>
                                                             </tr>

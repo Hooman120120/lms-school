@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('attendance.rules', ['administrator'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 if (empty($_SESSION['attendance_csrf'])) $_SESSION['attendance_csrf'] = bin2hex(random_bytes(16));
 $csrf = $_SESSION['attendance_csrf'];
@@ -52,6 +48,7 @@ $toJalali = static function (?string $date): string {
 };
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('attendance.rules.manage');
     $notice = null;
     if (!hash_equals($csrf, (string) ($_POST['csrf'] ?? ''))) {
         $notice = ['type' => 'danger', 'message' => 'نشست منقضی شده است؛ دوباره تلاش کنید.'];

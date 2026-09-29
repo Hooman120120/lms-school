@@ -232,7 +232,7 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_viewcollague')) {
+                if (AdminCanSee('referrers.edit')) {
 
                     ?>
                     <div class="row row-sm">

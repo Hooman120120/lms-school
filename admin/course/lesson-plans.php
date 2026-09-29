@@ -104,6 +104,7 @@ $messageType = $_SESSION['lesson_plan_message_type'] ?? 'success';
 unset($_SESSION['lesson_plan_message'], $_SESSION['lesson_plan_message_type']);
 
 if ($isTeacher && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('courses.main.active.classes.lesson-plans.manage');
     try {
         if (!isset($_SESSION['token'], $_POST['token']) || !hash_equals((string)$_SESSION['token'], (string)$_POST['token'])) {
             throw new RuntimeException('اعتبار فرم منقضی شده است؛ صفحه را تازه‌سازی کنید.');

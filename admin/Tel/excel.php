@@ -36,10 +36,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permision_bill')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 set_time_limit(600);
 ini_set('max_execution_time', '600');

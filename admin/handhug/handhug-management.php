@@ -38,6 +38,7 @@ $teacherCourseTable = 'course_teacher'; // ← your mapping table (id, codecours
 
 
 if (isset($_GET['disable'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['disable']]);
@@ -45,6 +46,7 @@ if (isset($_GET['disable'])) {
     die();
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([1, $_GET['enable']]);
@@ -52,6 +54,7 @@ if (isset($_GET['enable'])) {
     die();
 }
 if (isset($_GET['diactive'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $disable = 'UPDATE codtbl_course SET activecourse=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['diactive']]);
@@ -59,7 +62,7 @@ if (isset($_GET['diactive'])) {
     die();
 }
 if (isset($_GET['close'])) {
-    if (Permision('permision_deletcourse')) {
+    if (AdminCan('courses.handhug.manage.delete')) {
         include_once '../../quizconfig.php';
         include_once '../../inc/function-quiz.php';
         if (!checkEntityGroupQuiz($_GET['close'])) {
@@ -76,6 +79,7 @@ if (isset($_GET['close'])) {
     }
 }
 if (isset($_GET['act_class'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_class']]);
@@ -86,6 +90,7 @@ if (isset($_GET['act_class'])) {
     die();
 }
 if (isset($_GET['act_general'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_general']]);
@@ -96,6 +101,7 @@ if (isset($_GET['act_general'])) {
     die();
 }
 if (isset($_GET['act_quiz'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_quiz']]);
@@ -106,6 +112,7 @@ if (isset($_GET['act_quiz'])) {
     die();
 }
 if (isset($_GET['expire_class'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_class']]);
@@ -116,6 +123,7 @@ if (isset($_GET['expire_class'])) {
     die();
 }
 if (isset($_GET['expire_general'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_general']]);
@@ -126,6 +134,7 @@ if (isset($_GET['expire_general'])) {
     die();
 }
 if (isset($_GET['expire_quiz'])) {
+    AdminRequire('courses.handhug.manage.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_quiz']]);
@@ -136,10 +145,12 @@ if (isset($_GET['expire_quiz'])) {
     die();
 }
 if (isset($_GET['loginquiz'])) {
+    AdminRequire('courses.handhug.manage.quiz-login');
     header('location: handhug-management.php?true');
 
 }
 if (isset($_GET['schedule'])) {
+    AdminRequire('courses.handhug.manage.schedule-reset');
     $sql = "SELECT * FROM dbschedules WHERE codecourse = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['schedule']]);
@@ -548,7 +559,7 @@ include_once '../../temp.html';
                                                                                             class="fas fa-caret-down mr-1"></i>
                                                                                 </button>
                                                                                 <div class="dropdown-menu tx-8">
-                                                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                        <?php if (AdminCan('courses.handhug.manage.activation')) { ?>
                                                                                             <?php if (act_classSkyroom($res->codecourse) == 0) { ?>
                                                                                                 <a class="dropdown-item text-info" href="?act_class=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-video"></i> فعالسازی کلاس
@@ -573,12 +584,12 @@ include_once '../../temp.html';
                                                                                             <i class="fe fe-calendar"></i> مدیریت گروه ها
                                                                                         </a>
 
-                                                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                        <?php if (AdminCanAny('courses.handhug.manage.edit', 'courses.handhug.manage.delete')) { ?>
                                                                                             <hr>
-                                                                                            <a class="dropdown-item text-success" href="add-handhug.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
+                                                                                            <?php if (AdminCan('courses.handhug.manage.edit')): ?><a class="dropdown-item text-success" href="add-handhug.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                                 <i class="fe fe-edit"></i> ویرایش محصول
-                                                                                            </a>
-                                                                                            <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                            </a><?php endif; ?>
+                                                                                            <?php if (AdminCan('courses.handhug.manage.delete')) { ?>
                                                                                                 <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
                                                                                                     <i class="fe fe-x-square"></i> حذف دائم محصول
                                                                                                 </a>
@@ -622,7 +633,7 @@ include_once '../../temp.html';
                                                                 <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 1) ?></td>
 
                                                                 <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 0) ?></td>
-                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                <?php if (AdminCan('courses.handhug.manage.activation')) { ?>
                                                                     <td class="wd-20">
                                                                         <?php if ($res->courseactive == 1) { ?>
                                                                             <a href="?disable=<?php echo $res->codecourse ?>"

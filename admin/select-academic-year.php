@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin'])) {
     header('location: login.php');
     exit;
 }
-if (AdminHasAnyCurrentTreePermission() && !AdminHasMenuPermission('dashboard.summary.academic-archive')) {
+if (!AdminCan('dashboard.summary.academic-archive')) {
     http_response_code(403);
     exit('دسترسی بایگانی سال‌های تحصیلی فعال نشده است.');
 }

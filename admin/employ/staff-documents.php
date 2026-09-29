@@ -18,10 +18,6 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if (!Permision('permission_staff_documents') && !Permision('permision_viewemploy')) {
-    http_response_code(403);
-    exit('مجوز مشاهده مستندات پرسنلی را ندارید.');
-}
 $rows = $conn->query("SELECT a.username,a.fname,a.lname,a.document_file,a.resume_file,a.identity_file,r.title role_title FROM dbadmin a LEFT JOIN school_admin_roles r ON r.id=a.school_role_id ORDER BY a.lname,a.fname")->fetchAll(PDO::FETCH_ASSOC) ?: [];
 $docs = ['documents' => 'مدارک', 'resume' => 'سوابق', 'identity' => 'شناسایی هویت'];
 

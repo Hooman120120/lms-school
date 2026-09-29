@@ -34,7 +34,7 @@ foreach (array_keys($_GET) as $exportKey) {
 $exportScope = $isGroupExport
     ? 'public-relations.safe-call.manage.total-statistics.export'
     : 'public-relations.safe-call.manage.operator-statistics.export';
-if (!AdminCanUsePermissionScope($exportScope, ['permision_managecall'])) {
+if (!AdminCanSee($exportScope)) {
     http_response_code(403);
     exit('مجوز دریافت این گزارش تماس ندارید.');
 }

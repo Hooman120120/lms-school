@@ -28,7 +28,6 @@ $adminRole = isset($_SESSION['admin']['adminrole'])
     ? (int) $_SESSION['admin']['adminrole']
     : null;
 
-RequireTeacherPermission('teacher_perm_content', url('admin/course/Active-course.php'));
 
 $lessonCourseCode = isset($_GET['code']) ? (int)$_GET['code'] : (int)($_POST['codecourse'] ?? 0);
 $lessonDarsId = isset($_GET['dars']) ? (int)$_GET['dars'] : (int)($_POST['dars'] ?? 0);

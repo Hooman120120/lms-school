@@ -26,7 +26,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-//if (!Permision('permision_viewcourse')) {
+//if (!AdminCan('courses.main.active.activation')) {
 //    header('location: ' . url('admin/index.php'));
 //    die();
 //}
@@ -36,7 +36,6 @@ $adminRole   = isset($_SESSION['admin']['adminrole']) ? (int)$_SESSION['admin'][
 $teacherOnlineEntryEnabled = false;
 $teacherCourseTable = 'course_teacher'; // ← your mapping table (id, codecourse, teacher_username)
 
-RequireTeacherPermission('teacher_perm_courses', url('admin/index.php'));
 
 if ($adminRole === 3 && isset($_GET['login'])) {
     http_response_code(403);
@@ -112,7 +111,7 @@ if (isset($_GET['login']) && isset($_GET['code'])) {
         exit;
     }
 
-    if (!TeacherPermission('teacher_perm_online_class') || !TeacherHasCourseAccess($code, $currentUser)) {
+    if (!AdminCan('courses.main.active.online-class') || !TeacherHasCourseAccess($code, $currentUser)) {
         http_response_code(403);
         exit('شما مجوز ورود به کلاس آنلاین این پایه را ندارید.');
     }
@@ -191,6 +190,7 @@ if (isset($_GET['login']) && isset($_GET['code'])) {
 
 
 if (isset($_GET['disable'])) {
+    AdminRequire('courses.main.active.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['disable']]);
@@ -198,6 +198,7 @@ if (isset($_GET['disable'])) {
     die();
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('courses.main.active.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([1, $_GET['enable']]);
@@ -205,6 +206,7 @@ if (isset($_GET['enable'])) {
     die();
 }
 if (isset($_GET['diactive'])) {
+    AdminRequire('courses.main.active.activation');
     $disable = 'UPDATE codtbl_course SET activecourse=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['diactive']]);
@@ -212,7 +214,7 @@ if (isset($_GET['diactive'])) {
     die();
 }
 if (isset($_GET['close'])) {
-    if (Permision('permision_deletcourse')) {
+    if (AdminCan('courses.main.active.delete')) {
         include_once '../../quizconfig.php';
         include_once '../../inc/function-quiz.php';
         if (!checkEntityGroupQuiz($_GET['close'])) {
@@ -229,6 +231,7 @@ if (isset($_GET['close'])) {
     }
 }
 if (isset($_GET['act_class'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_class']]);
@@ -239,6 +242,7 @@ if (isset($_GET['act_class'])) {
     die();
 }
 if (isset($_GET['act_ostadclass'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_ostadclass=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_ostadclass']]);
@@ -249,6 +253,7 @@ if (isset($_GET['act_ostadclass'])) {
     die();
 }
 if (isset($_GET['act_general'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_general']]);
@@ -259,6 +264,7 @@ if (isset($_GET['act_general'])) {
     die();
 }
 if (isset($_GET['act_quiz'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_quiz']]);
@@ -269,6 +275,7 @@ if (isset($_GET['act_quiz'])) {
     die();
 }
 if (isset($_GET['expire_class'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_class']]);
@@ -279,6 +286,7 @@ if (isset($_GET['expire_class'])) {
     die();
 }
 if (isset($_GET['expire_ostadclass'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_ostadclass=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_ostadclass']]);
@@ -289,6 +297,7 @@ if (isset($_GET['expire_ostadclass'])) {
     die();
 }
 if (isset($_GET['expire_general'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_general']]);
@@ -299,6 +308,7 @@ if (isset($_GET['expire_general'])) {
     die();
 }
 if (isset($_GET['expire_quiz'])) {
+    AdminRequire('courses.main.active.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_quiz']]);
@@ -309,9 +319,11 @@ if (isset($_GET['expire_quiz'])) {
     die();
 }
 if (isset($_GET['loginquiz'])) {
+    AdminRequire('courses.main.active.quiz-login');
     header('location: startquiz.php?true');
 }
 if (isset($_GET['schedule'])) {
+    AdminRequire('courses.main.active.schedule-reset');
     $sql = "SELECT * FROM dbschedules WHERE codecourse = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['schedule']]);
@@ -415,7 +427,7 @@ include_once '../../temp.html';
                             <?php endif; ?>
                             <?php
                             $currentUser = $_SESSION['admin']['user'];
-                            if (PermisionUser('skill_permission', $currentUser)): ?>
+                            if (AdminCan('courses.main.active.tab-skill')): ?>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="type2-tab" data-bs-toggle="tab" data-bs-target="#type2"
                                         type="button" role="tab">
@@ -423,7 +435,7 @@ include_once '../../temp.html';
                                     </button>
                                 </li>
                             <?php endif; ?>
-                            <?php if (PermisionUser('olympiad_permission', $currentUser)): ?>
+                            <?php if (AdminCan('courses.main.active.tab-olympiad')): ?>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="type3-tab" data-bs-toggle="tab" data-bs-target="#type3"
                                         type="button" role="tab">
@@ -589,13 +601,13 @@ include_once '../../temp.html';
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                    <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                         <div class="col-2 text-left mb-3 bg">
 
                                                         </div>
                                                     <?php } ?>
                                                     <?php
-                                                    if (Permision('permision_viewtest')) {
+                                                    if (AdminCan('courses.main.active.quiz-login')) {
                                                     ?>
                                                         <div class="col-2 text-right ">
 
@@ -624,7 +636,7 @@ include_once '../../temp.html';
                                                                 <th>نام پایه</th>
                                                                 <th> موفق</th>
                                                                 <th>منتظر</th>
-                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                     <th>وضعیت ثبت نام</th>
                                                                     <th>غیرفعالسازی</th>
                                                                 <?php } ?>
@@ -692,7 +704,7 @@ include_once '../../temp.html';
                                                                         <?php if ((int)$adminRole === 3 && $teacherOnlineEntryEnabled) { ?>
                                                                             <td class="wd-15 text-center">
                                                                                 <?php if ($_SESSION['admin']['user'] === 'h10203'): ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <div class="dropdown">
                                                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                                                                 <i class="fe fe-tv"></i> ورود به عنوان
@@ -712,7 +724,7 @@ include_once '../../temp.html';
                                                                                         </button>
                                                                                     <?php endif; ?>
                                                                                 <?php else: ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <a href="?code=<?php echo $res->codecourse ?>&login=true" class="btn btn-sm btn-primary" style="min-width: 120px;" target="_blank">
                                                                                             <i class="fe fe-tv"></i> ورود به کلاس آنلاین
                                                                                         </a>
@@ -743,16 +755,16 @@ include_once '../../temp.html';
                                                                                         </button>
                                                                                         <div class="dropdown-menu tx-8">
                                                                                             <?php if ((int)$adminRole === 3): ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مشاهده کلاس‌ها
-                                                                                                </a>
+                                                                                                </a><?php endif; ?>
                                                                                             <?php else: ?>
                                                                                                 <!--                                                                                        <a class="dropdown-item" href="list-student.php?code=--><?php //echo $res->codecourse 
                                                                                                                                                                                                                                                     ?><!--">-->
                                                                                                 <!--                                                                                            <i class="fe fe-more-vertical"></i> لیست دانش آموزان-->
                                                                                                 <!--                                                                                        </a>-->
-                                                                                                <?php if (Permision('permision_viewcourse')) { ?>
-                                                                                                    <?php if (act_classSkyroom($res->codecourse) == 0) { ?>
+                                                                                                <?php if (AdminCanAny('courses.main.active.activation', 'courses.main.active.online-class') || AdminCanSee('courses.main.active.students')) { ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.activation')): ?><?php if (act_classSkyroom($res->codecourse) == 0) { ?>
                                                                                                         <a class="dropdown-item text-info" href="?act_class=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-video"></i> فعالسازی کلاس
                                                                                                         </a>
@@ -791,33 +803,33 @@ include_once '../../temp.html';
                                                                                                         <a class="dropdown-item text-warning" href="?expire_quiz=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-stop-circle"></i> قطع آزمون
                                                                                                         </a>
-                                                                                                    <?php } ?>
-                                                                                                    <a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
+                                                                                                    <?php } ?><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.online-class')): ?><a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
                                                                                                         <i class="fe fe-tv"></i> ورود به کلاس آنلاین
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
+                                                                                                    <?php if (AdminCanSee('courses.main.active.students')): ?><a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
                                                                                                         <i class="fe fe-more-vertical"></i> لیست دانش آموزان
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                 <?php } ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مدیریت کلاس ها
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.teachers')): ?><a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes.lesson-plans')): ?><a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
-                                                                                                </a>
+                                                                                                </a><?php endif; ?>
                                                                                                 <!-- <a class="dropdown-item" href="attendance.php?id=<//?php echo $res->codecourse ?>">
                                                                                             <i class="fe fe-check-square"></i> افزودن حضور و غیاب
                                                                                         </a> -->
-                                                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                                <?php if (AdminCanAny('courses.main.active.edit', 'courses.main.active.delete')) { ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
+                                                                                                    <?php if (AdminCan('courses.main.active.edit')): ?><a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                                         <i class="fe fe-edit"></i> ویرایش پایه
-                                                                                                    </a>
-                                                                                                    <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                                    </a><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.delete')) { ?>
                                                                                                         <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
                                                                                                             <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                         </a>
@@ -863,7 +875,7 @@ include_once '../../temp.html';
                                                                         <td><?php echo htmlentities($res->coursename) ?></td>
                                                                         <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 1) ?></td>
                                                                         <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 0) ?></td>
-                                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                                        <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                             <td class="wd-20">
                                                                                 <?php if ($res->courseactive == 1) { ?>
                                                                                     <a href="?disable=<?php echo $res->codecourse ?>"
@@ -901,7 +913,7 @@ include_once '../../temp.html';
                             <!-- Type 2 tab -->
                             <?php
                             $currentUser = $_SESSION['admin']['user'];
-                            if (PermisionUser('skill_permission', $currentUser)): ?>
+                            if (AdminCan('courses.main.active.tab-skill')): ?>
                                 <div class="tab-pane fade" id="type2" role="tabpanel">
 
                                     <div class="col-lg-12">
@@ -915,13 +927,13 @@ include_once '../../temp.html';
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                         <div class="col-2 text-left mb-3">
 
                                                         </div>
                                                     <?php } ?>
                                                     <?php
-                                                    if (Permision('permision_viewtest')) {
+                                                    if (AdminCan('courses.main.active.quiz-login')) {
                                                     ?>
                                                         <div class="col-2 text-right ">
 
@@ -944,7 +956,7 @@ include_once '../../temp.html';
                                                                 <th>نام پایه</th>
                                                                 <th> موفق</th>
                                                                 <th>منتظر</th>
-                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                     <th>وضعیت ثبت نام</th>
                                                                     <th>غیرفعالسازی</th>
                                                                 <?php } ?>
@@ -983,7 +995,7 @@ include_once '../../temp.html';
                                                                         <?php if ((int)$adminRole === 3 && $teacherOnlineEntryEnabled): ?>
                                                                             <td class="wd-15 text-center">
                                                                                 <?php if ($_SESSION['admin']['user'] === 'h10203'): ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <div class="dropdown">
                                                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                                                                 <i class="fe fe-tv"></i> ورود به عنوان
@@ -1003,7 +1015,7 @@ include_once '../../temp.html';
                                                                                         </button>
                                                                                     <?php endif; ?>
                                                                                 <?php else: ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <a href="?code=<?php echo $res->codecourse ?>&login=true" class="btn btn-sm btn-primary" style="min-width: 120px;" target="_blank">
                                                                                             <i class="fe fe-tv"></i> ورود به کلاس آنلاین
                                                                                         </a>
@@ -1028,13 +1040,13 @@ include_once '../../temp.html';
 
                                                                                         <div class="dropdown-menu tx-8">
                                                                                             <?php if ((int)$adminRole === 3): ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مشاهده کلاس‌ها
-                                                                                                </a>
+                                                                                                </a><?php endif; ?>
                                                                                             <?php else: ?>
                                                                                                 <?php
-                                                                                                if (Permision('permision_viewcourse')) { ?>
-                                                                                                    <?php if (act_classSkyroom($res->codecourse) == 0) { ?>
+                                                                                                if (AdminCan('courses.main.active.activation')) { ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.activation')): ?><?php if (act_classSkyroom($res->codecourse) == 0) { ?>
                                                                                                         <a class="dropdown-item text-info" href="?act_class=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-video"></i> فعالسازی کلاس
                                                                                                         </a>
@@ -1060,30 +1072,30 @@ include_once '../../temp.html';
                                                                                                         <a class="dropdown-item text-warning" href="?expire_quiz=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-stop-circle"></i> قطع آزمون
                                                                                                         </a>
-                                                                                                    <?php } ?>
-                                                                                                    <a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
+                                                                                                    <?php } ?><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.online-class')): ?><a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
                                                                                                         <i class="fe fe-tv"></i> ورود به کلاس آنلاین
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
+                                                                                                    <?php if (AdminCanSee('courses.main.active.students')): ?><a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
                                                                                                         <i class="fe fe-more-vertical"></i> لیست دانش آموزان
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                 <?php } ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مدیریت کلاس ها
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.teachers')): ?><a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes.lesson-plans')): ?><a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
-                                                                                                </a>
-                                                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanAny('courses.main.active.edit', 'courses.main.active.delete')) { ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
+                                                                                                    <?php if (AdminCan('courses.main.active.edit')): ?><a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                                         <i class="fe fe-edit"></i> ویرایش پایه
-                                                                                                    </a>
-                                                                                                    <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                                    </a><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.delete')) { ?>
                                                                                                         <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
                                                                                                             <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                         </a>
@@ -1138,7 +1150,7 @@ include_once '../../temp.html';
                                                                         <td class="wd-20">
                                                                             <?php echo CountRegisterCourse($res->codecourse, 0) ?>
                                                                         </td>
-                                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                                        <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                             <td class="wd-20">
                                                                                 <?php if ($res->courseactive == 1) { ?>
                                                                                     <a href="?disable=<?php echo $res->codecourse ?>"
@@ -1170,7 +1182,7 @@ include_once '../../temp.html';
                                 </div>
                             <?php endif; ?>
 
-                            <?php if (PermisionUser('olympiad_permission', $currentUser)): ?>
+                            <?php if (AdminCan('courses.main.active.tab-olympiad')): ?>
                                 <div class="tab-pane fade" id="type3" role="tabpanel">
                                     <div class="col-lg-12">
                                         <div class="card custom-card">
@@ -1183,13 +1195,13 @@ include_once '../../temp.html';
                                                         </div>
                                                     </div>
 
-                                                    <?php if ($adminRole !== 3 && Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                         <div class="col-2 text-left mb-3">
 
                                                         </div>
                                                     <?php } ?>
 
-                                                    <?php if (Permision('permision_viewtest')) { ?>
+                                                    <?php if (AdminCan('courses.main.active.quiz-login')) { ?>
                                                         <div class="col-2 text-right">
 
                                                         </div>
@@ -1213,7 +1225,7 @@ include_once '../../temp.html';
                                                                 <th>نام پایه</th>
                                                                 <th>موفق</th>
                                                                 <th>منتظر</th>
-                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                     <th>وضعیت ثبت نام</th>
                                                                     <th>غیرفعالسازی</th>
                                                                 <?php } ?>
@@ -1249,7 +1261,7 @@ include_once '../../temp.html';
                                                                         <?php if ((int)$adminRole === 3 && $teacherOnlineEntryEnabled): ?>
                                                                             <td class="wd-15 text-center">
                                                                                 <?php if ($_SESSION['admin']['user'] === 'h10203'): ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && function_exists('act_ostadSkyroom') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <div class="dropdown">
                                                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                                                                 <i class="fe fe-tv"></i> ورود به عنوان
@@ -1269,7 +1281,7 @@ include_once '../../temp.html';
                                                                                         </button>
                                                                                     <?php endif; ?>
                                                                                 <?php else: ?>
-                                                                                    <?php if (TeacherPermission('teacher_perm_online_class') && act_ostadSkyroom($res->codecourse) == 1): ?>
+                                                                                    <?php if (AdminCan('courses.main.active.online-class') && act_ostadSkyroom($res->codecourse) == 1): ?>
                                                                                         <a href="?code=<?php echo $res->codecourse ?>&login=true" class="btn btn-sm btn-primary" style="min-width: 120px;" target="_blank">
                                                                                             <i class="fe fe-tv"></i> ورود به کلاس آنلاین
                                                                                         </a>
@@ -1293,12 +1305,12 @@ include_once '../../temp.html';
 
                                                                                         <div class="dropdown-menu tx-8">
                                                                                             <?php if ((int)$adminRole === 3): ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مشاهده کلاس‌ها
-                                                                                                </a>
+                                                                                                </a><?php endif; ?>
                                                                                             <?php else: ?>
-                                                                                                <?php if (Permision('permision_viewcourse')) { ?>
-                                                                                                    <?php if (act_classSkyroom($res->codecourse) == 0) { ?>
+                                                                                                <?php if (AdminCanAny('courses.main.active.activation', 'courses.main.active.online-class') || AdminCanSee('courses.main.active.students')) { ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.activation')): ?><?php if (act_classSkyroom($res->codecourse) == 0) { ?>
                                                                                                         <a class="dropdown-item text-info" href="?act_class=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-video"></i> فعالسازی کلاس
                                                                                                         </a>
@@ -1324,30 +1336,30 @@ include_once '../../temp.html';
                                                                                                         <a class="dropdown-item text-warning" href="?expire_quiz=<?php echo $res->codecourse ?>">
                                                                                                             <i class="fe fe-stop-circle"></i> قطع آزمون
                                                                                                         </a>
-                                                                                                    <?php } ?>
-                                                                                                    <a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
+                                                                                                    <?php } ?><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.online-class')): ?><a class="dropdown-item text-primary" href="<?php echo 'login_skyroom.php?loginskyroom=' . $res->codecourse ?>" target="_blank">
                                                                                                         <i class="fe fe-tv"></i> ورود به کلاس آنلاین
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
+                                                                                                    <?php if (AdminCanSee('courses.main.active.students')): ?><a class="dropdown-item" href="list-student.php?code=<?php echo $res->codecourse ?>">
                                                                                                         <i class="fe fe-more-vertical"></i> لیست دانش آموزان
-                                                                                                    </a>
+                                                                                                    </a><?php endif; ?>
                                                                                                 <?php } ?>
-                                                                                                <a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes')): ?><a class="dropdown-item" href="list-class.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-calendar"></i> مدیریت کلاس ها
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.teachers')): ?><a class="dropdown-item" href="teacher-assign.php?code=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-airplay"></i> <?php echo m('action.assign_teacher') ?>
-                                                                                                </a>
-                                                                                                <a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanSee('courses.main.active.classes.lesson-plans')): ?><a class="dropdown-item" href="lesson-plans.php?course=<?php echo $res->codecourse ?>">
                                                                                                     <i class="fe fe-book-open"></i> <?php echo m('page.lesson_plans') ?>
-                                                                                                </a>
-                                                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                                </a><?php endif; ?>
+                                                                                                <?php if (AdminCanAny('courses.main.active.edit', 'courses.main.active.delete')) { ?>
                                                                                                     <hr>
-                                                                                                    <a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
+                                                                                                    <?php if (AdminCan('courses.main.active.edit')): ?><a class="dropdown-item text-success" href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                                         <i class="fe fe-edit"></i> ویرایش پایه
-                                                                                                    </a>
-                                                                                                    <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                                    </a><?php endif; ?>
+                                                                                                    <?php if (AdminCan('courses.main.active.delete')) { ?>
                                                                                                         <a class="dropdown-item text-danger" href="?close=<?php echo $res->codecourse ?>" onclick="return confirm('آیا با حذف این پایه موافقید؟')">
                                                                                                             <i class="fe fe-x-square"></i> حذف دائم پایه
                                                                                                         </a>
@@ -1390,7 +1402,7 @@ include_once '../../temp.html';
                                                                         <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 1) ?></td>
                                                                         <td class="wd-20"><?php echo CountRegisterCourse($res->codecourse, 0) ?></td>
 
-                                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                                        <?php if (AdminCan('courses.main.active.activation')) { ?>
                                                                             <td class="wd-20">
                                                                                 <?php if ($res->courseactive == 1) { ?>
                                                                                     <a href="?disable=<?php echo $res->codecourse ?>"

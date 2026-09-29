@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 $currentUser = (string)$_SESSION['admin']['user'];
-$administrator = (int)($row['administrator'] ?? 0);
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 $studentOpChangeCount = countStudentOperatorChanged($currentUser, (int)$administrator);
 
 if (!function_exists('countNewStudent')) {

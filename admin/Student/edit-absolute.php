@@ -55,6 +55,7 @@ if (isset($_POST['search-melli'])) {
 }
 
 if (isset($_POST['account-submit'])) { // UPDATE Account User
+    AdminRequire('students.definitive.edit.account');
     if ($_SESSION['token'] == $_POST['token']) {
         if (isset($_POST['fname']) and $_POST['fname'] != '' and isset($_POST['lname']) and $_POST['lname'] != '' and isset($_POST['gender']) and $_POST['gender'] != '' and isset($_POST['melliat']) and $_POST['melliat'] != '' and isset($_POST['tel1']) and $_POST['tel1'] != '' and isset($_POST['dtts']) and $_POST['dtts'] != '' and isset($_POST['mtts']) and $_POST['mtts'] != '' and isset($_POST['ytts']) and $_POST['ytts'] != '' and isset($_POST['type-vip']) and isset($_POST['shift'])) {
             $fname = $_POST['fname'];
@@ -67,6 +68,7 @@ if (isset($_POST['account-submit'])) { // UPDATE Account User
             $tel1 = $_POST['tel1'];
             $moaref = $_POST['moaref'] ?? '';
             if (isset($_POST['activity-user'])) {
+                AdminRequire('students.definitive.edit.activity');
                 $upa = 'UPDATE dblogin SET activity=? WHERE username=?';
                 $qur = $conn->prepare($upa);
                 $qur->execute([1, $_SESSION['edit-student']['codemeli']]);
@@ -136,6 +138,7 @@ if (isset($_POST['account-submit'])) { // UPDATE Account User
 }
 
 if (isset($_POST['picture-submit'])) {
+    AdminRequire('students.definitive.edit.picture');
     if ($_SESSION['token'] == $_POST['token']) {
         if (isset($_FILES['pic']) && $_FILES['pic']['error'] === UPLOAD_ERR_OK) {
             // Use document root to get the absolute path to your web root
@@ -177,6 +180,7 @@ if (isset($_POST['picture-submit'])) {
     }
 }
 if (isset($_POST['parent-valid'])) { // UPDATE Parent User
+    AdminRequire('students.definitive.edit.parents');
     if ($_SESSION['token'] == $_POST['token']) {
         date_default_timezone_set("Iran");
         $datenow = date("Y-m-d");
@@ -268,6 +272,7 @@ if (isset($_POST['parent-valid'])) { // UPDATE Parent User
     }
 }
 if (isset($_POST['house-submit'])) {
+    AdminRequire('students.definitive.edit.house');
     if ($_SESSION['token'] == $_POST['token']) {
         if ($_POST['school'] != '' and $_POST['type-school'] != '' and $_POST['mantaghe'] != '' and $_POST['reshte'] != '' and $_POST['paye'] != '') {
             date_default_timezone_set("Iran");
@@ -325,6 +330,7 @@ if (isset($_POST['house-submit'])) {
     }
 }
 if (isset($_POST['acounting-info'])) {
+    AdminRequire('students.definitive.edit.bank');
     if (strlen($_POST['sheba']) != 24) {
         $erorstrlensheba = 1;
     } else {
@@ -343,6 +349,7 @@ if (isset($_POST['acounting-info'])) {
     }
 }
 if (isset($_GET['againcode'])) {
+    AdminRequire('students.definitive.edit.resend-password');
     $data = retPerson($_SESSION['edit-student']['codemeli']);
     $text = 'کد ملی' . ';' . passUser($data->codemeli);
     SendSms($data->tel1, $text, 171697, $_SESSION['edit-student']['codemeli']);
@@ -384,8 +391,8 @@ include_once '../../temp.html';
             <div class="container-fluid">
                 <div class="inner-body">
                     <?php
-                    if (Permision('permision_viewstudent')) {
-                        if (Permision('permision_editstudent')) {
+                    if (AdminCanSee('students.definitive.edit')) {
+                        if (AdminCanSee('students.definitive.edit')) {
                     ?>
                             <!-- Row -->
                             <div class="row row-sm">

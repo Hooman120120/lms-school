@@ -27,7 +27,7 @@ if (session_id() != $re['session_id']) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
+$isImpersonate = true; // the page itself is the permission (system.api-logs)
 
 // ================================
 // بخش مدیریت لاگ‌های API

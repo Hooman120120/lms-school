@@ -56,6 +56,7 @@ $ticketTypes = [
 // پردازش فرم اقدام (ثبت وضعیت و آپدیت جداول مربوطه)
 // -------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
+    AdminRequire('notifications.referred.act');
     if ($currentUserRole === 0 || $currentUserRole === 52) { // اجازه اقدام به مدیریت و معاونت
         $referral_id = (int)$_POST['referral_id'];
 

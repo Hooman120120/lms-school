@@ -38,6 +38,7 @@ if (!$stmt->rowCount() > 0) {
 }
 
 if (isset($_GET['del'])) {
+    AdminRequire('courses.main.demo-active.students.remove');
     $sql = 'DELETE FROM dbcourse_demo WHERE codecourse = ? AND username = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['code'], $_GET['del']]);
@@ -117,7 +118,7 @@ include_once '../../temp.html';
                                             <th>ایجادکننده</th>
                                             <th>کدملی</th>
                                             <th>شماره تماس</th>
-                                            <?php if (Permision('permision_viewcourse')) { ?>
+                                            <?php if (AdminCan('courses.main.demo-active.students.remove')) { ?>
                                             <th>اقدامات</th>
                                             <?php } ?>
                                         </tr>
@@ -147,7 +148,7 @@ include_once '../../temp.html';
                                                     <td><?php echo $ret->useradder ?></td>
                                                     <td class="wd-100"><?php echo $ret->username ?></td>
                                                     <td class="wd-100"><?php echo $fullname->tel1 ?></td>
-                                                    <?php if (Permision('permision_viewcourse')) { ?>
+                                                    <?php if (AdminCan('courses.main.demo-active.students.remove')) { ?>
                                                         <td class="wd-20">
                                                             <div class="text-wrap">
                                                                 <div class="text-center">

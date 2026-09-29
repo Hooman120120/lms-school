@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 $sql = 'SELECT COUNT(*) as cowait FROM dbcourse WHERE type_process=1 ';
 $query = $conn->prepare($sql);
 $query->execute();
@@ -63,6 +59,7 @@ if(isset($_GET['unact'])){
 }
 
 if (isset($_POST['waiting_list_excel'])) {
+    AdminRequire('support.reports.manual-colors.excel');
     $_SESSION['waiting_list_excel'] = ['export' => true];
     header('Location: ../Bill/execel.php');
     exit;
@@ -107,7 +104,7 @@ include_once '../../temp.html';
                                     </div>
                                     <?php
                                     $currentUser = $_SESSION['admin']['user'];
-                                    if (PermisionUser('excel_permission', $currentUser)):
+                                    if (AdminCan('support.reports.manual-colors.excel')):
                                         ?>
                                         <form action="" method="post" style="display: inline;">
                                             <input type="hidden" name="waiting_list_excel" value="1">

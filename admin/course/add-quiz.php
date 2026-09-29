@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-// if (!Permision('permision_viewtest')) {
+// if (!AdminCan('courses.main.demo-active.quiz.manage')) {
 //     header('location: ' . url('admin/index.php'));
 //     die();
 // }
@@ -38,6 +38,7 @@ if (!checkvalidcourse(intval($_GET['id']))) {
     die();
 }
 if (isset($_POST['addquiz'])) {
+    AdminRequire('courses.main.demo-active.quiz.manage');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         if (checkDubDars($_POST['dars'], $_POST['tasalsol'], $_GET['id'])) {
 
@@ -516,6 +517,9 @@ if (isset($ok) and $ok == 5) {
 
 
 if (isset($_GET['delete'])) {
+
+
+    AdminRequire('courses.main.demo-active.quiz.manage');
     $del = intval($_GET['delete']);
     $sql = 'DELETE FROM dbquiz WHERE idquiz=?';
     $query = $conn->prepare($sql);
@@ -585,7 +589,7 @@ include_once '../../temp.html';
                             </div>
                         <?php } ?> <?php $course = returnCourse($_GET['id']); ?>
                         <div class="col-lg-3">
-                            <?php if (Permision('permision_viewtest')) { ?>
+                            <?php if (AdminCan('courses.main.demo-active.quiz.manage')) { ?>
                                 <div class="card custom-card">
                                     <div class="card-body">
                                         <div class="row">
@@ -746,7 +750,7 @@ include_once '../../temp.html';
                                                     <th>بالاترین تراز</th>
                                                     <th>پایین تراز</th>
                                                     <th>تاریخ برگزاری</th>
-                                                    <?php if (Permision('permision_viewtest')) { ?><th>حذف</th> <?php } ?>
+                                                    <?php if (AdminCan('courses.main.demo-active.quiz.manage')) { ?><th>حذف</th> <?php } ?>
 
                                                 </tr>
                                             </thead>
@@ -804,7 +808,7 @@ include_once '../../temp.html';
                                                                                 $dateno = implode('/', $dateno);
                                                                                 echo $dateno;
                                                                                 ?></td>
-                                                            <?php if (Permision('permision_viewtest')) { ?>
+                                                            <?php if (AdminCan('courses.main.demo-active.quiz.manage')) { ?>
                                                                 <td class="wd-15">
                                                                     <a href="?id=<?php echo $_GET['id'] ?>&delete=<?php echo $plr->idquiz ?>"
                                                                         onclick="return confirm('آیا با حذف این آزمون  موافقید؟ این اقدام غیر قابل بازگشت است!')"

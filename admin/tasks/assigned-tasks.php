@@ -19,10 +19,6 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if (!Permision('permission_assigned_tasks')) {
-    http_response_code(403);
-    exit('مجوز کارهای محول‌شده را ندارید.');
-}
 
 if (empty($_SESSION['assigned_tasks_csrf'])) {
     $_SESSION['assigned_tasks_csrf'] = bin2hex(random_bytes(24));
@@ -61,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $taskId = (int)($_POST['task_id'] ?? 0);
-    AdminRequireTreeOperation(isset($_POST['change_status']) ? 'assigned-tasks.status' : 'assigned-tasks.create');
+    AdminRequire(isset($_POST['change_status']) ? 'assigned-tasks.status' : 'assigned-tasks.create');
     if (isset($_POST['delete_task'])) {
         if (!assignedTaskExists($conn, $taskId)) {
             $message = 'کار موردنظر یافت نشد.';

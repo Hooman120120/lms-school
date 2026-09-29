@@ -35,6 +35,7 @@ $message = ['success' => false, 'text' => ''];
 
 // ---------- POST: Add Group ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_group') {
+    AdminRequire('executive.calendar.groups');
     $title = trim($_POST['title'] ?? '');
     $color = $_POST['color'] ?? '#3788d8';
     $color2 = !empty($_POST['use_color2']) ? ($_POST['color2'] ?? null) : null;
@@ -58,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // ---------- POST: Update Group ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_group') {
+    AdminRequire('executive.calendar.groups');
     $id = $_POST['group_id'] ?? 0;
     $title = trim($_POST['title'] ?? '');
     $color = $_POST['color'] ?? '#3788d8';
@@ -82,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // ---------- POST: Delete Group ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_group') {
+    AdminRequire('executive.calendar.groups');
     $id = $_POST['group_id'] ?? 0;
     if (!$id) {
         $message = ['success' => false, 'text' => 'شناسه ' . $gw . ' نامعتبر است.'];

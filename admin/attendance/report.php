@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('attendance.report', ['administrator'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 // ---------------------------------------------------------
 // ورودی‌ها: تاریخ شمسی، کلاس، وضعیت
@@ -59,6 +55,7 @@ $hm = static fn($t) => $t ? substr((string) $t, 0, 5) : '';
 // خروجی اکسل
 // ---------------------------------------------------------
 if (isset($_GET['export'])) {
+    AdminRequire('attendance.report.export');
     $header = ['ردیف', 'کد ملی', 'نام', 'نام خانوادگی', 'کلاس', 'ورود', 'خروج', 'وضعیت', 'ثبت دستی استاد'];
     $data = [];
     foreach ($rows as $i => $r) {

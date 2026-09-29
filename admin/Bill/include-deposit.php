@@ -25,13 +25,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_notpay')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    die();
-}
 // Same own/all rule as the unpaid-invoice list that opens this window.
-if (!AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.unpaid', Permision('installment_permission'))) {
+if (!AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.unpaid')) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();

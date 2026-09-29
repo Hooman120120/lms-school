@@ -48,7 +48,7 @@ $adminrole = isset($_SESSION['admin']['adminrole']) ? (int)$_SESSION['admin']['a
 $meRowStmt = $conn->prepare("SELECT username, administrator FROM dbadmin WHERE username=? LIMIT 1");
 $meRowStmt->execute([$me]);
 $meRow = $meRowStmt->fetch(PDO::FETCH_ASSOC) ?: ['administrator'=>0];
-$administrator = (int)($meRow['administrator'] ?? 0);
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 
 // role flags
 $isTeacher    = ($adminrole === 3);
@@ -56,9 +56,6 @@ $isManagement = ($administrator === 1);
 $isMiddle     = (!$isManagement && $adminrole === 2);
 $isOperator   = (!$isManagement && $adminrole === 1); // and administrator != 1 already ensured above
 
-if ($isTeacher) {
-    RequireTeacherPermission('teacher_perm_messages', url('admin/index.php'));
-}
 
 // visibility check for one ticket (used in POST)
 function can_view_teacher_ticket(PDO $conn, array $t, string $me, bool $isTeacher, bool $isOperator, bool $isMiddle, bool $isManagement): bool
@@ -91,6 +88,7 @@ function can_view_teacher_ticket(PDO $conn, array $t, string $me, bool $isTeache
 }
 /* ====== TEACHER: CREATE NEW TICKET (NO student) ====== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create_teacher_ticket') {
+    AdminRequire('notifications.operator.teachers.create');
 
     $csrfOk = (isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? ''));
 
@@ -134,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
 /* ====== NON-AJAX STATUS UPDATE (POST + redirect) ====== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'set_status') {
+    AdminRequire('notifications.operator.teachers.status');
 
     $csrfOk = (isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? ''));
     $id     = (int)($_POST['id'] ?? 0);

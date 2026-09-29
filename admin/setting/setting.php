@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewsetting')) {
+if (true) { // retired section: not in the permission tree
     header('location:' . url("admin/index.php"));
     die();
 }

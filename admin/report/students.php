@@ -27,15 +27,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-if (!AdminHasAnyCurrentTreePermission() && !Permision('permision_reportstudent')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['call']) and $_GET['call'] != '') {
+    AdminRequire('reports.students.call');
     $factorId = queryFactor($_GET['call']);
     if ($factorId->useradder != NULL) {
         $user = $factorId->useradder;
@@ -60,6 +53,7 @@ if (isset($_SESSION['call'])) {
     unset($_SESSION['call']);
 }
 if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
+    AdminRequire('reports.students.call');
     $semat = 'دانش آموز';
     $qau = retPerson($_GET['call-student']);
     $tel = $qau->tel1;
@@ -124,6 +118,7 @@ if (isset($_POST['search'])) {
     }
 }
 if (isset($_GET['call-student'])) {
+    AdminRequire('reports.students.call');
     $ret = retPerson($_GET['call-student']);
     $tel = $ret->tel1;
     $name = ' دانش آموز ' . $ret->fname . ' ' . $ret->lname;
@@ -135,6 +130,7 @@ if (isset($_GET['call-student'])) {
     die();
 }
 if (isset($_GET['call-mother'])) {
+    AdminRequire('reports.students.call');
     $ret = retPerson($_GET['call-mother']);
     $tel = $ret->tel2;
     $name = '  مادر دانش آموز   ' . $ret->fname . ' ' . $ret->lname;
@@ -146,6 +142,7 @@ if (isset($_GET['call-mother'])) {
     die();
 }
 if (isset($_GET['call-father'])) {
+    AdminRequire('reports.students.call');
     $ret = retPerson($_GET['call-father']);
     $tel = $ret->tel3;
     $name = ' پدر دانش آموز  ' . $ret->fname . ' ' . $ret->lname;
@@ -157,6 +154,7 @@ if (isset($_GET['call-father'])) {
     die();
 }
 if (isset($_GET['disable'])) {
+    AdminRequire('reports.students.toggle');
     $disable = intval($_GET['disable']);
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
@@ -166,6 +164,7 @@ if (isset($_GET['disable'])) {
     die();
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('reports.students.toggle');
     $disable = intval($_GET['enable']);
 
     $check = 'SELECT * FROM dbcourse WHERE idcourse=?';
@@ -190,6 +189,7 @@ if (isset($_POST['typereport']) && isset($_POST['startdate']) && isset($_POST['e
     // دریافت گزینه‌های اکسل
     $excel_options = [];
     if (isset($_POST['excel_options']) && !empty($_POST['excel_options'])) {
+        AdminRequire('reports.students.export');
         $excel_options = json_decode($_POST['excel_options'], true);
     }
     $_SESSION['excelCoursereport'] = array(

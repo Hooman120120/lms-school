@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_allticket')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -47,6 +43,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['close']) and $_GET['close'] != '') {
+    AdminRequire('tickets.all.close');
     $ticketid = intval($_GET['close']);
     $update = 'UPDATE ticket_topic SET ticket_status=?,metod=? WHERE ticket_num=?';
     $act = $conn->prepare($update);
@@ -55,6 +52,7 @@ if (isset($_GET['close']) and $_GET['close'] != '') {
     die();
 }
 if (isset($_POST['txt']) and $_POST['txt'] != '') {
+    AdminRequire('tickets.all.search');
     $category = $_POST['category'];
     $txt = $_POST['txt'];
     switch ($category) {
@@ -531,7 +529,7 @@ include_once '../../temp.html';
                                                                                 متداول
                                                                             </div>
                                                                             <?php
-                                                                            if (Permision('permision_refer')) { ?>
+                                                                            if (AdminCan('tickets.referred.forward')) { ?>
                                                                             <div class="dropdown-item "
                                                                                  onclick="window.open('Refer-forward.php?ticket='+'<?php echo $ret->ticket_num ?>','سوالات متداول'
                                                                                          ,'width=800,height=500,menubar=0,toolbar=0,resizable=0,left=500,top=180,status=0,scrollbars=0,location=0' )"
@@ -662,7 +660,7 @@ include_once '../../temp.html';
                                                                             متداول
                                                                         </div>
                                                                         <?php
-                                                                        if (Permision('permision_refer')) { ?>
+                                                                        if (AdminCan('tickets.referred.forward')) { ?>
                                                                         <div class="dropdown-item "
                                                                              onclick="window.open('Refer-forward.php?ticket='+'<?php echo $res->ticket_num ?>','سوالات متداول'
                                                                                      ,'width=800,height=500,menubar=0,toolbar=0,resizable=0,left=500,top=180,status=0,scrollbars=0,location=0' )"

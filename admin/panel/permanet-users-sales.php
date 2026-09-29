@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
+$isImpersonate = AdminCan('dashboard.reports.permanent-sales.pick-operator');
 $type = (int)($_GET['type'] ?? 0);
 $allowedTypes = [2,1];
 if (!in_array($type, $allowedTypes, true)) {
@@ -34,12 +34,9 @@ if (!in_array($type, $allowedTypes, true)) {
 }
 $check = $conn->query("SELECT CURDATE() AS today")->fetch(PDO::FETCH_ASSOC);
 $users = [];
-$isadmin=0;
-if ($_SESSION['admin']['adminrole'] == 53 or $_SESSION['admin']['adminrole'] == 0 or $_SESSION['admin']['adminrole'] == 52 or $_SESSION['admin']['adminrole'] == 51){
-    $isadmin=1;
-}
-$salesScope = 'dashboard.summary.overview.manager.page-25d387505a.' . ($type === 2 ? 'today' : 'period');
-$recordVisibility = AdminRecordVisibility($salesScope, $isadmin === 1);
+$isadmin = 0;
+$salesScope = 'dashboard.reports.permanent-sales.' . ($type === 2 ? 'today' : 'period');
+$recordVisibility = AdminScope($salesScope);
 if ($recordVisibility === null) {
     http_response_code(403);
     exit('دسترسی به این گزارش فروش تعریف نشده است.');

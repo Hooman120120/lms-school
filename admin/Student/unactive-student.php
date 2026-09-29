@@ -24,11 +24,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_editstudent')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if(isset($_GET['activate'])){
+    AdminRequire('students.definitive.inactive.activate');
     $act='UPDATE dblogin SET activity=? WHERE username=? ';
     $qact=$conn->prepare($act);
     $qact->execute([1,$_GET['activate']]);

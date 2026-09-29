@@ -36,11 +36,7 @@ if (session_id() != $re['session_id']) {
 $username = $_SESSION['admin']['user'];
 $canViewAll = false;
 
-if (!Permision('installment_permission')) {
-    die('دسترسی ندارید');
-} else {
-    $canViewAll = true;
-}
+$canViewAll = true; // the page itself is the permission (finance.installments.export)
 
 function toEnglishNum($input) {
     if ($input === null || $input === '') return '';

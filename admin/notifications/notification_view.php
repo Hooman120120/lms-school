@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
 }
 //* End Check Session JUST ONE Session
 $schoolRoleKey = SchoolStaffRoleKey((string)$_SESSION['admin']['user']);
-if (!Permision('permision_viewalert') && !in_array($schoolRoleKey, ['manager', 'general_deputy'], true)) {
-    header('location: ../panel/desktop.php');
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">

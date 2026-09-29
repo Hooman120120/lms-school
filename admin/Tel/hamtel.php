@@ -25,7 +25,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-call.exchange', ['permision_managecall'])) {
+if (!AdminCanSee('public-relations.safe-call.exchange')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -36,6 +36,7 @@ $verify = null;
    جابجایی خطوط اپراتور به اپراتور
    ========================= */
 if (isset($_POST['save'])) {
+    AdminRequire('public-relations.safe-call.exchange.move');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $newgroup = intval($_POST['group-new']);
         $oldgroup = intval($_POST['group-old']);
@@ -115,6 +116,7 @@ if (isset($_POST['save'])) {
    تخصیص کل گروه یه یک نفر (درون گروهی) – group to operators
    ========================= */
 if (isset($_POST['group-to-operator'])) {
+    AdminRequire('public-relations.safe-call.exchange.group-to-operator');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $ferestande = intval($_POST['group-fer']); // گروه فرستنده
         $actfer     = intval($_POST['act-fer']);   // وضعیت فعلی گروه
@@ -191,6 +193,7 @@ if (isset($_POST['group-to-operator'])) {
    ادغام یک گروه با گروه دیگر – ORIGINAL LOGIC (UNTOUCHED)
    ========================= */
 if (isset($_POST['group-to-group'])) {
+    AdminRequire('public-relations.safe-call.exchange.group-to-group');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $ggroup = intval($_POST['ggroup']);
         $gact   = intval($_POST['gact']);

@@ -37,7 +37,6 @@ if ($idpersonal <= 0) {
 $class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : 0;
 if ($class_id < 0) $class_id = 0;
 
-RequireTeacherPermission('teacher_perm_students', url('admin/index.php'));
 if ((int)($_SESSION['admin']['adminrole'] ?? -1) === 3 && (
     $class_id <= 0 || !TeacherHasClassAccess($class_id)
 )) {

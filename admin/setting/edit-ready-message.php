@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages.edit', ['permision_manage_chat'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_GET['id'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

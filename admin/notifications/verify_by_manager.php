@@ -26,13 +26,8 @@ if (session_id() != $re['session_id']) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $schoolRoleKey = SchoolStaffRoleKey((string)$sessionUser);
-if (!Permision('permision_viewalert') && !Permision('permision_actfactor')
-    && !in_array($schoolRoleKey, ['manager', 'general_deputy'], true)) {
-    http_response_code(403);
-    exit('دسترسی بررسی فاکتورهای منتظر تأیید برای سمت شما تعریف نشده است.');
-}
 $urlType = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
+$isImpersonate = AdminCan(AdminNotificationCode('financial.invoices.pick-operator'));
 //$allowedTypes = [2, 1];
 //$check = $conn->query("SELECT CURDATE() AS today")->fetch(PDO::FETCH_ASSOC);
 
@@ -43,6 +38,7 @@ $stmt->execute(['pending']);
 $deposits = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reject') {
+    AdminRequire(AdminNotificationCode('financial.invoices.verify'));
 
     $username = trim($_POST['codemeli'] ?? '');
     $reqId = $_POST['req_id'];
@@ -66,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'rejec
 }
 
 if (isset($_GET['verify'])) {
+    AdminRequire(AdminNotificationCode('financial.invoices.verify'));
 
     $acceptSql = 'UPDATE deposit_verifications SET status = ? WHERE id = ?';
     $acceptStmt = $conn->prepare($acceptSql);

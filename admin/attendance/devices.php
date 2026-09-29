@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('attendance.devices', ['administrator'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 if (empty($_SESSION['attendance_csrf'])) $_SESSION['attendance_csrf'] = bin2hex(random_bytes(16));
 $csrf = $_SESSION['attendance_csrf'];
@@ -37,6 +33,7 @@ $pushUrl = url('api/attendance/push.php');
 // عملیات روی دستگاه‌ها (ثبت، کلید جدید، فعال/غیرفعال، حذف)
 // ---------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('attendance.devices.manage');
     if (!hash_equals($csrf, (string) ($_POST['csrf'] ?? ''))) {
         $_SESSION['attendance_notice'] = ['type' => 'danger', 'message' => 'نشست منقضی شده است؛ دوباره تلاش کنید.'];
         header('Location: devices.php');

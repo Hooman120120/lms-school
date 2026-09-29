@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     die();
 }
 
-if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.voices', ['autodialer'])) {
+if (!AdminCanSee('public-relations.safe-call.autodialer.voices')) {
     echo "دسترسی ندارید.";
     die();
 }
@@ -35,6 +35,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_voice') {
+    AdminRequire('public-relations.safe-call.autodialer.voices.create');
 
     $name = trim((string)($_POST['name'] ?? ''));
     $desc = trim((string)($_POST['description'] ?? ''));
@@ -115,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_v
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_voice') {
+    AdminRequire('public-relations.safe-call.autodialer.voices.delete');
 
     $id = trim((string)($_POST['id'] ?? ''));
     $filename = trim((string)($_POST['filename'] ?? ''));

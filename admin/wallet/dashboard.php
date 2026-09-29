@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewwallet')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 date_default_timezone_set("Iran");
 $datenow = date("Y-m-d");
 $timenow = date('H:i');

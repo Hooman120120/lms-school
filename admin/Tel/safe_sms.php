@@ -32,7 +32,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-sms', ['permision_viewcall'])) {
+if (!AdminCanSee('public-relations.safe-sms')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -120,6 +120,7 @@ try {
 
 // ===================== خروجی اکسل =====================
 if (isset($_GET['export']) && $_GET['export'] === 'excel' && isset($_SESSION['excel_data'])) {
+    AdminRequire('public-relations.safe-sms.export');
     $data = $_SESSION['excel_data'];
     if (empty($data)) {
         die('داده‌ای برای خروجی وجود ندارد.');
@@ -195,7 +196,7 @@ $endHour = '23';
 $endMinute = '59';
 
 // بررسی اینکه آیا کاربر روی دکمه جستجو کلیک کرده یا نه
-$isSearchRequest = $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_submit']);
+$isSearchRequest = $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_submit']) && AdminCan('public-relations.safe-sms.search');
 
 if ($isSearchRequest) {
     $selectedPhone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
@@ -508,7 +509,7 @@ include_once '../../temp.html';
                     </div>
                     <!-- ========================================= -->
 
-                    <?php if (AdminCanUsePermissionScope('public-relations.safe-sms.credit', ['permision_viewcall'])): ?>
+                    <?php if (AdminCanSee('public-relations.safe-sms.credit')): ?>
                         <div class="row row-sm justify-content-center">
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
                                 <div class="card custom-card">

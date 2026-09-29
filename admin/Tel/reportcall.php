@@ -26,7 +26,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-call.reports', ['permision_viewcall', 'reportcall_permission'])) {
+if (!AdminCanSee('public-relations.safe-call.reports')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
@@ -70,6 +70,7 @@ function jalaliToGregorian($jalaliDate)
 $result = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('public-relations.safe-call.reports.search');
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING) ?? '';
     $startdate = filter_input(INPUT_POST, 'startdate', FILTER_SANITIZE_STRING) ?? '';
     $enddate = filter_input(INPUT_POST, 'enddate', FILTER_SANITIZE_STRING) ?? '';
@@ -262,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // the actual download button (had to be like this)
 if (isset($_GET['file'])) {
+    AdminRequire('public-relations.safe-call.reports.download');
     $fileName = $_GET['file'];
 
     $downloadPayload = json_encode(["file" => $fileName]);

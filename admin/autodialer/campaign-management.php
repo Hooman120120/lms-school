@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     die();
 }
 
-if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.campaigns', ['autodialer'])) {
+if (!AdminCanSee('public-relations.safe-call.autodialer.campaigns')) {
     echo "دسترسی ندارید.";
     die();
 }
@@ -88,6 +88,7 @@ function campaignLogContext(string $name, array $groupIds, array $numbers, strin
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_campaign') {
+    AdminRequire('public-relations.safe-call.autodialer.campaigns.create');
 
     $name = trim((string)($_POST['name'] ?? ''));
     $description = trim((string)($_POST['description'] ?? ''));
@@ -177,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_c
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'remove_campaign') {
+    AdminRequire('public-relations.safe-call.autodialer.campaigns.delete');
     $id = trim((string)($_POST['id'] ?? ''));
 
     if ($id === '') {

@@ -29,10 +29,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('administrator')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 include_once '../../temp.html';
 
@@ -47,6 +43,7 @@ if (!isset($_SESSION['flash_errors_op']))  $_SESSION['flash_errors_op']  = [];
 
 // -------------------- DIRECT UNSUSPEND (Active again) --------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'activate_student') {
+    AdminRequire('students.definitive.cancelled-operator.activate');
     $studentUsername = trim($_POST['student_username'] ?? '');
     $requestedBy = $_POST['requested_by'];
     if ($studentUsername === '') {
@@ -83,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'activ
 
 // -------------------- HANDLE APPROVE / REJECT --------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['request_id']) && in_array($_POST['action'], ['approve', 'reject'], true)) {
+    AdminRequire('students.definitive.cancelled-operator.review');
     $action     = $_POST['action'];
     $requestId  = (int)($_POST['request_id'] ?? 0);
 

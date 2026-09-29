@@ -38,19 +38,14 @@ if ($username !== '') {
     $adminRole = $st->fetchColumn();
 }
 
-/* Legacy accounts keep the previous manager-only dashboard. Accounts created
- * with the new permission tree see only the dashboard leaves granted to them. */
-$dashboardUsesPermissionTree = AdminHasAnyCurrentTreePermission();
-$dashboardCan = static function (string $code) use ($dashboardUsesPermissionTree): bool {
-    return AdminPermissionCodeAvailable($code) && (!$dashboardUsesPermissionTree || AdminHasMenuNavigationPermission($code));
-};
+/* Each part of the dashboard is its own node of the permission tree. */
+$dashboardCan = static fn(string $code): bool => AdminCanSee($code);
 $dashboardCalendarKinds = [
-    'executive' => $dashboardUsesPermissionTree ? $dashboardCan('dashboard.calendar.executive') : !Permision('permission_calendar'),
-    'academic' => $dashboardUsesPermissionTree ? $dashboardCan('dashboard.calendar.academic') : !Permision('permission_calendar'),
+    'executive' => $dashboardCan('dashboard.calendar.executive'),
+    'academic' => $dashboardCan('dashboard.calendar.academic'),
 ];
-$showDashboardSummary = $dashboardUsesPermissionTree
-    ? ($dashboardCan('dashboard.summary') || $dashboardCan('dashboard.exam-system') || $dashboardCan('dashboard.online-events'))
-    : (int)$adminRole === 0;
+$showDashboardSummary = $dashboardCan('dashboard.summary') || $dashboardCan('dashboard.desks')
+    || $dashboardCan('dashboard.exam-system') || $dashboardCan('dashboard.online-events');
 
 // notif get
 
@@ -245,7 +240,7 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                 </div>
 
                                 <div class="dashboard-actions">
-                                <?php if ($dashboardCan('dashboard.summary.overview')): ?>
+                                <?php if ($dashboardCan('dashboard.desks')): ?>
                                 <div class="dropdown" style="position:relative;z-index:2;">
                                     <button aria-expanded="false"
                                             aria-haspopup="true"
@@ -256,12 +251,12 @@ if (!function_exists('cross_panel_secret') && is_file($crossPanelHelper)) {
                                         <i class="fe fe-hash ml-1"></i> چشم‌انداز کلی
                                     </button>
                                     <div class="dropdown-menu tx-13">
-                                        <?php if ($dashboardCan('dashboard.summary.overview.manager') && Permision('permision_manage_suporter')): ?>
+                                        <?php if ($dashboardCan('dashboard.desks.manager')): ?>
                                             <a class="dropdown-item" href="<?= url('admin/panel/manager.php') ?>">
                                                 <i class="fe fe-grid ml-2"></i> داشبورد مدیریتی
                                             </a>
                                         <?php endif; ?>
-                                        <?php if ($dashboardCan('dashboard.summary.overview.desktop')): ?>
+                                        <?php if ($dashboardCan('dashboard.desks.mine')): ?>
                                             <a class="dropdown-item" href="<?= url('admin/panel/desktop.php') ?>">
                                                 <i class="fe fe-monitor ml-2"></i> میزکار من
                                             </a>

@@ -28,7 +28,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-$canBulkRegister = AdminCanUsePermissionScope('students.definitive.register.bulk', ['permision_addstudent', 'excel_permission']);
+$canBulkRegister = AdminCan('students.definitive.register.bulk');
 if (!$canBulkRegister) {
     http_response_code(403);
     exit('مجوز ثبت‌نام دسته‌جمعی برای شما فعال نشده است.');
@@ -132,8 +132,8 @@ include_once '../../temp.html';
             <div class="container-fluid">
                 <div class="inner-body">
                     <?php
-                    if (Permision('permision_viewstudent')) {
-                        if (Permision('permision_addstudent')) {
+                    if (AdminCanSee('students.definitive.register.bulk')) {
+                        if (AdminCanSee('students.definitive.register.bulk')) {
                     ?>
                             <!-- Row -->
 

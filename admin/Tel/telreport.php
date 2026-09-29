@@ -27,7 +27,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.contacts.report', ['permision_viewcall'])) {
+if (!AdminCanSee('public-relations.safe-call.manage.contacts.report')) {
     header('location: ' . url('admin/index.php'));
     die();
 }

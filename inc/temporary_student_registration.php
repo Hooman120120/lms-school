@@ -3,12 +3,9 @@
 function TemporaryStudentRegistrationCan(bool $embedded = false): bool
 {
     if ($embedded) {
-        return inst_is('school') && AdminCanUsePermissionScope(
-            'students.temporary.enrolment.register-student',
-            ['permision_viewstudent', 'permision_addstudent']
-        );
+        return inst_is('school') && AdminCan('students.temporary.enrolment.register-student');
     }
-    return Permision('permision_viewstudent') && Permision('permision_addstudent');
+    return AdminCan('students.temporary.register');
 }
 
 /** Resolve an existing school student without confusing a shared phone with an identity. */

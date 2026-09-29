@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()
     die();
 }
 
-if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.groups', ['autodialer'])) {
+if (!AdminCanSee('public-relations.safe-call.autodialer.groups')) {
     echo "دسترسی ندارید.";
     die();
 }
@@ -79,6 +79,7 @@ $contacts = autodialerContactsSearch(0, 500000); // adjust count if needed
 if (!is_array($contacts)) $contacts = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['group_submit'])) {
+    AdminRequire('public-relations.safe-call.autodialer.groups.create');
     $cntContacts = 0;
     $cntCourseRaw = 0;
     $cntBeforeBlacklist = 0;
@@ -215,6 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['group_submit'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['group_delete_submit'])) {
+    AdminRequire('public-relations.safe-call.autodialer.groups.delete');
     $gid = trim((string)($_POST['group_id'] ?? ''));
     $gname = trim((string)($_POST['group_name'] ?? ''));
     if ($gid === '') {

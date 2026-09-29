@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewcourse')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 $demoCourseLabel = inst_is('institute') ? 'دوره موقت' : 'فوق برنامه';
 
@@ -56,6 +52,7 @@ if (isset($_POST['save'])) {
     }
 }
 if (isset($_POST['save-update'])) {
+    AdminRequire('courses.main.demo-create.edit');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         if (CheckcodecourseForupdatDemo($_POST['code'], $_GET['edit'])) {
 

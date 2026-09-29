@@ -26,14 +26,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-if (!Permision('permision_reportcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if(isset($_GET['state'])){
     $stm = $conn->prepare("SELECT * FROM dbpersonal INNER JOIN  dblogin ON `dbpersonal`.`codemeli`=`dblogin`.`username` WHERE `dblogin`.`role`=? AND `dbpersonal`.`state`=?  ");
     $stm->execute([2,$_GET['state']]);

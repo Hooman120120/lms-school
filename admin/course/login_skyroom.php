@@ -33,10 +33,6 @@ if ($isTeacher && !isset($_GET['logindars'])) {
     http_response_code(403);
     exit(m('perm.teacher_no_online_class'));
 }
-if (!$isTeacher && !Permision('permision_viewcourse')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if(isset($_GET['loginskyroom'])) {
     $courseCode = (int)$_GET['loginskyroom'];
     if ($courseCode <= 0 || (StaffCourseScopeRequired() && !StaffHasCourseAccess($courseCode))) {

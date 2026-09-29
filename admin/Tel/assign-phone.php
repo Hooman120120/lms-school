@@ -29,7 +29,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-call.assignment', ['permision_managecall'])) {
+if (!AdminCanSee('public-relations.safe-call.assignment')) {
     die('دسترسی ندارید');
 }
 
@@ -284,6 +284,7 @@ $_SESSION['temporary_personal_export_ids'] = array_map(function ($p) {
 
 // ========== بخش تخصیص با چند اپراتور ==========
 if (isset($_POST['confirmAssign'])) {
+    AdminRequire('public-relations.safe-call.assignment.assign');
     if (empty($_POST['selected_ids']) || empty($_POST['operator_ids'])) {
         $_SESSION['assign_message'] = '⚠️ اطلاعات ناقص است';
         header('Location: ' . $_SERVER['PHP_SELF']);
@@ -517,6 +518,7 @@ if (empty($_SESSION['token'])) {
 $token = $_SESSION['token'];
 
 if (isset($_POST['save'])) {
+    AdminRequire('public-relations.safe-call.manage.groups.create');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $in = 'INSERT INTO tel_group (namegroup) VALUES (?)';
         $qin = $conn->prepare($in);
@@ -528,6 +530,7 @@ if (isset($_POST['save'])) {
 }
 
 if (isset($_GET['del'])) {
+    AdminRequire('public-relations.safe-call.manage.groups.delete');
     $id = intval($_GET['del']);
     $del = 'DELETE FROM tel_group WHERE id=?';
     $qdel = $conn->prepare($del);
@@ -538,6 +541,7 @@ if (isset($_GET['del'])) {
 }
 
 if (isset($_POST['save-update'])) {
+    AdminRequire('public-relations.safe-call.manage.groups.edit');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $code=intval($_POST['id']);
         $upd='UPDATE tel_group SET namegroup=? WHERE id=?';

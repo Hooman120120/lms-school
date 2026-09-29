@@ -92,6 +92,7 @@ if ($requestedCourse !== '') {
 //}
 
 if (isset($_GET['generate'])) {
+    AdminRequire('support.desk.online-class');
     // (اختیاری) در صورت نیاز تابع act_classSkyroomDemo را با معادل آن برای اتاق مجازی جایگزین کنید
     // اگر همان تابع وضعیت کلاس را در دیتابیس چک می‌کند، می‌توانید همان را نگه دارید
     if (!act_classSkyroomDemo($_GET['code'])) {
@@ -188,6 +189,7 @@ foreach ($thisStudentCourses as $course) {
     }
 }
 if (isset($_GET['opHandle'])) {
+    AdminRequire('support.desk.cancel-request');
     date_default_timezone_set('Asia/Tehran');
     $sql = 'INSERT INTO cancel_student_operator_request (student_username, requested_by, requested_mode, status, created_at) VALUES (?, ?, 1, 0, ?)';
     $stmt = $conn->prepare($sql);
@@ -235,6 +237,7 @@ if ($studentCodemeli !== '') {
 
 // Handle submit (separate from your other POSTs)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_suspend_request'])) {
+    AdminRequire('support.desk.suspend-request');
 
     $reason = trim($_POST['suspend_reason'] ?? '');
     $postedCodemeli = trim($_POST['student_codemeli'] ?? '');
@@ -335,6 +338,7 @@ $datenow = gregorian_to_jalali($datenow[0], $datenow[1], $datenow[2]);
 $datenow = implode('/', $datenow);
 //Start Calling
 if (isset($_GET['calls']) and $_GET['calls'] == 'true') {
+    AdminRequire('support.desk.calls');
 
     $semat = 'دانش آموز';
     $tel = $user->tel1;
@@ -347,6 +351,7 @@ if (isset($_GET['calls']) and $_GET['calls'] == 'true') {
     die();
 }
 if (isset($_GET['callp']) and $_GET['callp'] == 'true') {
+    AdminRequire('support.desk.calls');
 
     $semat = 'پدر ';
     $tel = $user->tel3;
@@ -359,6 +364,7 @@ if (isset($_GET['callp']) and $_GET['callp'] == 'true') {
     die();
 }
 if (isset($_GET['callm']) and $_GET['callm'] == 'true') {
+    AdminRequire('support.desk.calls');
 
     $semat = 'مادر';
     $tel = $user->tel2;
@@ -372,6 +378,7 @@ if (isset($_GET['callm']) and $_GET['callm'] == 'true') {
 }
 
 if (isset($_GET['callh']) and $_GET['callh'] == 'true') {
+    AdminRequire('support.desk.calls');
 
     $semat = 'خانه';
     $tel_home = $user->tel_home;
@@ -389,6 +396,7 @@ if (isset($_GET['callh']) and $_GET['callh'] == 'true') {
 }
 //end Calling
 if (isset($_GET['changepublic'])) {
+    AdminRequire('support.desk.flags');
     if ($suport) {
         $userchange = $_GET['changepublic'];
         $update = 'UPDATE suport_user SET typesupport=? WHERE username=? ';
@@ -402,6 +410,7 @@ if (isset($_GET['changepublic'])) {
     }
 }
 if (isset($_GET['changevip'])) {
+    AdminRequire('support.desk.flags');
     if ($suport) {
         $userchange = $_GET['changevip'];
         $update = 'UPDATE suport_user SET typesupport=? WHERE username=? ';
@@ -415,6 +424,7 @@ if (isset($_GET['changevip'])) {
     }
 }
 if (isset($_POST['addposhtibani'])) {
+    AdminRequire('support.desk.log');
     if (isset($_SESSION['token']) and $_SESSION['token'] === $_POST['token']) {
         if (!$suport) {
             $last = $_POST['lastdate'];
@@ -513,6 +523,7 @@ if (isset($_POST['addposhtibani'])) {
     }
 }
 if (isset($_GET['delsupport'])) {
+    AdminRequire('support.desk.log');
     $delid = intval($_GET['delsupport']);
     $sql = 'DELETE FROM suport_report WHERE id=? ';
     $del = $conn->prepare($sql);
@@ -521,6 +532,7 @@ if (isset($_GET['delsupport'])) {
     die();
 }
 if (isset($_GET['delhistorysupport']) and $_GET['delhistorysupport'] == 'true') {
+    AdminRequire('support.desk.log');
     $sql = 'DELETE FROM suport_report WHERE username=? ';
     $del = $conn->prepare($sql);
     $del->execute([$_GET['Id']]);
@@ -528,6 +540,7 @@ if (isset($_GET['delhistorysupport']) and $_GET['delhistorysupport'] == 'true') 
     die();
 }
 if (isset($_POST['addaboutsuporter'])) {
+    AdminRequire('support.desk.log');
     if (isset($_SESSION['token']) && $_SESSION['token'] === $_POST['token']) {
         $sql = "INSERT INTO student_supporter_comments (codemeli, comment, created_by, created_at) VALUES (?, ?, ?, NOW())";
         $stmt = $conn->prepare($sql);
@@ -548,6 +561,7 @@ if ($stmt->rowCount() > 0) {
     $stmt->execute(['seen', $_GET['Id']]);
 }
 if (isset($_POST['sub'])) {
+    AdminRequire('support.desk.messages');
     if (isset($_SESSION['tokenn']) and $_SESSION['tokenn'] == $_POST['token']) {
         $message_text = $_POST['txt'];
         $sender_username = $_SESSION['admin']['user'];
@@ -589,7 +603,7 @@ if (isset($_POST['sub'])) {
                             $stmt->execute([$_GET['edit']]);
                             $message = $stmt->fetch(PDO::FETCH_OBJ);
                             $datetime = $message->message_date . ' ' . $message->message_time;
-                            if (time() - strtotime($datetime) <= 3600 or Permision('permision_manage_chat')) {
+                            if (time() - strtotime($datetime) <= 3600 or AdminCan('support.desk.messages-manage')) {
                                 if (!empty($message->file_path)) {
                                     $file_path = $_SERVER['DOCUMENT_ROOT'] . $message->file_path;
                                     if (file_exists($file_path)) {
@@ -627,7 +641,7 @@ if (isset($_POST['sub'])) {
                 $stmt->execute([$_GET['edit']]);
                 $message = $stmt->fetch(PDO::FETCH_OBJ);
                 $datetime = $message->message_date . ' ' . $message->message_time;
-                if (time() - strtotime($datetime) <= 3600 or Permision('permision_manage_chat')) {
+                if (time() - strtotime($datetime) <= 3600 or AdminCan('support.desk.messages-manage')) {
                     $sql = 'UPDATE suport_message SET sender_username = ?, message_text = ?, edit_message_date = ?, edit_message_time = ? WHERE id = ?';
                     $stmt = $conn->prepare($sql);
                     $stmt->execute([$_SESSION['admin']['user'], $message_text, $datenow, $timenow, $_GET['edit']]);
@@ -648,6 +662,7 @@ if (isset($_POST['sub'])) {
 }
 
 if (isset($_POST['send-sms'])) {
+    AdminRequire('support.desk.sms');
     if (isset($_SESSION['token_sms']) && $_SESSION['token_sms'] === $_POST['token']) {
         $sms_text = trim($_POST['sms_text']);
         $student_id = $_GET['Id'];
@@ -913,12 +928,13 @@ if (isset($_GET['Id']) and isset($_GET['send'])) {
 }
 
 if (isset($_GET['delm'])) {
+    AdminRequire('support.desk.messages');
     $sql = 'SELECT * FROM suport_message WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['delm']]);
     $message = $stmt->fetch(PDO::FETCH_OBJ);
     $datetime = $message->message_date . ' ' . $message->message_time;
-    if (time() - strtotime($datetime) <= 3600 or Permision('permision_manage_chat')) {
+    if (time() - strtotime($datetime) <= 3600 or AdminCan('support.desk.messages-manage')) {
         if ($message && !empty($message->file_path)) {
             $file_path = $_SERVER['DOCUMENT_ROOT'] . $message->file_path;
             if (file_exists($file_path)) {
@@ -939,6 +955,7 @@ if (isset($_GET['delm'])) {
 }
 
 if (isset($_GET['delallmessage'])) {
+    AdminRequire('support.desk.messages');
     $select = "SELECT * FROM suport_message WHERE sender_username = ? OR receiver_username = ?";
     $query = $conn->prepare($select);
     $query->execute([$_GET['Id'], $_GET['Id']]);
@@ -962,6 +979,7 @@ if (isset($_GET['delallmessage'])) {
 }
 //here
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course-statuss'])) {
+    AdminRequire('support.desk.statuses');
 
     // 2. Sanitize and validate inputs
     $student_id = htmlspecialchars(strip_tags(trim($_POST['student_id'] ?? '')), ENT_QUOTES, 'UTF-8');
@@ -1022,6 +1040,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course-statuss'])) {
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course-status'])) {
+    AdminRequire('support.desk.statuses');
 
     // ---------------- 1️⃣ Sanitize Inputs ----------------
     $student_id = trim($_POST['student_id'] ?? '');
@@ -1117,6 +1136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course-status'])) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['student-status'])) {
+    AdminRequire('support.desk.statuses');
 
     // 2. Sanitize and validate inputs
     $student_id = htmlspecialchars(strip_tags(trim($_POST['student_id'] ?? '')), ENT_QUOTES, 'UTF-8');
@@ -1306,6 +1326,7 @@ $studentCourseStatusRows = $filterByCurrentAcademicYear($studentCourseStatusRows
 $studentStatusRows = $filterByCurrentAcademicYear($studentStatusRows);
 
 if (isset($_POST['delete_exam_status_id'])) {
+    AdminRequire('support.desk.statuses');
     $idToDelete = (int)$_POST['delete_exam_status_id'];
 
     $sqlDel = "DELETE FROM course_status WHERE id = ?";
@@ -1319,6 +1340,7 @@ if (isset($_POST['delete_exam_status_id'])) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_student_status'])) {
+    AdminRequire('support.desk.statuses');
     $deleteId = htmlspecialchars(strip_tags(trim($_POST['delete_id'] ?? '')), ENT_QUOTES, 'UTF-8');
     if ($deleteId) {
         $stmt = $conn->prepare("DELETE FROM student_status WHERE id = :id");
@@ -1560,10 +1582,7 @@ function fetchTalkSecondsForRange(array $numbers, string $from, string $to, stri
 // Fetch payments with overdue status
 
 try {
-    $permStmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $permStmt->execute([':username' => $username]);
-    $permRow = $permStmt->fetch(PDO::FETCH_ASSOC);
-    $canViewAll = ($permRow && (int)$permRow['installment_permission'] === 1);
+    $canViewAll = AdminCan('support.desk.installments-all');
 } catch (PDOException $e) {
     error_log("Permission check error: " . $e->getMessage());
     $canViewAll = false;
@@ -1714,6 +1733,7 @@ $tir1DateTime = sprintf('%04d-%02d-%02d 00:00:00', $tir1G[0], $tir1G[1], $tir1G[
 
 
 if (isset($_POST['change_support_type'])) {
+    AdminRequire('support.desk.support-type');
     $newType = (int)$_POST['new_typeuser'];
     $studentCode = $_GET['Id']; // یا $user->codemeli
 
@@ -1750,6 +1770,7 @@ if (!isset($_SESSION['active_event_token'])) {
 
 // Handle answer submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['active_event_action'])) {
+    AdminRequire('support.desk.events');
     if (!isset($_SESSION['active_event_token']) || $_SESSION['active_event_token'] !== ($_POST['active_event_token'] ?? '')) {
         $active_event_error = "خطای امنیتی. لطفاً دوباره تلاش کنید.";
     } else {
@@ -2837,7 +2858,7 @@ include_once '../../temp.html';
                                                 </div>
                                             <?php }
                                             $datetime = $message->message_date . ' ' . $message->message_time;
-                                            if (Permision('permision_manage_chat')) { ?>
+                                            if (AdminCan('support.desk.messages-manage')) { ?>
                                                 <a href="?Id=<?= $_GET['Id'] ?>&edit=<?= $message->id ?>"
                                                    title="ویرایش"><i class="fe fe-edit"></i></a>
                                                 <a href="?Id=<?php echo $_GET['Id'] ?>&delm=<?php echo $message->id ?>"
@@ -2850,7 +2871,7 @@ include_once '../../temp.html';
                                                     <i class=" text-success fa fa-check"></i>
                                                 <?php } ?>
                                             <?php }
-                                            if ($message->sender_type == 'admin' and !Permision('permision_manage_chat')) {
+                                            if ($message->sender_type == 'admin' and !AdminCan('support.desk.messages-manage')) {
                                                 if (time() - strtotime($datetime) <= 3600) { ?>
                                                     <a href="?Id=<?= $_GET['Id'] ?>&edit=<?= $message->id ?>"
                                                        title="ویرایش"><i class="fe fe-edit"></i></a>
@@ -4756,7 +4777,7 @@ include_once '../../temp.html';
                                         </form>
                                     </div>
                                     <hr>
-                                    <?php if (Permision('permision_manage_chat')) { ?>
+                                    <?php if (AdminCan('support.desk.messages-manage')) { ?>
 
                                     <div class="col-lg-12 mg-b-25 ">
                                         <a href="?Id=<?php echo $_GET['Id'] ?>&delallmessage=true"

@@ -48,7 +48,7 @@ $adminrole = isset($_SESSION['admin']['adminrole']) ? (int)$_SESSION['admin']['a
 $meRowStmt = $conn->prepare("SELECT username, administrator FROM dbadmin WHERE username=? LIMIT 1");
 $meRowStmt->execute([$me]);
 $meRow = $meRowStmt->fetch(PDO::FETCH_ASSOC) ?: ['administrator'=>0];
-$administrator = (int)($meRow['administrator'] ?? 0);
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 
 // role flags
 $isTeacher    = ($adminrole === 3);
@@ -89,6 +89,7 @@ function can_view_teacher_ticket(PDO $conn, array $t, string $me, bool $isTeache
 
 /* ====== NON-AJAX STATUS UPDATE (POST + redirect) ====== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'set_status') {
+    AdminRequire('notifications.teacher-tickets.status');
 
     $csrfOk = (isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? ''));
     $id     = (int)($_POST['id'] ?? 0);

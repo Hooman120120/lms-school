@@ -66,8 +66,8 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_viewstudent')) {
-                    if (Permision('permision_addstudent')) {
+                if (AdminCanSee('students.temporary.register')) {
+                    if (AdminCanSee('students.temporary.register')) {
                         ?>
                         <?php RenderTemporaryStudentRegistration($temporaryRegistration); ?>
                     <?php } else { ?>

@@ -31,6 +31,7 @@ if (session_id() != $re['session_id']) {
 //    die();
 //}
 if (isset($_GET['disable'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['disable']]);
@@ -38,6 +39,7 @@ if (isset($_GET['disable'])) {
     die();
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $disable = 'UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([1, $_GET['enable']]);
@@ -45,6 +47,7 @@ if (isset($_GET['enable'])) {
     die();
 }
 if (isset($_GET['diactive'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $disable = 'UPDATE codtbl_course SET activecourse=? WHERE codecourse=?';
     $qupd = $conn->prepare($disable);
     $qupd->execute([0, $_GET['diactive']]);
@@ -52,7 +55,7 @@ if (isset($_GET['diactive'])) {
     die();
 }
 if (isset($_GET['close'])) {
-    if (Permision('permision_deletcourse')) {
+    if (AdminCan('courses.main.demo-active.delete')) {
 
         //
         $disable = 'DELETE FROM  course_demo  WHERE codecourse = ?';
@@ -63,6 +66,7 @@ if (isset($_GET['close'])) {
     }
 }
 if (isset($_GET['act_class'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE course_demo SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_class']]);
@@ -70,6 +74,7 @@ if (isset($_GET['act_class'])) {
     die();
 }
 if (isset($_GET['act_general'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_general']]);
@@ -80,6 +85,7 @@ if (isset($_GET['act_general'])) {
     die();
 }
 if (isset($_GET['act_quiz'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([1, $_GET['act_quiz']]);
@@ -90,6 +96,7 @@ if (isset($_GET['act_quiz'])) {
     die();
 }
 if (isset($_GET['expire_class'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE course_demo SET act_class=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_class']]);
@@ -97,6 +104,7 @@ if (isset($_GET['expire_class'])) {
     die();
 }
 if (isset($_GET['expire_general'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE codtbl_course SET act_general=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_general']]);
@@ -107,6 +115,7 @@ if (isset($_GET['expire_general'])) {
     die();
 }
 if (isset($_GET['expire_quiz'])) {
+    AdminRequire('courses.main.demo-active.activation');
     $act = 'UPDATE codtbl_course SET act_quiz=? WHERE codecourse=?';
     $qupd = $conn->prepare($act);
     $qupd->execute([0, $_GET['expire_quiz']]);
@@ -117,9 +126,11 @@ if (isset($_GET['expire_quiz'])) {
     die();
 }
 if (isset($_GET['loginquiz'])) {
+    AdminRequire('courses.main.demo-active.quiz-login');
     header('location: startquiz.php?true');
 }
 if (isset($_GET['schedule'])) {
+    AdminRequire('courses.main.demo-active.schedule-reset');
     $sql = "SELECT * FROM dbschedules WHERE codecourse = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['schedule']]);
@@ -466,35 +477,35 @@ include_once '../../temp.html';
                                                                                         <i class="fe fe-video-off"></i> قطع کلاس
                                                                                     </a>
                                                                                 <?php } ?>
-                                                                                <a class="dropdown-item"
+                                                                                <?php if (AdminCanSee('courses.main.demo-active.students')): ?><a class="dropdown-item"
                                                                                    href="list-demo-student.php?code=<?php echo $res->codecourse ?>"><i
                                                                                             class="fe fe-more-vertical"></i>
                                                                                     لیست دانش آموزان
-                                                                                </a>
-                                                                                <?php if (Permision('permision_viewcourse')) { ?>
-                                                                                    <a class="dropdown-item"
+                                                                                </a><?php endif; ?>
+                                                                                <?php if ((AdminCanAny('courses.main.demo-active.movies', 'courses.main.demo-active.docs', 'courses.main.demo-create.edit') || AdminCanSee('courses.main.active.classes.attendance'))) { ?>
+                                                                                    <?php if (AdminCan('courses.main.demo-active.movies')): ?><a class="dropdown-item"
                                                                                        href="movie.php?code=<?php echo $res->codecourse ?>">
                                                                                         <i class="fe fe-film"></i>
                                                                                         افزودن فیلم
-                                                                                    </a>
-                                                                                    <a class="dropdown-item"
+                                                                                    </a><?php endif; ?>
+                                                                                    <?php if (AdminCan('courses.main.demo-active.docs')): ?><a class="dropdown-item"
                                                                                        href="addon-doc.php?code=<?php echo $res->codecourse ?>">
                                                                                         <i class="fe fe-book-open"></i> افزودن جزوه
-                                                                                    </a>
+                                                                                    </a><?php endif; ?>
 
-                                                                                    <a class="dropdown-item  "
+                                                                                    <?php if (AdminCanSee('courses.main.active.classes.attendance')): ?><a class="dropdown-item  "
                                                                                        href="<?= url('admin/course/attendance.php') ?>?id=<?php echo $res->codecourse ?>&demo">
                                                                                         <i class="fe fe-check-square"></i>
                                                                                         حضور و غیاب
-                                                                                    </a>
+                                                                                    </a><?php endif; ?>
 
-                                                                                    <a class="dropdown-item text-success"
+                                                                                    <?php if (AdminCan('courses.main.demo-create.edit')): ?><a class="dropdown-item text-success"
                                                                                        href="add-democourse.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->id ?>">
                                                                                         <i class="fe fe-edit"></i>
                                                                                         ویرایش
                                                                                         دوره فوق برنامه
-                                                                                    </a>
-                                                                                    <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                    </a><?php endif; ?>
+                                                                                    <?php if (AdminCan('courses.main.demo-active.delete')) { ?>
 
                                                                                         <a class="dropdown-item text-danger"
                                                                                            href="?close=<?php echo $res->codecourse ?>"
@@ -537,7 +548,7 @@ include_once '../../temp.html';
                         <!-- Type 2 tab -->
                         <?php
                         $currentUser = $_SESSION['admin']['user'];
-                        if (PermisionUser('skill_permission', $currentUser)): ?>
+                        if (AdminCan('courses.main.demo-active.tab-skill')): ?>
                             <div class="tab-pane fade" id="type2" role="tabpanel">
 
                                 <div class="col-lg-12">
@@ -551,7 +562,7 @@ include_once '../../temp.html';
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                <?php if (AdminCan('courses.main.demo-active.activation')) { ?>
                                                     <div class="col-2 text-left mb-3">
                                                         <a href="login_skyroom.php?loginPublick " target="_blank"
                                                            class="btn btn-sm btn-info"><i class="fa fa-tv"></i> ورود به کلاس
@@ -560,7 +571,7 @@ include_once '../../temp.html';
                                                     </div>
                                                 <?php } ?>
                                                 <?php
-                                                if (Permision('permision_viewtest')) {
+                                                if (AdminCan('courses.main.demo-active.quiz-login')) {
                                                     ?>
                                                     <div class="col-2 text-right ">
                                                         <a href="?loginquiz" target="_blank"
@@ -583,7 +594,7 @@ include_once '../../temp.html';
                                                         <th>نام پایه</th>
                                                         <th> موفق</th>
                                                         <th>منتظر</th>
-                                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                                        <?php if (AdminCan('courses.main.demo-active.activation')) { ?>
                                                             <th>وضعیت ثبت نام</th>
                                                             <th>غیرفعالسازی</th>
                                                         <?php } ?>
@@ -790,7 +801,7 @@ include_once '../../temp.html';
                                                                                 <!---->
                                                                                 <!--                                                                                </div>-->
                                                                                 <div class="dropdown-menu tx-8">
-                                                                                    <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                    <?php if (AdminCan('courses.main.demo-active.activation')) { ?>
                                                                                         <?php if (act_classSkyroom($res->codecourse) == 0) { ?>
                                                                                             <a class="dropdown-item text-info"
                                                                                                href="?act_class=<?php echo $res->codecourse ?>">
@@ -838,7 +849,7 @@ include_once '../../temp.html';
                                                                                             کلاس آنلاین
                                                                                         </a>
                                                                                         <hr>
-                                                                                        <?php if (Permision('permision_viewtest')) { ?>
+                                                                                        <?php if (AdminCanSee('courses.main.demo-active.quiz')) { ?>
                                                                                             <a class="dropdown-item"
                                                                                                href="add-quiz.php?id=<?php echo $res->codecourse ?>">
                                                                                                 <i class="fa fa-qrcode"></i>
@@ -856,14 +867,14 @@ include_once '../../temp.html';
                                                                                                 class="fe fe-calendar"></i>
                                                                                         مدیریت کلاس ها
                                                                                     </a>
-                                                                                    <?php if (Permision('permision_viewcourse')) { ?>
+                                                                                    <?php if (AdminCan('courses.main.active.edit')) { ?>
                                                                                         <hr>
                                                                                         <a class="dropdown-item text-success"
                                                                                            href="add-Course.php?edit=<?php echo $res->codecourse ?>&id=<?php echo $res->idcourse ?>">
                                                                                             <i class="fe fe-edit"></i>
                                                                                             ویرایش پایه
                                                                                         </a>
-                                                                                        <?php if (Permision('permision_deletcourse')) { ?>
+                                                                                        <?php if (AdminCan('courses.main.active.delete')) { ?>
 
                                                                                             <a class="dropdown-item text-danger"
                                                                                                href="?close=<?php echo $res->codecourse ?>"
@@ -921,7 +932,7 @@ include_once '../../temp.html';
                                                                 <td class="wd-20">
                                                                     <?php echo CountRegisterCourse($res->codecourse, 0) ?>
                                                                 </td>
-                                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                                <?php if (AdminCan('courses.main.demo-active.activation')) { ?>
                                                                     <td class="wd-20">
                                                                         <?php if ($res->courseactive == 1) { ?>
                                                                             <a href="?disable=<?php echo $res->codecourse ?>"

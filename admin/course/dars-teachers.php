@@ -24,10 +24,6 @@ if (session_id() != ($session['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if ((int)($_SESSION['admin']['adminrole'] ?? 0) === 3 || !Permision('permision_viewcourse')) {
-    http_response_code(403);
-    exit('شما به این بخش دسترسی ندارید.');
-}
 
 $courseCode = filter_input(INPUT_GET, 'code', FILTER_VALIDATE_INT);
 $darsId = filter_input(INPUT_GET, 'dars', FILTER_VALIDATE_INT);

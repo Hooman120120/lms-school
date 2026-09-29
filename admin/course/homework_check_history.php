@@ -27,17 +27,11 @@ if (session_id() != ($re['session_id'] ?? '')) {
     die();
 }
 
-if (Permision('permision_suporter') && Permision('permision_viewcourse') == false) {
-    header('location: ../login.php');
-    exit;
-}
-$allowedRoles = [0, 51, 52];
-if (!in_array($_SESSION['admin']['adminrole'], $allowedRoles)) {
-    header('location: ' . url('admin/login.php'));
-    die();
-}
 
 if (isset($_POST['homework_id'])) {
+
+
+    AdminRequire('homework-approval.history.delete');
     $homeworkId = (int)$_POST['homework_id'];
 
     try {

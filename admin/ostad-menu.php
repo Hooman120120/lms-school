@@ -11,17 +11,7 @@ if (empty($_SESSION['admin'])) {
 $currentUser = (string)$_SESSION['admin']['user'];
 
 $sessionRole = $_SESSION['admin']['role'] ?? null;
-$stmt = $conn->prepare("
-    SELECT
-        adminrole AS role,
-        COALESCE(administrator, 0)       AS administrator,
-        COALESCE(permision_viewalert, 0)  AS perm_viewalert,
-        COALESCE(permision_viewemploy, 0) AS perm_viewemploy,
-        COALESCE(permision_suporter, 0)   AS perm_supporter
-    FROM dbadmin
-    WHERE username = ?
-    LIMIT 1
-");
+$stmt = $conn->prepare("SELECT adminrole AS role FROM dbadmin WHERE username = ? LIMIT 1");
 $stmt->execute([$currentUser]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
@@ -29,10 +19,10 @@ $adminRole = ($sessionRole !== null)
     ? (int)$sessionRole
     : (int)($row['role'] ?? 0);
 
-$isManager  = !empty($row['perm_viewalert']);
-$canSeeAll  = $isManager && !empty($row['perm_viewemploy']);
-$isOperator = !empty($row['perm_supporter']); // if you need it later
-$administrator = (int)($row['administrator'] ?? 0);
+$isManager  = AdminCan(AdminNotificationCode('information.tickets.manage'));
+$canSeeAll  = AdminCan(AdminNotificationCode('information.tickets.all'));
+$isOperator = AdminCan(AdminNotificationCode('information.tickets.own'));
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 
 
 $suspReqCount = countSuspensionRequestsNeedAction( $currentUser, $isManager, $canSeeAll);
@@ -78,7 +68,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 </a>
             </li>
 
-            <?php if (TeacherPermission('teacher_perm_courses')): ?>
+            <?php if (AdminCanSee('courses.main.active')): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                         class="si si-organization sidemenu-icon"></i><span class="sidemenu-label"><?php echo m('menu.courses') ?></span><i
@@ -115,7 +105,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                     <?php endif; ?>
                 </a>
             </li>
-            <?php if (TeacherPermission('teacher_perm_messages')): ?>
+            <?php if (AdminCanSee('notifications.operator.teachers')): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#">
                     <span class="shape1"></span><span class="shape2"></span>
@@ -141,7 +131,7 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 </ul>
             </li>
             <?php endif; ?>
-            <?php if (($adminRole == 2) or (Permision('administrator'))) : ?>
+            <?php if (AdminCanSee('homework-approval')) : ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="si si-badge t sidemenu-icon"></i> <!-- approvals / verified -->
                         </i><span class="sidemenu-label">تایید تکالیف</span><i

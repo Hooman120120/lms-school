@@ -117,7 +117,7 @@ if (isset($_POST['sub'])) {
                             $stmt->execute([$_GET['edit']]);
                             $message = $stmt->fetch(PDO::FETCH_OBJ);
                             $datetime = $message->message_date . ' ' . $message->message_time;
-                            if (time() - strtotime($datetime) <= 3600 or Permision('permision_manage_chat')) {
+                            if (time() - strtotime($datetime) <= 3600 or AdminCan('support.desk.messages-manage')) {
                                 if (!empty($message->file_path)) {
                                     $file_path = $_SERVER['DOCUMENT_ROOT'] . $message->file_path;
                                     if (file_exists($file_path)) {
@@ -155,7 +155,7 @@ if (isset($_POST['sub'])) {
                 $stmt->execute([$_GET['edit']]);
                 $message = $stmt->fetch(PDO::FETCH_OBJ);
                 $datetime = $message->message_date . ' ' . $message->message_time;
-                if (time() - strtotime($datetime) <= 3600 or Permision('permision_manage_chat')) {
+                if (time() - strtotime($datetime) <= 3600 or AdminCan('support.desk.messages-manage')) {
                     $sql = 'UPDATE suport_message SET message_text = ?, edit_message_date = ?, edit_message_time = ? WHERE id = ?';
                     $stmt = $conn->prepare($sql);
                     $stmt->execute([$message_text, $datenow, $timenow, $_GET['edit']]);

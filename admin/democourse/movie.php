@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewcourse')) { 
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_GET['code'])) { 
     header('location: ' . url('admin/index.php'));
     die();

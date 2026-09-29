@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewwallet')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -99,6 +95,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['changeverify'])) {
+    AdminRequire('finance.wallet-centre.search.verify');
     $order = intval($_GET['changeverify']);
     $change = 'UPDATE db_wallet SET status=? WHERE order_id=?';
     $qchange = $conn->prepare($change);
@@ -107,6 +104,7 @@ if (isset($_GET['changeverify'])) {
     die();
 }
 if (isset($_GET['cancel'])) {
+    AdminRequire('finance.wallet-centre.search.verify');
     $order = intval($_GET['cancel']);
     $del='DELETE FROM db_wallet WHERE order_id=?';
     $qdel=$conn->prepare($del);

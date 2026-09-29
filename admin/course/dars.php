@@ -27,7 +27,6 @@ if (session_id() != $re['session_id']) {
 }
 
 $adminRole = (int)($_SESSION['admin']['adminrole'] ?? 0);
-RequireTeacherPermission('teacher_perm_content', url('admin/course/Active-course.php'));
 if ($adminRole === 3) {
     http_response_code(403);
     exit(m('perm.teacher_no_dars'));
@@ -68,6 +67,7 @@ function syncDarsClasses(PDO $conn, int $darsId, array $classIds): void
 }
 
 if (isset($_POST['adddars'])) {
+    AdminRequire('courses.main.active.content.dars.edit');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $name = trim((string)($_POST['dars_name'] ?? ''));
         $classIds = validDarsClassIds($_POST['classes'] ?? [], $courseClasses);
@@ -94,6 +94,7 @@ if (isset($_POST['adddars'])) {
 }
 
 if (isset($_POST['updatedars'])) {
+    AdminRequire('courses.main.active.content.dars.edit');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $name = trim((string)($_POST['dars_name'] ?? ''));
         $codecourse = (int)$_POST['codecourse'];
@@ -123,6 +124,7 @@ if (isset($_POST['updatedars'])) {
 }
 
 if (isset($_POST['updateroom'])) {
+    AdminRequire('courses.main.active.content.dars.edit');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $room = trim($_POST['room_class']);
         $codecourse = (int)$_POST['codecourse'];
@@ -145,6 +147,7 @@ if (isset($_POST['updateroom'])) {
 }
 
 if (isset($_GET['delete'])) {
+    AdminRequire('courses.main.active.content.dars.delete');
     $sql = "DELETE FROM dbdars WHERE id = ? AND codecourse = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([(int)$_GET['delete'], $courseCode]);
@@ -522,7 +525,7 @@ include_once '../../temp.html';
                                                                                         <i class="fe fe-tv"></i> ورود به اتاق چهاردیواری
                                                                                     </a>
                                                                                 <?php } ?>
-                                                                                <?php if ($adminRole == 2 or Permision('permision_deletcourse')) { ?>
+                                                                                <?php if (AdminCan('courses.main.active.content.dars.delete')) { ?>
                                                                                     <a class="dropdown-item"
                                                                                         href="movie.php?code=<?php echo $dars->codecourse ?>&dars=<?= $dars->id ?>">
                                                                                         <i class="fe fe-film"></i>
@@ -543,7 +546,7 @@ include_once '../../temp.html';
                                                                                     </a>
                                                                                 <?php } ?>
                                                                                 <?php
-                                                                                if (Permision('permision_deletcourse')) { ?>
+                                                                                if (AdminCan('courses.main.active.content.dars.delete')) { ?>
                                                                                     <a class="dropdown-item text-danger "
                                                                                         href="?code=<?= $dars->codecourse ?>&delete=<?php echo $dars->id ?>"
                                                                                         onclick="return confirm('آیا با حذف این درس  موافقید؟')"><i

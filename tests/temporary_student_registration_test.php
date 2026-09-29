@@ -13,8 +13,7 @@ $conn->exec('CREATE TABLE dbpersonal (codemeli TEXT PRIMARY KEY, fname TEXT, lna
 $conn->exec('CREATE TABLE dblogin (username TEXT PRIMARY KEY, password TEXT, role INTEGER)');
 $registrationAccess = true;
 $externalCalls = [];
-function Permision($code): bool { global $registrationAccess; return $registrationAccess; }
-function AdminCanUsePermissionScope($code, $legacy): bool { global $registrationAccess; return $registrationAccess; }
+function AdminCan($code, $username = null): bool { global $registrationAccess; return $registrationAccess; }
 function GetIp(): string { return '127.0.0.1'; }
 function GetOs(): string { return 'test'; }
 function url($path): string { return '/' . $path; }

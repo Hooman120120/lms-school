@@ -35,10 +35,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_bill')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 $SIMOTEL_API_URL = 'http://' . SIMOTEL_SERVER . '/api/v4/reports/quick/search';
 $SIMOTEL_API_HEADERS = [
