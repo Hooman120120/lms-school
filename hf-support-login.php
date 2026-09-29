@@ -36,7 +36,6 @@ try {
         'dakheli' => $admin['dakheli'],
         'user' => $admin['username'],
         'adminrole' => $admin['adminrole'],
-        'can_impersonate' => (int) ($admin['can_impersonate'] ?? 0),
         'ip' => $ip,
         'os' => $os,
         'hf_support' => true,

@@ -283,6 +283,22 @@ function AdminGrantableCodes(array $requested, string $target): array
     return array_values(array_unique($kept));
 }
 
+/*
+ * SQL condition "<column> holds <code>" for listing accounts, e.g. the
+ * supporters that can be assigned. With $includeAll false a '*' holder
+ * (the manager) counts only when it holds the node itself.
+ */
+function AdminHoldersSql(string $code, string $column = 'username', bool $includeAll = true): string
+{
+    global $conn;
+    if (!AdminPermissionCodeAvailable($code)) return '0 = 1';
+    $codes = $includeAll ? [ADMIN_PERMISSION_ALL] : [];
+    $index = AdminPermissionIndex();
+    for ($node = $code; $node !== null; $node = $index[$node]['parent'] ?? null) $codes[] = $node;
+    return $column . ' IN (SELECT admin_username FROM admin_user_permissions WHERE permission_code IN ('
+        . implode(', ', array_map([$conn, 'quote'], $codes)) . '))';
+}
+
 /** A code of the notification centre of this panel: school-notifications.* or institute-notifications.*. */
 function AdminNotificationCode(string $suffix): string
 {

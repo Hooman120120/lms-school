@@ -10,6 +10,7 @@ error_log
 *.zip
 *.rar
 *.sql
+!/database/migrations/*.sql
 *.bak
 .DS_Store
 /.vscode/

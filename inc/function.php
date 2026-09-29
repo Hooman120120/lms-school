@@ -4284,7 +4284,8 @@ function createRegisterClassEvent(
     string $homeworkNotificationTarget = 'family',
     ?int $darsId = null,
     float $maxScore = 20.0,
-    string $assessmentMode = 'score'
+    string $assessmentMode = 'score',
+    ?string $roomSessionId = null
 ): bool {
     global $conn;
 
@@ -4303,10 +4304,10 @@ function createRegisterClassEvent(
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score, assessment_mode,
+            (class_id, teacher_id, dars_id, title, event_date, room_session_id, group_uid, description, type, max_score, assessment_mode,
              homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4315,6 +4316,7 @@ function createRegisterClassEvent(
         $teacherId, $darsId,
         $title,
         $eventDate,
+        $roomSessionId,
         $groupUid,
         $description,
         $type,
@@ -4717,13 +4719,13 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score'): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score', ?string $roomSessionId = null): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
     $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
     if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $eventId]);
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=?, room_session_id=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $roomSessionId, $eventId]);
 }
 
 /** Visible classroom grades for the authenticated student. */
@@ -5000,6 +5002,7 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
 if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
     AdminPermissionTreeV2Seed();
     AdminNotificationHomeworkSeed();
+    AdminDropLegacyPermissionColumns();
     EnforceAdminPagePermission();
 }
 

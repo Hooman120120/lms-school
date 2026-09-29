@@ -84,9 +84,6 @@ $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $sessionRole = isset($_SESSION['admin']['adminrole']) ? (int)$_SESSION['admin']['adminrole'] : 0;
 
 
-$meStmt = $conn->prepare("SELECT username, administrator, permision_suporter, permision_viewalert, permision_viewemploy FROM dbadmin WHERE username=? LIMIT 1");
-$meStmt->execute([$currentUser]);
-$me = $meStmt->fetch(PDO::FETCH_ASSOC) ?: [];
 $administrator = AdminCan('notifications.all-records') ? 1 : 0;
 
 $schoolRoleKey = SchoolStaffRoleKey($currentUser);
@@ -292,8 +289,8 @@ if ($MODE === 'report') {
     $mStmt = $conn->prepare("
         SELECT m.id, m.sender_username, m.body, m.created_at,
                m.seen_by_operator, m.seen_by_manager, m.seen_at_operator, m.seen_at_manager,
-               da.permision_viewalert AS sender_is_manager,
-               da.permision_suporter AS sender_is_operator
+               (" . AdminHoldersSql(AdminNotificationCode('information.tickets.manage'), 'da.username') . ") AS sender_is_manager,
+               (" . AdminHoldersSql('support.assignable', 'da.username', false) . ") AS sender_is_operator
         FROM report_messages m
         LEFT JOIN dbadmin da ON da.username = m.sender_username
         WHERE m.thread_id = ?
@@ -524,8 +521,8 @@ if ($codemeli !== '') {
 $mStmt = $conn->prepare("
         SELECT m.id, m.sender_username, m.body, m.created_at,
                m.seen_by_operator, m.seen_by_manager, m.seen_at_operator, m.seen_at_manager,
-               da.permision_viewalert AS sender_is_manager,
-               da.permision_suporter AS sender_is_operator
+               (" . AdminHoldersSql(AdminNotificationCode('information.tickets.manage'), 'da.username') . ") AS sender_is_manager,
+               (" . AdminHoldersSql('support.assignable', 'da.username', false) . ") AS sender_is_operator
         FROM report_messages m
         LEFT JOIN dbadmin da ON da.username = m.sender_username
         WHERE m.thread_id = ?
