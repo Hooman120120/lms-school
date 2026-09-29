@@ -3,6 +3,7 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+require_once '../../inc/register_class_online_attendance.php';
 
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
@@ -165,6 +166,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
     // تاریخ اختیاری است؛ اگر وارد نشود ستون بدون تاریخ ساخته می شود
     $gregorian_date = ($jalali_date !== '') ? jalaliToGregorianDate($jalali_date) : null;
+    $roomSessionId = $type === 2 ? trim((string)($_POST['room_session_id'] ?? '')) : '';
+    $sessionValid = $type !== 2;
+    if ($type === 2 && $gregorian_date !== null && $roomSessionId !== '') {
+        try {
+            $sessionValid = registerClassSelectedSession($conn, $dars_id, $gregorian_date, $roomSessionId);
+        } catch (Throwable $e) {
+            error_log('Online session selection: ' . $e->getMessage());
+        }
+    }
 
     if ((int)$adminrole === 3) {
         $assigned_teacher_id = (int)$admin_id;
@@ -180,8 +190,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
         && $assigned_teacher_username !== ''
         && TeacherHasDarsAccess($class_id, $dars_id, $assigned_teacher_username);
 
-    if (!empty($title) && $assigned_teacher_id > 0 && $admin_id > 0 && $teacherHasDars) {
-        $newEventId = createRegisterClassEvent(
+    if (!empty($title) && $assigned_teacher_id > 0 && $admin_id > 0 && $teacherHasDars
+        && $sessionValid) {
+        try {
+            $newEventId = createRegisterClassEvent(
             $class_id,
             (int)$admin_id,
             $assigned_teacher_id,
@@ -193,23 +205,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
             $homework_notification_target,
             $dars_id,
             $max_score,
-            $assessment_mode
-        );
+            $assessment_mode,
+            $roomSessionId !== '' ? $roomSessionId : null
+            );
+        } catch (PDOException $e) {
+            error_log('Online attendance column: ' . $e->getMessage());
+            $newEventId = false;
+        }
 
         if ($newEventId) {
+            $createdEventId = (int)$conn->lastInsertId();
             registerClassLog($class_id, $title, '', null, null, $description, $actor, 'create_event');
             $_SESSION['flash_msg'] = 'ستون جدید با موفقیت ثبت شد.';
             $_SESSION['flash_msg_type'] = 'success';
+            if ($type === 2 && $gregorian_date !== null) {
+                try {
+                    registerClassSyncOnlineAttendance($conn, [
+                        'id' => $createdEventId, 'type' => 2,
+                        'event_date' => $gregorian_date, 'dars_id' => $dars_id,
+                        'teacher_id' => $assigned_teacher_id, 'room_session_id' => $roomSessionId,
+                    ], getRegisterClassStudents($class_id));
+                } catch (Throwable $e) {
+                    error_log('Online attendance sync: ' . $e->getMessage());
+                    $_SESSION['flash_msg'] = 'ستون ثبت شد، اما گزارش حضور آنلاین هنوز دریافت نشد.';
+                    $_SESSION['flash_msg_type'] = 'warning';
+                }
+            }
         } else {
             $_SESSION['flash_msg'] = 'خطا در ثبت ستون.';
             $_SESSION['flash_msg_type'] = 'danger';
         }
     } else {
-        $_SESSION['flash_msg'] = $dars_id <= 0
+        $_SESSION['flash_msg'] = ($type === 2 && !$sessionValid)
+            ? 'برای حضور و غیاب آنلاین، تاریخ و یک نشست استفاده‌نشده از همان روز را انتخاب کنید.'
+            : ($dars_id <= 0
             ? 'لطفاً درس مربوط به ستون را انتخاب کنید.'
             : (!$teacherHasDars
                 ? 'این درس برای استاد انتخاب‌شده در این کلاس فعال نیست.'
-                : 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : m('msg.choose_column_and_teacher')) . ' را انتخاب کنید.');
+                : 'لطفاً نوع ستون' . ((int)$adminrole === 3 ? '' : m('msg.choose_column_and_teacher')) . ' را انتخاب کنید.'));
         $_SESSION['flash_msg_type'] = 'warning';
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -320,9 +353,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $status_code  = ($_POST['status_code'] !== '' && $_POST['status_code'] !== null) ? (int)$_POST['status_code'] : null;
 
     // ستون باید متعلق به همین کلاس باشد و برای استاد، متعلق به خودش
-    if (!registerClassEventInScope($event_id > 0 ? getSingleRegisterClassEvent($event_id) : null, $class_id, $scope_teacher_id)) {
+    $attendanceEvent = $event_id > 0 ? getSingleRegisterClassEvent($event_id) : null;
+    if (!registerClassEventInScope($attendanceEvent, $class_id, $scope_teacher_id)) {
         $_SESSION['flash_msg'] = 'این ستون در دسترس شما نیست.';
         $_SESSION['flash_msg_type'] = 'danger';
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
+    }
+
+    if ((int)$attendanceEvent['type'] === 2) {
+        $_SESSION['flash_msg'] = 'حضور و غیاب آنلاین از گزارش چهاردیواری ثبت می‌شود.';
+        $_SESSION['flash_msg_type'] = 'warning';
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
@@ -384,6 +425,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
     if (!in_array($assessment_mode, ['score', 'quality'], true)) $assessment_mode = 'score';
     // تاریخ در ویرایش هم اختیاری است
     $gregorian_date = ($jalali_date !== '') ? jalaliToGregorianDate($jalali_date) : null;
+    $roomSessionId = $type === 2 ? trim((string)($_POST['room_session_id'] ?? '')) : '';
 
     $eventInfo = $event_id > 0 ? getSingleRegisterClassEvent($event_id) : null;
     if (!registerClassEventInScope($eventInfo, $class_id, $scope_teacher_id)) {
@@ -407,9 +449,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
     $eventTeacherUsername = (string)($eventTeacherStmt->fetchColumn() ?: '');
     $teacherHasDars = $dars_id > 0 && $eventTeacherUsername !== ''
         && TeacherHasDarsAccess($class_id, $dars_id, $eventTeacherUsername);
+    $sessionValid = $type !== 2;
+    if ($type === 2 && $gregorian_date !== null && $roomSessionId !== '') {
+        try {
+            $sessionValid = registerClassSelectedSession($conn, $dars_id, $gregorian_date, $roomSessionId, $event_id);
+        } catch (Throwable $e) {
+            error_log('Online session selection: ' . $e->getMessage());
+        }
+    }
 
-    if ($event_id > 0 && !empty($title) && $teacherHasDars) {
-        if (updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id, $max_score, $assessment_mode)) {
+    if ($event_id > 0 && !empty($title) && $teacherHasDars && $sessionValid) {
+        try {
+            $updatedEvent = updateRegisterClassEvent($event_id, $title, $gregorian_date, $type, $dars_id, $max_score, $assessment_mode, $roomSessionId !== '' ? $roomSessionId : null);
+        } catch (PDOException $e) {
+            error_log('Online attendance column: ' . $e->getMessage());
+            $updatedEvent = false;
+        }
+        if ($updatedEvent) {
+            if ((string)($eventInfo['room_session_id'] ?? '') !== $roomSessionId) {
+                $conn->prepare('DELETE FROM register_class_attendance WHERE register_class_events_id = ?')->execute([$event_id]);
+            }
             registerClassLog($class_id, $title, '', null, null, 'ویرایش ستون', $actor, 'edit_event');
             $_SESSION['flash_msg'] = 'ستون با موفقیت ویرایش شد.';
             $_SESSION['flash_msg_type'] = 'success';
@@ -418,9 +477,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
             $_SESSION['flash_msg_type'] = 'danger';
         }
     } else {
-        $_SESSION['flash_msg'] = $dars_id <= 0
+        $_SESSION['flash_msg'] = $type === 2 && !$sessionValid
+            ? 'برای حضور و غیاب آنلاین، تاریخ و یک نشست استفاده‌نشده از همان روز را انتخاب کنید.'
+            : ($dars_id <= 0
             ? 'لطفاً درس مربوط به ستون را انتخاب کنید.'
-            : (!$teacherHasDars ? 'این درس برای استاد این ستون فعال نیست.' : 'لطفاً نوع ستون را انتخاب کنید.');
+            : (!$teacherHasDars ? 'این درس برای استاد این ستون فعال نیست.' : 'لطفاً نوع ستون را انتخاب کنید.'));
         $_SESSION['flash_msg_type'] = 'warning';
     }
     header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -601,17 +662,51 @@ try {
 }
 
 $students = getRegisterClassStudents($class_id);
+$online_session_options = [];
+$used_online_sessions = [];
+$online_session_error = '';
+if ($register_dars_id > 0) {
+    $onlineRoomId = registerClassRoomId($conn, $register_dars_id);
+    if ($onlineRoomId !== '') {
+        try {
+            foreach (registerClassOnlineSessions($onlineRoomId) as $session) {
+                if (!is_array($session)) continue;
+                if (empty($session['startedAt'])) continue;
+                $started = new DateTimeImmutable((string)$session['startedAt']);
+                $started = $started->setTimezone(new DateTimeZone('Asia/Tehran'));
+                $id = (string)($session['id'] ?? '');
+                if (!preg_match('/^[a-f0-9]{24}$/i', $id)) continue;
+                $online_session_options[] = [
+                    'id' => $id,
+                    'date' => $started->format('Y-m-d'),
+                    'startedAt' => $started->format(DATE_ATOM),
+                    'jalaliDate' => jdate('Y/m/d', $started->getTimestamp(), '', 'Asia/Tehran', 'en'),
+                    'label' => jdate('H:i', $started->getTimestamp(), '', 'Asia/Tehran', 'en'),
+                ];
+            }
+            $usedSessionStmt = $conn->query('SELECT id, room_session_id FROM register_class_events WHERE room_session_id IS NOT NULL');
+            foreach ($usedSessionStmt->fetchAll(PDO::FETCH_ASSOC) as $usedSession) {
+                $used_online_sessions[(string)$usedSession['room_session_id']] = (int)$usedSession['id'];
+            }
+        } catch (Throwable $e) {
+            error_log('Online session list: ' . $e->getMessage());
+            $online_session_options = [];
+            $used_online_sessions = [];
+            $online_session_error = 'فهرست نشست‌های چهاردیواری فعلاً در دسترس نیست.';
+        }
+    } else {
+        $online_session_error = 'اتاق چهاردیواری به این درس متصل نشده است.';
+    }
+}
 
 // دامنه دید: استاد فقط ستون ها و رکوردهای خودش را می بیند، نقش های بالاتر همه را
 if ($sees_all_columns) {
     $events = getRegisterClassEvents($class_id, 0, 0);
     $evaluations = getRegisterClassEvaluations($class_id, 0, 0);
-    $attendances = getRegisterClassAttendance($class_id, 0, 0);
     $disciplinaries = getClassDisciplinaries($class_id, 0, 0);
 } else {
     $events = getRegisterClassEvents($class_id, $admin_id, (int)$adminrole);
     $evaluations = getRegisterClassEvaluations($class_id, $admin_id, (int)$adminrole);
-    $attendances = getRegisterClassAttendance($class_id, $admin_id, (int)$adminrole);
     $disciplinaries = getClassDisciplinaries($class_id, $admin_id, (int)$adminrole);
 }
 
@@ -632,6 +727,21 @@ if (!$all_weeks_selected) {
     }));
 }
 
+// Online columns refresh when the teacher or school staff opens their register.
+foreach ($events as $event) {
+    if ((int)$event['type'] !== 2 || empty($event['event_date'])
+        || $event['event_date'] > $today_iso) continue;
+    try {
+        registerClassSyncOnlineAttendance($conn, $event, $students);
+    } catch (Throwable $e) {
+        error_log('Online attendance sync: ' . $e->getMessage());
+        if ($msg === '') {
+            $msg = 'گزارش حضور آنلاین فعلاً دریافت نشد؛ اطلاعات ثبت‌شدهٔ قبلی نمایش داده می‌شود.';
+            $msg_type = 'warning';
+        }
+    }
+}
+$attendances = getRegisterClassAttendance($class_id, $sees_all_columns ? 0 : $admin_id, $sees_all_columns ? 0 : (int)$adminrole);
 // زمان ورود ثبت‌شده در دستگاه برای نمایش در خانه‌های حضور و غیاب
 try {
     $deviceMarks = attendance_register_marks($conn, $events, $attendances);
@@ -1354,6 +1464,7 @@ include_once '../../temp.html';
                                                         data-assessment-mode="<?php echo htmlspecialchars((string)($evt['assessment_mode'] ?? 'score')); ?>"
                                                         data-dars="<?php echo (int)($evt['dars_id'] ?? 0); ?>"
                                                         data-date="<?php echo htmlspecialchars($jalali_input); ?>"
+                                                        data-session="<?php echo htmlspecialchars((string)($evt['room_session_id'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
                                                         data-teacher="<?php echo $evt['teacher_id'] ?? ''; ?>"
                                                         title="ویرایش ستون"><i class="fe fe-edit"></i></button>
                                                 <?php if ($is_group_start && $g): ?>
@@ -1495,9 +1606,10 @@ include_once '../../temp.html';
                                             if ($has_full_permission) {
                                                 $event_locked = false;
                                             }
+                                            if ((int)$evt['type'] === 2) $event_locked = true;
 
                                             $btn_class = 'rg-cell-btn is-empty';
-                                            $btn_label = '+';
+                                            $btn_label = (int)$evt['type'] === 2 ? '&mdash;' : '+';
 
                                             if ($has_entry) {
                                                 if ($kind['input'] === 'score' && ($score_val !== '' || $quality_val !== '')) {
@@ -1543,7 +1655,7 @@ include_once '../../temp.html';
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#saveGradeModal"
                                                     <?php endif; ?>
-                                                        title="<?php echo ($kind['input'] === 'note' && trim((string)$note_val) !== '') ? htmlspecialchars(trim((string)$note_val)) : 'ثبت / ویرایش'; ?>"
+                                                        title="<?php echo (int)$evt['type'] === 2 ? 'گزارش حضور چهاردیواری' : (($kind['input'] === 'note' && trim((string)$note_val) !== '') ? htmlspecialchars(trim((string)$note_val)) : 'ثبت / ویرایش'); ?>"
                                                         data-student="<?php echo htmlspecialchars($student['username']); ?>"
                                                         data-student-name="<?php echo htmlspecialchars($fullName); ?>"
                                                         data-event="<?php echo $evt['id']; ?>"
@@ -1639,7 +1751,7 @@ include_once '../../temp.html';
                             </select>
                             <div id="max_score_input_wrap">
                                 <label class="form-label fw-bold">نمره از چند باشد؟</label>
-                                <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="0.25">
+                                <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="any">
                                 <div class="form-text">مثلاً ۱۰، ۲۰ یا ۱۰۰</div>
                             </div>
                         </div>
@@ -1647,10 +1759,17 @@ include_once '../../temp.html';
                         <div class="mb-3">
                             <label class="form-label fw-bold">
                                 تاریخ ستون:
-                                <span class="fw-normal text-muted small">(اختیاری)</span>
+                                <span class="fw-normal text-muted small" id="event_date_optional">(اختیاری)</span>
                             </label>
                             <input type="text" class="form-control fc-datepicker" name="event_date" placeholder="1403/09/10" autocomplete="off">
-                            <div class="form-text small">اگر خالی بماند، ستون بدون تاریخ ساخته می شود.</div>
+                            <div class="form-text small" id="event_date_hint">اگر خالی بماند، ستون بدون تاریخ ساخته می شود.</div>
+                        </div>
+                        <div class="mb-3" id="online_session_container" style="display:none;">
+                            <label class="form-label fw-bold" for="online_session_select">ساعت شروع نشست</label>
+                            <select class="form-select" name="room_session_id" id="online_session_select" disabled>
+                                <option value="">-- ابتدا تاریخ را انتخاب کنید --</option>
+                            </select>
+                            <div class="form-text small" id="online_session_hint"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1959,12 +2078,74 @@ include_once '../../temp.html';
         const maxScoreInput = document.getElementById('create_event_max_score');
         const assessmentModeInput = document.getElementById('create_event_assessment_mode');
         const maxScoreInputWrap = document.getElementById('max_score_input_wrap');
+        const onlineSessionContainer = document.getElementById('online_session_container');
+        const onlineSessionSelect = document.getElementById('online_session_select');
+        const onlineSessionHint = document.getElementById('online_session_hint');
+        const eventDateInput = document.querySelector('#createEventModal input[name="event_date"]');
+        const eventDateOptional = document.getElementById('event_date_optional');
+        const eventDateHint = document.getElementById('event_date_hint');
+        const onlineSessions = <?php echo json_encode($online_session_options, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+        const usedOnlineSessions = <?php echo json_encode($used_online_sessions, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+        const onlineSessionError = <?php echo json_encode($online_session_error, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+        let editingEventId = 0;
+        let dateWasChosen = false;
+        const normalizedJalaliDate = value => {
+            const normalized = String(value || '').replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)).replace(/[٠-٩]/g, digit => '٠١٢٣٤٥٦٧٨٩'.indexOf(digit));
+            const parts = normalized.trim().match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+            if (!parts || Number(parts[2]) < 1 || Number(parts[2]) > 12 || Number(parts[3]) < 1 || Number(parts[3]) > 31) return '';
+            return `${parts[1]}/${parts[2].padStart(2, '0')}/${parts[3].padStart(2, '0')}`;
+        };
+        const syncOnlineSessionField = preferredId => {
+            if (!onlineSessionSelect || !onlineSessionContainer) return;
+            const online = columnTypeSelect && columnTypeSelect.value === '2';
+            onlineSessionContainer.style.display = online ? 'block' : 'none';
+            onlineSessionSelect.required = online;
+            onlineSessionSelect.disabled = !online;
+            eventDateInput.required = online;
+            if (eventDateOptional) eventDateOptional.textContent = online ? '(الزامی)' : '(اختیاری)';
+            if (eventDateHint) eventDateHint.textContent = online
+                ? 'پس از انتخاب تاریخ، ساعت نشست‌های همان روز نمایش داده می‌شود.'
+                : 'اگر خالی بماند، ستون بدون تاریخ ساخته می شود.';
+            if (!online) return;
+
+            if (!editingEventId && !dateWasChosen) eventDateInput.value = '';
+            const previousId = preferredId !== undefined ? preferredId : onlineSessionSelect.value;
+            const targetDay = normalizedJalaliDate(eventDateInput.value);
+            const available = targetDay ? onlineSessions.filter(session =>
+                normalizedJalaliDate(session.jalaliDate) === targetDay &&
+                (!usedOnlineSessions[session.id] || usedOnlineSessions[session.id] === editingEventId)
+            ) : [];
+            available.sort((a, b) => {
+                return Math.abs(Date.parse(a.startedAt) - Date.now()) - Math.abs(Date.parse(b.startedAt) - Date.now());
+            });
+            onlineSessionSelect.disabled = !targetDay || available.length === 0;
+            onlineSessionSelect.replaceChildren(new Option(!targetDay ? '-- ابتدا تاریخ را انتخاب کنید --' :
+                (available.length ? '-- انتخاب ساعت نشست --' : '-- نشستی برای این تاریخ نیست --'), ''));
+            available.forEach((session, index) => {
+                const option = new Option((index === 0 ? 'پیشنهادی · ' : '') + session.label, session.id);
+                onlineSessionSelect.add(option);
+            });
+            onlineSessionSelect.value = available.some(session => session.id === previousId) ? previousId : '';
+            onlineSessionHint.textContent = !targetDay ? 'ابتدا تاریخ ستون را انتخاب کنید.' :
+                (onlineSessionError || (available.length
+                    ? 'فقط ساعت نشست‌های همین تاریخ نمایش داده می‌شود؛ نشست‌های استفاده‌شده در ستون‌های قبلی پنهان هستند.'
+                    : 'برای این تاریخ نشست استفاده‌نشده‌ای پیدا نشد.'));
+        };
+        if (eventDateInput) {
+            const onDateChosen = () => {
+                dateWasChosen = true;
+                syncOnlineSessionField();
+            };
+            eventDateInput.addEventListener('input', onDateChosen);
+            $(eventDateInput).on('change changeDate', onDateChosen);
+        }
         if (columnTypeSelect) {
             const syncHomeworkTarget = function () {
                 if (maxScoreContainer) maxScoreContainer.style.display = columnTypeSelect.value === '1' ? 'block' : 'none';
                 if (maxScoreInputWrap) {
                     maxScoreInputWrap.style.display = columnTypeSelect.value === '1' && (!assessmentModeInput || assessmentModeInput.value === 'score') ? 'block' : 'none';
                 }
+                syncOnlineSessionField();
             };
             columnTypeSelect.addEventListener('change', syncHomeworkTarget);
             if (assessmentModeInput) assessmentModeInput.addEventListener('change', syncHomeworkTarget);
@@ -1979,12 +2160,15 @@ include_once '../../temp.html';
                 const eventId = button.getAttribute('data-event-id');
 
                 if (eventId) {
+                    editingEventId = Number(eventId);
+                    dateWasChosen = true;
                     document.querySelector('#createEventModal form input[name="action"]').value = 'edit_event';
                     document.querySelector('#createEventModal form select[name="type"]').value = button.getAttribute('data-type') || '0';
                     document.querySelector('#createEventModal form input[name="event_date"]').value = button.getAttribute('data-date') || '';
                     if (maxScoreInput) maxScoreInput.value = button.getAttribute('data-max-score') || '20';
                     if (assessmentModeInput) assessmentModeInput.value = button.getAttribute('data-assessment-mode') || 'score';
                     columnTypeSelect.dispatchEvent(new Event('change'));
+                    syncOnlineSessionField(button.getAttribute('data-session') || '');
 
                     let hidden = document.querySelector('#createEventModal form input[name="event_id"]');
                     if (!hidden) {
@@ -2006,6 +2190,8 @@ include_once '../../temp.html';
                     document.getElementById('create_event_submit').textContent = 'ثبت تغییرات';
                     createModal.querySelector('.modal-title').textContent = 'ویرایش ستون';
                 } else {
+                    editingEventId = 0;
+                    dateWasChosen = false;
                     document.querySelector('#createEventModal form input[name="action"]').value = 'create_event';
                     document.querySelector('#createEventModal form select[name="type"]').value = '';
                     if (maxScoreInput) maxScoreInput.value = '20';
@@ -2014,6 +2200,7 @@ include_once '../../temp.html';
                     // تاریخ پیش فرض داخل هفته ی انتخاب شده است تا ستون در همان هفته ساخته شود
                     document.querySelector('#createEventModal form input[name="event_date"]').value =
                         <?php echo json_encode($default_column_date, JSON_UNESCAPED_UNICODE); ?>;
+                    syncOnlineSessionField('');
                     const hidden = document.querySelector('#createEventModal form input[name="event_id"]');
                     if (hidden) hidden.remove();
 
