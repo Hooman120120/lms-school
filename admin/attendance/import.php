@@ -33,6 +33,50 @@ if (empty($_SESSION['attendance_csrf'])) $_SESSION['attendance_csrf'] = bin2hex(
 $csrf = $_SESSION['attendance_csrf'];
 const ATTENDANCE_IMPORT_MAX_ROWS = 20000;
 
+// ---------------------------------------------------------
+// فایل نمونه: سرستون‌ها همان‌هایی است که صفحه خودکار تشخیص می‌دهد
+// ---------------------------------------------------------
+if (isset($_GET['template'])) {
+    $day = jdate('Y/m/d', '', '', 'Asia/Tehran', 'en');
+    $header = ['کد ملی', 'تاریخ', 'ساعت', 'ورود / خروج'];
+    $rows = [
+        ['0012345678', $day, '07:25', 'ورود'],
+        ['0012345678', $day, '13:30', 'خروج'],
+        ['0098765432', $day, '07:48', 'ورود'],
+    ];
+    if (class_exists('ZipArchive')) {
+        require_once '../../vendor/autoload.php';
+        $book = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $book->getActiveSheet();
+        $sheet->setRightToLeft(true);
+        $sheet->setTitle('حضور و غیاب');
+        // all text: national codes keep their leading zeros, dates and times stay as typed
+        $sheet->getStyle('A1:D2000')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+        $sheet->fromArray($header, null, 'A1');
+        foreach ($rows as $r => $row) {
+            foreach ($row as $c => $v) {
+                $sheet->setCellValueExplicit([$c + 1, $r + 2], $v, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            }
+        }
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:D1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E8E6FB');
+        foreach (['A' => 16, 'B' => 14, 'C' => 10, 'D' => 14] as $col => $w) $sheet->getColumnDimension($col)->setWidth($w);
+        $sheet->freezePane('A2');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="attendance-template.xlsx"');
+        (new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($book))->save('php://output');
+    } else {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="attendance-template.csv"');
+        $out = fopen('php://output', 'w');
+        fwrite($out, "\xEF\xBB\xBF");
+        fputcsv($out, $header);
+        foreach ($rows as $row) fputcsv($out, $row);
+        fclose($out);
+    }
+    exit;
+}
+
 $pending = $_SESSION['attendance_import'] ?? null;
 if ($pending && !is_file($pending['file'])) {
     unset($_SESSION['attendance_import']);
@@ -242,6 +286,10 @@ include_once '../../temp.html';
                                     </div>
                                 </div>
                             </form>
+                            <p class="mb-2">
+                                <a class="btn btn-sm btn-outline-success" href="?template=1"><i class="fe fe-download"></i> دریافت فایل نمونه</a>
+                                <span class="text-muted tx-12 mr-1">ستون‌ها را مثل نمونه پر کنید و ردیف‌های نمونه را پاک کنید.</span>
+                            </p>
                             <p class="text-muted mb-0">
                                 فایل باید برای هر ورود یا خروج یک ردیف داشته باشد، با ستون کد ملی و ستون تاریخ (ساعت می‌تواند در همان ستون یا ستون جدا باشد).
                                 تاریخ شمسی و میلادی هر دو پذیرفته می‌شود. بارگذاری دوبارهٔ همان فایل، رکورد تکراری نمی‌سازد.
