@@ -201,13 +201,16 @@ $registry = [
         ]],
     ]],
     ['code'=>'school-notifications','label'=>'اعلان‌های مدرسه','modes'=>['school'],'path'=>'admin/notifications/school_notifications.php','auto_scan'=>false,'children'=>[
-        ['code'=>'school-notifications.categories','label'=>'اعلان‌های پایه‌ها','children'=>[
+        ['code'=>'school-notifications.categories','label'=>'دسته‌های اعلان','children'=>[
             ['code'=>'school-notifications.categories.new_student','label'=>'دانش‌آموز جدید'],
             ['code'=>'school-notifications.categories.attendance','label'=>'حضور و غیاب جدید'],
             ['code'=>'school-notifications.categories.exam','label'=>'آزمون و نمره جدید'],
             ['code'=>'school-notifications.categories.discipline','label'=>'مورد انضباطی جدید'],
             ['code'=>'school-notifications.categories.executive_calendar','label'=>'تغییر تقویم اجرایی'],
             ['code'=>'school-notifications.categories.academic_calendar','label'=>'تغییر تقویم آموزشی'],
+            ['code'=>'school-notifications.categories.announcement','label'=>'اطلاعیه‌های دریافتی'],
+            ['code'=>'school-notifications.categories.circular','label'=>'بخشنامه‌های دریافتی'],
+            ['code'=>'school-notifications.categories.special_letter','label'=>'نامه‌های اختصاصی دریافتی'],
         ]],
         ['code'=>'school-notifications.current','label'=>'دریافت‌های جدید دسته‌های مجاز'],
         ['code'=>'school-notifications.history','label'=>'آرشیو خوانده‌شده'],
@@ -243,6 +246,11 @@ $registry = [
     ['code'=>'documents','label'=>'مستندات','legacy'=>'permision_viewdocument','children'=>[
         ['code'=>'documents.new','label'=>'تازه‌ها','path'=>'admin/Doc/newdoc.php'],
         ['code'=>'documents.search','label'=>'جست‌وجوی مستندات','path'=>'admin/Doc/searchdoc.php'],
+        ['code'=>'documents.announcements','label'=>'اطلاعیه‌ها و بخشنامه‌ها','path'=>'admin/Doc/announcements.php','children'=>[
+            ['code'=>'documents.announcements.create','label'=>'ثبت اطلاعیه','path'=>'admin/Doc/announcement-create.php'],
+            ['code'=>'documents.announcements.edit','label'=>'ویرایش اطلاعیه','path'=>'admin/Doc/announcement-edit.php'],
+        ]],
+        ['code'=>'documents.special-letters','label'=>'نامه‌های اختصاصی','path'=>'admin/Doc/special-letters.php'],
     ]],
     ['code'=>'staff','label'=>'همکاران','legacy'=>'permision_viewemploy','children'=>[
         ['code'=>'staff.directory','label'=>'مشاهده همکاران','legacy'=>'permission_staff_view','path'=>'admin/employ/staff-directory.php'],
@@ -261,6 +269,11 @@ $registry = [
         ['code'=>'referrers.edit','label'=>'ویرایش معرف','path'=>'admin/Collague/edit-collague.php'],
         ['code'=>'referrers.inactive','label'=>'معرفان غیرفعال','path'=>'admin/Collague/unactive-collague.php'],
         ['code'=>'referrers.sub','label'=>'زیرمجموعه معرفان','path'=>'admin/Collague/sub-collague.php'],
+    ]],
+    ['code'=>'settings','label'=>'تنظیمات','children'=>[
+        ['code'=>'settings.general','label'=>'تنظیمات عمومی','path'=>'admin/setting/setting.php'],
+        ['code'=>'settings.levels','label'=>'مدیریت پایه‌ها','path'=>'admin/setting/levels.php'],
+        ['code'=>'settings.blacklist','label'=>'لیست سیاه','path'=>'admin/setting/blacklist.php'],
     ]],
     ['code'=>'reports','label'=>'گزارش‌ها','legacy'=>'permision_reportstudent','children'=>[
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],
@@ -325,7 +338,9 @@ foreach ($registry as $position => $node) {
     $instituteNotifications = $copyNotificationNode($node);
     $instituteNotifications['label'] = 'اعلان‌های آموزشگاه';
     $instituteNotifications['modes'] = ['institute'];
-    $instituteNotifications['path'] = 'admin/notifications/institute_notifications.php';
+    // Both institution modes render the same guarded implementation; the
+    // lightweight institute wrapper only selects the wording and prefix.
+    $instituteNotifications['path'] = 'admin/notifications/school_notifications.php';
     array_splice($registry, $position + 1, 0, [$instituteNotifications]);
     break;
 }

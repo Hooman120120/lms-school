@@ -27,6 +27,18 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
+// پشتیبانی از لینک‌های قدیمی (Id/code) و لینک‌های جدید (user/course)
+$requestedStudent = trim((string)($_GET['Id'] ?? $_GET['user'] ?? ''));
+$requestedCourse = trim((string)($_GET['code'] ?? $_GET['course'] ?? ''));
+if ($requestedStudent === '') {
+    http_response_code(400);
+    exit('شناسه دانش‌آموز ارسال نشده است.');
+}
+$_GET['Id'] = $requestedStudent;
+if ($requestedCourse !== '') {
+    $_GET['code'] = $requestedCourse;
+}
+
 //if (isset($_GET['generate'])) {
 //    if (!act_classSkyroomDemo($_GET['code'])) {
 //        // If false, alert the user and refresh/redirect back

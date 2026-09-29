@@ -125,9 +125,7 @@ include_once '../../temp.html';
                                     <div class="col-9">
                                         <div>
                                             <h6 class="main-content-label mb-1 d-flex align-items-center" style="gap:10px;">
-
                                                 تازه ها
-
                                                 <span class="menu-info-trigger"
                                                       data-tooltip="در این بخش مستندات و مدارک جدیدی که توسط دانش آموزان ارسال شده و هنوز مشاهده یا بررسی نشده‌اند نمایش داده می‌شود. این قسمت به شما کمک می‌کند تا سریع‌تر مدارک جدید را شناسایی و پیگیری کنید."
                                                       aria-label="راهنمای مستندات جدید">
@@ -135,7 +133,7 @@ include_once '../../temp.html';
                                                 </span>
                                             </h6>
                                             <p class="text-muted card-sub-title"> مستندات جدید و مشاهده نشده
-                                            </p>
+                                            </p>        
                                         </div>
                                     </div>
 
