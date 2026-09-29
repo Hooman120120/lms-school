@@ -9,6 +9,7 @@ $R = 'support.reports';
 return [
 'nodes' => [
     ['code'=>'support','label'=>'پشتیبانی دانش‌آموزان','labels'=>['institute'=>'پشتیبانی فراگیران'],'children'=>[
+        ['code'=>'support.assignable','label'=>'مسئول پیگیری (در فهرست پشتیبان‌های قابل تخصیص)'],
         ['code'=>$S,'label'=>'میز پشتیبانی دانش‌آموز','path'=>'admin/panel/suporting.php','children'=>[
             ['code'=>"$S.calls",'label'=>'تماس با دانش‌آموز و والدین'],
             ['code'=>"$S.online-class",'label'=>'ورود به کلاس آنلاین فوق برنامه'],
@@ -50,6 +51,7 @@ return [
     ]],
 ],
 'convert' => [
+    'support.assignable' => fn($a) => $a->perm('permision_suporter'),
     "$S@open" => fn($a) => !$a->isTeacher(),
     "$S.messages-manage" => fn($a) => $a->perm('permision_manage_chat'),
     "$S.installments-all" => fn($a) => $a->col('installment_permission'),

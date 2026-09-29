@@ -330,7 +330,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
 //}
 
 // Fetch all operators
-$sql = 'SELECT * FROM dbadmin WHERE permision_suporter = 1 or adminrole =2';
+$sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' or adminrole =2';
 $exe = $conn->query($sql);
 $operators = $exe->fetchAll(PDO::FETCH_ASSOC);
 

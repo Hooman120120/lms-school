@@ -52,9 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh_status'])) {
 }
 
 try {
-    $permStmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $permStmt->execute([':username' => $username]);
-    $permRow = $permStmt->fetch(PDO::FETCH_ASSOC);
     $canViewAll = AdminScope('finance.installments') === 'all';
 } catch (PDOException $e) {
     error_log("Permission check error: " . $e->getMessage());

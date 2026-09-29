@@ -55,7 +55,6 @@ if (isset($_SESSION['token']) and $_SESSION['token'] === $_POST['token']) {  // 
                                 "dakheli" => $result['dakheli'],
                                 "user" => $_POST['user'],
                                 "adminrole" => $result['adminrole'],
-                                "can_impersonate" => (int)($result['can_impersonate'] ?? 0), 
                                 "ip" => $ip,
                                 "os" => $os
                             );

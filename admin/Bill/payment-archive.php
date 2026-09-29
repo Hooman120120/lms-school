@@ -31,10 +31,6 @@ $username = $_SESSION['admin']['user'];
 $canViewAll = false;
 
 try {
-    $stmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $stmt->execute(['username' => $username]);
-    $perm = $stmt->fetch(PDO::FETCH_ASSOC);
-
     if (AdminScope('finance.installments') === 'all') {
         $canViewAll = true;
     }

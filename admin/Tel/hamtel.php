@@ -312,7 +312,7 @@ include_once '../../temp.html';
                                                 <option label="اقدام لازم">
                                                 </option>
                                                 <?php
-                                                //                                                $sql = 'SELECT * FROM dbadmin WHERE permision_suporter = 1 OR adminrole=2 ';
+                                                //                                                $sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' OR adminrole=2 ';
                                                 $sql = 'SELECT * FROM dbadmin';
                                                 $query = $conn->prepare($sql);
                                                 $query->execute();
@@ -411,7 +411,7 @@ include_once '../../temp.html';
 
                                                     <div class="d-flex flex-wrap gap-2" data-role="pill-list">
                                                         <?php
-                                                        $sql = 'SELECT * FROM dbadmin WHERE permision_suporter = 1 OR adminrole=2 ';
+                                                        $sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' OR adminrole=2 ';
                                                         $query = $conn->prepare($sql);
                                                         $query->execute();
                                                         $result = $query->fetchAll(PDO::FETCH_OBJ);
@@ -605,7 +605,7 @@ include_once '../../temp.html';
 
                                                     <div class="d-flex flex-wrap gap-2" data-role="pill-list">
                                                         <?php
-                                                        $sql = 'SELECT * FROM dbadmin WHERE permision_suporter = 1 OR adminrole=2 ';
+                                                        $sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' OR adminrole=2 ';
                                                         $query = $conn->prepare($sql);
                                                         $query->execute();
                                                         $result = $query->fetchAll(PDO::FETCH_OBJ);
