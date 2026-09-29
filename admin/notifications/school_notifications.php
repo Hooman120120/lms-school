@@ -252,6 +252,12 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                                 <?php if ($legacyCounts['unread_sms'] > 0): ?><span class="badge badge-info float-left"><?= (int)$legacyCounts['unread_sms'] ?></span><?php endif; ?>
                                             </a>
                                         </div><?php endif; ?>
+                                        <?php if ($notificationCan('information.homework-approval')): ?><div class="col-md-6 col-xl-4 mb-3">
+                                            <a class="btn btn-outline-warning btn-block text-right p-3" href="<?= url('admin/course/homework_check.php') ?>">
+                                                <i class="fe fe-check-circle ml-2"></i> تأیید تکالیف
+                                                <?php if ($legacyCounts['pending_homework'] > 0): ?><span class="badge badge-warning float-left"><?= (int)$legacyCounts['pending_homework'] ?></span><?php endif; ?>
+                                            </a>
+                                        </div><?php endif; ?>
                                         <?php if ($notificationCan('information.email')): ?><div class="col-md-6 col-xl-4 mb-3">
                                             <button class="btn btn-outline-dark btn-block text-right p-3" type="button" disabled title="اتصال صندوق ایمیل در مرحله بعد اضافه می‌شود">
                                                 <i class="fe fe-mail ml-2"></i> اعلان ایمیل‌های جدید

@@ -131,7 +131,6 @@ function syncExtendedStaffPermissions(PDO $conn, string $username, bool $isEdit,
         'permission_staff_documents' => $prefix . 'permission_staff_documents',
         'permission_insurance' => $prefix . 'permission_insurance',
         'permission_monthly_payment' => $prefix . 'permission_monthly_payment',
-        'permission_assigned_tasks' => $prefix . 'permission_assigned_tasks',
     ];
     $values = [];
     foreach ($permissionNames as $postName) {
@@ -139,8 +138,6 @@ function syncExtendedStaffPermissions(PDO $conn, string $username, bool $isEdit,
     }
     if ($schoolRoleKey === 'financial_deputy') {
         $values[0] = $values[1] = $values[2] = $values[3] = 1;
-    } elseif ($schoolRoleKey === 'technical_deputy') {
-        $values[4] = 1;
     } elseif ($schoolRoleKey === 'counselor') {
         // مشاور حتی با ارسال دستی فرم نباید به عملیات واریز ماهانه دسترسی بگیرد.
         $values[3] = 0;
@@ -148,7 +145,7 @@ function syncExtendedStaffPermissions(PDO $conn, string $username, bool $isEdit,
     $values[] = $username;
     $stmt = $conn->prepare('UPDATE dbadmin SET
         permission_staff_view=?, permission_staff_documents=?, permission_insurance=?,
-        permission_monthly_payment=?, permission_assigned_tasks=? WHERE username=?');
+        permission_monthly_payment=? WHERE username=?');
     $stmt->execute($values);
 }
 
@@ -174,7 +171,6 @@ $employeePermissionColumns = [
                 ['permission_calendar', 'permission_calendar', 'permission_calendar', 'مدیریت کامل تقویم و رویدادها', 'اجازه ورود به پنل تقویم و ایجاد، ویرایش و حذف رویدادهای مدرسه را می‌دهد.'],
                 ['register-class', 'eregister-class', 'register_class_permission', 'مدیریت کامل دفتر کلاسی', 'اجازه ویرایش و حذف ستون‌ها، نمرات، حضور و غیاب و موارد انضباطی دفتر کلاسی را می‌دهد. دامنه پایه برای معاون پایه و مشاور همچنان رعایت می‌شود.'],
                 ['permission_news_notif', 'permission_news_notif', 'permission_news_notif', 'مدیریت اخبار و اعلان‌های مدرسه', 'اجازه ایجاد، ویرایش و مدیریت اخبار و اعلان‌های روزانه سامانه را می‌دهد.'],
-                ['permission_assigned_tasks', 'epermission_assigned_tasks', 'permission_assigned_tasks', 'مدیریت کارهای محول‌شده', 'اجازه مشاهده، تعریف، تخصیص و تغییر وضعیت کارهای محول‌شده را می‌دهد. این مجوز برای معاون فنی به‌صورت پیش‌فرض پیشنهاد می‌شود.'],
             ],
         ],
         [
@@ -425,17 +421,17 @@ const STAFF_ADMINROLE_SCHOOL_ROLE = [0 => 'manager', 51 => 'executive_deputy', 5
 const STAFF_ROLE_PERMISSION_PRESETS = [
     'manager' => ['*'],
     'general_deputy' => ['dashboard', 'public-relations', 'students', 'executive', 'courses', 'school-notifications', 'tickets',
-        'documents', 'staff.directory', 'staff.teachers', 'assigned-tasks', 'referrers', 'reports', 'homework-approval',
+        'documents', 'staff.directory', 'staff.teachers', 'referrers', 'reports', 'school-notifications.information.homework-approval',
         'finance.pending', 'finance.unpaid', 'finance.returned', 'finance.wallet', 'finance.statement', 'finance.installments'],
     'executive_deputy' => ['dashboard', 'public-relations', 'students', 'executive', 'school-notifications', 'tickets',
-        'documents', 'staff.directory', 'staff.teachers', 'assigned-tasks', 'reports.students'],
+        'documents', 'staff.directory', 'staff.teachers', 'reports.students'],
     'grade_deputy' => ['dashboard', 'students', 'executive.academic-calendar', 'executive.daily-notices', 'executive.news',
-        'courses.main', 'school-notifications', 'tickets', 'documents', 'staff.teachers', 'homework-approval', 'reports.students'],
+        'courses.main', 'school-notifications', 'tickets', 'documents', 'staff.teachers', 'school-notifications.information.homework-approval', 'reports.students'],
     'cultural_disciplinary_deputy' => ['dashboard', 'students', 'executive.academic-calendar', 'executive.daily-notices',
         'executive.news', 'school-notifications', 'tickets', 'documents'],
     'counselor' => ['dashboard', 'public-relations.safe-call', 'public-relations.safe-sms', 'students',
         'executive.academic-calendar', 'school-notifications', 'tickets.inbox', 'tickets.open', 'documents'],
-    'technical_deputy' => ['dashboard', 'executive', 'documents', 'assigned-tasks', 'school-notifications', 'tickets', 'staff.directory'],
+    'technical_deputy' => ['dashboard', 'executive', 'documents', 'school-notifications', 'tickets', 'staff.directory'],
     'financial_deputy' => ['dashboard', 'finance', 'school-notifications.financial', 'documents', 'staff.directory'],
     'sales_deputy' => ['dashboard', 'public-relations', 'students', 'referrers', 'finance.pending', 'finance.unpaid',
         'reports.students', 'tickets', 'documents'],
@@ -1795,7 +1791,6 @@ displayError(1);
                         setChecked('permission_monthly_payment', false);
                     } else if (roleKey === 'technical_deputy') {
                         if (adminRole) adminRole.value = '54';
-                        setChecked('permission_assigned_tasks', true);
                     } else if (roleKey === 'financial_deputy') {
                         if (adminRole) adminRole.value = '55';
                         setChecked('menu-bill', true);
@@ -1811,7 +1806,9 @@ displayError(1);
             }
 
             // «add» form: picking a post ticks its default permissions in the tree
-            const STAFF_PERMISSION_PRESETS = <?= json_encode(STAFF_ROLE_PERMISSION_PRESETS, JSON_UNESCAPED_UNICODE) ?>;
+            const STAFF_PERMISSION_PRESETS = <?= json_encode(array_map(static fn(array $codes): array => array_map(
+                static fn(string $code): string => inst_is('institute') ? str_replace('school-notifications', 'institute-notifications', $code) : $code,
+                $codes), STAFF_ROLE_PERMISSION_PRESETS), JSON_UNESCAPED_UNICODE) ?>;
             (function () {
                 const roleSelect = document.querySelector('select[name="staff_role"]');
                 if (!roleSelect || !roleSelect.form) return;

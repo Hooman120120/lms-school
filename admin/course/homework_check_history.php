@@ -31,7 +31,7 @@ if (session_id() != ($re['session_id'] ?? '')) {
 if (isset($_POST['homework_id'])) {
 
 
-    AdminRequire('homework-approval.history.delete');
+    AdminRequire(AdminNotificationCode('information.homework-approval.history.delete'));
     $homeworkId = (int)$_POST['homework_id'];
 
     try {

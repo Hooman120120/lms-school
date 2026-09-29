@@ -55,7 +55,6 @@ $Countsus = countSuspensionReviewedUnseen($currentUser, (int)$administrator);
 $Countnoop = countCancelOpReviewedUnseen($currentUser, (int)$administrator);
 $countInstallmentOverdue = countInstallmentOverdue($currentUser, (int)$installment_manager);
 $countPendingTicketReferrals = countPendingTicketReferrals($currentUser);
-$countPendinghomework = countPendingHomeworkAdmin();
 $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($currentUser));
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
 $schoolDirectNotificationCount = CountSchoolDirectNotifications($currentUser, false);
@@ -771,15 +770,6 @@ else                  $c = '#15233f';
 
             <?php } ?>
 
-            <?php if (AdminCanSee('assigned-tasks')) { ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo url('admin/tasks/assigned-tasks.php') ?>">
-                        <span class="shape1"></span><span class="shape2"></span>
-                        <i class="fe fe-check-square sidemenu-icon"></i>
-                        <span class="sidemenu-label">کارهای محول‌شده</span>
-                    </a>
-                </li>
-            <?php } ?>
 
             <?php if (AdminCanSee('referrers')) { ?>
                 <li class="nav-item">
@@ -890,50 +880,6 @@ else                  $c = '#15233f';
                     </ul>
                 </li>
             <?php } ?>
-            <?php if (AdminCanSee('homework-approval')) : ?>
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="si si-badge t sidemenu-icon"></i> <!-- approvals / verified -->
-                        </i>
-
-                        <span class="sidemenu-label"
-                            style="display:inline-flex;
-                     align-items:center;
-                     gap:12px;">
-
-                            تایید تکالیف
-
-                            <span class="menu-info-trigger"
-                                data-tooltip="<?php echo m('tooltip.homework_review') ?>"
-                                aria-label="راهنمای تایید تکالیف"
-                                onclick="event.preventDefault(); event.stopPropagation();">
-
-                                <i class="fe fe-info fs-4"></i>
-                            </span>
-
-                        </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i>
-                        <?php if ($countPendinghomework > 0): ?>
-                            <span class="badge badge-warning side-badge mg-r-20"><?php echo $countPendinghomework; ?></span>
-                        <?php endif; ?>
-                    </a>
-                    <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/course/homework_check.php') ?>">تایید
-                                تکالیف
-                                <?php if ($countPendinghomework > 0): ?>
-                                    <span class="badge badge-warning"
-                                        style="border-radius: 50px; display: flex; margin-right: 60px; height: 20px;"><?= (int)$countPendinghomework ?></span>
-                                <?php endif; ?>
-                            </a>
-
-                        </li>
-
-                    </ul>
-                </li>
-
-            <?php endif ?>
             <?php if (AdminCanSee('finance')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-database sidemenu-icon"></i><span class="sidemenu-label">امور مالی</span><i class="angle fe fe-chevron-left"></i></a>

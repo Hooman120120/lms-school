@@ -1157,6 +1157,7 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
         'contact_ticket' => 0,
         'contact_alert' => 0,
         'wallet_charge_pending' => 0,
+        'pending_homework' => 0,
     ];
 
     try {
@@ -1177,6 +1178,9 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
         }
         if (AdminCanSee(AdminNotificationCode('information.my-calls'), $user)) {
             $counts['contact_alert'] = CountCounselorCallAlerts($user);
+        }
+        if (AdminCanSee(AdminNotificationCode('information.homework-approval'), $user)) {
+            $counts['pending_homework'] = countPendingHomeworkAdmin();
         }
     } catch (Throwable $e) {
         error_log('SchoolLegacyNotificationCounts: ' . $e->getMessage());
@@ -1230,6 +1234,7 @@ function CountSchoolNotificationMenu(?string $user = null): int
         'pending_invoice' => 'financial.invoices', 'wallet_charge_pending' => 'financial.wallet',
         'unread_sms' => 'information.sms', 'contact_ticket' => 'information.tickets',
         'contact_alert' => 'information.my-calls',
+        'pending_homework' => 'information.homework-approval',
     ];
     foreach (SchoolLegacyNotificationCounts($user) as $kind => $count) {
         if (isset($legacyScopes[$kind]) && AdminCanSee($prefix . '.' . $legacyScopes[$kind], $user)) {
@@ -4994,6 +4999,7 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
  */
 if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
     AdminPermissionTreeV2Seed();
+    AdminNotificationHomeworkSeed();
     EnforceAdminPagePermission();
 }
 

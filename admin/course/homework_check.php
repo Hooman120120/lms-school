@@ -37,7 +37,7 @@ if ($operatorUsername !== '') {
     $st->execute([$operatorUsername]);
     $adminrole = (int)($st->fetchColumn() ?: 0);
 }
-$isAdministrator = AdminCan('homework-approval.all');
+$isAdministrator = AdminCan(AdminNotificationCode('information.homework-approval.all'));
 
 $filterCodecourse = null;
 if (isset($_GET['code']) && ctype_digit((string)$_GET['code'])) {
@@ -91,7 +91,7 @@ function deadline_jalali_date_only($raw)
    Handle Approve / Reject
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    AdminRequire('homework-approval.review');
+    AdminRequire(AdminNotificationCode('information.homework-approval.review'));
 
     if (!isset($_POST['token_hw_check'], $_SESSION['token_hw_check']) || $_POST['token_hw_check'] !== $_SESSION['token_hw_check']) {
         $_SESSION['message'] = 'نشست نامعتبر است. دوباره تلاش کنید.';

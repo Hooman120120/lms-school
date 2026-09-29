@@ -2,6 +2,7 @@
 include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
+AdminDeny('این بخش از پنل حذف شده است.');
 include_once '../../inc/jdf.php';
 
 if (!isset($_SESSION['admin'])) {
@@ -57,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $taskId = (int)($_POST['task_id'] ?? 0);
-    AdminRequire(isset($_POST['change_status']) ? 'assigned-tasks.status' : 'assigned-tasks.create');
+
     if (isset($_POST['delete_task'])) {
         if (!assignedTaskExists($conn, $taskId)) {
             $message = 'کار موردنظر یافت نشد.';

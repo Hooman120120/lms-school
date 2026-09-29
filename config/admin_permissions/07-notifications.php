@@ -37,6 +37,13 @@ $centre = static function (string $p, array $modes, string $label, string $home)
             ]],
             ['code'=>"$p.information.operator",'label'=>'اعلان تماس مشاوران','labels'=>['institute'=>'اعلان تماس پشتیبان‌ها'],'path'=>'admin/notifications/notification_view.php'],
             ['code'=>"$p.information.my-calls",'label'=>'اعلان تماس دانش‌آموزان من','path'=>'admin/notifications/notifications.php'],
+            ['code'=>"$p.information.homework-approval",'label'=>'تأیید تکالیف','path'=>'admin/course/homework_check.php','children'=>[
+                ['code'=>"$p.information.homework-approval.review",'label'=>'بررسی و تأیید تکلیف'],
+                ['code'=>"$p.information.homework-approval.all",'label'=>'تکالیف همهٔ پایه‌ها'],
+                ['code'=>"$p.information.homework-approval.history",'label'=>'تاریخچهٔ بررسی تکالیف','path'=>'admin/course/homework_check_history.php','children'=>[
+                    ['code'=>"$p.information.homework-approval.history.delete",'label'=>'حذف بررسی'],
+                ]],
+            ]],
             ['code'=>"$p.information.email",'label'=>'نمایش اعلان ایمیل‌های جدید (به‌زودی)'],
             ['code'=>"$p.information.sms",'label'=>'پیامک‌های جدید','path'=>'admin/notifications/unread_sms.php','children'=>[
                 ['code'=>"$p.information.sms.manage",'label'=>'خواندن و حذف پیامک'],
@@ -96,6 +103,15 @@ $rulesFor = static function (array $centreNode) use ($pageRule, $va, $post): arr
     $rules["$p.information.sms.export"] = $rules["$p.information.sms.manage"];
     $rules["$p.financial.invoices.verify"] = fn($a) => ($a->tree ? $a->oldSee("$p.financial.invoices") : true) && $pageRule['financial.invoices']($a);
     $rules["$p.financial.invoices.pick-operator"] = fn($a) => $a->col('can_impersonate') && $pageRule['financial.invoices']($a);
+    $rules["$p.information.homework-approval@open"] = fn($a) => ($a->tree ? $a->oldSee('homework-approval') : ($a->role(2) || $a->perm('administrator')))
+        && !($a->perm('permision_suporter') && !$a->perm('permision_viewcourse'));
+    $rules["$p.information.homework-approval.review"] = fn($a) => ($a->tree ? $a->old('homework-approval.review') || $a->old('homework-approval') : ($a->role(2) || $a->perm('administrator')))
+        && !($a->perm('permision_suporter') && !$a->perm('permision_viewcourse'));
+    $rules["$p.information.homework-approval.all"] = fn($a) => $a->role(0, 51, 52);
+    $rules["$p.information.homework-approval.history"] = fn($a) => $a->role(0, 51, 52)
+        && !($a->perm('permision_suporter') && !$a->perm('permision_viewcourse'));
+    // These operations were unrestricted once their old page gate passed.
+    $rules["$p.information.homework-approval.history.delete"] = $rules["$p.information.homework-approval.history"];
     return $rules;
 };
 

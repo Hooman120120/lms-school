@@ -29,7 +29,7 @@ return [
             ['code'=>'students.definitive.enrolment','label'=>'ثبت پایه','labels'=>['institute'=>'ثبت دوره'],'path'=>'admin/Student/addcourse.php','paths'=>['admin/Student/get_classes.php'],'children'=>[
                 ['code'=>'students.definitive.enrolment.bulk','label'=>'ایجاد پایه برای گروهی از دانش‌آموزان','labels'=>['institute'=>'ایجاد دوره برای گروهی از فراگیران']],
             ]],
-            ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','labels'=>['school'=>'ویرایش اطلاعات'],'path'=>'admin/Student/edit-absolute.php','children'=>$editChildren('students.definitive.edit')],
+            ['code'=>'students.definitive.edit','label'=>'ویرایش اطلاعات قطعی','labels'=>['school'=>'ویرایش اطلاعات'],'path'=>'admin/Student/edit-absolute.php','paths'=>['admin/Student/dossier.php'],'children'=>$editChildren('students.definitive.edit')],
             ['code'=>'students.definitive.my-students','label'=>'دانش‌آموزان من','labels'=>['institute'=>'فراگیران من'],'path'=>'admin/panel/mystudent.php'],
             ['code'=>'students.definitive.my-courses','label'=>'فراگیران نفر دوره','modes'=>['institute'],'path'=>'admin/panel/mypersonalcourse.php'],
             ['code'=>'students.definitive.cancelled-support','label'=>'لغو پشتیبانی‌شده‌های من','path'=>'admin/panel/canceled_student_list.php'],

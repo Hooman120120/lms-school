@@ -1,7 +1,7 @@
 <?php
 /*
  * مدیریت پایه‌ها: courses (پایه/دوره), their classes and content, demo courses
- * (فوق برنامه/دوره موقت), handhug groups, homework approval. Teachers use the
+ * (فوق برنامه/دوره موقت), handhug groups. Teachers use the
  * same nodes; their old switches (teacher_perm_*) are converted here.
  */
 
@@ -129,13 +129,6 @@ return [
             ]],
         ]],
     ]],
-    ['code'=>'homework-approval','label'=>'تأیید تکالیف','path'=>'admin/course/homework_check.php','children'=>[
-        ['code'=>'homework-approval.review','label'=>'بررسی و تأیید تکلیف'],
-        ['code'=>'homework-approval.all','label'=>'تکالیف همهٔ پایه‌ها'],
-        ['code'=>'homework-approval.history','label'=>'تاریخچهٔ بررسی تکالیف','path'=>'admin/course/homework_check_history.php','children'=>[
-            ['code'=>'homework-approval.history.delete','label'=>'حذف بررسی'],
-        ]],
-    ]],
 ],
 'convert' => array_merge(
     $rowRules($A, fn($a) => $active($a)),
@@ -209,12 +202,6 @@ return [
     'courses.handhug.list.all' => fn($a) => $a->role(0, 6, 51, 52),
     'courses.handhug.list.own' => fn($a) => $a->role(1),
 
-    'homework-approval@open' => fn($a) => ($a->tree ? $a->oldSee('homework-approval') : ($a->role(2) || $a->perm('administrator')))
-        && !($a->perm('permision_suporter') && !$vc($a)),
-    'homework-approval.review' => fn($a) => ($a->tree ? $a->old('homework-approval.review') || $a->old('homework-approval') : ($a->role(2) || $a->perm('administrator')))
-        && !($a->perm('permision_suporter') && !$vc($a)),
-    'homework-approval.all' => fn($a) => $a->role(0, 51, 52),
-    'homework-approval.history' => fn($a) => $a->role(0, 51, 52) && !($a->perm('permision_suporter') && !$vc($a)),
     ]
 ),
 ];

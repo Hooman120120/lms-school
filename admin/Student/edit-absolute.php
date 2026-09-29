@@ -4,6 +4,7 @@ include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
 displayError(0);
+require_once BASE_PATH . '/inc/student_dossier.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../../blackList.html';
     exit;
@@ -139,45 +140,18 @@ if (isset($_POST['account-submit'])) { // UPDATE Account User
 
 if (isset($_POST['picture-submit'])) {
     AdminRequire('students.definitive.edit.picture');
-    if ($_SESSION['token'] == $_POST['token']) {
-        if (isset($_FILES['pic']) && $_FILES['pic']['error'] === UPLOAD_ERR_OK) {
-            // Use document root to get the absolute path to your web root
-            $targetDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads-student/student-profile/';
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-
-            $fileTmpPath = $_FILES['pic']['tmp_name'];
-            $originalName = basename($_FILES['pic']['name']);
-            $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-            $allowedExtensions = ['jpg', 'jpeg', 'png'];
-            $maxFileSize = 500 * 1024; // 500KB
-
-            if (in_array($fileExtension, $allowedExtensions) && $_FILES['pic']['size'] <= $maxFileSize) {
-                $newFileName = time() . '_' . $_SESSION['edit-student']['codemeli'] . '.' . $fileExtension;
-                $destPath = $targetDir . $newFileName;
-
-                if (move_uploaded_file($fileTmpPath, $destPath)) {
-                    // Store the web‑accessible path (relative to document root)
-                    $picPath = '/uploads-student/student-profile/' . $newFileName;
-
-                    $updateSql = "UPDATE dbpersonal SET pic = ? WHERE codemeli = ?";
-                    $stmt = $conn->prepare($updateSql);
-                    $stmt->execute([$picPath, $_SESSION['edit-student']['codemeli']]);
-
-                    $_SESSION['upload_success'] = "عکس با موفقیت آپلود شد";
-                } else {
-                    $_SESSION['upload_error'] = "خطا در آپلود فایل";
-                }
-            } else {
-                $_SESSION['upload_error'] = "فرمت یا حجم فایل مجاز نیست (jpg/png و حداکثر 500KB)";
-            }
-        } else {
-            $_SESSION['upload_error'] = "لطفا یک فایل انتخاب کنید";
-        }
-        header('location: ' . url('admin/Student/edit-absolute.php'));
-        exit;
+    if (!isset($_POST['token'], $_SESSION['token']) || !hash_equals($_SESSION['token'], (string)$_POST['token'])) {
+        http_response_code(403); exit('خطای امنیتی');
     }
+    try {
+        $picPath = StudentDossierPhoto($_FILES['pic'] ?? []);
+        $conn->prepare('UPDATE dbpersonal SET pic = ?, updator = ?, dateupdate = ?, timeupdate = ? WHERE codemeli = ?')
+            ->execute([$picPath, $_SESSION['admin']['user'], date('Y-m-d'), date('H:i:s'), $_SESSION['edit-student']['codemeli']]);
+        $_SESSION['upload_success'] = 'عکس با موفقیت ذخیره شد';
+    } catch (Throwable $e) {
+        $_SESSION['upload_error'] = 'تصویر معتبر JPG یا PNG با حجم حداکثر ۵۰۰ کیلوبایت انتخاب کنید.';
+    }
+    header('location: ' . url('admin/Student/edit-absolute.php')); exit;
 }
 if (isset($_POST['parent-valid'])) { // UPDATE Parent User
     AdminRequire('students.definitive.edit.parents');
@@ -250,7 +224,7 @@ if (isset($_POST['parent-valid'])) { // UPDATE Parent User
         } else {
             $hayat_m = NULL;
         }
-        $tel2 = $_POST['tel3'];
+        $tel2 = $_POST['tel2'];
         if (isset($_POST['life'])) {
             $life = $_POST['life'][0];
         } else {
@@ -266,9 +240,9 @@ if (isset($_POST['parent-valid'])) { // UPDATE Parent User
         } else {
             $baby = NULL;
         }
-        $upe = 'UPDATE dbpersonal SET fathername=?, famili_pedar=?, codemeli_pedar=?,shenasname_pedar=?,birthday_pedar=?,job_pedar=?,education_pedar=?,hayat_pedar=?,name_madar=?,famili_madar=?,codemeli_madar=?,shenasname_madar=?,birthdate_madar=?,job_madar=?,education_madar=?,hayat_madar=?,living_condition=?,bime_status=?,all_baby=?,dateupdate=?,timeupdate=?,updator=? WHERE codemeli=?';
+        $upe = 'UPDATE dbpersonal SET fathername=?, famili_pedar=?, codemeli_pedar=?,shenasname_pedar=?,birthday_pedar=?,job_pedar=?,education_pedar=?,hayat_pedar=?,name_madar=?,famili_madar=?,codemeli_madar=?,shenasname_madar=?,birthdate_madar=?,job_madar=?,education_madar=?,hayat_madar=?,living_condition=?,bime_status=?,all_baby=?,tel2=?,tel3=?,dateupdate=?,timeupdate=?,updator=? WHERE codemeli=?';
         $qupe = $conn->prepare($upe);
-        $qupe->execute([$name_pedar, $famili_pedar, $codemeli_pedar, $shenas_pedar, $birthdatepedar, $job_pedar, $edu_pedar, $hayat_p, $name_madar, $famili_madar, $codemeli_madar, $shenas_madar, $birthdatemadar, $job_madar, $edu_madar, $hayat_m, $life, $bime, $baby, $datenow, $timenow, $_SESSION['admin']['user'], $_SESSION['edit-student']['codemeli']]);
+        $qupe->execute([$name_pedar, $famili_pedar, $codemeli_pedar, $shenas_pedar, $birthdatepedar, $job_pedar, $edu_pedar, $hayat_p, $name_madar, $famili_madar, $codemeli_madar, $shenas_madar, $birthdatemadar, $job_madar, $edu_madar, $hayat_m, $life, $bime, $baby, $tel2, $tel3, $datenow, $timenow, $_SESSION['admin']['user'], $_SESSION['edit-student']['codemeli']]);
     }
 }
 if (isset($_POST['house-submit'])) {
@@ -323,14 +297,15 @@ if (isset($_POST['house-submit'])) {
             } else {
                 $modir_name = NULL;
             }
-            $update = 'UPDATE dbpersonal SET life_rosta=?,address=?,zipcode=?,type_life=?,life_status=?,life_baft=?,life_metr=?,nameschool=?,modir_name=?,typeschool=?,area=?,paye=?,reshtestudent=?,dateupdate=?,timeupdate=?,updator=? WHERE codemeli=?';
+            $update = 'UPDATE dbpersonal SET life_rosta=?,address=?,zipcode=?,type_life=?,life_status=?,life_baft=?,life_metr=?,nameschool=?,modir_name=?,typeschool=?,area=?,paye=?,reshtestudent=?,state=?,city=?,dateupdate=?,timeupdate=?,updator=? WHERE codemeli=?';
             $query = $conn->prepare($update);
-            $query->execute([$rosta, $address, $zipcode, $type_life, $status_life, $life_baft, $metr, $school, $modir_name, $type_school, $mantaghe, $paye, $reshte, $datenow, $timenow, $_SESSION['admin']['user'], $_SESSION['edit-student']['codemeli']]);
+            $query->execute([$rosta, $address, $zipcode, $type_life, $status_life, $life_baft, $metr, $school, $modir_name, $type_school, $mantaghe, $paye, $reshte, trim($_POST['state'] ?? ''), trim($_POST['city'] ?? ''), $datenow, $timenow, $_SESSION['admin']['user'], $_SESSION['edit-student']['codemeli']]);
         }
     }
 }
 if (isset($_POST['acounting-info'])) {
     AdminRequire('students.definitive.edit.bank');
+    if (inst_type() === 'school' || !isset($_POST['token'], $_SESSION['token']) || !hash_equals($_SESSION['token'], (string)$_POST['token'])) { http_response_code(403); exit('دسترسی غیرمجاز'); }
     if (strlen($_POST['sheba']) != 24) {
         $erorstrlensheba = 1;
     } else {
@@ -340,9 +315,9 @@ if (isset($_POST['acounting-info'])) {
             $bank_sheba = $_POST['bank-sheba'];
             $numcard = $_POST['num-card'];
             $namecard = $_POST['name-card'];
-            $upcard = 'UPDATE dbpersonal SET sheba=?,name_sheba=?,bank_sheba=?,card_bank=?,name_card=? WHERE  codemeli=?';
+            $upcard = 'UPDATE dbpersonal SET sheba=?,name_sheba=?,bank_sheba=?,card_bank=?,name_card=?,updator=? WHERE  codemeli=?';
             $qupcard = $conn->prepare($upcard);
-            $qupcard->execute([$sheba, $name_sheba, $bank_sheba, $numcard, $namecard, $_SESSION['edit-student']['codemeli']]);
+            $qupcard->execute([$sheba, $name_sheba, $bank_sheba, $numcard, $namecard, $_SESSION['admin']['user'], $_SESSION['edit-student']['codemeli']]);
         } else {
             $erorvalidcard = 1;
         }
@@ -521,7 +496,11 @@ include_once '../../temp.html';
                                                                 </div>
                                                             <?php } ?>
 
-                                                            <div class="profile-tab tab-menu-heading">
+                                                            <div class="mb-3">
+<a class="btn btn-primary" href="<?= htmlspecialchars(url('admin/Student/dossier.php') . '?Id=' . urlencode($_SESSION['edit-student']['codemeli']), ENT_QUOTES, 'UTF-8') ?>">پرونده دانش‌آموزی</a>
+<a class="btn btn-outline-primary" href="<?= htmlspecialchars(url('admin/Student/dossier.php') . '?Id=' . urlencode($_SESSION['edit-student']['codemeli']) . '&pdf=1', ENT_QUOTES, 'UTF-8') ?>">خروجی PDF پرونده</a>
+</div>
+<div class="profile-tab tab-menu-heading">
                                                                 <nav
                                                                     class="nav main-nav-line p-3 tabs-menu profile-nav-line bg-gray-100">
                                                                     <a class="nav-link active" data-bs-toggle="tab"
@@ -535,8 +514,8 @@ include_once '../../temp.html';
                                                                     <a class="nav-link" data-bs-toggle="tab" href="#picture">تصویر
                                                                         پروفایل </a>
 
-                                                                    <a class="nav-link" data-bs-toggle="tab" href="#wallet">اطلاعات
-                                                                        حساب بانکی</a>
+                                                                    <?php if (inst_type() !== 'school'): ?><a class="nav-link" data-bs-toggle="tab" href="#wallet">اطلاعات
+                                                                        حساب بانکی</a><?php endif; ?>
 
                                                                 </nav>
                                                             </div>
@@ -4202,7 +4181,7 @@ include_once '../../temp.html';
                                                                                     <!-- نمایش عکس فعلی (اختیاری) -->
                                                                                     <div class="mt-3 text-center">
                                                                                         <?php if (!empty($data->pic)): ?>
-                                                                                            <img src="<?php echo htmlspecialchars($data->pic); ?>"
+                                                                                            <img src="<?php echo htmlspecialchars(StudentAvatar($data), ENT_QUOTES, 'UTF-8'); ?>"
                                                                                                 style="max-width:150px;" class="img-thumbnail">
                                                                                             <br>
                                                                                             <small>عکس فعلی</small>
@@ -4214,7 +4193,7 @@ include_once '../../temp.html';
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="main-content-body tab-pane p-4 border-top-0"
+                                                                        <?php if (inst_type() !== 'school'): ?><div class="main-content-body tab-pane p-4 border-top-0"
                                                                             id="wallet">
                                                                             <div class="card-body border">
                                                                                 <form method="post" data-parsley-validate="">
@@ -4337,7 +4316,7 @@ include_once '../../temp.html';
                                                                                     </div>
 
                                                                                 </form>
-                                                                            </div>
+                                                                            </div><?php endif; ?>
                                                                         </div>
                                                                     </div>
                                                                 </div>

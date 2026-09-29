@@ -25,7 +25,7 @@ const EXTERNAL_ENDPOINTS = [
     'admin/course/retry_failed_requests.php', 'admin/Bill/ajax/get_sms_detail.php',
 ];
 /* Retired: deliberately outside the tree, so the gate refuses them. */
-const RETIRED = ['admin/setting/setting.php', 'admin/setting/levels.php', 'admin/setting/blacklist.php'];
+const RETIRED = ['admin/setting/setting.php', 'admin/setting/levels.php', 'admin/setting/blacklist.php', 'admin/tasks/assigned-tasks.php'];
 
 $errors = [];
 $index = [];

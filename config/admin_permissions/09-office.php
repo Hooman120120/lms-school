@@ -1,5 +1,5 @@
 <?php
-/* مستندات، همکاران، کارهای محول‌شده، معرفان، حضور و غیاب کارکنان، گزارش‌ها. */
+/* مستندات، همکاران، معرفان، حضور و غیاب کارکنان، گزارش‌ها. */
 
 $on = static fn(AdminLegacyAccount $a, string $code, string $flag): bool =>
     $a->perm($flag) && ($a->tree ? $a->oldSee($code) : true);
@@ -36,10 +36,6 @@ return [
         ]],
         ['code'=>'staff.create','label'=>'ثبت همکار','path'=>'admin/employ/addemploy.php'],
         ['code'=>'staff.teacher-create','label'=>'ثبت استاد','path'=>'admin/employ/addteacher.php'],
-    ]],
-    ['code'=>'assigned-tasks','label'=>'کارهای محول‌شده','path'=>'admin/tasks/assigned-tasks.php','children'=>[
-        ['code'=>'assigned-tasks.create','label'=>'تعریف، ویرایش و حذف کار'],
-        ['code'=>'assigned-tasks.status','label'=>'تغییر وضعیت کار'],
     ]],
     ['code'=>'referrers','label'=>'معرفان برون‌سازمانی','children'=>[
         ['code'=>'referrers.create','label'=>'ثبت معرف','path'=>'admin/Collague/add-collague.php'],
@@ -93,9 +89,6 @@ return [
     'staff.teachers' => fn($a) => $emp($a, 'staff.teachers'),
     'staff.create' => fn($a) => $emp($a, 'staff.create'),
     'staff.teacher-create' => fn($a) => $emp($a, 'staff.teacher-create'),
-    'assigned-tasks@open' => fn($a) => $on($a, 'assigned-tasks', 'permission_assigned_tasks'),
-    'assigned-tasks.create' => fn($a) => $on($a, 'assigned-tasks', 'permission_assigned_tasks') && (!$a->tree || $a->old('assigned-tasks.create') || $a->old('assigned-tasks')),
-    'assigned-tasks.status' => fn($a) => $on($a, 'assigned-tasks', 'permission_assigned_tasks') && (!$a->tree || $a->old('assigned-tasks.status') || $a->old('assigned-tasks')),
     'referrers.create' => fn($a) => $ref($a, 'referrers.create'),
     'referrers.edit' => fn($a) => $ref($a, 'referrers.edit'),
     'referrers.inactive' => fn($a) => $ref($a, 'referrers.inactive'),

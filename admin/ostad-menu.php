@@ -131,20 +131,6 @@ $schoolNotificationCount = CountSchoolNotifications($currentUser, true);
                 </ul>
             </li>
             <?php endif; ?>
-            <?php if (AdminCanSee('homework-approval')) : ?>
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="si si-badge t sidemenu-icon"></i> <!-- approvals / verified -->
-                        </i><span class="sidemenu-label">تایید تکالیف</span><i
-                            class="angle fe fe-chevron-left"></i>
-                    </a>
-                    <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/course/homework_check.php') ?>"><?php echo m('action.approve_teacher_homeworks') ?></a>
-                        </li>
-
-                    </ul>
-                </li>
-            <?php endif ?>
 
             <?php if (function_exists('cross_panel_targets')): ?>
                 <?php foreach (cross_panel_targets() as $crossPanelType => $crossPanelLabel): ?>
