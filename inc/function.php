@@ -4994,6 +4994,7 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
  */
 if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
     AdminPermissionTreeV2Seed();
+    AdminDropLegacyPermissionColumns();
     EnforceAdminPagePermission();
 }
 

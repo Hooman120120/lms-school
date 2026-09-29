@@ -410,3 +410,48 @@ function AdminPermissionTreeV2Seed(): void
         error_log('permission_tree_v2: ' . $e->getMessage());
     }
 }
+
+/*
+ * The old permission columns of dbadmin, read only by the conversion above.
+ * Once the panel is converted they are copied to dbadmin_permission_columns_v1
+ * (username + the columns, to redo a conversion if ever needed) and dropped.
+ * adminrole, school_role_id and per_skyroom (the Skyroom room role) stay.
+ */
+function AdminLegacyPermissionColumns(): array
+{
+    global $conn;
+    return $conn->query("SELECT COLUMN_NAME FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'dbadmin'
+          AND (COLUMN_NAME LIKE 'permision\_%' OR COLUMN_NAME LIKE 'permission\_%'
+               OR COLUMN_NAME LIKE '%\_permission' OR COLUMN_NAME LIKE 'teacher\_perm\_%'
+               OR COLUMN_NAME IN ('administrator', 'can_impersonate', 'autodialer'))")->fetchAll(PDO::FETCH_COLUMN) ?: [];
+}
+
+/* Runs once per panel database, after AdminPermissionTreeV2Seed(). */
+function AdminDropLegacyPermissionColumns(): void
+{
+    global $conn;
+    static $checked = false;
+    if ($checked || !($conn instanceof PDO)) return;
+    $checked = true;
+    try {
+        if (!$conn->query("SELECT 1 FROM app_seeds WHERE name = 'permission_tree_v2'")->fetchColumn()) return;
+        if ($conn->query("SELECT 1 FROM app_seeds WHERE name = 'permission_columns_dropped'")->fetchColumn()) return;
+        if (!$conn->query("SELECT GET_LOCK('permission_columns_dropped', 0)")->fetchColumn()) return;
+        try {
+            if ($conn->query("SELECT 1 FROM app_seeds WHERE name = 'permission_columns_dropped'")->fetchColumn()) return;
+            $columns = array_map(static fn($c) => '`' . str_replace('`', '', (string)$c) . '`', AdminLegacyPermissionColumns());
+            if ($columns) {
+                if (!$conn->query("SHOW TABLES LIKE 'dbadmin_permission_columns_v1'")->fetchColumn()) {
+                    $conn->exec('CREATE TABLE dbadmin_permission_columns_v1 ENGINE=InnoDB AS SELECT username, ' . implode(', ', $columns) . ' FROM dbadmin');
+                }
+                $conn->exec('ALTER TABLE dbadmin DROP COLUMN ' . implode(', DROP COLUMN ', $columns));
+            }
+            $conn->exec("INSERT INTO app_seeds (name) VALUES ('permission_columns_dropped')");
+        } finally {
+            $conn->query("SELECT RELEASE_LOCK('permission_columns_dropped')");
+        }
+    } catch (Throwable $e) {
+        error_log('permission_columns_dropped: ' . $e->getMessage());
+    }
+}
