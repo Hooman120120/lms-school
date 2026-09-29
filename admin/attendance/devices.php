@@ -286,7 +286,7 @@ include_once '../../temp.html';
 
                 <div class="card custom-card">
                     <div class="card-body">
-                        <a class="main-content-label d-block mb-0" data-toggle="collapse" href="#att-guide" role="button">
+                        <a class="main-content-label d-block mb-0" data-bs-toggle="collapse" href="#att-guide" role="button">
                             <i class="fe fe-book-open"></i> راهنمای اتصال برای نصاب یا شرکت پشتیبان دستگاه
                         </a>
                         <div class="collapse <?php echo ($newKey || !$devices) ? 'show' : '' ?> mt-3" id="att-guide">

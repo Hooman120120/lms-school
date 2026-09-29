@@ -213,7 +213,7 @@ include_once '../../temp.html';
                         <?php echo $fa($report['accepted']) ?> رکورد جدید،
                         <?php echo $fa($report['duplicates']) ?> تکراری،
                         <?php echo $fa(count($report['rejected'])) ?> ردیف دارای خطا.
-                        <a href="#" data-toggle="modal" data-target="#att-report">مشاهدهٔ گزارش</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#att-report">مشاهدهٔ گزارش</a>
                     </div>
                 <?php } ?>
 
@@ -323,7 +323,7 @@ include_once '../../temp.html';
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title">گزارش ورود فایل «<?php echo $h($report['file']) ?>»</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="بستن"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="بستن"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="row text-center mb-3">
@@ -368,14 +368,16 @@ include_once '../../temp.html';
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-outline-primary" href="devices.php">مشاهدهٔ رکوردها</a>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">بستن</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
         window.addEventListener('load', function () {
-            if (window.jQuery && jQuery.fn.modal) jQuery('#att-report').modal('show');
+            var el = document.getElementById('att-report');
+            if (window.bootstrap && bootstrap.Modal) bootstrap.Modal.getOrCreateInstance(el).show();
+            else if (window.jQuery && jQuery.fn.modal) jQuery(el).modal('show');
         });
     </script>
 <?php } ?>
