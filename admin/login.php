@@ -167,7 +167,7 @@ if (is_file($templateFile)) {
                         <div class="mt-5 pt-4 p-2 pos-absolute">
                             <img src="../assets/img/logo-white.png" class="header-brand-img mb-4" alt="logo">
                             <div class="clearfix"></div>
-                            <img src="../assets/img/svgs/user.svg" class="ht-100 mb-0" alt="user">
+                            <img src="../assets/img/svgs/user.png" class="ht-100 mb-0" alt="user">
 
                         </div>
                     </div>
