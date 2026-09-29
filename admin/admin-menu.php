@@ -1171,7 +1171,26 @@ else                  $c = '#15233f';
 
             <?php if (AdminMenuCan('attendance', Permision('administrator'))) { ?>
                 <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-user-check sidemenu-icon"></i><span class="sidemenu-label">حضور و غیاب</span><i class="angle fe fe-chevron-left"></i></a>
+                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
+                            class="fe fe-user-check sidemenu-icon"></i>
+
+                        <span class="sidemenu-label"
+                            style="display:inline-flex;
+                     align-items:center;
+                     gap:12px;">
+
+                            حضور و غیاب
+
+                            <span class="menu-info-trigger"
+                                data-tooltip="در این بخش دستگاه‌های تشخیص چهره، اثر انگشت یا کارت مدرسه ثبت می‌شوند و ورود و خروج دانش‌آموزان با کد ملی دریافت می‌شود. امکاناتی مانند گزارش روزانهٔ حاضر، تأخیر و غایب، بارگذاری گزارش دستگاه از فایل اکسل و تعیین قوانین ثبت خودکار حضور و غیاب در دفتر کلاسی از طریق این قسمت انجام می‌شود."
+                                aria-label="راهنمای حضور و غیاب"
+                                onclick="event.preventDefault(); event.stopPropagation();">
+
+                                <i class="fe fe-info fs-4"></i>
+                            </span>
+
+                        </span>
+                        <i class="angle fe fe-chevron-left"></i></a>
                     <ul class="nav-sub">
                         <?php if (AdminMenuCan('attendance.report', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/report.php') ?>">گزارش روزانه</a></li><?php endif; ?>
                         <?php if (AdminMenuCan('attendance.devices', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/devices.php') ?>">دستگاه‌ها و رکوردها</a></li><?php endif; ?>
