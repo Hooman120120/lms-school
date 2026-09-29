@@ -1173,6 +1173,7 @@ else                  $c = '#15233f';
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-user-check sidemenu-icon"></i><span class="sidemenu-label">حضور و غیاب</span><i class="angle fe fe-chevron-left"></i></a>
                     <ul class="nav-sub">
+                        <?php if (AdminMenuCan('attendance.report', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/report.php') ?>">گزارش روزانه</a></li><?php endif; ?>
                         <?php if (AdminMenuCan('attendance.devices', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/devices.php') ?>">دستگاه‌ها و رکوردها</a></li><?php endif; ?>
                         <?php if (AdminMenuCan('attendance.import', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/import.php') ?>">ورود از فایل اکسل</a></li><?php endif; ?>
                         <?php if (AdminMenuCan('attendance.rules', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/rules.php') ?>">قوانین حضور و غیاب</a></li><?php endif; ?>

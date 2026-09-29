@@ -474,3 +474,80 @@ function attendance_register_marks(PDO $pdo, array $columns, array $attendanceRo
     }
     return $marks;
 }
+
+/* ---------------- daily report ---------------- */
+
+const ATTENDANCE_DAY_STATUSES = [
+    'present' => 'حاضر',
+    'late' => 'تأخیر',
+    'absent' => 'غایب',
+    'no_record' => 'بدون رکورد',
+];
+
+/**
+ * Every active student of the school (or of one class) on a day, with first
+ * arrival, last exit, day status and what teachers set by hand in the register.
+ * no_record: not seen, but it is before the cutoff or the devices were not
+ * working that day, so nobody can say they were absent.
+ */
+function attendance_day_report(PDO $pdo, string $date, ?int $classId = null): array
+{
+    $rules = attendance_rules($pdo);
+    $sql = 'SELECT p.codemeli, p.fname, p.lname,
+            GROUP_CONCAT(DISTINCT cl.name ORDER BY cl.name SEPARATOR "، ") AS classes
+        FROM dbcourse c
+        JOIN dbpersonal p ON p.codemeli = c.username
+        JOIN classes cl ON cl.id = c.class_id
+        WHERE c.activityuser = 1 AND cl.is_active = 1';
+    $params = [];
+    if ($classId) {
+        $sql .= ' AND cl.id = ?';
+        $params[] = $classId;
+    }
+    $sql .= ' GROUP BY p.codemeli, p.fname, p.lname ORDER BY p.lname, p.fname';
+    $st = $pdo->prepare($sql);
+    $st->execute($params);
+    $students = $st->fetchAll(PDO::FETCH_ASSOC);
+
+    $st = $pdo->prepare("SELECT codemeli,
+            TIME(MIN(CASE WHEN direction <> 'out' THEN event_time END)) first_in,
+            TIME(MAX(CASE WHEN direction = 'out' THEN event_time END)) last_out
+        FROM attendance_events
+        WHERE event_time >= ? AND event_time < DATE_ADD(?, INTERVAL 1 DAY)
+        GROUP BY codemeli");
+    $st->execute([$date, $date]);
+    $times = [];
+    foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $times[$r['codemeli']] = $r;
+
+    // what teachers set by hand in that day's attendance columns (present wins)
+    $st = $pdo->prepare("SELECT a.username, MAX(a.status) status
+        FROM register_class_attendance a
+        JOIN register_class_events ev ON ev.id = a.register_class_events_id
+        WHERE ev.event_date = ? AND a.auto_source IS NULL
+        GROUP BY a.username");
+    $st->execute([$date]);
+    $teacher = $st->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    $now = attendance_now();
+    $today = $now->format('Y-m-d');
+    $working = isset(attendance_working_days($pdo, $date, $date, (int) $rules['min_people_per_day'])[$date]);
+    $decided = $date < $today || ($date === $today && $now->format('H:i:s') >= $rules['absent_cutoff']);
+
+    $totals = array_fill_keys(array_keys(ATTENDANCE_DAY_STATUSES), 0);
+    foreach ($students as &$s) {
+        $t = $times[$s['codemeli']] ?? null;
+        $s['first_in'] = $t['first_in'] ?? null;
+        $s['last_out'] = $t['last_out'] ?? null;
+        if ($s['first_in'] !== null) {
+            $s['status'] = attendance_arrival_status($s['first_in'], $rules);
+        } elseif ($working && $decided && $date <= $today) {
+            $s['status'] = 'absent';
+        } else {
+            $s['status'] = 'no_record';
+        }
+        $s['teacher'] = isset($teacher[$s['codemeli']]) ? (string) $teacher[$s['codemeli']] : null;
+        $totals[$s['status']]++;
+    }
+    unset($s);
+    return ['rows' => $students, 'totals' => $totals, 'working' => $working, 'decided' => $decided, 'rules' => $rules];
+}

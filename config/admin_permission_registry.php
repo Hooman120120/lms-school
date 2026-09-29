@@ -280,6 +280,7 @@ $registry = [
         ['code'=>'reports.staff','label'=>'گزارش همکاران','legacy'=>'permision_reportcollague','path'=>'admin/report/colleague.php'],
     ]],
     ['code'=>'attendance','label'=>'حضور و غیاب','children'=>[
+        ['code'=>'attendance.report','label'=>'گزارش روزانه حضور و غیاب','path'=>'admin/attendance/report.php'],
         ['code'=>'attendance.devices','label'=>'دستگاه‌ها و رکوردهای حضور','path'=>'admin/attendance/devices.php'],
         ['code'=>'attendance.import','label'=>'ورود حضور و غیاب از فایل اکسل','path'=>'admin/attendance/import.php'],
         ['code'=>'attendance.rules','label'=>'قوانین حضور و غیاب','path'=>'admin/attendance/rules.php'],
