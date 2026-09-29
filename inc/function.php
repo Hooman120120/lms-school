@@ -5165,8 +5165,9 @@ function saveStudentRegisterClassEntry(
         $check->execute([$eventId, $studentUsername]);
 
         if ($check->fetch()) {
+            // ثبت دستی، خانه را از ثبت خودکار دستگاه حضور خارج می‌کند
             $stmt = $conn->prepare("UPDATE register_class_attendance 
-                                    SET status = ?, created_by = ?, created_at = NOW()
+                                    SET status = ?, auto_source = NULL, created_by = ?, created_at = NOW()
                                     WHERE register_class_events_id = ? AND username = ?");
             $stmt->execute([$dbStatus, $createdBy, $eventId, $studentUsername]);
         } else {
@@ -5271,7 +5272,7 @@ function getRegisterClassAttendance(int $classId, int $adminId, int $adminRole):
 {
     global $conn;
     $sql = "
-        SELECT a.register_class_events_id AS event_id, a.username, a.status
+        SELECT a.register_class_events_id AS event_id, a.username, a.status, a.auto_source
         FROM register_class_attendance a
         INNER JOIN register_class_events ev ON a.register_class_events_id = ev.id
         WHERE ev.class_id = ?

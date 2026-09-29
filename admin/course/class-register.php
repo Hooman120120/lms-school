@@ -597,6 +597,16 @@ $default_column_date = ($today_iso >= $selected_week['start'] && $today_iso <= $
     ? jdate('Y/m/d', time(), '', 'Asia/Tehran', 'en')
     : jdate('Y/m/d', strtotime($selected_week['start']), '', 'Asia/Tehran', 'en');
 
+// ستون‌های حضور و غیاب دستی از روی ورود ثبت‌شده در دستگاه‌های حضور پر می‌شوند
+// (فقط اگر مدرسه قوانین حضور را فعال کرده باشد؛ ثبت دستی استاد هرگز تغییر نمی‌کند)
+require_once '../../inc/attendance.php';
+try {
+    attendance_fill_register($conn, $class_id);
+} catch (Throwable $e) {
+    if ($conn->inTransaction()) $conn->rollBack();
+    error_log('attendance fill for class ' . $class_id . ': ' . $e->getMessage());
+}
+
 $students = getRegisterClassStudents($class_id);
 
 // دامنه دید: استاد فقط ستون ها و رکوردهای خودش را می بیند، نقش های بالاتر همه را
@@ -627,6 +637,13 @@ if (!$all_weeks_selected) {
     $events = array_values(array_filter($events, function ($evt) use ($selected_week, $weeks) {
         return registerClassEventWeekKey($evt, $weeks) === $selected_week['key'];
     }));
+}
+
+// زمان ورود ثبت‌شده در دستگاه برای نمایش در خانه‌های حضور و غیاب
+try {
+    $deviceMarks = attendance_register_marks($conn, $events, $attendances);
+} catch (Throwable $e) {
+    $deviceMarks = [];
 }
 
 $eventTeacherIds = array_unique(array_column($events, 'teacher_id'));
@@ -1054,6 +1071,8 @@ include_once '../../temp.html';
 
         .rg-pill-present { background: #3fae7a; }
         .rg-pill-absent  { background: #e8536d; }
+        .rg-dev-mark { display: block; margin-top: 2px; font-size: 10px; color: #6b7280; white-space: nowrap; }
+        .rg-dev-late { color: #d97706; font-weight: 700; }
 
         .rg-score-num {
             display: block;
@@ -1510,6 +1529,15 @@ include_once '../../temp.html';
                                                     $btn_label = (intval($status_val) === 1)
                                                         ? '<span class="rg-pill rg-pill-present">حاضر</span>'
                                                         : '<span class="rg-pill rg-pill-absent">غایب</span>';
+                                                    $dev = $deviceMarks[$student['username']][$evt['id']] ?? null;
+                                                    if ($dev) {
+                                                        if ($dev['time'] !== null) {
+                                                            $btn_label .= '<span class="rg-dev-mark' . ($dev['late'] ? ' rg-dev-late' : '') . '" title="ورود ثبت‌شده در دستگاه' . ($dev['auto'] ? '' : '؛ وضعیت را استاد ثبت کرده است') . '">'
+                                                                . ($dev['late'] ? 'تأخیر ' : 'ورود ') . htmlspecialchars($dev['time']) . '</span>';
+                                                        } elseif ($dev['auto']) {
+                                                            $btn_label .= '<span class="rg-dev-mark" title="در دستگاه حضور ورودی ثبت نشده است">خودکار</span>';
+                                                        }
+                                                    }
                                                 }
                                             }
                                             ?>

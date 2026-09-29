@@ -1175,6 +1175,7 @@ else                  $c = '#15233f';
                     <ul class="nav-sub">
                         <?php if (AdminMenuCan('attendance.devices', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/devices.php') ?>">دستگاه‌ها و رکوردها</a></li><?php endif; ?>
                         <?php if (AdminMenuCan('attendance.import', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/import.php') ?>">ورود از فایل اکسل</a></li><?php endif; ?>
+                        <?php if (AdminMenuCan('attendance.rules', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/rules.php') ?>">قوانین حضور و غیاب</a></li><?php endif; ?>
                     </ul>
                 </li>
             <?php } ?>

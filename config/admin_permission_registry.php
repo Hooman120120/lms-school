@@ -282,6 +282,7 @@ $registry = [
     ['code'=>'attendance','label'=>'حضور و غیاب','children'=>[
         ['code'=>'attendance.devices','label'=>'دستگاه‌ها و رکوردهای حضور','path'=>'admin/attendance/devices.php'],
         ['code'=>'attendance.import','label'=>'ورود حضور و غیاب از فایل اکسل','path'=>'admin/attendance/import.php'],
+        ['code'=>'attendance.rules','label'=>'قوانین حضور و غیاب','path'=>'admin/attendance/rules.php'],
     ]],
     ['code'=>'homework-approval','label'=>'تأیید تکالیف','legacy'=>'administrator','path'=>'admin/course/homework_check.php','children'=>[
         ['code'=>'homework-approval.review','label'=>'بررسی و تأیید تکلیف'],

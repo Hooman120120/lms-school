@@ -296,3 +296,181 @@ function attendance_relink_unknown(PDO $pdo): int
     return (int) $pdo->exec('UPDATE attendance_events e JOIN dbpersonal p ON p.codemeli = e.codemeli
         SET e.idpersonal = p.idpersonal WHERE e.idpersonal IS NULL');
 }
+
+/* ---------------- rules and the class register ---------------- */
+
+// register_class_attendance rows written by the device rules carry auto_source =
+// 'device' (created_by is the column's teacher, as it must name a real admin).
+// A teacher's save clears auto_source, and such rows are never touched again.
+const ATTENDANCE_AUTO_SOURCE = 'device';
+// only "manual attendance" columns are filled; online attendance has its own source
+const ATTENDANCE_REGISTER_TYPES = ['0'];
+
+function attendance_rules(PDO $pdo): array
+{
+    $defaults = ['enabled' => 0, 'school_start' => '07:30:00', 'late_grace' => 10, 'absent_cutoff' => '09:00:00',
+        'min_people_per_day' => 10, 'active_from' => null, 'updated_by' => null, 'updated_at' => null];
+    try {
+        $row = $pdo->query('SELECT * FROM attendance_rules WHERE id = 1')->fetch(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        return $defaults;
+    }
+    return $row ? array_merge($defaults, $row) : $defaults;
+}
+
+function attendance_now(): DateTime
+{
+    return new DateTime('now', new DateTimeZone('Asia/Tehran'));
+}
+
+/** First arrival 'H:i:s' → present / late. */
+function attendance_arrival_status(string $firstTime, array $rules): string
+{
+    $limit = (new DateTime('2000-01-01 ' . $rules['school_start']))
+        ->modify('+' . (int) $rules['late_grace'] . ' minutes')->format('H:i:s');
+    return $firstTime > $limit ? 'late' : 'present';
+}
+
+/** First non-exit event per national code per day: [code][Y-m-d] => 'H:i:s'. */
+function attendance_first_seen(PDO $pdo, array $codes, string $from, string $to): array
+{
+    $codes = array_values(array_unique(array_filter(array_map('strval', $codes))));
+    if (!$codes) return [];
+    $out = [];
+    foreach (array_chunk($codes, 500) as $chunk) {
+        $in = implode(',', array_fill(0, count($chunk), '?'));
+        $st = $pdo->prepare("SELECT codemeli, DATE(event_time) d, TIME(MIN(event_time)) t
+            FROM attendance_events
+            WHERE codemeli IN ($in) AND event_time >= ? AND event_time < DATE_ADD(?, INTERVAL 1 DAY) AND direction <> 'out'
+            GROUP BY codemeli, DATE(event_time)");
+        $st->execute(array_merge($chunk, [$from, $to]));
+        foreach ($st->fetchAll(PDO::FETCH_NUM) as [$code, $d, $t]) $out[$code][$d] = $t;
+    }
+    return $out;
+}
+
+/** Days in the range on which the devices saw at least min_people_per_day people. */
+function attendance_working_days(PDO $pdo, string $from, string $to, int $minPeople): array
+{
+    $st = $pdo->prepare('SELECT DATE(event_time) d FROM attendance_events
+        WHERE event_time >= ? AND event_time < DATE_ADD(?, INTERVAL 1 DAY)
+        GROUP BY DATE(event_time) HAVING COUNT(DISTINCT codemeli) >= ?');
+    $st->execute([$from, $to, max(1, $minPeople)]);
+    return array_flip($st->fetchAll(PDO::FETCH_COLUMN));
+}
+
+/**
+ * Fill the manual attendance columns of the class register from device
+ * events. A student seen that day is present; one not seen is absent, but
+ * only after the cutoff and only on a day the devices were working. Rows a
+ * teacher saved, and locked columns, are left alone.
+ *
+ * @param int|null $classId one class, or every class
+ */
+function attendance_fill_register(PDO $pdo, ?int $classId = null, ?string $from = null, ?string $to = null): array
+{
+    $stats = ['present' => 0, 'absent' => 0, 'updated' => 0, 'skipped_manual' => 0];
+    $rules = attendance_rules($pdo);
+    if (!(int) $rules['enabled']) return $stats;
+
+    $now = attendance_now();
+    $today = $now->format('Y-m-d');
+    $to = min($to ?? $today, $today);
+    $from = $from ?? (clone $now)->modify('-30 days')->format('Y-m-d');
+    if (!empty($rules['active_from']) && $from < $rules['active_from']) $from = $rules['active_from'];
+    if ($from > $to) return $stats;
+
+    $types = implode(',', array_map(static fn($t) => $pdo->quote($t), ATTENDANCE_REGISTER_TYPES));
+    $sql = "SELECT id, class_id, teacher_id, created_by, event_date FROM register_class_events
+        WHERE type IN ($types) AND status <> '1' AND event_date BETWEEN ? AND ?";
+    $params = [$from, $to];
+    if ($classId !== null) {
+        $sql .= ' AND class_id = ?';
+        $params[] = $classId;
+    }
+    $st = $pdo->prepare($sql);
+    $st->execute($params);
+    $columns = $st->fetchAll(PDO::FETCH_ASSOC);
+    if (!$columns) return $stats;
+
+    $classIds = array_values(array_unique(array_map('intval', array_column($columns, 'class_id'))));
+    $in = implode(',', array_fill(0, count($classIds), '?'));
+    $st = $pdo->prepare("SELECT class_id, username FROM dbcourse WHERE activityuser = 1 AND class_id IN ($in)");
+    $st->execute($classIds);
+    $students = [];
+    $allCodes = [];
+    foreach ($st->fetchAll(PDO::FETCH_NUM) as [$cid, $user]) {
+        $students[(int) $cid][] = (string) $user;
+        $allCodes[] = (string) $user;
+    }
+
+    $seen = attendance_first_seen($pdo, $allCodes, $from, $to);
+    $workingDays = attendance_working_days($pdo, $from, $to, (int) $rules['min_people_per_day']);
+    $cutoffPassed = $now->format('H:i:s') >= $rules['absent_cutoff'];
+
+    $existing = $pdo->prepare('SELECT id, status, auto_source FROM register_class_attendance WHERE register_class_events_id = ? AND username = ?');
+    $insert = $pdo->prepare('INSERT INTO register_class_attendance (register_class_events_id, username, status, auto_source, created_by, created_at) VALUES (?, ?, ?, ?, ?, NOW())');
+    $update = $pdo->prepare('UPDATE register_class_attendance SET status = ?, created_at = NOW() WHERE id = ? AND auto_source = ?');
+
+    $pdo->beginTransaction();
+    foreach ($columns as $col) {
+        $date = (string) $col['event_date'];
+        foreach ($students[(int) $col['class_id']] ?? [] as $user) {
+            if (isset($seen[$user][$date])) {
+                $status = '1';
+            } elseif (isset($workingDays[$date]) && ($date < $today || $cutoffPassed)) {
+                $status = '0';
+            } else {
+                continue; // no decision yet
+            }
+            $existing->execute([(int) $col['id'], $user]);
+            $row = $existing->fetch(PDO::FETCH_ASSOC);
+            if (!$row) {
+                $insert->execute([(int) $col['id'], $user, $status, ATTENDANCE_AUTO_SOURCE,
+                    (int) $col['teacher_id'] ?: (int) $col['created_by']]);
+                $stats[$status === '1' ? 'present' : 'absent']++;
+            } elseif ($row['auto_source'] !== ATTENDANCE_AUTO_SOURCE) {
+                $stats['skipped_manual']++;
+            } elseif ((string) $row['status'] !== $status) {
+                // e.g. marked absent at the cutoff, then arrived late
+                $update->execute([$status, (int) $row['id'], ATTENDANCE_AUTO_SOURCE]);
+                $stats['updated']++;
+            }
+        }
+    }
+    $pdo->commit();
+    return $stats;
+}
+
+/**
+ * Device details for register cells: [username][event_id] =>
+ * ['time' => 'H:i' | null, 'late' => bool, 'auto' => bool].
+ * $attendanceRows need event_id, username and auto_source.
+ */
+function attendance_register_marks(PDO $pdo, array $columns, array $attendanceRows): array
+{
+    $rules = attendance_rules($pdo);
+    $dates = [];
+    foreach ($columns as $col) {
+        if (in_array((string) ($col['type'] ?? ''), ATTENDANCE_REGISTER_TYPES, true) && !empty($col['event_date'])) {
+            $dates[(int) $col['id']] = (string) $col['event_date'];
+        }
+    }
+    if (!$dates) return [];
+    $users = array_values(array_unique(array_column($attendanceRows, 'username')));
+    $seen = attendance_first_seen($pdo, $users, min($dates), max($dates));
+    $marks = [];
+    foreach ($attendanceRows as $row) {
+        $eventId = (int) $row['event_id'];
+        if (!isset($dates[$eventId])) continue;
+        $time = $seen[$row['username']][$dates[$eventId]] ?? null;
+        $auto = ($row['auto_source'] ?? null) === ATTENDANCE_AUTO_SOURCE;
+        if (!$auto && $time === null) continue;
+        $marks[$row['username']][$eventId] = [
+            'time' => $time ? substr($time, 0, 5) : null,
+            'late' => $time !== null && attendance_arrival_status($time, $rules) === 'late',
+            'auto' => $auto,
+        ];
+    }
+    return $marks;
+}
