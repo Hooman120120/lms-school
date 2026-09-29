@@ -37,3 +37,4 @@ error_log
 /admin/webhook_raw_log.jsonl
 /admin/call_debug_log.txt
 /admin/course/ex/hozor.csv
+!database/migrations/*.sql
