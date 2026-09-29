@@ -45,7 +45,15 @@ $(function() {
 			}
 		  }
 		} else {
-			if (element.attr('href').indexOf(current) !== -1) {
+			// Compare whole paths: matching the file name as a substring also lit
+			// e.g. Bill/advanced-report.php while on attendance/report.php.
+			// Group headers link to "#", which resolves to this same page: skip them.
+			var href = element.attr('href') || '';
+			var linkPath = '';
+			if (href !== '' && href.charAt(0) !== '#') {
+				try { linkPath = new URL(href, location.href).pathname; } catch (e) {}
+			}
+			if (linkPath === location.pathname) {
 				element.parents('.main-sidebar .nav-item').last().addClass('active');
 				if (element.parents('.main-sidebar .nav-sub').length) {
 				  element.closest('.main-sidebar .nav-item.active').addClass('show');

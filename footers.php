@@ -84,7 +84,7 @@ if (isset($_SESSION['admin']['dakheli']) && !empty($_SESSION['admin']['dakheli']
 <!-- Internal Jquery-Ui js-->
 <script src="<?php echo url('assets/plugins/jquery-ui/ui/widgets/datepicker.js') ?> "></script>
 <!-- Sidemenu js -->
-<script src="<?php echo url('assets/plugins/sidemenu/sidemenu-rtl.js')?>"></script>
+<script src="<?php echo url('assets/plugins/sidemenu/sidemenu-rtl.js')?>?v=20260929b"></script>
 <!-- Sidebar js -->
 <script src="<?php echo url('assets/plugins/sidebar/sidebar-rtl.js') ?>"></script>
 <!-- Peity js-->
