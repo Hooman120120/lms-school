@@ -279,6 +279,10 @@ $registry = [
         ['code'=>'reports.students','label'=>'گزارش دانش‌آموزان','path'=>'admin/report/students.php'],
         ['code'=>'reports.staff','label'=>'گزارش همکاران','legacy'=>'permision_reportcollague','path'=>'admin/report/colleague.php'],
     ]],
+    ['code'=>'attendance','label'=>'حضور و غیاب','children'=>[
+        ['code'=>'attendance.devices','label'=>'دستگاه‌ها و رکوردهای حضور','path'=>'admin/attendance/devices.php'],
+        ['code'=>'attendance.import','label'=>'ورود حضور و غیاب از فایل اکسل','path'=>'admin/attendance/import.php'],
+    ]],
     ['code'=>'homework-approval','label'=>'تأیید تکالیف','legacy'=>'administrator','path'=>'admin/course/homework_check.php','children'=>[
         ['code'=>'homework-approval.review','label'=>'بررسی و تأیید تکلیف'],
     ]],

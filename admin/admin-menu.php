@@ -1169,6 +1169,16 @@ else                  $c = '#15233f';
             <?php } ?>
 
 
+            <?php if (AdminMenuCan('attendance', Permision('administrator'))) { ?>
+                <li class="nav-item">
+                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-user-check sidemenu-icon"></i><span class="sidemenu-label">حضور و غیاب</span><i class="angle fe fe-chevron-left"></i></a>
+                    <ul class="nav-sub">
+                        <?php if (AdminMenuCan('attendance.devices', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/devices.php') ?>">دستگاه‌ها و رکوردها</a></li><?php endif; ?>
+                        <?php if (AdminMenuCan('attendance.import', Permision('administrator'))): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/import.php') ?>">ورود از فایل اکسل</a></li><?php endif; ?>
+                    </ul>
+                </li>
+            <?php } ?>
+
             <?php if (AdminHasAnyCurrentTreePermission() && AdminHasMenuNavigationPermission('reports')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-radio sidemenu-icon"></i><span class="sidemenu-label">آمار و گزارشات</span><i class="angle fe fe-chevron-left"></i></a>
