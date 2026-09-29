@@ -58,7 +58,7 @@ if (!Permision('permision_viewdocument')) {
 }
 
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
-$announcementsPageSize = 7;
+$announcementsPageSize = 5;
 $announcementsPage = max(1, (int)($_GET['page'] ?? 1));
 $schoolRoleKey = SchoolStaffRoleKey($currentUser);
 $canManageAllAnnouncements = false;
@@ -342,15 +342,14 @@ include_once '../../temp.html';
                                             <?php endif; ?>
                                             </tbody>
                                         </table>
-                                        <?php if ($announcementsTotalPages > 1): ?>
                                             <nav class="mt-3" aria-label="صفحه‌بندی اطلاعیه‌ها"><ul class="pagination justify-content-center mb-0">
-                                                <li class="page-item <?= $announcementsPage <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?page=<?= max(1, $announcementsPage - 1) ?>" aria-label="صفحه قبل">‹ قبلی</a></li>
+                                                <li class="page-item <?= $announcementsPage <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?page=<?= max(1, $announcementsPage - 1) ?>" aria-label="صفحه قبل"><i class="fe fe-chevron-right" aria-hidden="true"></i> قبلی</a></li>
                                                 <?php for ($page = 1; $page <= $announcementsTotalPages; $page++): ?>
                                                     <li class="page-item <?= $page === $announcementsPage ? 'active' : '' ?>"><a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a></li>
                                                 <?php endfor; ?>
-                                                <li class="page-item <?= $announcementsPage >= $announcementsTotalPages ? 'disabled' : '' ?>"><a class="page-link" href="?page=<?= min($announcementsTotalPages, $announcementsPage + 1) ?>" aria-label="صفحه بعد">بعدی ›</a></li>
+                                                <li class="page-item <?= $announcementsPage >= $announcementsTotalPages ? 'disabled' : '' ?>"><a class="page-link" href="?page=<?= min($announcementsTotalPages, $announcementsPage + 1) ?>" aria-label="صفحه بعد">بعدی <i class="fe fe-chevron-left" aria-hidden="true"></i></a></li>
                                             </ul></nav>
-                                        <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>

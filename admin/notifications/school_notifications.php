@@ -64,8 +64,8 @@ if (isset($_GET['detail']) && ctype_digit((string)$_GET['detail'])) {
             http_response_code(403);
             exit('دسترسی مشاهدهٔ جزئیات اعلان فعال نشده است.');
         }
-        MarkSchoolNotificationRead($detailId, $currentUser);
-        $candidate['is_read'] = 1;
+        // باز کردن جزئیات یا بستن پنجره به‌تنهایی به معنی خوانده‌شدن نیست؛
+        // وضعیت فقط با دکمهٔ صریح «خواندم» تغییر می‌کند.
         $detailNotification = $candidate;
         break;
     }
@@ -82,7 +82,6 @@ if (isset($_GET['open']) && ctype_digit((string)$_GET['open'])) {
             http_response_code(403);
             exit('دسترسی مشاهدهٔ جزئیات اعلان فعال نشده است.');
         }
-        MarkSchoolNotificationRead($notificationId, $currentUser);
         $target = trim((string)($candidate['target_url'] ?? ''));
         if ($target !== '' && strpos($target, 'admin/') === 0) {
             header('Location: ' . url($target));
@@ -385,6 +384,14 @@ foreach ($allowedTypes as $type) $unreadCount += (int)($typeCounts[$type]['unrea
                                         <div class="notification-detail-field"><small>اولویت</small><strong><?= htmlspecialchars(trim((string)($detailNotification['priority'] ?? '')) ?: 'عادی') ?></strong></div>
                                     </div>
                                     <div class="mt-4 d-flex flex-wrap" style="gap:8px">
+                                        <?php if ((int)$detailNotification['is_read'] === 0): ?>
+                                            <form method="post">
+                                                <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['school_notification_csrf']) ?>">
+                                                <input type="hidden" name="notification_id" value="<?= (int)$detailNotification['id'] ?>">
+                                                <input type="hidden" name="return_type" value="<?= htmlspecialchars($selectedType) ?>">
+                                                <button class="btn btn-primary" type="submit">خواندم</button>
+                                            </form>
+                                        <?php endif; ?>
                                         <?php if (!empty($detailNotification['attachment']) && str_starts_with((string)$detailNotification['attachment'], 'uploads/')): ?>
                                             <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= htmlspecialchars(url((string)$detailNotification['attachment'])) ?>"><i class="fe fe-paperclip ml-1"></i> دریافت پیوست</a>
                                         <?php endif; ?>

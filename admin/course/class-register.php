@@ -158,6 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     if ($max_score <= 0 || $max_score > 999999) $max_score = 20.0;
     $assessment_mode = (string)($_POST['assessment_mode'] ?? 'score');
     if (!in_array($assessment_mode, ['score', 'quality'], true)) $assessment_mode = 'score';
+    if ($type === 1) {
+        $max_score = max(1, min(20, round($max_score)));
+    }
     // مخاطب از دانش‌آموز همان ردیف تشخیص داده می‌شود؛ استاد انتخاب جداگانه‌ای ندارد.
     $homework_notification_target = 'family_student';
 
@@ -265,7 +268,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         exit;
     }
     if ($score_input !== null && ($score_input < 0 || $score_input > $eventMaxScore)) {
-        $_SESSION['flash_msg'] = 'نمره باید بین صفر تا ' . rtrim(rtrim(number_format($eventMaxScore, 2, '.', ''), '0'), '.') . ' باشد.';
+        $maxLabel = rtrim(rtrim(number_format($eventMaxScore, 2, '.', ''), '0'), '.');
+        $_SESSION['flash_msg'] = 'نمره واردشده بیشتر از سقف تعریف‌شده است؛ سقف این ستون ' . $maxLabel . ' است.';
         $_SESSION['flash_msg_type'] = 'warning';
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
@@ -1618,8 +1622,8 @@ include_once '../../temp.html';
                             </select>
                             <div id="max_score_input_wrap">
                                 <label class="form-label fw-bold">نمره از چند باشد؟</label>
-                                <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="0.01" max="999999" step="0.25">
-                                <div class="form-text">مثلاً ۱۰، ۲۰ یا ۱۰۰</div>
+                                <input type="number" class="form-control" name="max_score" id="create_event_max_score" value="20" min="1" max="999999" step="1" inputmode="numeric">
+                                <div class="form-text">نمرهٔ کلاسی از ۱ تا ۲۰</div>
                             </div>
                         </div>
 
@@ -1661,7 +1665,7 @@ include_once '../../temp.html';
 
                         <div class="mb-3" id="grade_input_container">
                             <label class="form-label small fw-bold" id="grade_input_label">نمره دانش‌آموز:</label>
-                            <input type="number" step="0.25" min="0" max="20" class="form-control text-center fs-5" id="modal_grade_val" name="grade_val" placeholder="00.00">
+                            <input type="number" step="0.01" min="0" max="20" class="form-control text-center fs-5" id="modal_grade_val" name="grade_val" placeholder="00.00" inputmode="decimal">
                         </div>
 
                         <div class="mb-3" id="quality_input_container" style="display:none;">
@@ -1887,7 +1891,8 @@ include_once '../../temp.html';
                     gradeContainer.style.display    = assessmentMode === 'quality' ? 'none' : 'block';
                     statusContainer.style.display   = 'none';
                     // ستون نمره کلاسی فقط یکی از دو حالت عددی یا کیفی را می پذیرد.
-                    qualityContainer.style.display  = hasQuality && assessmentMode === 'quality' ? 'block' : 'none';
+                    // حالت کیفی برای ستون نمره کلاسی باید مستقل از وجود نمره قبلی قابل انتخاب باشد.
+                    qualityContainer.style.display  = assessmentMode === 'quality' ? 'block' : 'none';
                     noteContainer.style.display     = 'none';
                     document.getElementById('modal_grade_val').required = assessmentMode !== 'quality';
                     document.getElementById('modal_quality_val').required = assessmentMode === 'quality';
@@ -1902,7 +1907,7 @@ include_once '../../temp.html';
                         gradeLabel.textContent = 'تراز آزمون آنلاین:';
                     } else if (eventType === '5') {
                         gradeField.max  = '20';
-                        gradeField.step = '0.25';
+                        gradeField.step = '0.01';
                         gradeField.placeholder = '00.00';
                         gradeLabel.textContent = 'نمره تکلیف:';
                     } else {
@@ -1911,6 +1916,13 @@ include_once '../../temp.html';
                         gradeField.placeholder = '00.00';
                         gradeLabel.textContent = 'نمره دانش‌آموز (از ' + eventMaxScore.replace(/\.00$/, '') + '):';
                     }
+                    gradeField.setCustomValidity('');
+                    gradeField.oninput = function () {
+                        const value = parseFloat(this.value);
+                        const max = parseFloat(this.max);
+                        this.setCustomValidity(Number.isFinite(value) && value > max
+                            ? 'نمره واردشده بیشتر از سقف تعریف‌شده (' + max + ') است.' : '');
+                    };
                 } else {
                     actionInput.value = 'save_attendance';
                     gradeContainer.style.display    = 'none';
@@ -1943,6 +1955,15 @@ include_once '../../temp.html';
                 if (maxScoreContainer) maxScoreContainer.style.display = columnTypeSelect.value === '1' ? 'block' : 'none';
                 if (maxScoreInputWrap) {
                     maxScoreInputWrap.style.display = columnTypeSelect.value === '1' && (!assessmentModeInput || assessmentModeInput.value === 'score') ? 'block' : 'none';
+                }
+                if (maxScoreInput) {
+                    const isClassScore = columnTypeSelect.value === '1';
+                    const isNumeric = !assessmentModeInput || assessmentModeInput.value === 'score';
+                    maxScoreInput.disabled = !isClassScore || !isNumeric;
+                    maxScoreInput.required = isClassScore && isNumeric;
+                    maxScoreInput.min = '1';
+                    maxScoreInput.max = isClassScore ? '20' : '999999';
+                    maxScoreInput.step = '1';
                 }
             };
             columnTypeSelect.addEventListener('change', syncHomeworkTarget);

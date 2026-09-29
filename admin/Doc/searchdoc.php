@@ -142,15 +142,14 @@ include_once '../../temp.html';
                                             <?php endif; ?>
                                             </tbody>
                                         </table>
-                                        <?php if ($announcements_total_pages > 1): ?>
                                             <nav class="mt-3" aria-label="صفحه‌بندی اطلاعیه‌ها"><ul class="pagination justify-content-center mb-0">
-                                                <li class="page-item <?= $announcements_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= max(1, $announcements_page - 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه قبل">‹ قبلی</a></li>
+                                                <li class="page-item <?= $announcements_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= max(1, $announcements_page - 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه قبل"><i class="fe fe-chevron-right" aria-hidden="true"></i> قبلی</a></li>
                                                 <?php for ($page = 1; $page <= $announcements_total_pages; $page++): ?>
                                                     <li class="page-item <?= $page === $announcements_page ? 'active' : '' ?>"><a class="page-link" href="?announcements_page=<?= $page ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>"><?= $page ?></a></li>
                                                 <?php endfor; ?>
-                                                <li class="page-item <?= $announcements_page >= $announcements_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= min($announcements_total_pages, $announcements_page + 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی ›</a></li>
+                                                <li class="page-item <?= $announcements_page >= $announcements_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= min($announcements_total_pages, $announcements_page + 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی <i class="fe fe-chevron-left" aria-hidden="true"></i></a></li>
                                             </ul></nav>
-                                        <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>
@@ -190,15 +189,14 @@ include_once '../../temp.html';
                                             <?php endif; ?>
                                             </tbody>
                                         </table>
-                                        <?php if ($letters_total_pages > 1): ?>
                                             <nav class="mt-3" aria-label="صفحه‌بندی نامه‌های خاص"><ul class="pagination justify-content-center mb-0">
-                                                <li class="page-item <?= $letters_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= max(1, $letters_page - 1) ?><?= $pagination_query ?>" aria-label="صفحه قبل">‹ قبلی</a></li>
+                                                <li class="page-item <?= $letters_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= max(1, $letters_page - 1) ?><?= $pagination_query ?>" aria-label="صفحه قبل"><i class="fe fe-chevron-right" aria-hidden="true"></i> قبلی</a></li>
                                                 <?php for ($page = 1; $page <= $letters_total_pages; $page++): ?>
                                                     <li class="page-item <?= $page === $letters_page ? 'active' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= $page ?><?= $pagination_query ?>"><?= $page ?></a></li>
                                                 <?php endfor; ?>
-                                                <li class="page-item <?= $letters_page >= $letters_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= min($letters_total_pages, $letters_page + 1) ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی ›</a></li>
+                                                <li class="page-item <?= $letters_page >= $letters_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= min($letters_total_pages, $letters_page + 1) ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی <i class="fe fe-chevron-left" aria-hidden="true"></i></a></li>
                                             </ul></nav>
-                                        <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>

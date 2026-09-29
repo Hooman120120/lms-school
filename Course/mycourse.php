@@ -6,7 +6,7 @@ include_once '../inc/function_login.php';
 require_once '../inc/chahard_rooms.php';
 if (CheckBlacklist_ip(GetIp())) {
     include_once '../blackList.html';
-    exit;
+    // exit;
 }
 if (!isset($_SESSION['auth'])) {
     header('location: ' . url('login.php'));
