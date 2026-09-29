@@ -29,7 +29,7 @@ $pdo = new PDO(
     'mysql:host=' . ($opt['host'] ?? 'localhost') . ';dbname=' . $db . ';charset=utf8mb4',
     (string) ($opt['user'] ?? 'root'),
     (string) ($opt['pass'] ?? ''),
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true]
 );
 $pdo->exec("CREATE TABLE IF NOT EXISTS schema_migrations (
     filename VARCHAR(190) NOT NULL PRIMARY KEY,
@@ -73,7 +73,8 @@ foreach ($pending as $file) {
     echo "running   $name\n";
     foreach (migrate_split_sql((string) file_get_contents($file)) as $statement) {
         try {
-            $pdo->exec($statement);
+            // query() + closeCursor(): statements like EXECUTE may return rows
+            $pdo->query($statement)->closeCursor();
         } catch (PDOException $e) {
             fwrite(STDERR, "FAILED    $name\n  " . $e->getMessage() . "\n  in: " . mb_substr(preg_replace('/\s+/', ' ', $statement), 0, 200) . "\n");
             exit(1);
