@@ -407,6 +407,12 @@ function AdminFilterFinanceFactors(array $rows, string $scopeCode, bool $legacyA
 function EnforceAdminPageTreePermission(): void
 {
     if (!AdminHasAnyCurrentTreePermission()) return;
+    $script = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
+    if ((str_ends_with($script, '/admin/notifications/school_notifications.php')
+            || str_ends_with($script, '/admin/notifications/institute_notifications.php'))
+        && CountSchoolDirectNotifications((string)($_SESSION['admin']['user'] ?? ''), false) > 0) {
+        return;
+    }
     $codes = AdminPermissionCodesForPath();
     // A grant for an operation also permits opening its containing page, but
     // never a sibling page (navigation helper only traverses descendants).
@@ -1404,7 +1410,35 @@ function TeacherHasDarsAccess(int $classId, int $darsId, ?string $user = null): 
     }
 
     $assignedDars = TeacherAssignedDarsIds($classId, $user);
-    return $assignedDars === [] || in_array($darsId, $assignedDars, true);
+    if ($assignedDars !== []) {
+        return in_array($darsId, $assignedDars, true);
+    }
+
+    // سازگاری با کلاس‌های قدیمی تک‌درس؛ در کلاس چنددرسی تخصیص صریح الزامی است.
+    $countStmt = $conn->prepare('SELECT COUNT(DISTINCT dars_id) FROM class_dars WHERE class_id = ?');
+    $countStmt->execute([$classId]);
+    return (int)$countStmt->fetchColumn() === 1;
+}
+
+/** Subjects available in a class, optionally narrowed to one teacher. */
+function RegisterClassDarsOptions(int $classId, ?string $teacherUsername = null): array
+{
+    global $conn;
+    if ($classId <= 0) return [];
+
+    $stmt = $conn->prepare('SELECT d.id, d.dars
+        FROM class_dars cd
+        INNER JOIN dbdars d ON d.id = cd.dars_id
+        WHERE cd.class_id = ?
+        ORDER BY d.dars, d.id');
+    $stmt->execute([$classId]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    if ($teacherUsername === null || $teacherUsername === '') return $rows;
+    $assigned = TeacherAssignedDarsIds($classId, $teacherUsername);
+    if ($assigned === []) return count($rows) === 1 ? $rows : [];
+    return array_values(array_filter($rows, static fn(array $row): bool =>
+        in_array((int)$row['id'], $assigned, true)));
 }
 
 /**
@@ -1449,35 +1483,60 @@ function SchoolNotificationCatalog(): array
         'discipline'         => ['title' => 'مورد انضباطی جدید', 'icon' => 'fe-alert-triangle'],
         'executive_calendar' => ['title' => 'تغییر تقویم اجرایی', 'icon' => 'fe-calendar'],
         'academic_calendar'  => ['title' => 'تغییر تقویم آموزشی', 'icon' => 'fe-book-open'],
+        'announcement'       => ['title' => 'اطلاعیه', 'icon' => 'fe-bell'],
+        'circular'           => ['title' => 'بخشنامه', 'icon' => 'fe-file-text'],
+        'special_letter'     => ['title' => 'نامه اختصاصی', 'icon' => 'fe-mail'],
     ];
+}
+
+/** Personal staff documents are always available to their exact recipient. */
+function SchoolDirectNotificationTypes(): array
+{
+    return ['announcement', 'circular', 'special_letter'];
+}
+
+function IsSchoolDirectNotificationType(string $eventType): bool
+{
+    return in_array($eventType, SchoolDirectNotificationTypes(), true);
 }
 
 function SchoolNotificationAllowedTypes(?string $roleKey = null): array
 {
     $roleKey = $roleKey ?? SchoolStaffRoleKey();
     $all = array_keys(SchoolNotificationCatalog());
+    $direct = SchoolDirectNotificationTypes();
 
     switch ($roleKey) {
         case 'manager':
         case 'general_deputy':
             return $all;
         case 'grade_deputy':
-            return ['new_student', 'executive_calendar', 'attendance', 'exam', 'discipline'];
+            $roleTypes = ['new_student', 'executive_calendar', 'attendance', 'exam', 'discipline'];
+            break;
         case 'executive_deputy':
-            return array_values(array_diff($all, ['pending_invoice', 'contact_ticket', 'contact_control', 'new_student']));
+            $roleTypes = ['attendance', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            break;
         case 'cultural_disciplinary_deputy':
-            return ['attendance', 'discipline', 'executive_calendar', 'new_student'];
+            $roleTypes = ['attendance', 'discipline', 'executive_calendar', 'new_student'];
+            break;
         case 'counselor':
-            return ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            $roleTypes = ['attendance', 'new_student', 'exam', 'discipline', 'executive_calendar', 'academic_calendar'];
+            break;
         case 'teacher':
-            return ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            $roleTypes = ['attendance', 'new_student', 'exam', 'academic_calendar'];
+            break;
         case 'financial_deputy':
-            return ['pending_invoice', 'executive_calendar'];
+            $roleTypes = ['executive_calendar'];
+            break;
         case 'technical_deputy':
-            return ['executive_calendar', 'academic_calendar'];
+            $roleTypes = ['executive_calendar', 'academic_calendar'];
+            break;
         default:
-            return [];
+            $roleTypes = [];
+            break;
     }
+
+    return array_values(array_unique(array_merge($roleTypes, $direct)));
 }
 
 function SchoolNotificationsReady(): bool
@@ -1570,6 +1629,12 @@ function SchoolNotificationVisibility(string $user, ?string $eventType = null, b
     $adminId = (int)$adminStmt->fetchColumn();
     $where = ['n.event_type IN (' . implode(',', array_fill(0, count($types), '?')) . ')'];
     $args = $types;
+    // Personal documents must never leak to another colleague.
+    $where[] = '(n.recipient_username IS NULL OR n.recipient_username = ?)';
+    $args[] = $user;
+    $directTypes = SchoolDirectNotificationTypes();
+    $where[] = '(n.event_type NOT IN (' . implode(',', array_fill(0, count($directTypes), '?')) . ') OR n.status = ?)';
+    $args = array_merge($args, $directTypes, ['published']);
     // اعلان‌های نسخه قبلی برای هر دانش‌آموز جداگانه ذخیره می‌شدند.
     // آن رکوردها نگه داشته می‌شوند، اما در شمارنده و فهرست نمایش داده نمی‌شوند
     // تا از این پس هر جلسه فقط یک اعلان تجمیعی داشته باشد.
@@ -1639,6 +1704,16 @@ function SchoolNotificationTypeCounts(?string $user = null): array
         $counts[(string)$row['event_type']] = ['total' => (int)$row['total_count'], 'unread' => (int)$row['unread_count']];
     }
     return $counts;
+}
+
+function CountSchoolDirectNotifications(?string $user = null, bool $unreadOnly = false): int
+{
+    $total = 0;
+    foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
+        if (!IsSchoolDirectNotificationType((string)$type)) continue;
+        $total += (int)($counts[$unreadOnly ? 'unread' : 'total'] ?? 0);
+    }
+    return $total;
 }
 
 /** Counts for operational notifications that pre-date school_notifications. */
@@ -1719,7 +1794,8 @@ function CountSchoolNotificationMenu(?string $user = null): int
     }
     $total = 0;
     foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
-        if (AdminHasMenuPermission($prefix . '.categories.' . $type, $user)) {
+        if (IsSchoolDirectNotificationType((string)$type)
+            || AdminHasMenuPermission($prefix . '.categories.' . $type, $user)) {
             $total += (int)$counts['unread'];
         }
     }
@@ -1755,12 +1831,13 @@ function GetSchoolNotifications(?string $user = null, ?string $eventType = null,
     }
     $limit = max(1, min(300, $limit));
     $sql = "SELECT n.*, c.coursename, cl.name AS class_name,
-                   CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, '')) AS actor_name,
+                   CONCAT(COALESCE(a.fname, au.fname, ''), ' ', COALESCE(a.lname, au.lname, '')) AS actor_name,
                    CASE WHEN nr.notification_id IS NULL THEN 0 ELSE 1 END AS is_read
             FROM school_notifications n
             LEFT JOIN codtbl_course c ON c.codecourse = n.codecourse
             LEFT JOIN classes cl ON cl.id = n.class_id
             LEFT JOIN dbadmin a ON a.idadmin = n.actor_admin_id
+            LEFT JOIN dbadmin au ON au.username = n.actor_username
             LEFT JOIN school_notification_reads nr
               ON nr.notification_id = n.id AND nr.admin_username = ?
             WHERE {$where}
@@ -4784,10 +4861,15 @@ function createRegisterClassEvent(
     int $classId,
     int $createdBy,
     int $teacherId,
-    int $darsId,
     string $title,
     ?string $eventDate,
-    int $type, string $description = '', ?string $groupUid = null
+    int $type,
+    string $description = '',
+    ?string $groupUid = null,
+    string $homeworkNotificationTarget = 'family',
+    ?int $darsId = null,
+    float $maxScore = 20.0,
+    string $assessmentMode = 'score'
 ): bool {
     global $conn;
 
@@ -4798,11 +4880,18 @@ function createRegisterClassEvent(
     // تاریخ اختیاری است؛ رشته خالی به NULL تبدیل می شود
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
 
+    if (!in_array($homeworkNotificationTarget, ['family', 'family_student'], true)) {
+        $homeworkNotificationTarget = 'family';
+    }
+    $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
+
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, status, created_by)
+            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score, assessment_mode,
+             homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4814,6 +4903,9 @@ function createRegisterClassEvent(
         $groupUid,
         $description,
         $type,
+        $maxScore,
+        $assessmentMode,
+        $homeworkNotificationTarget,
         $createdBy
     ]);
 }
@@ -4828,7 +4920,7 @@ function registerClassColumnKinds(): array
     return [
         ['type' => 0, 'title' => 'حضور و غیاب دستی',   'date_bound' => true,  'input' => 'attendance', 'quality' => false],
         ['type' => 2, 'title' => 'حضور و غیاب آنلاین', 'date_bound' => true,  'input' => 'attendance', 'quality' => false],
-        // نمره کلاسی دو بخش دارد: عدد و ارزیابی کیفی
+        // نوع نتیجه ستون نمره کلاسی هنگام ساخت، عددی یا کیفی انتخاب می‌شود.
         ['type' => 1, 'title' => 'نمره کلاسی',          'date_bound' => false, 'input' => 'score',      'quality' => true],
         ['type' => 4, 'title' => 'تراز آزمون آنلاین',   'date_bound' => false, 'input' => 'score',      'quality' => false],
         ['type' => 3, 'title' => 'توضیحات',             'date_bound' => false, 'input' => 'note',       'quality' => false],
@@ -4951,11 +5043,14 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         return [];
     }
 
-    $sql = "SELECT * FROM register_class_events WHERE class_id = ?";
+    $sql = "SELECT ev.*, d.dars AS dars_name
+            FROM register_class_events ev
+            LEFT JOIN dbdars d ON d.id = ev.dars_id
+            WHERE ev.class_id = ?";
     $params = [$classId];
 
     if ($adminrole === 3 && $createdBy > 0) {
-        $sql .= " AND teacher_id = ?";
+        $sql .= " AND ev.teacher_id = ?";
         $params[] = $createdBy;
     }
 
@@ -4967,7 +5062,8 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         registerClassColumnKinds()
     ));
     // ستون های بدون تاریخ انتهای جدول قرار می گیرند
-    $sql .= " ORDER BY (event_date IS NULL) ASC, event_date ASC, group_uid ASC, FIELD(type, $kindOrder), id ASC";
+    $sql .= " ORDER BY (ev.event_date IS NULL) ASC, ev.event_date ASC, ev.group_uid ASC,
+              FIELD(ev.type, $kindOrder), ev.id ASC";
 
     $st = $conn->prepare($sql);
     $st->execute($params);
@@ -4983,13 +5079,27 @@ function saveStudentRegisterClassEntry(
     ?string $disciplinaryReason = null,
     string $createdBy = '',
     ?string $note = null,
-    ?int $quality = null
+    ?int $quality = null,
+    string $visibilityTarget = 'both',
+    ?string $assessmentMode = null
 ): bool {
     global $conn;
 
     if ($classId <= 0 || $eventId <= 0 || empty($studentUsername)) {
         return false;
     }
+
+    // گیرنده از عضویت فعال همان دانش‌آموز در کلاس تعیین می‌شود، نه از ورودی آزاد فرم.
+    $studentCheck = $conn->prepare('SELECT 1 FROM dbcourse WHERE class_id = ? AND username = ? AND activityuser = 1 LIMIT 1');
+    $studentCheck->execute([$classId, $studentUsername]);
+    if (!$studentCheck->fetchColumn()) {
+        return false;
+    }
+
+    if (!in_array($visibilityTarget, ['student', 'family', 'both'], true)) {
+        $visibilityTarget = 'both';
+    }
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = null;
 
     if ($score !== null || $quality !== null) {
         $check = $conn->prepare("SELECT id FROM register_class_evaluation
@@ -5004,6 +5114,10 @@ function saveStudentRegisterClassEntry(
             $vals = [];
             if ($score !== null)   { $sets[] = 'score = ?';   $vals[] = $score; }
             if ($quality !== null) { $sets[] = 'quality = ?'; $vals[] = $qualityValue; }
+            if ($assessmentMode === 'score') $sets[] = 'quality = NULL';
+            if ($assessmentMode === 'quality') $sets[] = 'score = NULL';
+            $sets[] = 'visibility_target = ?';
+            $vals[] = $visibilityTarget;
             $sets[] = 'created_by = ?';
             $vals[] = $createdBy;
             $sets[] = 'created_at = NOW()';
@@ -5016,9 +5130,9 @@ function saveStudentRegisterClassEntry(
             $stmt->execute($vals);
         } else {
             $stmt = $conn->prepare("INSERT INTO register_class_evaluation
-                                    (register_class_events_id, username, score, quality, created_by, created_at)
-                                    VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$eventId, $studentUsername, $score, $qualityValue, $createdBy]);
+                                    (register_class_events_id, username, score, quality, visibility_target, created_by, created_at)
+                                    VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$eventId, $studentUsername, $score, $qualityValue, $visibilityTarget, $createdBy]);
         }
     }
 
@@ -5133,7 +5247,8 @@ function getRegisterClassEvaluations(int $classId, int $adminId, int $adminRole)
 {
     global $conn;
     $sql = "
-        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality
+        SELECT e.register_class_events_id AS event_id, e.username, e.score, e.note, e.quality,
+               e.visibility_target
         FROM register_class_evaluation e
         INNER JOIN register_class_events ev ON e.register_class_events_id = ev.id
         WHERE ev.class_id = ?
@@ -5186,11 +5301,73 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score'): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $eventId]);
+    $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
+    if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $eventId]);
+}
+
+/** Visible classroom grades for the authenticated student. */
+function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100, ?int $codecourse = null): array
+{
+    global $conn;
+    if ($studentUsername === '') return [];
+    $limit = max(1, min(300, $limit));
+
+    $sql = "SELECT DISTINCT e.id, e.score, e.quality, e.note, e.created_at, e.visibility_target,
+                   ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score, ev.assessment_mode,
+                   c.id AS class_id, c.name AS class_name, c.codecourse,
+                   cr.coursename, d.dars AS dars_name,
+                   a.fname AS teacher_fname, a.lname AS teacher_lname,
+                   TRIM(CONCAT(COALESCE(a.fname, ''), ' ', COALESCE(a.lname, ''))) AS teacher_name,
+                   a.username AS teacher_username
+            FROM register_class_evaluation e
+            INNER JOIN register_class_events ev ON ev.id = e.register_class_events_id
+            INNER JOIN classes c ON c.id = ev.class_id
+            INNER JOIN dbcourse dc ON dc.class_id = c.id AND dc.username = e.username
+            INNER JOIN codtbl_course cr ON cr.codecourse = c.codecourse
+            LEFT JOIN dbdars d ON d.id = ev.dars_id
+            LEFT JOIN dbadmin a ON a.idadmin = ev.teacher_id
+            WHERE e.username = ?
+              AND e.visibility_target IN ('student', 'both')
+              AND ev.type = '1'
+              AND (e.score IS NOT NULL OR e.quality IS NOT NULL)
+              AND dc.activityuser = 1
+            " . (($codecourse !== null && $codecourse > 0) ? " AND c.codecourse = ?" : "") . "
+            ORDER BY COALESCE(ev.event_date, DATE(e.created_at)) DESC, e.created_at DESC, e.id DESC
+            LIMIT {$limit}";
+    $stmt = $conn->prepare($sql);
+    $params = [$studentUsername];
+    if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+}
+
+/** Lessons belonging to the student's active classes, optionally limited to one course. */
+function GetStudentActiveClassLessons(string $studentUsername, ?int $codecourse = null): array
+{
+    global $conn;
+    if ($studentUsername === '') return [];
+
+    $sql = "SELECT DISTINCT d.id, d.dars, c.codecourse
+            FROM dbcourse dc
+            INNER JOIN classes c ON c.id = dc.class_id
+            INNER JOIN class_dars cd ON cd.class_id = c.id
+            INNER JOIN dbdars d ON d.id = cd.dars_id AND d.codecourse = c.codecourse
+            WHERE dc.username = ? AND dc.activityuser = 1";
+    $params = [$studentUsername];
+    if ($codecourse !== null && $codecourse > 0) {
+        $sql .= ' AND c.codecourse = ?';
+        $params[] = $codecourse;
+    }
+    $sql .= ' ORDER BY d.dars, d.id';
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
 function deleteStudentRegisterClassEntry(int $classId, int $eventId, string $studentUsername): bool {
     global $conn;

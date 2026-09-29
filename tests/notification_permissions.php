@@ -42,6 +42,11 @@ function verifyNotification(bool $condition, string $message): void
     if (!$condition) throw new RuntimeException($message);
     $checks++;
 }
+foreach (['announcement', 'circular', 'special_letter'] as $directType) {
+    verifyNotification(isset(SchoolNotificationCatalog()[$directType]), "Direct notification type missing from catalog: $directType");
+    verifyNotification(in_array($directType, SchoolNotificationAllowedTypes('teacher'), true), "Teacher cannot receive direct notification: $directType");
+    verifyNotification(in_array($directType, SchoolNotificationAllowedTypes('unmapped-role'), true), "Unmapped staff cannot receive direct notification: $directType");
+}
 foreach (['school', 'institute'] as $institutionMode) {
     $notificationTestGrants = ['dashboard.summary.notifications'];
     verifyNotification(AdminPermissionCodeAvailable('dashboard.summary.notifications'), 'Notification button must exist in both modes');

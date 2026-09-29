@@ -76,6 +76,17 @@ function appBaseUrl()
     if ($configured !== '') {
         return rtrim($configured, '/');
     }
+
+    // Resolve the application directory from the current document root so a
+    // local clone can run as /lmsgitea while production can keep /lms-school.
+    $documentRoot = realpath((string) ($_SERVER['DOCUMENT_ROOT'] ?? ''));
+    $basePath = realpath(BASE_PATH);
+    if ($documentRoot !== false && $basePath !== false
+        && str_starts_with(strtolower($basePath), strtolower(rtrim($documentRoot, '\\/')))) {
+        $relative = str_replace('\\', '/', substr($basePath, strlen(rtrim($documentRoot, '\\/'))));
+        return rtrim(CURRENT_DOMAIN, '/ ') . '/' . trim($relative, '/');
+    }
+
     return rtrim(CURRENT_DOMAIN, '/ ') . '/lms-school';
 }
 function dd($value)

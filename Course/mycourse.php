@@ -269,6 +269,16 @@ include_once '../temp.html';
     <!-- Title -->
     <title> <?php echo $course->coursename ?> | <?php echo __TITLE ?></title>
     <?php include_once '../inc/link.php'; ?>
+    <style>
+        .course-tools-grid > [class*="col-"] { display: flex; }
+        .course-tools-grid .custom-card { width: 100%; display: flex; flex-direction: column; }
+        .course-tools-grid .card-header { min-height: 92px; }
+        .course-tools-grid .card-body { margin-top: auto; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
+        .course-tools-grid .card-body form { margin: 0; }
+        @media (max-width: 575px) {
+            .course-tools-grid .card-header { min-height: auto; }
+        }
+    </style>
 </head>
 
 <body class="main-body leftmenu">
@@ -315,7 +325,7 @@ include_once '../temp.html';
                         </div>
                     </div>
                 </div>
-                <div class="row row-sm">
+                <div class="row row-sm course-tools-grid">
                     <?php $faragir = retPerson($_SESSION['auth']['user']) ?>
                     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
                         <div class="card custom-card" style="background-image: url('<?= $faragir->gender == 'خانم' ? url('../assets/img/mycourse/online-class-girl.jpg') : url('../assets/img/mycourse/online-class-boy.jpg') ?>');">
@@ -539,11 +549,23 @@ include_once '../temp.html';
                             </div>
                         </div>
                     </div>
-                </div>
-
-            </div>
-            <div class="row row-sm justify-content-center align-content-center">
-
+                    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                        <div class="card custom-card" style="background-image: url('<?= url('../assets/img/mycourse/exam-result.jpg') ?>');">
+                            <div class="card-header border-bottom-0 pb-0">
+                                <div>
+                                    <div class="d-flex"><label class="main-content-label my-auto pt-2">نمرات کلاسی</label></div>
+                                    <span class="d-block tx-12 mt-2 mb-0 text-muted">نمره‌های ثبت‌شده توسط استاد، به تفکیک درس و کلاس</span>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <?php if (!isset($_GET['demo'])): ?>
+                                    <a href="class-grades.php?code=<?php echo (int)$course->codecourse; ?>" class="btn btn-primary">مشاهده نمرات کلاسی</a>
+                                <?php else: ?>
+                                    <button class="btn btn-primary disabled">ویژه پایه ثبت‌نام‌شده</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <div class="card custom-card" style="background-image: url('<?= url('../assets/img/mycourse/videos.jpg') ?>');">
                         <div class="card-header  border-bottom-0 pb-0">
@@ -601,6 +623,7 @@ include_once '../temp.html';
 
             </div>
 
+            </div>
         </div>
     </div>
 </div>

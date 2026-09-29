@@ -3,380 +3,211 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
-if (CheckBlacklist_ip(GetIp())) {
-    include_once '../../blackList.html';
+
+// بررسی نشست ورود (ادمین یا کاربر)
+if (!isset($_SESSION['admin']) && !isset($_SESSION['user'])) {
+    header('location: ../login.php');
     exit;
 }
-if (!isset($_SESSION['admin'])) {
-    header('location: ../login.php');
-    die();
-}
-//Protecting against SESSION Hijaking
-if ($_SESSION['admin']['ip'] !== GetIp() and $_SESSION['admin']['os'] != GetOs()) {
-    session_unset();
-    header('location: ../login.php');
-    die();
-}
-//* Start Check Session JUST ONE Session
-$re = sessionAdmin($_SESSION['admin']['user']);
-if (session_id() != $re['session_id']) {
-    session_unset();
-    header('location: ' . url('admin/login.php'));
-    die();
-}
-//* End Check Session JUST ONE Session
-if (!Permision('permision_viewdocument')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-if (isset($_SESSION['call'])) {
-    $name = $_SESSION['call']['name'];
-    $call = 1;
-    unset($_SESSION['call']);
-}
-if (isset($_POST['txt']) and $_POST['txt'] != '') {
-    $category = $_POST['category'];
-    $txt = $_POST['txt'];
-    switch ($category) {
-        case '01':
-            $swr = 'SELECT * FROM documention INNER JOIN dblogin ON documention.username=dblogin.username WHERE documention.username =?';
-            $wer = $conn->prepare($swr);
-            $wer->execute([$txt]);
-            $recive = $wer->fetchAll(PDO::FETCH_OBJ);
-            break;
-        case '03':
-            $txt = '%' . $txt . '%';
-            $swr = 'SELECT * FROM documention INNER JOIN dbpersonal ON documention.username=dbpersonal.codemeli INNER JOIN dblogin ON documention.username=dblogin.username WHERE dbpersonal.fname LIKE :name ORDER BY id DESC ';
-            $wer = $conn->prepare($swr);
-            $wer->bindParam(':name', $txt, PDO::PARAM_STR);
-            $wer->execute();
-            $recive = $wer->fetchAll(PDO::FETCH_OBJ);
-            break;
-        case '02':
-            $txt = explode('/', $txt);
-            $txt = jalali_to_gregorian($txt[0], $txt[1], $txt[2]);
-            $txt = implode('-', $txt);
-            $swr = 'SELECT * FROM documention INNER JOIN dblogin ON documention.username=dblogin.username WHERE documention.datecreate =? ORDER BY id DESC';
-            $wer = $conn->prepare($swr);
-            $wer->execute([$txt]);
-            $recive = $wer->fetchAll(PDO::FETCH_OBJ);
-            break;
-        case '04':
-            $txt = '%' . $txt . '%';
-            $swr = 'SELECT * FROM documention INNER JOIN dbpersonal ON documention.username=dbpersonal.codemeli INNER JOIN dblogin ON documention.username=dblogin.username WHERE dbpersonal.lname LIKE :name ORDER BY id DESC ';
-            $wer = $conn->prepare($swr);
-            $wer->bindParam(':name', $txt, PDO::PARAM_STR);
-            $wer->execute();
-            $recive = $wer->fetchAll(PDO::FETCH_OBJ);
-            break;
 
-    }
+// استخراج دقیق نام کاربری متنی از سشن (برای جلوگیری از خطای Array to string conversion)
+if (isset($_SESSION['user'])) {
+    $current_user = is_array($_SESSION['user']) ? ($_SESSION['user']['username'] ?? $_SESSION['user']['user'] ?? '') : $_SESSION['user'];
+} else {
+    $current_user = is_array($_SESSION['admin']) ? ($_SESSION['admin']['user'] ?? $_SESSION['admin']['username'] ?? '') : $_SESSION['admin'];
 }
-if (isset($_GET['call']) and $_GET['call'] != '') {
-    $ret = retPerson($_GET['call']);
-    $tel = $ret->tel1;
-    $name = $ret->fname . ' ' . $ret->lname;
-    Call($tel, intval($_SESSION['admin']['dakheli']), $name);
-    $_SESSION['call'] = array(
-        "name" => $name
-    );
-    header('location: searchdoc.php');
-    die();
-}
-if (isset($_GET['view'])) {
-    $setview = 'UPDATE documention SET view=? WHERE id=?';
-    $qsell = $conn->prepare($setview);
-    $qsell->execute([1, $_GET['view']]);
-    header('location: searchdoc.php');
-    die();
-}
-if (isset($_GET['unview'])) {
-    $setview = 'UPDATE documention SET view=? WHERE id=?';
-    $qsell = $conn->prepare($setview);
-    $qsell->execute([0, $_GET['unview']]);
-    header('location: searchdoc.php');
-    die();
-}
-if(isset($_GET['del'])){
-    $scan='SELECT * FROM documention WHERE id=?';
-    $qscan=$conn->prepare($scan);
-    $qscan->execute([$_GET['del']]);
-    $rey=$qscan->fetch(PDO::FETCH_OBJ);
-    $url=explode(CURRENT_DOMAIN,$rey->url);
-    $src =  trim($url[1], '/');
-    unlink('../../'.$src);
 
-    $delsql='DELETE FROM documention WHERE id=?';
-    $del=$conn->prepare($delsql);
-    $del->execute([$_GET['del']]);
+$search_query = isset($_GET['q']) ? trim($_GET['q']) : '';
+$page_size = 5;
+$announcements_page = max(1, (int)($_GET['announcements_page'] ?? 1));
+$letters_page = max(1, (int)($_GET['letters_page'] ?? 1));
 
-    header('location: searchdoc.php');
-    die();
+// ۱. گزارش اطلاعیه‌ها و بخشنامه‌های ارسال شده از سامانهٔ اعلان‌ها
+try {
+    $sql = "SELECT n.*, CONCAT(COALESCE(a.fname,''), ' ', COALESCE(a.lname,'')) AS recipient_name
+        FROM school_notifications n LEFT JOIN dbadmin a ON a.username = n.recipient_username
+        WHERE n.actor_username = :author AND n.event_type IN ('announcement','circular')";
+    $params = ['author' => $current_user];
+    if ($search_query !== '') { $sql .= " AND (n.title LIKE :q OR n.body LIKE :q OR n.recipient_username LIKE :q)"; $params['q'] = '%' . $search_query . '%'; }
+    $stmt_ann = $conn->prepare($sql . " ORDER BY n.created_at DESC, n.id DESC");
+    $stmt_ann->execute($params);
+    $announcements_list = $stmt_ann->fetchAll(PDO::FETCH_OBJ) ?: [];
+} catch (PDOException $e) {
+    $announcements_list = [];
 }
+
+// ۲. گزارش نامه‌های خاص ارسال شده از همان جدول اعلان‌ها
+try {
+    $sql = "SELECT n.*, CONCAT(COALESCE(a.fname,''), ' ', COALESCE(a.lname,'')) AS recipient_name
+        FROM school_notifications n LEFT JOIN dbadmin a ON a.username = n.recipient_username
+        WHERE n.actor_username = :sender AND n.event_type = 'special_letter'";
+    $params = ['sender' => $current_user];
+    if ($search_query !== '') { $sql .= " AND (n.title LIKE :q OR n.body LIKE :q OR n.recipient_username LIKE :q)"; $params['q'] = '%' . $search_query . '%'; }
+    $stmt_spec = $conn->prepare($sql . " ORDER BY n.created_at DESC, n.id DESC");
+    $stmt_spec->execute($params);
+    $special_letters_list = $stmt_spec->fetchAll(PDO::FETCH_OBJ) ?: [];
+} catch (PDOException $e) {
+    $special_letters_list = [];
+}
+
+$announcements_total_pages = max(1, (int)ceil(count($announcements_list) / $page_size));
+$letters_total_pages = max(1, (int)ceil(count($special_letters_list) / $page_size));
+$announcements_page = min($announcements_page, $announcements_total_pages);
+$letters_page = min($letters_page, $letters_total_pages);
+$announcements_offset = ($announcements_page - 1) * $page_size;
+$letters_offset = ($letters_page - 1) * $page_size;
+$announcements_page_items = array_slice($announcements_list, $announcements_offset, $page_size);
+$letters_page_items = array_slice($special_letters_list, $letters_offset, $page_size);
+$pagination_query = $search_query !== '' ? '&q=' . urlencode($search_query) : '';
+
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <meta name="description" content="e">
-    <meta name="author" content="hamsepar.ir">
-    <!-- Title -->
-    <title>گزارش شارژحساب | <?php echo __TITLE ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>اسناد و مدارک ارسالی شما | <?php echo defined('__TITLE') ? __TITLE : 'پنل مدیریت'; ?></title>
     <?php include_once '../link.php'; ?>
 </head>
-
 <body class="main-body leftmenu">
-<!-- Loader -->
-<div id="global-loader">
-    <img src="<?php echo url('assets/img/media/loader.gif') ?>" class="loader-img" alt="درحال بارگذاری">
-</div>
-<!-- End Loader -->
-<!-- Page -->
 <div class="page">
-    <?php
-    include_once '../menu.php';
-    include_once '../header.php';
-
-    ?>
-
-
-    <!-- Main Content-->
+    <?php include_once '../menu.php'; include_once '../header.php'; ?>
+    
     <div class="main-content side-content pt-0">
         <div class="container-fluid">
             <div class="inner-body">
-                <div class="row row-sm">
-                    <?php if (isset($call) and $call === 1) { ?>
-                        <div class="alert alert-outline-success  text-center " role="alert">
-                            <div class="mg-t-10">
-                                <img style="width: 75px; height: 75px;"
-                                     src="../../assets/img/call1.gif">در حال برقراری ارتباط
-
-                                با <?php echo $name ?>
-
-                                <button aria-label="بستن" class="close" data-bs-dismiss="alert"
-                                        type="button">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-
-                        </div>
-                    <?php } ?>
-                    <div class="col-12">
+                
+                <!-- فرم جستجو -->
+                <div class="row row-sm mt-4">
+                    <div class="col-lg-12">
                         <div class="card custom-card">
                             <div class="card-body">
-                                <div class="col-10">
-                                    <div>
-                                        <h6 class="main-content-label mb-1 d-flex align-items-center" style="gap:10px;">
-
-                                            جستجوی مستندات
-
-                                            <span class="menu-info-trigger"
-                                                  data-tooltip="در این بخش می‌توانید مستندات و مدارک ثبت‌شده دانش آموزان را بر اساس اطلاعات مختلف جستجو و مشاهده کنید. این امکان به شما کمک می‌کند تا در کوتاه‌ترین زمان به مستندات مورد نظر دسترسی پیدا کرده و وضعیت آن‌ها را بررسی نمایید."
-                                                  aria-label="راهنمای جستجوی مستندات">
-                                                <i class="fe fe-info fs-4"></i>
-                                            </span>
-                                        </h6>
-                                        <p class="text-muted card-sub-title">یافتن اسناد الکترونیکی
-                                        </p>
+                                <h6 class="main-content-label mb-3">جستجو در اسناد ارسالی شما</h6>
+                                <form method="GET" action="" class="row g-3">
+                                    <div class="col-md-9">
+                                        <input type="text" name="q" class="form-control" placeholder="شماره نامه، عنوان یا موضوع را وارد کنید..." value="<?php echo htmlspecialchars($search_query); ?>">
                                     </div>
-                                </div>
-                                <form method="post" data-parsley-validate="">
-                                    <div class="main-header-center">
-
-                                        <div class="input-group">
-                                            <div class="input-group-btn search-panel">
-                                                <select class="form-control select2" name="category" required>
-                                                    <option label="دسته بندی ها">
-                                                    </option>
-                                                    <option value="01">
-                                                        کد ملی
-                                                    </option>
-                                                    <option value="02">
-                                                        تاریخ ایجاد
-                                                    </option>
-                                                    <option value="03">
-                                                        نام
-                                                    </option>
-                                                    <option value="04">
-                                                        نام خانوادگی
-                                                    </option>
-
-
-                                                </select>
-                                            </div>
-                                            <input type="text" name="txt" class="form-control"
-                                                   placeholder="عبارت برای جستجو..." required>
-                                            <button class="btn search-btn"><i class="fe fe-search"></i></button>
-                                        </div>
-                                        <div class="main-header-right">
-                                            <div class="dropdown header-search">
-                                                <button type="submit" name="search"
-                                                        class="nav-link icon header-search">
-                                                    <i class="fe fe-search header-icons"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fe fe-search me-2"></i> جستجو
+                                        </button>
                                     </div>
                                 </form>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- بخش دوگانه: نمایش سوابق ارسالی همکار جاری -->
+                <div class="row row-sm">
+                    
+                    <!-- باکس اول: اطلاعیه‌ها و بخشنامه‌ها -->
+                    <div class="col-xl-6 col-lg-12">
                         <div class="card custom-card">
                             <div class="card-body">
-                                <div class="table">
-                                    <table class="table text-nowrap text-md-nowrap table-bordered mg-b-0">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="main-content-label m-0">اطلاعیه‌ها و بخشنامه‌های ارسالی شما</h6>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap text-md-nowrap table-bordered mb-0">
                                         <thead>
-                                        <tr>
-                                            <th>اقدامات</th>
-                                            <th>کدملی</th>
-                                            <th>نام</th>
-                                            <th>دانلود</th>
-                                            <th>وضعیت</th>
-                                            <th>کاربری</th>
-                                            <th>تاریخ</th>
-                                        </tr>
+                                            <tr>
+                                                <th>عنوان</th>
+                                                <th>نوع</th>
+                                                <th>گیرنده</th>
+                                                <th>وضعیت</th>
+                                                <th>تاریخ</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        <?php
-                                        if (isset($recive)) {
-                                            if ($wer->rowCount() > 0) {
-
-                                                foreach ($recive as $ret) {
-                                                    ?>
+                                            <?php if (!empty($announcements_page_items)): ?>
+                                                <?php foreach ($announcements_page_items as $item): ?>
                                                     <tr>
-                                                        <td class="wd-15">
-                                                            <div class="text-wrap">
-                                                                <div class="text-center">
-                                                                    <div class="dropdown">
-                                                                        <button aria-expanded="false"
-                                                                                aria-haspopup="true"
-                                                                                class="btn ripple btn-outline-primary dropdown-toggle"
-                                                                                data-bs-toggle="dropdown" type="button">
-                                                                            اقدام <i
-                                                                                    class="fas fa-caret-down mr-1"></i>
-                                                                        </button>
-                                                                        <div class="dropdown-menu tx-8">
-                                                                            <?php
-                                                                            if ($ret->role == 1) {
-                                                                                ?>
-                                                                                <div class="dropdown-item "
-                                                                                     style="text-align: right"
-                                                                                     onclick="window.open('<?php echo url("admin/Student/viewProfile.php") ?>'+'?code='+'<?php echo $ret->username ?>','مشاهده اطلاعات'
-                                                                                             ,'width=600,height=800,menubar=0,toolbar=0,resizable=0,left=250,top=50,status=0,scrollbars=0,location=0' )">
-                                                                                    <i class="fe fe-eye"></i>
-                                                                                    مشاهده اطلاعات
-                                                                                </div>
-                                                                            <?php } else { ?>
-
-                                                                                <div class="dropdown-item "
-                                                                                     style="text-align: right"
-                                                                                     onclick="window.open('<?php echo url("admin/Collague/viewCollague.php") ?>'+'?code='+'<?php echo $ret->username ?>','مشاهده اطلاعات'
-                                                                                             ,'width=600,height=800,menubar=0,toolbar=0,resizable=0,left=250,top=50,status=0,scrollbars=0,location=0' )">
-                                                                                    <i class="fe fe-eye"></i>
-                                                                                    مشاهده اطلاعات
-                                                                                </div>
-                                                                            <?php }
-                                                                            if ($ret->meta != '') {
-                                                                                ?>
-                                                                                <div class="dropdown-item "
-                                                                                     style="text-align: right"
-                                                                                     onclick="window.open('<?php echo url("admin/Doc/meta.php") ?>'+'?id='+'<?php echo $ret->id ?>','مشاهده اطلاعات'
-                                                                                             ,'width=600,height=600,menubar=0,toolbar=0,resizable=0,left=250,top=50,status=0,scrollbars=0,location=0' )">
-                                                                                    <i class="fe fe-database"></i>
-                                                                                    توضیحات بیشتر
-                                                                                </div>
-                                                                            <?php }
-                                                                            if ($ret->view == 0) { ?>
-                                                                                <a class="dropdown-item  "
-                                                                                   href="?view=<?php echo $ret->id ?>">
-
-                                                                                    <i class="fe fe-eye"></i> دیدم
-                                                                                </>
-                                                                            <?php }else{ ?>
-                                                                                <a class="dropdown-item  "
-                                                                                   href="?unview=<?php echo $ret->id ?>"
-                                                                                >
-                                                                                    <i class="fe fe-eye-off"></i>         ندیدم
-                                                                                </a>
-                                                                            <?php } ?>
-                                                                            <a class="dropdown-item  "
-                                                                               href="?call=<?php echo $ret->username ?>"
-                                                                            ><i class="fe fe-phone-forwarded"></i>  تماس
-
-                                                                            </a>
-                                                                            <hr>
-                                                                            <a class="dropdown-item text-danger "
-                                                                               href="?del=<?php echo $ret->id ?>"
-                                                                            ><i class="fe fe-x"></i>  حذف
-                                                                            </a>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
+                                                        <td><?php echo htmlspecialchars($item->title ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                        <td>
+                                                            <span class="badge <?php echo $item->event_type === 'announcement' ? 'badge-success' : 'badge-primary'; ?>">
+                                                                <?php echo $item->event_type === 'announcement' ? 'اطلاعیه' : 'بخشنامه'; ?>
+                                                            </span>
                                                         </td>
-                                                        <td class="wd-15"><?php echo $ret->username ?></td>
-                                                        <?php
-                                                        $add = retPerson($ret->username);
-                                                        ?>
-                                                        <td><?php echo htmlentities($add->fname . ' ' . $add->lname) ?></td>
-                                                        <td class="wd-20">
-                                                            <a href="<?php echo $ret->url ?>" target="_blank"
-                                                               class="btn btn-sm ripple btn-light btn-icon">
-                                                                <i class="fe fe-download"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td class="wd-15">
-                                                            <?php if ($ret->view == 0) {
-                                                                echo '<span class=" badge badge-warning  "> مشاهده نشده</span>';
-                                                            } else {
-                                                                echo '<span class=" badge badge-info  "> مشاهده شده</span>';
-                                                            } ?>
-                                                        </td>
-                                                        <td class="wd-15">
-                                                            <?php if ($ret->role == 1) {
-                                                                echo 'دانش آموز';
-                                                            } else {
-                                                                echo 'همکار آموزشی';
-                                                            } ?>
-                                                        </td>
-                                                        <?php
-                                                        $dateno = $ret->datecreate;
-                                                        $dateno = explode('-', $dateno);
-                                                        $dateno = gregorian_to_jalali($dateno[0], $dateno[1], $dateno[2]);
-                                                        $dateno = implode('/', $dateno);
-                                                        ?>
-                                                        <td class="wd-20"><?php echo $dateno ?></td>
+                                                        <td><?php echo htmlspecialchars(trim(($item->recipient_name ?? '') . ' (' . ($item->recipient_username ?? '') . ')'), ENT_QUOTES, 'UTF-8'); ?></td>
+                                                        <td><?php echo $item->status === 'published' ? 'منتشر شده' : 'پیش‌نویس'; ?></td>
+                                                        <td><?php echo htmlspecialchars($item->created_at ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
                                                     </tr>
-                                                    <?php
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted">شما هنوز اطلاعیه یا بخشنامه‌ای ثبت نکرده‌اید.</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                            <nav class="mt-3" aria-label="صفحه‌بندی اطلاعیه‌ها"><ul class="pagination justify-content-center mb-0">
+                                                <li class="page-item <?= $announcements_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= max(1, $announcements_page - 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه قبل"><i class="fe fe-chevron-right" aria-hidden="true"></i> قبلی</a></li>
+                                                <?php for ($page = 1; $page <= $announcements_total_pages; $page++): ?>
+                                                    <li class="page-item <?= $page === $announcements_page ? 'active' : '' ?>"><a class="page-link" href="?announcements_page=<?= $page ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>"><?= $page ?></a></li>
+                                                <?php endfor; ?>
+                                                <li class="page-item <?= $announcements_page >= $announcements_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= min($announcements_total_pages, $announcements_page + 1) ?>&letters_page=<?= $letters_page ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی <i class="fe fe-chevron-left" aria-hidden="true"></i></a></li>
+                                            </ul></nav>
 
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- باکس دوم: نامه‌های خاص -->
+                    <div class="col-xl-6 col-lg-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="main-content-label m-0">نامه‌های خاص ارسالی شما</h6>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap text-md-nowrap table-bordered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>موضوع</th>
+                                                <th>گیرنده</th>
+                                                <th>اولویت</th>
+                                                <th>تاریخ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($letters_page_items)): ?>
+                                                <?php foreach ($letters_page_items as $letter): ?>
+                                                    <tr>
+                                                        <td><?php echo htmlspecialchars($letter->title ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                        <td><?php echo htmlspecialchars(trim(($letter->recipient_name ?? '') . ' (' . ($letter->recipient_username ?? '') . ')'), ENT_QUOTES, 'UTF-8'); ?></td>
+                                                        <td><?php echo htmlspecialchars($letter->priority ?? 'عادی', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                        <td><?php echo htmlspecialchars($letter->created_at ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">شما هنوز نامه خاصی ثبت نکرده‌اید.</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                            <nav class="mt-3" aria-label="صفحه‌بندی نامه‌های خاص"><ul class="pagination justify-content-center mb-0">
+                                                <li class="page-item <?= $letters_page <= 1 ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= max(1, $letters_page - 1) ?><?= $pagination_query ?>" aria-label="صفحه قبل"><i class="fe fe-chevron-right" aria-hidden="true"></i> قبلی</a></li>
+                                                <?php for ($page = 1; $page <= $letters_total_pages; $page++): ?>
+                                                    <li class="page-item <?= $page === $letters_page ? 'active' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= $page ?><?= $pagination_query ?>"><?= $page ?></a></li>
+                                                <?php endfor; ?>
+                                                <li class="page-item <?= $letters_page >= $letters_total_pages ? 'disabled' : '' ?>"><a class="page-link" href="?announcements_page=<?= $announcements_page ?>&letters_page=<?= min($letters_total_pages, $letters_page + 1) ?><?= $pagination_query ?>" aria-label="صفحه بعد">بعدی <i class="fe fe-chevron-left" aria-hidden="true"></i></a></li>
+                                            </ul></nav>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
         </div>
     </div>
-    <!-- End Row -->
-
-
-    <!-- Main Footer-->
     <?php include '../../footers.php'; ?>
-    <!--End Footer-->
-
-
+</div>
 </body>
 </html>
-
