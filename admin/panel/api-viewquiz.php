@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_GET['user'])) {
     echo '<strong>404</strong>';
     echo '<script>window.close() </script>';

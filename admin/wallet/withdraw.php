@@ -25,11 +25,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewwallet')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    die();
-}
 if (!isset($_GET['userId'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

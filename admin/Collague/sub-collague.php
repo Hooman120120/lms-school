@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_SESSION['massage'])) {
     $massage = $_SESSION['massage'];
     unset($_SESSION['massage']);
@@ -88,6 +84,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['activeall'])) {
+    AdminRequire('referrers.sub.manage');
     if ($_GET['activeall'] != '') {
         $select = 'SELECT codemeli FROM dbpersonal WHERE useradder=?';
         $query = $conn->prepare($select);
@@ -104,6 +101,7 @@ if (isset($_GET['activeall'])) {
     }
 }
 if (isset($_GET['refact'])) {
+    AdminRequire('referrers.sub.manage');
     if ($_GET['refact'] != '') {
         $select = 'SELECT codemeli FROM dbpersonal WHERE useradder=?';
         $query = $conn->prepare($select);
@@ -125,6 +123,7 @@ if (isset($_GET['refact'])) {
     }
 }
 if (isset($_GET['delcollague'])) {
+    AdminRequire('referrers.sub.manage');
     if ($_GET['delcollague'] != '') {
         if (totalWallet($_GET['delcollague']) == 0) {
             $select = 'SELECT codemeli FROM dbpersonal WHERE useradder=?';
@@ -168,6 +167,7 @@ if (isset($_GET['delcollague'])) {
     }
 }
 if (isset($_GET['unactive']) and $_GET['unactive'] != '') {
+    AdminRequire('referrers.sub.manage');
     $unactive='UPDATE dblogin SET activity=? WHERE username=?';
     $exc=$conn->prepare($unactive);
     $exc->execute([0,$_GET['unactive']]);
@@ -175,6 +175,7 @@ if (isset($_GET['unactive']) and $_GET['unactive'] != '') {
     header('location: sub-collague.php');
 }
 if (isset($_GET['activate']) and $_GET['activate'] != '') {
+    AdminRequire('referrers.sub.manage');
     $unactive='UPDATE dblogin SET activity=? WHERE username=?';
     $exc=$conn->prepare($unactive);
     $exc->execute([1,$_GET['activate']]);

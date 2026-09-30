@@ -27,11 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.unpaid')
-    : !Permision('permision_notpay')) {
-    http_response_code(403); exit('مجوز مدیریت پرداخت‌های ناموفق برای شما تعریف نشده است.');
-}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -51,22 +46,17 @@ $username = $_SESSION['admin']['user'];
 $canViewAll = false;
 
 try {
-    $stmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $stmt->execute(['username' => $username]);
-    $perm = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($perm && (int)$perm['installment_permission'] === 1) {
+    if (AdminScope('finance.unpaid') === 'all') {
         $canViewAll = true;
     }
 } catch (PDOException $e) {
     error_log("Permission check failed: " . $e->getMessage());
 }
-$factorScope = AdminRecordVisibility('finance.unpaid', $canViewAll);
+$factorScope = AdminScope('finance.unpaid');
 if ($factorScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای پرداخت‌نشده برای شما فعال نشده است.');
 }
-$canCreateInstallment = !AdminHasAnyCurrentTreePermission()
-    || AdminHasMenuPermission('finance.unpaid.installment-create');
+$canCreateInstallment = AdminCan('finance.unpaid.installment-create');
 
 
 if (isset($_GET['call']) and $_GET['call'] != '') {
@@ -101,6 +91,7 @@ if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
     die();
 }
 if (isset($_GET['unverify'])) {
+    AdminRequire('finance.unpaid.unverify');
     $factorId = intval($_GET['unverify']);
     $factor = queryFactor($factorId);
     if ($factor->status != 'موفق') {
@@ -142,6 +133,7 @@ if (isset($_GET['unverify'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_payment'])) {
+    AdminRequire('finance.unpaid.installment-create');
     try {
         if (!$canCreateInstallment) throw new Exception('مجوز ایجاد قسط برای فاکتور پرداخت‌نشده فعال نشده است.');
         $codemeli = trim($_POST['codemeli']);
@@ -159,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_payment'])) {
         if ($idfactor <= 0) {
             throw new Exception("شناسه فاکتور نامعتبر است.");
         }
-        if (!AdminCanAccessFinanceFactor($idfactor, 'finance.unpaid', $canViewAll)) {
+        if (!AdminCanAccessFinanceFactor($idfactor, 'finance.unpaid')) {
             throw new Exception('شما به این فاکتور دسترسی ندارید.');
         }
 
@@ -232,7 +224,7 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_notpay')) {
+                if (AdminCanSee('finance.unpaid')) {
 
                     if (isset($_SESSION['payment_message'])) {
                         echo $_SESSION['payment_message'];
@@ -397,7 +389,7 @@ include_once '../../temp.html';
                                                                                 با
                                                                                 صادرکننده
                                                                             </a>
-                                                                            <?php if (!empty($res->payment_id) && (AdminHasAnyCurrentTreePermission() ? AdminHasMenuNavigationPermission('finance.installments') : true)): ?>
+                                                                            <?php if (!empty($res->payment_id) && AdminCanSee('finance.installments')): ?>
                                                                                 <a class="dropdown-item text-primary" href="<?php echo url('admin/Bill/paymentinstallments.php?id=' . $res->payment_id) ?>">
                                                                                     <i class="fe fe-eye"></i> مشاهده اقساط
                                                                                 </a>

@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewemploy')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 
 $rolesStmt = $conn->query('
     SELECT r.id, r.role_key, r.title, COUNT(a.idadmin) AS staff_count
@@ -66,6 +62,12 @@ $activeFilterSuffix = $showAllDeputies
     : ($selectedRole > 0 ? '&role=' . $selectedRole : '');
 
 if (isset($_GET['disable'])) {
+    AdminRequire('staff.manage.toggle');
+    $disableTarget = retAdmin((string)$_GET['disable']);
+    if ($disableTarget && AdminHoldsEverything((string)$disableTarget->username) && !AdminHoldsEverything()) {
+        http_response_code(403);
+        exit('فقط مدیر می‌تواند حساب مدیر را غیرفعال کند.');
+    }
     if($_GET['disable']!=$_SESSION['admin']['user']) {
         $sql = 'UPDATE dbadmin SET adminactive =? WHERE username=?';
         $query = $conn->prepare($sql);
@@ -75,6 +77,7 @@ if (isset($_GET['disable'])) {
     }
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('staff.manage.toggle');
     $sql = 'UPDATE dbadmin SET adminactive =? WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([1, $_GET['enable']]);
@@ -281,7 +284,7 @@ include_once '../../temp.html';
                                                             <span class="badge badge-warning-light">تعیین‌نشده</span>
                                                         <?php } ?>
                                                     </td>
-                                                    <td class="wd-15"><?php if(PermisionUser('permision_suporter',$res->username) ){echo '   <span class="badge badge-success-light">می باشد</span> ';} else{echo '  <span class="badge badge-warning-light">نیست</span> ';} ?></td>
+                                                    <td class="wd-15"><?php if(AdminCan('support.desk', (string)$res->username) ){echo '   <span class="badge badge-success-light">می باشد</span> ';} else{echo '  <span class="badge badge-warning-light">نیست</span> ';} ?></td>
                                                     <td class="wd-15"><?php echo $res->dakheli ?></td>
                                                     <td class="wd-20">
                                                         <?php if ($res->adminactive == 1) { ?>

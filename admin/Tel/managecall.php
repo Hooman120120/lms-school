@@ -25,26 +25,30 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!AdminCanUsePermissionScope('public-relations.safe-call.manage', ['permision_managecall'])) {
+if (!AdminCanSee('public-relations.safe-call.manage')) {
     header('location: ' . url('admin/index.php'));
     die();
 }
-$canCallLists = AdminCanUsePermissionScope('public-relations.safe-call.manage.status-lists', ['permision_managecall']);
-$canManageGroups = AdminCanUsePermissionScope('public-relations.safe-call.manage.groups', ['permision_addcall']);
-$canTotalStatistics = AdminCanUsePermissionScope('public-relations.safe-call.manage.total-statistics', ['permision_managecall']);
-$canOperatorStatistics = AdminCanUsePermissionScope('public-relations.safe-call.manage.operator-statistics', ['permision_managecall']);
-$canPhoneSearch = AdminCanUsePermissionScope('public-relations.safe-call.manage.phone-search', ['permision_managecall']);
+$canCallLists = AdminCanSee('public-relations.safe-call.manage.status-lists');
+$canManageGroups = AdminCanSee('public-relations.safe-call.manage.groups');
+$canTotalStatistics = AdminCanSee('public-relations.safe-call.manage.total-statistics');
+$canOperatorStatistics = AdminCanSee('public-relations.safe-call.manage.operator-statistics');
+$canPhoneSearch = AdminCanSee('public-relations.safe-call.manage.phone-search');
+// Calling a number from a list needs that list; from the phone search, the search.
+$callListCodes = ['uncall' => 'uncalled', 'unresponsecall' => 'unanswered', 'callfinish' => 'finished',
+    'duplicatecall' => 'duplicate', 'begincall' => 'callback', 'wrongcall' => 'wrong', 'anytelcall' => 'all'];
 foreach (array_keys($_GET) as $queryKey) {
-    if (preg_match('/^(?:uncall|unresponsecall|callfinish|duplicatecall|begincall|wrongcall|anytelcall|call)-(?:mob|static)/', (string)$queryKey)
-        && !$canCallLists) { http_response_code(403); exit('مجوز این فهرست تماس را ندارید.'); }
+    if (!preg_match('/^(uncall|unresponsecall|callfinish|duplicatecall|begincall|wrongcall|anytelcall|call)-(?:mob|static)/', (string)$queryKey, $callKind)) continue;
+    AdminRequire($callKind[1] === 'call' ? 'public-relations.safe-call.manage.phone-search'
+        : 'public-relations.safe-call.manage.status-lists.' . $callListCodes[$callKind[1]]);
 }
-if (isset($_POST['save']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.create', ['permision_addcall'])) {
+if (isset($_POST['save']) && !AdminCanSee('public-relations.safe-call.manage.groups.create')) {
     http_response_code(403); exit('مجوز ایجاد گروه تماس ندارید.');
 }
-if (isset($_POST['save-update']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.edit', ['permision_addcall'])) {
+if (isset($_POST['save-update']) && !AdminCanSee('public-relations.safe-call.manage.groups.edit')) {
     http_response_code(403); exit('مجوز ویرایش گروه تماس ندارید.');
 }
-if (isset($_POST['add-number']) && !AdminCanUsePermissionScope('public-relations.safe-call.manage.import', ['permision_addcall'])) {
+if (isset($_POST['add-number']) && !AdminCanSee('public-relations.safe-call.manage.import')) {
     http_response_code(403); exit('مجوز ورود فایل مخاطبان ندارید.');
 }
 
@@ -96,10 +100,7 @@ try {
 }
 
 
-$isAdministrator='';
-if (Permision('administrator')) {
-    $isAdministrator =1;
-}
+$isAdministrator = AdminCan('public-relations.safe-call.manage.status-lists.all-operators') ? 1 : '';
 
 if (isset($_POST['txt']) and $_POST['txt'] != '') {
     if (!$canPhoneSearch) { http_response_code(403); exit('مجوز جست‌وجوی تلفن ندارید.'); }
@@ -122,7 +123,7 @@ if (isset($_POST['txt']) and $_POST['txt'] != '') {
     }
 }
 if(isset($_GET['delgroup'])){
-    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.total-statistics.delete', ['permision_managecall'])) { http_response_code(403); exit('مجوز حذف گزارش گروه ندارید.'); }
+    if (!AdminCanSee('public-relations.safe-call.manage.total-statistics.delete')) { http_response_code(403); exit('مجوز حذف گزارش گروه ندارید.'); }
     $id=intval($_GET['delgroup']);
     $desql='DELETE FROM tel_db WHERE `group`=?';
     $qsel=$conn->prepare($desql);
@@ -130,7 +131,7 @@ if(isset($_GET['delgroup'])){
     header('location: managecall.php');
 }
 if(isset($_GET['deluser'])){
-    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.contacts.delete', ['permision_managecall'])) { http_response_code(403); exit('مجوز حذف مخاطب ندارید.'); }
+    if (!AdminCanSee('public-relations.safe-call.manage.contacts.delete')) { http_response_code(403); exit('مجوز حذف مخاطب ندارید.'); }
     $id=intval($_GET['deluser']);
     $desql='DELETE FROM tel_db WHERE `id`=?';
     $qsel=$conn->prepare($desql);
@@ -253,12 +254,12 @@ if (isset($_POST['save'])) {
     }
 }
 if (isset($_GET['del'])) {
-    if (!AdminCanUsePermissionScope('public-relations.safe-call.manage.groups.delete', ['permision_addcall'])) { http_response_code(403); exit('مجوز حذف گروه تماس ندارید.'); }
+    if (!AdminCanSee('public-relations.safe-call.manage.groups.delete')) { http_response_code(403); exit('مجوز حذف گروه تماس ندارید.'); }
     $id = intval($_GET['del']);
     $del = 'DELETE FROM tel_group WHERE id=?';
     $qdel = $conn->prepare($del);
     $qdel->execute([$id]);
-    header('location: add-group.php');
+    header('location: managecall.php');
     die();
 }
 if (isset($_POST['save-update'])) {
@@ -267,7 +268,7 @@ if (isset($_POST['save-update'])) {
         $upd='UPDATE tel_group SET namegroup=? WHERE id=?';
         $actupd=$conn->prepare($upd);
         $actupd->execute([$_POST['namegroup'],$code]);
-        header('location: add-group.php');
+        header('location: managecall.php');
         die();
     }
 }
@@ -1131,6 +1132,7 @@ if (isset($_POST['add-number'])) {
         } else {
 
             if (isset($_POST['delete-old'])) {
+                AdminRequire('public-relations.safe-call.manage.import.replace');
                 $dele = 'DELETE FROM tel_db WHERE `group`=?';
                 $act = $conn->prepare($dele);
                 $act->execute([$group]);
@@ -1223,19 +1225,20 @@ include_once '../../temp.html';
                                 class="form-select"
                                 onchange="Choose_operation(this.value)">
                             <option value=""> لطفاً نوع لیست تماس را انتخاب کنید </option>
-                            <option value="uncall">تماس‌های گرفته نشده</option>
-                            <option value="unresponse">عدم پاسخ</option>
-                            <option value="callfinish">تماس های خاتمه یافته</option>
-                            <option value="duplicatecall">مخاطبین تکراری</option>
-                            <option value="begincall">نیاز به تماس مجدد</option>
-                            <option value="wrongcall">شماره های اشتباه</option>
-                            <option value="anytelcall">همه مخاطبین من</option>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.uncalled')): ?><option value="uncall">تماس‌های گرفته نشده</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.unanswered')): ?><option value="unresponse">عدم پاسخ</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.finished')): ?><option value="callfinish">تماس های خاتمه یافته</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.duplicate')): ?><option value="duplicatecall">مخاطبین تکراری</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.callback')): ?><option value="begincall">نیاز به تماس مجدد</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.wrong')): ?><option value="wrongcall">شماره های اشتباه</option><?php endif; ?>
+                            <?php if (AdminCan('public-relations.safe-call.manage.status-lists.all')): ?><option value="anytelcall">همه مخاطبین من</option><?php endif; ?>
                         </select>
                     </div>
 
                     <!-- ===========================
                          uncallSection - تماس های گرفته نشده
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.uncalled')): ?>
                     <div id="uncallSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -1493,10 +1496,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          unresponseSection - تماس های عدم پاسخ
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.unanswered')): ?>
                     <div id="unresponseSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -1752,10 +1757,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          call-finishSection - تماس های خاتمه یافته
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.finished')): ?>
                     <div id="call-finishSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -2012,10 +2019,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          duplicatecallSection - مخاطبین تکراری (act=4)
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.duplicate')): ?>
                     <div id="duplicatecallSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -2269,10 +2278,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          beginSection - نیاز به تماس مجدد (act=1)
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.callback')): ?>
                     <div id="beginSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -2561,10 +2572,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          wrongSection - شماره های اشتباه (act=3)
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.wrong')): ?>
                     <div id="wrongSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -2819,10 +2832,12 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- ===========================
                          anytelSection - همه مخاطبین من
                     ============================ -->
+                    <?php if (AdminCan('public-relations.safe-call.manage.status-lists.all')): ?>
                     <div id="anytelSection" style="display: none;"><!-- hidden by default -->
                         <div class="card-body">
                             <div class="row">
@@ -3103,6 +3118,7 @@ include_once '../../temp.html';
                             </section>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                 </div>
 

@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 $schoolRoleKey = SchoolStaffRoleKey((string)$_SESSION['admin']['user']);
-if (!Permision('permision_viewalert') && !in_array($schoolRoleKey, ['manager', 'general_deputy'], true)) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_POST['save_rule'])) {
+    AdminRequire(AdminNotificationCode('information.rules.manage'));
     $id = $_POST['id'] ?? null;
     $rule_name = trim($_POST['rule_name']);
     $description = trim($_POST['description']);
@@ -67,6 +64,7 @@ if (isset($_POST['save_rule'])) {
 
 
 if (isset($_GET['delete'])) {
+    AdminRequire(AdminNotificationCode('information.rules.manage'));
     $id = (int)$_GET['delete'];
     $conn->prepare("UPDATE notification_rules SET active = 0 WHERE id=?")->execute([$id]);
     $_SESSION['message'] = "⚠️ قانون غیرفعال شد.";
@@ -77,6 +75,7 @@ if (isset($_GET['delete'])) {
 
 
 if (isset($_GET['toggle'])) {
+    AdminRequire(AdminNotificationCode('information.rules.manage'));
     $id = (int)$_GET['toggle'];
 
     // Get current status
@@ -100,6 +99,7 @@ if (isset($_GET['toggle'])) {
 
 
 if (isset($_POST['delete_rule']) && isset($_POST['delete_id'])) {
+    AdminRequire(AdminNotificationCode('information.rules.manage'));
     $deleteId = (int)$_POST['delete_id'];
     $stmt = $conn->prepare("DELETE FROM notification_rules WHERE id = ?");
     $stmt->execute([$deleteId]);

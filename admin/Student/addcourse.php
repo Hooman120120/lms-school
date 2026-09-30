@@ -27,11 +27,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-$canBulkEnrol = AdminCanUsePermissionScope('students.definitive.enrolment.bulk', ['permision_addcourse_student', 'excel_permission']);
+$canBulkEnrol = AdminCan('students.definitive.enrolment.bulk');
 if (!$canBulkEnrol && (isset($_POST['confirm_invoice']) || isset($_POST['course_signup']))) {
     http_response_code(403);
     exit('مجوز ثبت گروهی پایه یا دوره برای شما فعال نشده است.');

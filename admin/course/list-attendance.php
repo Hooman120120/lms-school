@@ -76,7 +76,7 @@ include_once '../../temp.html';
             <div class="row row-sm" >
                 <div class="col-lg-12" >
                     <?php $general = rettblattendance($ids); ?>
-                    <?php   if (Permision('permision_viewcourse') or ($adminrole==3)) { ?>
+                    <?php   if (AdminCan('courses.main.active.classes.attendance.manage')) { ?>
                     <div class="card custom-card">  <!-- for manager -->
                         <div class="card-body">
                             <div class="row">
@@ -188,7 +188,7 @@ include_once '../../temp.html';
                     </div>
                     <?php } ?>
 
-                    <?php   if (!Permision('permision_viewcourse') && $adminrole !=3) { ?>
+                    <?php   if (!AdminCan('courses.main.active.classes.attendance.manage')) { ?>
                     <div class="card custom-card" >  <!-- for supporter (operator) -->
                         <div class="card-body" >
                             <div class="row">

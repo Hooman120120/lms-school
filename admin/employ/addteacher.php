@@ -25,25 +25,61 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewemploy')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
+
+AdminRequire(!empty($_GET['edit']) ? 'staff.teachers.edit' : 'staff.teacher-create');
 
 $teacherSchoolRoleStmt = $conn->prepare("SELECT id FROM school_admin_roles WHERE role_key = 'teacher' LIMIT 1");
 $teacherSchoolRoleStmt->execute();
 $teacherSchoolRoleId = (int)($teacherSchoolRoleStmt->fetchColumn() ?: 8);
 
 $teacherPermissionItems = [
-    ['teacher_perm_courses', 'مشاهده پایه‌ها و کلاس‌های تخصیص‌یافته', m('perm.teacher_courses_desc')],
-    ['teacher_perm_students', 'مشاهده دانش‌آموزان کلاس', m('perm.teacher_students_desc')],
-    ['teacher_perm_attendance', 'ثبت جلسات، حضوروغیاب و نمرات', m('perm.teacher_attendance_desc')],
-    ['teacher_perm_homework', 'مدیریت تکالیف کلاس', 'اجازه ایجاد، ویرایش، حذف و بررسی پاسخ‌های تکلیف در کلاس‌های تخصیص‌یافته را می‌دهد.'],
-    ['teacher_perm_content', 'سرفصل، فیلم و جزوه کلاس', m('perm.teacher_content_desc')],
-    ['teacher_perm_messages', 'پیام‌ها و پیگیری‌های آموزشی', 'امکان مشاهده و ارسال پیام، فایل و گزارش آموزشی به مدیریت یا مسئول پیگیری را می‌دهد.'],
+    ['teacher_switch_courses', 'مشاهده پایه‌ها و کلاس‌های تخصیص‌یافته', m('perm.teacher_courses_desc')],
+    ['teacher_switch_students', 'مشاهده دانش‌آموزان کلاس', m('perm.teacher_students_desc')],
+    ['teacher_switch_attendance', 'ثبت جلسات، حضوروغیاب و نمرات', m('perm.teacher_attendance_desc')],
+    ['teacher_switch_homework', 'مدیریت تکالیف کلاس', 'اجازه ایجاد، ویرایش، حذف و بررسی پاسخ‌های تکلیف در کلاس‌های تخصیص‌یافته را می‌دهد.'],
+    ['teacher_switch_content', 'سرفصل، فیلم و جزوه کلاس', m('perm.teacher_content_desc')],
+    ['teacher_switch_messages', 'پیام‌ها و پیگیری‌های آموزشی', 'امکان مشاهده و ارسال پیام، فایل و گزارش آموزشی به مدیریت یا مسئول پیگیری را می‌دهد.'],
 ];
 $documentUploadErrors = $_SESSION['admin_document_flash_errors'] ?? [];
 unset($_SESSION['admin_document_flash_errors']);
+
+/*
+ * Each switch of the teacher form stands for these nodes of the permission
+ * tree. Every teacher also gets TEACHER_BASE_PERMISSIONS (dashboard boards and
+ * the academic calendar).
+ */
+const TEACHER_SWITCH_PERMISSIONS = [
+    'teacher_switch_courses' => ['courses.main.active.classes.detail', 'courses.main.active.classes.lesson-plans'],
+    'teacher_switch_students' => ['courses.main.active.classes.students.assign', 'courses.main.active.classes.students.import',
+        'courses.main.active.classes.students.remove', 'students.record.class-profile'],
+    'teacher_switch_attendance' => ['courses.main.active.classes.attendance.manage', 'courses.main.active.classes.register'],
+    'teacher_switch_homework' => ['courses.main.active.classes.homeworks'],
+    'teacher_switch_content' => ['courses.main.active.content.dars.edit', 'courses.main.active.content.lessons',
+        'courses.main.active.content.sub-chapters', 'courses.main.active.content.teacher-upload'],
+    'teacher_switch_messages' => ['courses.main.active.classes.students.tickets', 'notifications.operator.teachers'],
+    'teacher_switch_online_class' => ['courses.main.active.online-class'],
+];
+const TEACHER_BASE_PERMISSIONS = ['dashboard.notice-board', 'dashboard.news-board', 'dashboard.calendar',
+    'executive.academic-calendar', 'executive.day-info'];
+
+/** The tree grants of the ticked switches. */
+function teacherPermissionCodes(array $switches): array
+{
+    $codes = TEACHER_BASE_PERMISSIONS;
+    foreach ($switches as $switch => $on) {
+        if ($on && isset(TEACHER_SWITCH_PERMISSIONS[$switch])) $codes = array_merge($codes, TEACHER_SWITCH_PERMISSIONS[$switch]);
+    }
+    return array_values(array_unique($codes));
+}
+
+/** A switch shows ticked when the teacher holds every node it stands for. */
+function teacherHasSwitch(string $username, string $switch): bool
+{
+    foreach (TEACHER_SWITCH_PERMISSIONS[$switch] ?? [] as $code) {
+        if (!AdminCan($code, $username)) return false;
+    }
+    return true;
+}
 
 function collectTeacherPermissions(array $items): array
 {
@@ -51,7 +87,7 @@ function collectTeacherPermissions(array $items): array
     foreach ($items as $item) {
         $values[$item[0]] = isset($_POST[$item[0]]) ? 1 : 0;
     }
-    $values['teacher_perm_online_class'] = 0;
+    $values['teacher_switch_online_class'] = 0;
     return $values;
 }
 
@@ -60,7 +96,7 @@ function renderTeacherPermissions(array $items, $teacher = null): void
     $isEdit = is_object($teacher);
     foreach ($items as $item) {
         [$name, $label, $help] = $item;
-        $checked = $isEdit ? (int)($teacher->{$name} ?? 0) === 1 : true;
+        $checked = $isEdit ? teacherHasSwitch((string)$teacher->username, $name) : true;
         ?>
         <div class="teacher-permission-option">
             <label class="mb-0">
@@ -104,6 +140,7 @@ function renderTeacherGroupSelector(array $selectedIds = [], string $id = 'teach
 
 // مدیریت گروه‌های آموزشی؛ همان مجوز مدیریت حساب معلمان و توکن فرم الزامی است.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['group_action'])) {
+    AdminRequire('staff.teachers.group-action');
     $postedToken = (string)($_POST['token'] ?? '');
     $sessionToken = (string)($_SESSION['token'] ?? '');
     if ($sessionToken === '' || !hash_equals($sessionToken, $postedToken)) {
@@ -147,9 +184,10 @@ if (isset($_POST['esave'])) {
         $adminrole = 3;
         $schoolRoleId = $teacherSchoolRoleId;
 
-        $uptv = 'UPDATE dbadmin SET password=?, fname=?, lname=?, adminactive=?, mobile=?, adminpic=?, gender=?, per_skyroom=?, adminrole=?, school_role_id=?, teacher_perm_courses=?, teacher_perm_online_class=?, teacher_perm_students=?, teacher_perm_attendance=?, teacher_perm_homework=?, teacher_perm_content=?, teacher_perm_messages=? WHERE username=? AND adminrole=3';
+        $uptv = 'UPDATE dbadmin SET password=?, fname=?, lname=?, adminactive=?, mobile=?, adminpic=?, gender=?, per_skyroom=?, adminrole=?, school_role_id=? WHERE username=? AND adminrole=3';
         $exup = $conn->prepare($uptv);
-        $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $adminrole, $schoolRoleId, $teacherPermissions['teacher_perm_courses'], $teacherPermissions['teacher_perm_online_class'], $teacherPermissions['teacher_perm_students'], $teacherPermissions['teacher_perm_attendance'], $teacherPermissions['teacher_perm_homework'], $teacherPermissions['teacher_perm_content'], $teacherPermissions['teacher_perm_messages'], $_GET['edit']]);
+        $exup->execute([$password, $name, $famili, $activate, $mob, $pic, $gender, $skyroom, $adminrole, $schoolRoleId, $_GET['edit']]);
+        SyncAdminPermissionGrants((string)$_GET['edit'], AdminGrantableCodes(teacherPermissionCodes($teacherPermissions), (string)$_GET['edit']));
         $editedTeacher = retAdmin((string)$_GET['edit']);
         if ($editedTeacher && !empty($editedTeacher->idadmin)) {
             setTeacherGroupsForAdmin((int)$editedTeacher->idadmin, $_POST['teacher_groups'] ?? []);
@@ -183,12 +221,13 @@ if (isset($_POST['save'])) {
                 $schoolRoleId = $teacherSchoolRoleId;
 
                 hf_control_require_seat($conn, hf_control_admin_id($username), 'teacher');
-                $addmin = 'INSERT INTO dbadmin (username, password, fname, lname, adminactive, mobile, dakheli, adminpic, gender, per_skyroom, adminrole, school_role_id, teacher_perm_courses, teacher_perm_online_class, teacher_perm_students, teacher_perm_attendance, teacher_perm_homework, teacher_perm_content, teacher_perm_messages)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                $addmin = 'INSERT INTO dbadmin (username, password, fname, lname, adminactive, mobile, dakheli, adminpic, gender, per_skyroom, adminrole, school_role_id)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
                 $ins = $conn->prepare($addmin);
-                $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $adminrole, $schoolRoleId, $teacherPermissions['teacher_perm_courses'], $teacherPermissions['teacher_perm_online_class'], $teacherPermissions['teacher_perm_students'], $teacherPermissions['teacher_perm_attendance'], $teacherPermissions['teacher_perm_homework'], $teacherPermissions['teacher_perm_content'], $teacherPermissions['teacher_perm_messages']]);
+                $ins->execute([$username, $password, $name, $famili, $activate, $mob, $dakheli, $pic, $gender, $skyroom, $adminrole, $schoolRoleId]);
                 setTeacherGroupsForAdmin((int)$conn->lastInsertId(), $_POST['teacher_groups'] ?? []);
 
+                SyncAdminPermissionGrants($username, AdminGrantableCodes(teacherPermissionCodes($teacherPermissions), $username));
                 $documentUploadErrors = SaveAdminDocumentUploads($username);
                 if ($documentUploadErrors) {
                     $_SESSION['admin_document_flash_errors'] = $documentUploadErrors;

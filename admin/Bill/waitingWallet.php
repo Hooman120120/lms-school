@@ -30,9 +30,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_actwallet')) {
-    http_response_code(403); exit('مجوز بررسی کیف پول برای شما تعریف نشده است.');
-}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -50,6 +47,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
+    AdminRequire('finance.wallet.unverify');
     if (CheckOrderNotSuccess($_GET['unverify'])) {
         date_default_timezone_set("Iran");
         $datenow = date("Y-m-d");
@@ -103,7 +101,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_actwallet')) { ?>
+                if (AdminCanSee('finance.wallet')) { ?>
 
 
                     <!-- Row -->

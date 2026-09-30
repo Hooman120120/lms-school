@@ -27,10 +27,7 @@ if (session_id() != $re['session_id']) {
 $check = $conn->query("SELECT CURDATE() AS today")->fetch(PDO::FETCH_ASSOC);
 $users = [];
 $isadmin = 0;
-if ($_SESSION['admin']['adminrole'] == 53 or $_SESSION['admin']['adminrole'] == 0 or $_SESSION['admin']['adminrole'] == 52 or $_SESSION['admin']['adminrole'] == 51) {
-    $isadmin = 1;
-}
-$recordVisibility = AdminRecordVisibility('dashboard.summary.overview.desktop.page-8477ff94be', $isadmin === 1);
+$recordVisibility = AdminScope('dashboard.reports.resell');
 if ($recordVisibility === null) {
     http_response_code(403);
     exit('دسترسی به پیگیری فروش تعریف نشده است.');
@@ -64,6 +61,7 @@ if ($isadmin) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
+    AdminRequire('dashboard.reports.resell.verify');
     date_default_timezone_set("Asia/Tehran");
     $sql = "UPDATE sales_followup SET status = ?, updated_at = ? WHERE username = ?" . ($isadmin ? '' : ' AND sales_admin = ?');
     $stmt = $conn->prepare($sql);
@@ -78,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
 }
 
 if (isset($_POST['reject'])) {
+    AdminRequire('dashboard.reports.resell.reject');
     date_default_timezone_set("Asia/Tehran");
     $sql = "UPDATE sales_followup SET status = ?, updated_at = ?, followup_note = ? WHERE username = ?" . ($isadmin ? '' : ' AND sales_admin = ?');
     $stmt = $conn->prepare($sql);

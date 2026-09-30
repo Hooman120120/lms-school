@@ -24,14 +24,11 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 //* End Check Session JUST ONE Session
 
 
 if (isset($_POST['course_excel'])) {
+    AdminRequire('dashboard.reports.course-supporters.excel');
     $code = isset($_GET['code']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['code']) ? $_GET['code'] : '';
     if (empty($code)) {
         error_log("Invalid or missing code parameter in POST request");
@@ -89,7 +86,7 @@ include_once '../../temp.html';
                                         </div>
                                         <?php
                                         $currentUser = $_SESSION['admin']['user'];
-                                        if (PermisionUser('excel_permission', $currentUser)):
+                                        if (AdminCan('dashboard.reports.course-supporters.excel')):
                                             $code = isset($_GET['code']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['code']) ? $_GET['code'] : '';
                                             if (empty($code)) {
                                                 echo '<p class="text-danger">خطا: کد پایه نامعتبر یا وجود ندارد.</p>';

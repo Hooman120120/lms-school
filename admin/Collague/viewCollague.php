@@ -24,12 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcollague')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    exit;
-
-}
 
 if (!isset($_GET['code'])) {
     echo '<strong>403</strong>';

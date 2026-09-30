@@ -18,10 +18,6 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if (!Permision('permission_monthly_payment')) {
-    http_response_code(403);
-    exit('مجوز مدیریت واریز ماهانه را ندارید.');
-}
 if (empty($_SESSION['monthly_payment_csrf'])) $_SESSION['monthly_payment_csrf'] = bin2hex(random_bytes(24));
 $message = '';
 $jalaliMonthLabels = [1 => 'فروردین', 2 => 'اردیبهشت', 3 => 'خرداد', 4 => 'تیر', 5 => 'مرداد', 6 => 'شهریور', 7 => 'مهر', 8 => 'آبان', 9 => 'آذر', 10 => 'دی', 11 => 'بهمن', 12 => 'اسفند'];
@@ -52,6 +48,7 @@ function monthlyPaymentJalaliToGregorian(string $value): ?string
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('finance.monthly-payments.manage');
     if (!hash_equals($_SESSION['monthly_payment_csrf'], (string)($_POST['csrf'] ?? ''))) {
         http_response_code(419);
         exit('درخواست نامعتبر است.');

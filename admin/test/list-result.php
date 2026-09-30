@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewtest')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_GET['Id'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

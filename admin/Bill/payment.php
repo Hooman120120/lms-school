@@ -27,35 +27,25 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.installments')
-    : !Permision('permision_viewbill')) {
-    http_response_code(403); exit('مجوز دسترسی به بخش اقساط برای شما تعریف نشده است.');
-}
 $username = $_SESSION['admin']['user'];
 
 $canViewAll = false;
 
 try {
-    $stmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $stmt->execute(['username' => $username]);
-    $perm = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($perm && (int)$perm['installment_permission'] === 1) {
+    if (AdminScope('finance.installments') === 'all') {
         $canViewAll = true;
     }
 } catch (PDOException $e) {
     error_log("Permission check failed: " . $e->getMessage());
 }
-$canCreateInstallments = AdminCanUsePermissionScope('finance.installments.create', ['permision_viewbill']);
-$installmentScope = AdminRecordVisibility('finance.installments', $canViewAll);
+$canCreateInstallments = AdminCan('finance.installments.create');
+$installmentScope = AdminScope('finance.installments');
 if ($installmentScope === null && $canCreateInstallments) $installmentScope = 'own';
 if ($installmentScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ پرونده‌های قسط برای شما فعال نشده است.');
 }
 $canViewAll = $installmentScope === 'all';
-$canEditInstallments = !AdminHasAnyCurrentTreePermission()
-    || AdminHasMenuPermission('finance.installments.edit');
+$canEditInstallments = AdminCan('finance.installments.edit');
 list($jalaliStart, $jalaliEnd) = getJalaliYearWindowApprox();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -404,8 +394,8 @@ catch (PDOException $e) {
                                 <?php if ($canCreateInstallments): ?>
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-bs-action="create">+ افزودن قسط</button>
                                 <?php endif; ?>
-                                <a class="badge bg-info rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-history.php') ?>">لیست بازگشت وجه</a>
-                                <a class="badge bg-warning rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-archive.php') ?>">آرشیو</a>
+                                <?php if (AdminCanSee('finance.installments.history')): ?><a class="badge bg-info rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-history.php') ?>">لیست بازگشت وجه</a><?php endif; ?>
+                                <?php if (AdminCanSee('finance.installments.archive')): ?><a class="badge bg-warning rounded-pill px-3 py-2 " style="height: 30px; font-size: 12px;" href="<?php echo url('admin/Bill/payment-archive.php') ?>">آرشیو</a><?php endif; ?>
                             </div>
                         </div>
 
@@ -425,7 +415,7 @@ catch (PDOException $e) {
                                                 <label for="codemeli" class="form-label">کدملی دانشجو</label>
                                                 <input type="text" name="codemeli" id="codemeli" class="form-control" required pattern="\d{10}" title="کدملی باید ۱۰ رقم باشد">
                                             </div>
-                                            <?php     if ($perm && (int)$perm['installment_permission'] === 1) {?>
+                                            <?php     if (AdminScope('finance.installments') === 'all') {?>
                                                 <div class="mb-3" id="status_div" style="display: none;">
                                                     <label for="status" class="form-label">وضعیت پرداخت</label>
                                                     <select name="status" id="status" class="form-select">

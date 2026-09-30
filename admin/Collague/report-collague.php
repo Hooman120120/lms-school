@@ -24,14 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
-if (!Permision('permision_reportcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['call']) and $_GET['call'] != '') {
     $semat = 'همکار';
     $qau = retPerson($_GET['call']);

@@ -74,9 +74,17 @@ function hf_control_request(string $endpoint, string $method = 'GET', ?array $pa
         throw new RuntimeException('پاسخ هنرفناوری معتبر نیست');
     }
     if ($status < 200 || $status >= 300 || ($decoded['ok'] ?? false) !== true) {
-        throw new RuntimeException((string) ($decoded['message'] ?? $decoded['error'] ?? 'درخواست هنرفناوری ناموفق بود'));
+        // the HTTP status is the exception code: 401 / 403 means hf itself refused this panel
+        throw new RuntimeException((string) ($decoded['message'] ?? $decoded['error'] ?? 'درخواست هنرفناوری ناموفق بود'), $status);
     }
     return $decoded;
+}
+
+/** hf sends ISO 8601 with a zone (2031-03-21T23:59:59+03:30), which a strict-mode DATETIME column refuses. */
+function hf_control_datetime($value): ?string
+{
+    $time = $value ? strtotime((string) $value) : false;
+    return $time ? date('Y-m-d H:i:s', $time) : null;
 }
 
 function hf_control_store_error(PDO $conn, string $message): void
@@ -115,7 +123,7 @@ function hf_control_store_license(PDO $conn, array $response): array
         $signature,
         empty($license['allowed']) ? 0 : 1,
         (string) ($license['reason'] ?? ''),
-        $service['expires_at'] ?? null,
+        hf_control_datetime($service['expires_at'] ?? null),
         $service['capacity_total'] ?? null,
         (int) ($service['capacity_used'] ?? 0),
     ]);
@@ -167,20 +175,28 @@ function hf_control_fetch_license(PDO $conn): array
     }
 }
 
+/** How long a stored licence answer may stand in while hf cannot be reached (as chahard). */
+const HF_CONTROL_HARD_TTL = 900;
+
 function hf_control_access_state(PDO $conn, bool $forceRefresh = false): array
 {
+    // No hf connection means no licence: the panel does not run unlicensed.
     if (!hf_control_configured()) {
-        return ['allowed' => true, 'reason' => 'not_configured'];
+        return ['allowed' => false, 'reason' => 'not_configured'];
     }
 
     $stmt = $conn->query(
-        'SELECT allowed, reason, expires_at, fetched_at
+        'SELECT allowed, reason, expires_at, fetched_at,
+                TIMESTAMPDIFF(SECOND, fetched_at, NOW()) AS fetched_age
            FROM hf_control_state
           WHERE id = 1'
     );
     $state = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
-    $fetchedAt = isset($state['fetched_at']) ? strtotime((string) $state['fetched_at']) : false;
-    $needsRefresh = $forceRefresh || $fetchedAt === false || $fetchedAt < time() - 60;
+    // age from the database's own clock: fetched_at is written with its NOW(), and PHP's
+    // clock in another time zone made a stored answer look fresh for hours
+    $age = isset($state['fetched_age']) ? (int) $state['fetched_age'] : null;
+    if ($age !== null && $age < 0) $age = PHP_INT_MAX; // stamped in the future: treat as old
+    $needsRefresh = $forceRefresh || $age === null || $age >= 60;
 
     if ($needsRefresh) {
         try {
@@ -192,7 +208,13 @@ function hf_control_access_state(PDO $conn, bool $forceRefresh = false): array
             );
             $state = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
         } catch (Throwable $e) {
-            if (!$state || $fetchedAt === false) {
+            // hf answered and refused this panel (wrong key, unknown installation): stop now
+            if (in_array($e->getCode(), [401, 403], true)) {
+                $conn->prepare("UPDATE hf_control_state SET allowed = 0, reason = 'invalid_credentials' WHERE id = 1")->execute();
+                return ['allowed' => false, 'reason' => 'invalid_credentials'];
+            }
+            // hf unreachable: the last verified answer holds only for a short while
+            if (!$state || $age === null || $age >= HF_CONTROL_HARD_TTL) {
                 return ['allowed' => false, 'reason' => 'hf_unavailable'];
             }
         }
@@ -213,6 +235,8 @@ function hf_control_access_message(string $reason): string
     return match ($reason) {
         'expired', 'service_expired' => 'اشتراک این سامانه به پایان رسیده است. لطفاً از پنل هنرفناوری تمدید کنید.',
         'panel_suspended', 'service_inactive', 'customer_inactive' => 'دسترسی این سامانه از پنل هنرفناوری غیرفعال شده است.',
+        'not_configured' => 'اتصال این پنل به هنرفناوری تنظیم نشده است.',
+        'invalid_credentials' => 'کلید اتصال این پنل به هنرفناوری معتبر نیست.',
         'hf_unavailable' => 'در حال حاضر امکان بررسی وضعیت اشتراک از هنرفناوری وجود ندارد.',
         default => 'دسترسی به این سامانه توسط هنرفناوری متوقف شده است.',
     };
@@ -266,7 +290,7 @@ function hf_control_claim(PDO $conn, string $externalId, string $userType): arra
             $stmt->execute([
                 empty($response['license']['allowed']) ? 0 : 1,
                 (string) ($response['license']['reason'] ?? ''),
-                $service['expires_at'] ?? null,
+                hf_control_datetime($service['expires_at'] ?? null),
                 $service['capacity_total'] ?? null,
                 (int) ($service['capacity_used'] ?? 0),
             ]);
@@ -539,7 +563,7 @@ function hf_control_sync(PDO $conn): array
         $stmt->execute([
             empty($license['allowed']) ? 0 : 1,
             (string) ($license['reason'] ?? ''),
-            $service['expires_at'] ?? null,
+            hf_control_datetime($service['expires_at'] ?? null),
             $service['capacity_total'] ?? null,
             (int) ($accepted ? ($service['capacity_used'] ?? 0) : ($response['active_users'] ?? 0)),
             $accepted ? null : (string) ($response['reason'] ?? 'sync_rejected'),

@@ -26,20 +26,12 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewbill')) {
-    http_response_code(403);
-    exit('مجوز دسترسی به آرشیو اقساط برای شما تعریف نشده است.');
-}
 $username = $_SESSION['admin']['user'];
 
 $canViewAll = false;
 
 try {
-    $stmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $stmt->execute(['username' => $username]);
-    $perm = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($perm && (int)$perm['installment_permission'] === 1) {
+    if (AdminScope('finance.installments') === 'all') {
         $canViewAll = true;
     }
 } catch (PDOException $e) {

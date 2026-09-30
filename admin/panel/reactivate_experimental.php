@@ -30,7 +30,7 @@ if (session_id() != $re['session_id']) {
 }
 
 $sessionUser = $_SESSION['admin']['user'];
-$isImpersonate = ((int)($_SESSION['admin']['can_impersonate'] ?? 0) === 1);
+$isImpersonate = AdminCan('dashboard.reports.reactivate.pick-operator');
 
 $type = (int)($_GET['type'] ?? 1);
 $allowedTypes = [1]; // we are ignoring type2 like you said
@@ -41,15 +41,7 @@ if (!in_array($type, $allowedTypes, true)) {
 
 $users = [];
 $isadmin = 0;
-if (
-    $_SESSION['admin']['adminrole'] == 53 ||
-    $_SESSION['admin']['adminrole'] == 0  ||
-    $_SESSION['admin']['adminrole'] == 52 ||
-    $_SESSION['admin']['adminrole'] == 51
-) {
-    $isadmin = 1;
-}
-$recordVisibility = AdminRecordVisibility('dashboard.summary.overview.manager.page-68e9102f5d', $isadmin === 1);
+$recordVisibility = AdminScope('dashboard.reports.reactivate');
 if ($recordVisibility === null) {
     http_response_code(403);
     exit('دسترسی به درخواست‌های بازگردانی تعریف نشده است.');
@@ -95,6 +87,7 @@ $isadmin = $recordVisibility === 'all' ? 1 : 0;
 //}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'request_restore') {
+    AdminRequire('dashboard.reports.reactivate.request');
 
     $codemeli  = trim($_POST['codemeli'] ?? '');
     $createdBy = $_SESSION['admin']['user'] ?? 'unknown';

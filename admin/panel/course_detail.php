@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permision_manage_suporter')) {
-    echo 'دسترسی ندارید';
-    die();
-}
 
 $selectedCourseCode = filter_input(INPUT_GET, 'code', FILTER_VALIDATE_INT);
 $selectedCourseCode = $selectedCourseCode && $selectedCourseCode > 0 ? (int)$selectedCourseCode : 0;

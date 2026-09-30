@@ -6,9 +6,6 @@ include_once '../../inc/function.php';
 if (!isset($_SESSION['admin'])) { header('location: ' . url('admin/login.php')); exit; }
 if (($_SESSION['admin']['ip'] ?? '') !== GetIp() && ($_SESSION['admin']['os'] ?? '') != GetOs()) { session_unset(); header('location: '.url('admin/login.php')); exit; }
 $sessionRow=sessionAdmin($_SESSION['admin']['user']); if(session_id()!=($sessionRow['session_id']??null)){session_unset();header('location: '.url('admin/login.php'));exit;}
-if (!Permision('permission_staff_view') && !Permision('permision_viewemploy')) {
-    http_response_code(403); exit('مجوز مشاهده همکاران برای شما تعریف نشده است.');
-}
 
 $search = trim((string)($_GET['q'] ?? ''));
 $sql = "SELECT a.username,a.fname,a.lname,a.mobile,a.dakheli,a.adminactive,r.title AS role_title

@@ -44,7 +44,6 @@ if (!isset($_GET['class_id'])) {
 }
 $class_id = intval($_GET['class_id']);
 
-RequireTeacherPermission('teacher_perm_students', url('admin/course/Active-course.php'));
 if ($adminrole === 3 && !TeacherHasClassAccess($class_id)) {
     http_response_code(403);
     exit('شما به دانش‌آموزان این کلاس دسترسی ندارید.');
@@ -79,6 +78,7 @@ if (!$class) die("کلاس یافت نشد.");
 
 // ثبت دانش آموز جدید
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
+    AdminRequire('courses.main.active.classes.students.assign');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $username = $_POST['username'];
 
@@ -101,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
 }
 
 if (isset($_POST['upload_excel'])) {
+    AdminRequire('courses.main.active.classes.students.import');
     if (isset($_SESSION['tokenn']) and $_SESSION['tokenn'] == $_POST['tokenn']) {
         if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] === 0) {
             $fileTmpPath = $_FILES['excel_file']['tmp_name'];
@@ -163,6 +164,7 @@ if (isset($_POST['upload_excel'])) {
 
 // حذف دانش آموز
 if (isset($_GET['delete_user'])) {
+    AdminRequire('courses.main.active.classes.students.remove');
     $del_user = $_GET['delete_user'];
     $del = $conn->prepare("UPDATE dbcourse SET class_id = NULL WHERE username = ? AND class_id = ?");
     $del->execute([$del_user, $class_id]);
@@ -237,7 +239,7 @@ if (
     isset($_GET['ticket_check']) &&
     isset($_GET['cm'], $_GET['tg'])
 ) {
-    if (!TeacherPermission('teacher_perm_messages')) {
+    if (!AdminCan('courses.main.active.classes.students.tickets')) {
         http_response_code(403);
         exit('شما مجوز ارسال گزارش آموزشی را ندارید.');
     }
@@ -287,7 +289,7 @@ if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     (($_POST['action'] ?? '') === 'create_teacher_ticket')
 ) {
-    if (!TeacherPermission('teacher_perm_messages')) {
+    if (!AdminCan('courses.main.active.classes.students.tickets')) {
         http_response_code(403);
         exit('شما مجوز ارسال گزارش آموزشی را ندارید.');
     }
@@ -394,7 +396,7 @@ if (
         </form>
 
         <!-- فرم افزودن گروهی با Excel -->
-        <?php if (Permision('permision_viewcourse')) { ?>
+        <?php if (AdminCan('courses.main.active.classes.students.import')) { ?>
             <form method="POST" enctype="multipart/form-data" class="mt-4">
                 <label>📂 آپلود فایل اکسل (فقط ستون کد ملی):</label>
                 <input type="file" name="excel_file" accept=".xlsx,.xls" class="form-control" required>
@@ -490,7 +492,7 @@ if (
 <!--                                        --><?php //} ?>
                                         <th>نام دانش آموز</th>
                                         <th> تعداد تکالیف ارسال</th>
-                                        <?php if (Permision('permision_viewcourse')) { ?>
+                                        <?php if (AdminCan('courses.main.active.classes.students.remove')) { ?>
                                             <th>اقدامات</th>
                                         <?php } ?>
                                     </tr>
@@ -523,7 +525,7 @@ if (
                                                         </a>
 
                                                         <!-- REPORT BUTTON (teachers only) -->
-                                                        <?php if ($adminrole === 3 && TeacherPermission('teacher_perm_messages')): ?>
+                                                        <?php if ($adminrole === 3 && AdminCan('courses.main.active.classes.students.tickets')): ?>
                                                             <div class="btn-group">
                                                                 <button type="button"
                                                                         class="btn btn-outline-secondary btn-sm dropdown-toggle"
@@ -560,7 +562,7 @@ if (
                                                 <td><?= htmlspecialchars($en['fname']) . ' ' . htmlspecialchars($en['lname']) ?></td>
                                                 <?php $done = $subCounts[$en['codemeli']] ?? 0; ?>
                                                 <td><?= $done ?> از <?= $totalHomeworks ?></td>
-                                                <?php if (Permision('permision_viewcourse')) { ?>
+                                                <?php if (AdminCan('courses.main.active.classes.students.remove')) { ?>
                                                     <td>
                                                         <a class="btn ripple  btn-danger pd-x-20"
                                                            href="assign-student.php?class_id=<?= $class_id ?>&delete_user=<?= $en['codemeli'] ?>"

@@ -33,10 +33,6 @@ if (session_id() != $re['session_id']) {
 }
 
 // بررسی سطح دسترسی
-if (!Permision('permision_viewdocument')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 $currentUser = $_SESSION['admin']['user'] ?? '';
 $error_msg = '';

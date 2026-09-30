@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/inc/student_dossier.php'; $headerStudent = retPerson($_SESSION['auth']['user']); ?>
 <?php
 if(isset($_SESSION['auth'])){
 
@@ -127,7 +128,7 @@ $result=$query->fetch();
             <div class="dropdown main-profile-menu">
                 <a class="d-flex" href="#">
                     <span class="main-img-user"><img alt="آواتار"
-                                                     src="<?php echo url('assets/img/users/1.jpg') ?>"></span>
+                                                     src="<?php echo StudentAvatar($headerStudent) ?>"></span>
                 </a>
                 <div class="dropdown-menu">
                     <div class="header-navheading">
@@ -214,7 +215,7 @@ $result=$query->fetch();
 
                     <a class="d-flex" href="#">
                             <span class="main-img-user"><img alt="avatar"
-                                                             src="<?php echo url('assets/img/users/1.jpg') ?>"></span>
+                                                             src="<?php echo StudentAvatar($headerStudent) ?>"></span>
                     </a>
                     <div class="dropdown-menu">
                         <div class="header-navheading">

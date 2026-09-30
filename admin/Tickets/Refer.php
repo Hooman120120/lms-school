@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_refer')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -47,6 +43,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['close']) and $_GET['close'] != '') {
+    AdminRequire('tickets.referred.close');
     $ticketid = intval($_GET['close']);
     $update = 'UPDATE ticket_topic SET ticket_status=?,metod=? WHERE ticket_num=?';
     $act = $conn->prepare($update);

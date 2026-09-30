@@ -1,422 +1,7 @@
 <?php
 require_once __DIR__ . '/daily_notifications.php';
 
-/** Shared menu/access tree.  Keep new administrative features in this registry. */
-function AdminPermissionRegistry(): array
-{
-    static $tree = null;
-    if ($tree === null) {
-        $tree = require BASE_PATH . '/config/admin_permission_registry.php';
-        $tree = AdminPermissionAttachPageActions($tree);
-    }
-    return $tree;
-}
-
-/** A node's modes are inherited from its parent when the tree is indexed. */
-function AdminPermissionNodeAvailable(array $node): bool
-{
-    return in_array(inst_type(), $node['modes'] ?? ['school', 'institute'], true);
-}
-
-/** Use the existing institution vocabulary for every label in the access UI. */
-function AdminPermissionDisplayLabel(array $node): string
-{
-    $label = (string)($node['labels'][inst_type()] ?? $node['label'] ?? '');
-    return inst_display_text($label);
-}
-
-function AdminPermissionActionLabel(string $control): string
-{
-    $labels = [
-        'delete' => 'حذف', 'remove' => 'حذف', 'edit' => 'ویرایش',
-        'approve' => 'تأیید', 'reject' => 'رد', 'export' => 'خروجی',
-        'import' => 'ورود اطلاعات', 'create' => 'ایجاد', 'add' => 'ایجاد',
-        'save' => 'ذخیره',
-    ];
-    foreach ($labels as $keyword => $label) if (stripos($control, $keyword) !== false) return $label . ' اطلاعات این صفحه';
-    return 'اجرای عملیات این صفحه';
-}
-
-/** Route-specific meanings take precedence over often stale HTML titles. */
-function AdminPermissionPageLabel(string $path): string
-{
-    $labels = [
-        'admin/panel/temp-users-sales.php' => 'گزارش ثبت‌نام‌های موقت فروش',
-        'admin/panel/permanet-users-sales.php' => 'گزارش ثبت‌نام‌های قطعی فروش',
-        'admin/panel/reactivate_experimental.php' => 'درخواست بازگردانی ثبت‌نام‌های موقت',
-        'admin/panel/all_users_management.php' => 'مدیریت همهٔ کاربران',
-        'admin/panel/alltypeusers.php' => 'گزارش کاربران بر اساس وضعیت',
-        'admin/panel/resell-students.php' => 'پیگیری فروش ثبت‌نام‌ها',
-        'admin/notifications/operator_notif.php' => 'اعلان‌های اپراتور',
-        'admin/notifications/studentoperator_changes_notif.php' => 'اعلان‌های تغییر اپراتور',
-        'admin/notifications/new_students.php' => 'اعلان‌های ثبت‌نام جدید',
-        'admin/notifications/new_student_tickets.php' => 'درخواست‌های مربوط به ثبت‌نام جدید',
-        'admin/notifications/suspended_student_op_ticket.php' => 'درخواست‌های تعلیق ثبت‌نام',
-        'admin/notifications/NoOperator_student_op_ticket.php' => 'درخواست‌های ثبت‌نام بدون اپراتور',
-        'admin/notifications/teachers_notif.php' => 'اعلان‌های استادان',
-        'admin/panel/tomorrow_supports.php' => 'پیگیری‌های فردا',
-        'admin/panel/mystudent_status.php' => 'وضعیت ثبت‌نام‌های من',
-        'admin/panel/late_supports.php' => 'پیگیری‌های عقب‌افتاده',
-        'admin/panel/today_supports.php' => 'پیگیری‌های امروز',
-        'admin/notifications/notif_rule_management.php' => 'مدیریت قواعد اعلان‌ها',
-        'admin/notifications/thread_list.php' => 'گفت‌وگوهای اعلان‌ها',
-        'admin/notifications/notification_view.php' => 'مشاهدهٔ اعلان',
-        'admin/notifications/notifications.php' => 'فهرست اعلان‌ها',
-        'admin/notifications/verify_by_manager.php' => 'تأیید اعلان‌ها توسط مدیر',
-        'admin/Student/suspension_history.php' => 'تاریخچهٔ تعلیق ثبت‌نام‌ها',
-        'admin/Student/cancel_operator_history.php' => 'تاریخچهٔ لغو پشتیبانی',
-        'admin/course/attendance.php' => 'ثبت حضور و غیاب',
-        'admin/course/homework_check_history.php' => 'تاریخچهٔ بررسی تکالیف',
-        'admin/course/homeworks.php' => 'تکالیف ثبت‌شده',
-        'admin/Bill/paymentinstallments.php' => 'پرداخت اقساط',
-        'admin/wallet/dashboard.php' => 'نمای کلی کیف پول',
-        'admin/wallet/exchange.php' => 'تبادل اعتبار کیف پول',
-        'admin/wallet/searchwalletview.php' => 'جست‌وجوی تراکنش‌های کیف پول',
-        'admin/Bill/payment-history.php' => 'تاریخچهٔ پرداخت‌ها',
-        'admin/Bill/payment-archive.php' => 'بایگانی پرداخت‌ها',
-        'admin/employ/download-document.php' => 'دریافت مستندات همکاران',
-    ];
-    if (isset($labels[$path])) return $labels[$path];
-    $source = @file_get_contents(BASE_PATH . '/' . $path);
-    if ($source !== false && preg_match('/<title[^>]*>(.*?)<\/title>/is', $source, $matches)) {
-        $title = trim(html_entity_decode(strip_tags(preg_replace('/<\?php.*?\?>/s', '', $matches[1]))));
-        $title = trim(preg_split('/\s*[|｜]\s*/u', $title)[0] ?? '');
-        if ($title !== '' && preg_match('/[\x{0600}-\x{06FF}]/u', $title)) return $title;
-    }
-    return 'بخش تکمیلی این صفحه';
-}
-
-/*
- * Pages can grow buttons without a developer remembering a second hand-made
- * permission list. Controls with a mutating name become action leaves below
- * their own registered page. The menu/page hierarchy stays declarative in the
- * registry; this only fills its final operation level.
- */
-function AdminPermissionAttachPageActions(array $nodes): array
-{
-    $knownPaths = [];
-    $collect = static function (array $items) use (&$collect, &$knownPaths): void {
-        foreach ($items as $item) {
-            if (!empty($item['path'])) $knownPaths[$item['path']] = true;
-            $collect($item['children'] ?? []);
-        }
-    };
-    $collect($nodes);
-
-    $resolvePath = static function (string $target, string $from): ?string {
-        $target = html_entity_decode(trim($target));
-        if ($target === '' || str_contains($target, '<?') || preg_match('~^(?:https?:|//|\#|javascript:)~i', $target)) return null;
-        $target = preg_split('/[?#]/', $target, 2)[0];
-        $adminOffset = strpos($target, 'admin/');
-        $candidate = $adminOffset === false ? dirname($from) . '/' . ltrim($target, '/') : substr($target, $adminOffset);
-        $parts = [];
-        foreach (explode('/', str_replace('\\', '/', $candidate)) as $part) {
-            if ($part === '' || $part === '.') continue;
-            if ($part === '..') { array_pop($parts); continue; }
-            $parts[] = $part;
-        }
-        $candidate = implode('/', $parts);
-        if (in_array($candidate, ['admin/setting/setting.php', 'admin/setting/levels.php'], true)) return null;
-        return preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $candidate) && is_file(BASE_PATH . '/' . $candidate) ? $candidate : null;
-    };
-
-    /* New internal pages can in turn link to another page, hence the bounded
-       fixed-point loop. The known-path set prevents cycles and duplicates. */
-    for ($pass = 0; $pass < 12; $pass++) {
-        $changed = false;
-        $walk = static function (&$items) use (&$walk, &$changed, &$knownPaths, $resolvePath): void {
-            foreach ($items as &$node) {
-                if (!isset($node['children'])) $node['children'] = [];
-                $walk($node['children']);
-                $path = $node['path'] ?? null;
-                if (!$path || !preg_match('#^admin/[A-Za-z0-9_./-]+\.php$#', $path)) continue;
-                if (($node['auto_scan'] ?? true) === false) continue;
-                $source = @file_get_contents(BASE_PATH . '/' . $path);
-                if ($source === false) continue;
-                /* Ignore disabled markup and only follow real anchor tags.
-                   Matching every url() also treated login redirects as child
-                   pages, which produced a false permission hierarchy. */
-                $scanSource = preg_replace('/<!--.*?-->/s', '', $source) ?? $source;
-                $existing = array_column($node['children'], 'code');
-                preg_match_all('/\bname\s*=\s*["\']([^"\']+)["\']/i', $scanSource, $controls);
-                foreach (array_unique($controls[1]) as $control) {
-                    if (!preg_match('/(?:add|create|edit|delete|remove|approve|reject|export|import|save)/i', $control)) continue;
-                    $slug = trim(strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $control)), '-');
-                    if ($slug === '') continue;
-                    $code = $node['code'] . '.action-' . $slug;
-                    if (in_array($code, $existing, true)) continue;
-                    $action = ['code' => $code, 'label' => AdminPermissionActionLabel($control)];
-                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
-                    $node['children'][] = $action;
-                    $existing[] = $code;
-                    $changed = true;
-                }
-                /* A few legacy forms submit through an unnamed button. Keep
-                   them visible and protected as a final operation leaf too. */
-                $submitCode = $node['code'] . '.action-submit';
-                if (preg_match('/<form\b/i', $scanSource) && !in_array($submitCode, $existing, true)) {
-                    $action = ['code' => $submitCode, 'label' => 'ثبت / ذخیرهٔ تغییرات این صفحه'];
-                    if (isset($node['modes'])) $action['modes'] = $node['modes'];
-                    $node['children'][] = $action;
-                    $existing[] = $submitCode;
-                    $changed = true;
-                }
-                preg_match_all('/<a\b[^>]*\bhref\s*=\s*(["\'])(.*?)\1[^>]*>/is', $scanSource, $links, PREG_SET_ORDER);
-                foreach ($links as $link) {
-                    $target = $link[2];
-                    if (preg_match('/\burl\(\s*["\']([^"\']+)/i', $target, $urlTarget)) {
-                        $target = $urlTarget[1];
-                    }
-                    $targetPath = $resolvePath($target, $path);
-                    if ($targetPath === null || isset($knownPaths[$targetPath])) continue;
-                    $code = $node['code'] . '.page-' . substr(sha1($targetPath), 0, 10);
-                    $page = ['code' => $code, 'label' => AdminPermissionPageLabel($targetPath), 'path' => $targetPath];
-                    if (isset($node['modes'])) $page['modes'] = $node['modes'];
-                    $node['children'][] = $page;
-                    $knownPaths[$targetPath] = true;
-                    $changed = true;
-                }
-            }
-            unset($node);
-        };
-        $walk($nodes);
-        if (!$changed) break;
-    }
-    return $nodes;
-}
-
-/** @return array<string, array{parent:?string,legacy:?string,modes:array}> */
-function AdminPermissionIndex(): array
-{
-    static $index = null;
-    if ($index !== null) return $index;
-    $index = [];
-    $walk = static function (array $nodes, ?string $parent = null, array $parentModes = ['school', 'institute']) use (&$walk, &$index): void {
-        foreach ($nodes as $node) {
-            if (empty($node['code'])) continue;
-            $modes = array_values(array_intersect($parentModes, $node['modes'] ?? ['school', 'institute']));
-            $index[$node['code']] = [
-                'parent' => $parent,
-                'legacy' => isset($node['legacy']) ? (string)$node['legacy'] : null,
-                'modes' => $modes,
-            ];
-            $walk($node['children'] ?? [], (string)$node['code'], $modes);
-        }
-    };
-    $walk(AdminPermissionRegistry());
-    return $index;
-}
-
-function AdminPermissionCodeAvailable(string $code): bool
-{
-    $index = AdminPermissionIndex();
-    return isset($index[$code]) && in_array(inst_type(), $index[$code]['modes'], true);
-}
-
-/** @return string[] */
-function AdminPermissionCodesForLegacy(string $legacy): array
-{
-    $codes = [];
-    foreach (AdminPermissionIndex() as $code => $meta) {
-        if ($meta['legacy'] === $legacy && in_array(inst_type(), $meta['modes'], true)) $codes[] = $code;
-    }
-    return $codes;
-}
-
-function SyncAdminPermissionGrants(string $username, array $codes): void
-{
-    global $conn;
-    $index = AdminPermissionIndex();
-    $codes = array_values(array_unique(array_filter($codes, static fn($code) => is_string($code) && isset($index[$code]) && in_array(inst_type(), $index[$code]['modes'], true))));
-    try {
-        $conn->beginTransaction();
-        $delete = $conn->prepare('DELETE FROM admin_user_permissions WHERE admin_username = ?');
-        $delete->execute([$username]);
-        $insert = $conn->prepare('INSERT INTO admin_user_permissions(admin_username, permission_code) VALUES (?, ?)');
-        foreach ($codes as $code) $insert->execute([$username, $code]);
-        $conn->commit();
-    } catch (Throwable $e) {
-        if ($conn->inTransaction()) $conn->rollBack();
-        error_log('SyncAdminPermissionGrants: ' . $e->getMessage());
-    }
-}
-
-function AdminHasMenuPermission(string $code, ?string $username = null): bool
-{
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '' || !AdminPermissionCodeAvailable($code)) return false;
-    try {
-        $stmt = $conn->prepare('SELECT 1 FROM admin_user_permissions p LEFT JOIN admin_permission_nodes n ON n.code=p.permission_code WHERE p.admin_username=? AND (?=p.permission_code OR ? LIKE CONCAT(p.permission_code, ".%")) LIMIT 1');
-        $stmt->execute([$username, $code, $code]);
-        return (bool)$stmt->fetchColumn();
-    } catch (Throwable $e) { return false; }
-}
-
-/* A child grant may reveal its ancestors in the navigation, but it must never
- * grant a sibling page or action. Use this only when deciding whether a menu
- * group itself should be visible. */
-function AdminHasMenuNavigationPermission(string $code, ?string $username = null): bool
-{
-    if (!AdminPermissionCodeAvailable($code)) return false;
-    if (AdminHasMenuPermission($code, $username)) return true;
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '' || $code === '') return false;
-    try {
-        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username=? AND permission_code LIKE CONCAT(?, ".%")');
-        $stmt->execute([$username, $code]);
-        $index = AdminPermissionIndex();
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $childCode) {
-            if (isset($index[$childCode]) && in_array(inst_type(), $index[$childCode]['modes'], true)) return true;
-        }
-        return false;
-    } catch (Throwable $e) { return false; }
-}
-
-/** @return string[] All menu entries that lead to this page. */
-function AdminPermissionCodesForPath(?string $script = null): array
-{
-    $script = str_replace('\\', '/', $script ?? ($_SERVER['SCRIPT_NAME'] ?? ''));
-    $position = strpos($script, '/admin/');
-    $path = $position === false ? ltrim($script, '/') : substr($script, $position + 1);
-    $codes = [];
-    $walk = static function (array $nodes) use (&$walk, &$codes, $path): void {
-        foreach ($nodes as $node) {
-            if (($node['path'] ?? null) === $path) $codes[] = (string)$node['code'];
-            $walk($node['children'] ?? []);
-        }
-    };
-    $walk(AdminPermissionRegistry());
-    return $codes;
-}
-
-function AdminPermissionCodeForPath(?string $script = null): ?string
-{
-    return AdminPermissionCodesForPath($script)[0] ?? null;
-}
-
-function AdminHasAnyCurrentTreePermission(?string $username = null): bool
-{
-    global $conn;
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($username === '') return false;
-    try {
-        $stmt = $conn->prepare('SELECT permission_code FROM admin_user_permissions WHERE admin_username = ?');
-        $stmt->execute([$username]);
-        $index = AdminPermissionIndex();
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) ?: [] as $code) {
-            // Retired notification grants must fail closed rather than enable legacy access.
-            if (isset($index[$code]) || $code === 'settings' || str_starts_with($code, 'settings.') || str_starts_with($code, 'institute-notifications.')) return true;
-        }
-    } catch (Throwable $e) { }
-    return false;
-}
-
-/**
- * Use the exact tree branch for migrated accounts and the old column(s) only
- * for accounts that have no tree grants yet. This prevents two sibling pages
- * that shared one legacy flag from granting access to each other.
- *
- * @param string[] $legacyPermissions
- */
-function AdminCanUsePermissionScope(string $code, array $legacyPermissions = [], ?string $username = null): bool
-{
-    if (!AdminPermissionCodeAvailable($code)) return false;
-    static $treeAccounts = [];
-    static $treeScopes = [];
-    static $legacyGrants = [];
-    $username = $username ?? (string)($_SESSION['admin']['user'] ?? '');
-    if (!array_key_exists($username, $treeAccounts)) {
-        $treeAccounts[$username] = AdminHasAnyCurrentTreePermission($username);
-    }
-    if ($treeAccounts[$username]) {
-        $cacheKey = $username . "\0" . $code;
-        if (!array_key_exists($cacheKey, $treeScopes)) {
-            $treeScopes[$cacheKey] = AdminHasMenuNavigationPermission($code, $username);
-        }
-        return $treeScopes[$cacheKey];
-    }
-    foreach ($legacyPermissions as $legacyPermission) {
-        $cacheKey = $username . "\0" . $legacyPermission;
-        if (!array_key_exists($cacheKey, $legacyGrants)) {
-            $legacyGrants[$cacheKey] = $username === (string)($_SESSION['admin']['user'] ?? '')
-                ? Permision($legacyPermission)
-                : PermisionUser($legacyPermission, $username);
-        }
-        if (!$legacyGrants[$cacheKey]) return false;
-    }
-    return $legacyPermissions !== [];
-}
-
-/** Keep legacy menu behaviour only until an account receives tree grants. */
-function AdminMenuCan(string $code, bool $legacyAllowed): bool
-{
-    return AdminHasAnyCurrentTreePermission()
-        ? AdminHasMenuNavigationPermission($code)
-        : ($legacyAllowed && AdminPermissionCodeAvailable($code));
-}
-
-/** Resolve a record list to all records or records owned by the signed-in operator. */
-function AdminRecordVisibility(string $scopeCode, bool $legacyAll): ?string
-{
-    if (!AdminHasAnyCurrentTreePermission()) return $legacyAll ? 'all' : 'own';
-    if (AdminHasMenuPermission($scopeCode)) return 'all';
-    if (AdminHasMenuPermission($scopeCode . '.all')) return 'all';
-    if (AdminHasMenuPermission($scopeCode . '.own')) return 'own';
-    // The sales cards appear on both dashboard pages. A full "My desktop"
-    // grant must keep its own-operator cards usable without granting all data.
-    if (str_contains($scopeCode, 'page-b9857fa208.')
-        && AdminHasMenuPermission('dashboard.summary.overview.desktop.sales-temporary')) return 'own';
-    if (str_contains($scopeCode, 'page-25d387505a.')
-        && AdminHasMenuPermission('dashboard.summary.overview.desktop.sales-permanent')) return 'own';
-    return null;
-}
-
-/** A financial record belongs to the administrator who created its factor. */
-function AdminCanAccessFinanceFactor(int $factorId, string $scopeCode, bool $legacyAll = false): bool
-{
-    global $conn;
-    $scope = AdminRecordVisibility($scopeCode, $legacyAll);
-    if ($scope === null || $factorId <= 0) return false;
-    if ($scope === 'all') return true;
-    $user = (string)($_SESSION['admin']['user'] ?? '');
-    $stmt = $conn->prepare('SELECT 1 FROM dbfactor WHERE idfactor = ? AND (factoradder = ? OR useradder = ?) LIMIT 1');
-    $stmt->execute([$factorId, $user, $user]);
-    return (bool)$stmt->fetchColumn();
-}
-
-/** Filter already-loaded factor rows before legacy pages render them. */
-function AdminFilterFinanceFactors(array $rows, string $scopeCode, bool $legacyAll = false): array
-{
-    if (AdminRecordVisibility($scopeCode, $legacyAll) === 'all') return $rows;
-    $user = (string)($_SESSION['admin']['user'] ?? '');
-    return array_values(array_filter($rows, static function ($row) use ($user): bool {
-        $factorAdder = is_object($row) ? ($row->factoradder ?? null) : ($row['factoradder'] ?? null);
-        $userAdder = is_object($row) ? ($row->useradder ?? null) : ($row['useradder'] ?? null);
-        return (string)$factorAdder === $user || (string)$userAdder === $user;
-    }));
-}
-
-/* Applied from admin/header.php. Legacy-only accounts keep their current
- * behaviour; accounts configured in the new tree are constrained by it. */
-function EnforceAdminPageTreePermission(): void
-{
-    if (!AdminHasAnyCurrentTreePermission()) return;
-    $script = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
-    if ((str_ends_with($script, '/admin/notifications/school_notifications.php')
-            || str_ends_with($script, '/admin/notifications/institute_notifications.php'))
-        && CountSchoolDirectNotifications((string)($_SESSION['admin']['user'] ?? ''), false) > 0) {
-        return;
-    }
-    $codes = AdminPermissionCodesForPath();
-    // A grant for an operation also permits opening its containing page, but
-    // never a sibling page (navigation helper only traverses descendants).
-    if ($codes === []) return;
-    foreach ($codes as $code) if (AdminHasMenuNavigationPermission($code)) return;
-    http_response_code(403);
-    exit('دسترسی شما به این بخش فعال نشده است.');
-}
+require_once __DIR__ . '/admin_permissions.php';
 
 function check_national_code($value)
 {
@@ -1187,89 +772,8 @@ function uncourse($student)
     }
 }
 
-function Permision($tab)
-{
-    if ($tab === 'permision_viewsetting') return false; // Retired settings section.
-    global $conn;
-    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
-    $mappedCodes = AdminPermissionCodesForLegacy($tab);
-    if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission()) {
-        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code)) return true;
-        return false;
-    }
-    $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
-    $query = $conn->prepare($sql);
-    $query->execute([$_SESSION['admin']['user']]);
-    $result = $query->fetch();
-    if ($result && !empty($result[$tab])) return true;
-    foreach ($mappedCodes as $code) {
-        if (AdminHasMenuNavigationPermission($code)) return true;
-    }
-    return false;
-}
 
-function PermisionUser($tab, $user)
-{
-    if ($tab === 'permision_viewsetting') return false; // Retired settings section.
-    global $conn;
-    if (!is_string($tab) || !preg_match('/^[a-zA-Z0-9_]+$/', $tab)) return false;
-    $mappedCodes = AdminPermissionCodesForLegacy($tab);
-    if ($mappedCodes !== [] && AdminHasAnyCurrentTreePermission((string)$user)) {
-        foreach ($mappedCodes as $code) if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
-        return false;
-    }
-    $sql = 'SELECT ' . $tab . '  FROM dbadmin WHERE username=?';
-    $query = $conn->prepare($sql);
-    $query->execute([$user]);
-    $result = $query->fetch();
-    if ($result && !empty($result[$tab])) return true;
-    foreach ($mappedCodes as $code) {
-        if (AdminHasMenuNavigationPermission($code, (string)$user)) return true;
-    }
-    return false;
-}
 
-/**
- * Teacher-only capabilities. Non-teacher administrators are intentionally not
- * restricted by these flags because they use the regular staff permissions.
- */
-function TeacherPermission(string $permission, ?string $user = null): bool
-{
-    global $conn;
-
-    $allowed = [
-        'teacher_perm_courses',
-        'teacher_perm_online_class',
-        'teacher_perm_students',
-        'teacher_perm_attendance',
-        'teacher_perm_homework',
-        'teacher_perm_content',
-        'teacher_perm_messages',
-    ];
-    if (!in_array($permission, $allowed, true)) {
-        return false;
-    }
-
-    $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
-    if ($user === '') {
-        return false;
-    }
-
-    $stmt = $conn->prepare("SELECT adminrole, {$permission} FROM dbadmin WHERE username = ? LIMIT 1");
-    $stmt->execute([$user]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$row) {
-        return false;
-    }
-
-    // Teacher capabilities only narrow teacher accounts. Existing staff/admin
-    // authorization continues to be controlled by the regular permissions.
-    if ((int)$row['adminrole'] !== 3) {
-        return true;
-    }
-
-    return (int)($row[$permission] ?? 0) === 1;
-}
 
 function TeacherHasClassAccess(int $classId, ?string $user = null): bool
 {
@@ -1653,25 +1157,30 @@ function SchoolLegacyNotificationCounts(?string $user = null): array
         'contact_ticket' => 0,
         'contact_alert' => 0,
         'wallet_charge_pending' => 0,
+        'pending_homework' => 0,
     ];
 
     try {
-        if (in_array($roleKey, ['manager', 'general_deputy'], true)
-            || ($roleKey === 'financial_deputy' && PermisionUser('permision_actfactor', $user))) {
+        if (AdminCanSee(AdminNotificationCode('financial.invoices'), $user)) {
             $counts['pending_invoice'] = (int)$conn->query("SELECT COUNT(*) FROM deposit_verifications WHERE status = 'pending'")->fetchColumn();
         }
-        if (inst_feature('wallet') && (in_array($roleKey, ['manager', 'general_deputy'], true)
-            || ($roleKey === 'financial_deputy' && PermisionUser('permision_actwallet', $user)))) {
+        if (inst_feature('wallet') && AdminCanSee(AdminNotificationCode('financial.wallet'), $user)) {
             $counts['wallet_charge_pending'] = (int)$conn->query("SELECT COUNT(*) FROM db_wallet WHERE status = 'در انتظار بررسی'")->fetchColumn();
         }
-        if (in_array($roleKey, ['manager', 'general_deputy', 'executive_deputy'], true)) {
+        if (AdminCanSee(AdminNotificationCode('information.sms'), $user)) {
             $counts['unread_sms'] = (int)$conn->query('SELECT COUNT(*) FROM sms_inbox WHERE is_read = 0')->fetchColumn();
         }
-        if (in_array($roleKey, ['manager', 'general_deputy'], true)) {
-            $counts['contact_ticket'] = countReportThreadsVisible($user, true, true);
-        } elseif ($roleKey === 'counselor') {
+        $ticketsAll = AdminCan(AdminNotificationCode('information.tickets.all'), $user);
+        if ($ticketsAll || AdminCan(AdminNotificationCode('information.tickets.manage'), $user)) {
+            $counts['contact_ticket'] = countReportThreadsVisible($user, true, $ticketsAll);
+        } elseif (AdminCan(AdminNotificationCode('information.tickets.own'), $user)) {
             $counts['contact_ticket'] = countReportThreadsVisible($user, false, false);
+        }
+        if (AdminCanSee(AdminNotificationCode('information.my-calls'), $user)) {
             $counts['contact_alert'] = CountCounselorCallAlerts($user);
+        }
+        if (AdminCanSee(AdminNotificationCode('information.homework-approval'), $user)) {
+            $counts['pending_homework'] = countPendingHomeworkAdmin();
         }
     } catch (Throwable $e) {
         error_log('SchoolLegacyNotificationCounts: ' . $e->getMessage());
@@ -1714,13 +1223,10 @@ function CountSchoolNotificationMenu(?string $user = null): int
 {
     $prefix = inst_is('institute') ? 'institute-notifications' : 'school-notifications';
     $user = $user ?? (string)($_SESSION['admin']['user'] ?? '');
-    if (!AdminHasAnyCurrentTreePermission($user)) {
-        return CountSchoolNotifications($user, true) + array_sum(SchoolLegacyNotificationCounts($user));
-    }
     $total = 0;
     foreach (SchoolNotificationTypeCounts($user) as $type => $counts) {
         if (IsSchoolDirectNotificationType((string)$type)
-            || AdminHasMenuPermission($prefix . '.categories.' . $type, $user)) {
+            || AdminCan($prefix . '.categories.' . $type, $user)) {
             $total += (int)$counts['unread'];
         }
     }
@@ -1728,9 +1234,10 @@ function CountSchoolNotificationMenu(?string $user = null): int
         'pending_invoice' => 'financial.invoices', 'wallet_charge_pending' => 'financial.wallet',
         'unread_sms' => 'information.sms', 'contact_ticket' => 'information.tickets',
         'contact_alert' => 'information.my-calls',
+        'pending_homework' => 'information.homework-approval',
     ];
     foreach (SchoolLegacyNotificationCounts($user) as $kind => $count) {
-        if (isset($legacyScopes[$kind]) && AdminHasMenuNavigationPermission($prefix . '.' . $legacyScopes[$kind], $user)) {
+        if (isset($legacyScopes[$kind]) && AdminCanSee($prefix . '.' . $legacyScopes[$kind], $user)) {
             $total += (int)$count;
         }
     }
@@ -1871,23 +1378,6 @@ function RequireStaffCourseAccess(int $codecourse, ?string $redirect = null): vo
     exit('شما به این پایه دسترسی ندارید.');
 }
 
-function RequireTeacherPermission(string $permission, ?string $redirect = null): void
-{
-    if ((int)($_SESSION['admin']['adminrole'] ?? -1) !== 3) {
-        return;
-    }
-    if (TeacherPermission($permission)) {
-        return;
-    }
-
-    if ($redirect !== null && !headers_sent()) {
-        header('location: ' . $redirect);
-        exit;
-    }
-
-    http_response_code(403);
-    exit('شما مجوز انجام این عملیات را ندارید.');
-}
 
 /**
  * Private personnel documents shared by employees and teachers.
@@ -4794,7 +4284,8 @@ function createRegisterClassEvent(
     string $homeworkNotificationTarget = 'family',
     ?int $darsId = null,
     float $maxScore = 20.0,
-    string $assessmentMode = 'score'
+    string $assessmentMode = 'score',
+    ?string $roomSessionId = null
 ): bool {
     global $conn;
 
@@ -4813,10 +4304,10 @@ function createRegisterClassEvent(
 
     $sql = "
         INSERT INTO register_class_events
-            (class_id, teacher_id, dars_id, title, event_date, group_uid, description, type, max_score, assessment_mode,
+            (class_id, teacher_id, dars_id, title, event_date, room_session_id, group_uid, description, type, max_score, assessment_mode,
              homework_notification_target, status, created_by)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '0', ?)
     ";
 
     $st = $conn->prepare($sql);
@@ -4825,6 +4316,7 @@ function createRegisterClassEvent(
         $teacherId, $darsId,
         $title,
         $eventDate,
+        $roomSessionId,
         $groupUid,
         $description,
         $type,
@@ -5090,8 +4582,9 @@ function saveStudentRegisterClassEntry(
         $check->execute([$eventId, $studentUsername]);
 
         if ($check->fetch()) {
+            // ثبت دستی، خانه را از ثبت خودکار دستگاه حضور خارج می‌کند
             $stmt = $conn->prepare("UPDATE register_class_attendance 
-                                    SET status = ?, created_by = ?, created_at = NOW()
+                                    SET status = ?, auto_source = NULL, created_by = ?, created_at = NOW()
                                     WHERE register_class_events_id = ? AND username = ?");
             $stmt->execute([$dbStatus, $createdBy, $eventId, $studentUsername]);
         } else {
@@ -5196,7 +4689,7 @@ function getRegisterClassAttendance(int $classId, int $adminId, int $adminRole):
 {
     global $conn;
     $sql = "
-        SELECT a.register_class_events_id AS event_id, a.username, a.status
+        SELECT a.register_class_events_id AS event_id, a.username, a.status, a.auto_source
         FROM register_class_attendance a
         INNER JOIN register_class_events ev ON a.register_class_events_id = ev.id
         WHERE ev.class_id = ?
@@ -5226,13 +4719,13 @@ function deleteRegisterClassEvent(int $eventId): bool {
     $stmt = $conn->prepare("DELETE FROM register_class_events WHERE id = ?");
     return $stmt->execute([$eventId]);
 }
-function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score'): bool {
+function updateRegisterClassEvent(int $eventId, string $title, ?string $eventDate, int $type, ?int $darsId = null, float $maxScore = 20.0, string $assessmentMode = 'score', ?string $roomSessionId = null): bool {
     global $conn;
     $eventDate = ($eventDate === '' || $eventDate === null) ? null : $eventDate;
     $maxScore = ($maxScore > 0 && $maxScore <= 999999) ? $maxScore : 20.0;
     if (!in_array($assessmentMode, ['score', 'quality'], true)) $assessmentMode = 'score';
-    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=? WHERE id=?");
-    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $eventId]);
+    $stmt = $conn->prepare("UPDATE register_class_events SET title=?, event_date=?, type=?, dars_id=?, max_score=?, assessment_mode=?, room_session_id=? WHERE id=?");
+    return $stmt->execute([$title, $eventDate, $type, $darsId, $maxScore, $assessmentMode, $roomSessionId, $eventId]);
 }
 
 /** Visible classroom grades for the authenticated student. */
@@ -5267,38 +4760,6 @@ function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100,
     $stmt = $conn->prepare($sql);
     $params = [$studentUsername];
     if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
-    $stmt->execute($params);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-}
-
-/** همه ستون‌های دفتر کلاسی قابل نمایش برای دانش‌آموز، همراه با نتیجه همان دانش‌آموز. */
-function GetStudentVisibleClassRegister(string $studentUsername, int $limit = 300, ?int $codecourse = null): array
-{
-    global $conn;
-    if ($studentUsername === '') return [];
-    $limit = max(1, min(500, $limit));
-    $sql = "SELECT ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score, ev.assessment_mode,
-                   ev.created_at AS event_created_at, c.id AS class_id, c.name AS class_name, c.codecourse,
-                   cr.coursename, d.dars AS dars_name, a.fname AS teacher_fname, a.lname AS teacher_lname,
-                   a.username AS teacher_username, e.score, e.quality, e.note, e.created_at,
-                   att.status AS attendance_status
-            FROM register_class_events ev
-            INNER JOIN classes c ON c.id = ev.class_id
-            INNER JOIN dbcourse dc ON dc.class_id = c.id AND dc.username = ? AND dc.activityuser = 1
-            INNER JOIN codtbl_course cr ON cr.codecourse = c.codecourse
-            LEFT JOIN dbdars d ON d.id = ev.dars_id
-            LEFT JOIN dbadmin a ON a.idadmin = ev.teacher_id
-            LEFT JOIN register_class_evaluation e ON e.register_class_events_id = ev.id AND e.username = ?
-                AND e.visibility_target IN ('student','both')
-            LEFT JOIN register_class_attendance att ON att.register_class_events_id = ev.id AND att.username = ?
-            WHERE 1=1
-              " . (($codecourse !== null && $codecourse > 0) ? " AND c.codecourse = ?" : "") . "
-            ORDER BY COALESCE(ev.event_date, DATE(COALESCE(e.created_at, att.created_at, ev.created_at))) DESC,
-                     COALESCE(e.created_at, att.created_at, ev.created_at) DESC, ev.id DESC
-            LIMIT {$limit}";
-    $params = [$studentUsername, $studentUsername, $studentUsername];
-    if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
-    $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
@@ -5533,13 +4994,16 @@ function setEventTeacherGroups(int $eventId, array $groupIds): bool
 }
 
 /*
- * Most admin pages execute their POST handlers before including admin/header.
- * Run the same route gate at the end of this common bootstrap as well, so a
- * direct POST cannot bypass the tree check. Non-admin pages and unmapped
- * endpoints are deliberately left alone.
+ * Every admin script passes the permission tree here, at the end of this
+ * common bootstrap, before its own handlers run (see inc/admin_permissions.php).
+ * The first request after the tree was introduced converts the old
+ * permissions of this panel once.
  */
 if (!empty($_SESSION['admin']) && isset($_SERVER['SCRIPT_NAME']) && str_contains(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/admin/')) {
-    EnforceAdminPageTreePermission();
+    AdminPermissionTreeV2Seed();
+    AdminNotificationHomeworkSeed();
+    AdminDropLegacyPermissionColumns();
+    EnforceAdminPagePermission();
 }
 
 /*

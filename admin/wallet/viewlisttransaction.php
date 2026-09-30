@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewwallet')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 if (!isset($_GET['id'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

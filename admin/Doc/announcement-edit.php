@@ -17,10 +17,6 @@ if (!isset($_SESSION['admin'])) {
 }
 
 // بررسی دسترسی
-if (!Permision('permision_viewdocument')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $schoolRoleKey = SchoolStaffRoleKey($currentUser);

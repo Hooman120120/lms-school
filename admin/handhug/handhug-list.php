@@ -121,13 +121,13 @@ include_once '../../temp.html';
                                         </thead>
                                         <tbody>
                                         <?php
-                                        if (in_array($_SESSION['admin']['adminrole'], [0, 6, 51, 52])) {
+                                        if (AdminCan('courses.handhug.list.all')) {
                                             $sql = 'SELECT * FROM dbcourse WHERE codecourse=? AND activityuser = 1';
                                             $query = $conn->prepare($sql);
                                             $query->execute([$_GET['code']]);
                                             $result = $query->fetchAll(PDO::FETCH_OBJ);
                                         }
-                                        elseif ($_SESSION['admin']['adminrole'] == 1 ){
+                                        elseif (AdminCan('courses.handhug.list.own')) {
                                             $sql = 'SELECT * FROM dbcourse WHERE codecourse=? AND activityuser = 1 AND suporter = ?';
                                             $query = $conn->prepare($sql);
                                             $query->execute([$_GET['code'],$_SESSION['admin']['user'] ]);

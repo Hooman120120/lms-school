@@ -29,10 +29,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('administrator')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 
 

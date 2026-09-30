@@ -25,13 +25,17 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_actfactor') && !Permision('permision_notpay') && !Permision('permision_bill')) {
-    http_response_code(403);
-    exit('مجوز ویرایش فاکتور برای شما تعریف نشده است.');
-}
 if (!isset($_GET['id']) || !ctype_digit((string)$_GET['id']) || (int)$_GET['id'] <= 0) {
     http_response_code(400);
     exit('شناسه فاکتور معتبر نیست.');
+}
+// Only invoices the account can see in one of the lists that link here.
+$editFactorId = (int)$_GET['id'];
+if (!AdminCanAccessFinanceFactor($editFactorId, 'finance.pending')
+    && !AdminCanAccessFinanceFactor($editFactorId, 'finance.unpaid')
+    && !AdminCanAccessFinanceFactor($editFactorId, 'finance.statement')) {
+    http_response_code(403);
+    exit('به این فاکتور دسترسی ندارید.');
 }
 // if (!CheckFactorNotSuccess($_GET['id'])) {
 //     echo '<strong>403</strong>';

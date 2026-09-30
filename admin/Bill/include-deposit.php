@@ -25,17 +25,18 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_notpay')) {
+// Same own/all rule as the unpaid-invoice list that opens this window.
+if (!AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.unpaid')) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();
 }
-if (!isset($_GET['factor'])) { dd('hi');
+if (!isset($_GET['factor'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();
 }
-if (!CheckFactorNotSuccess($_GET['factor'])) { dd(1);
+if (!CheckFactorNotSuccess($_GET['factor'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();

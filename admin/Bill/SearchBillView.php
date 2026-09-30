@@ -26,12 +26,7 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.statement')
-    : !Permision('permision_bill')) {
-    http_response_code(403); exit('مجوز مشاهده صورتحساب‌ها برای شما تعریف نشده است.');
-}
-$statementScope = AdminRecordVisibility('finance.statement', false);
+$statementScope = AdminScope('finance.statement');
 if ($statementScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ صورتحساب‌ها برای شما فعال نشده است.');
 }
@@ -58,6 +53,7 @@ if (isset($_SESSION['fee'])) {
     unset($_SESSION['fee']);
 }
 if (isset($_POST['txt']) and $_POST['txt'] != '') {
+    AdminRequire('finance.statement.search');
     $category = $_POST['category'];
     $txt = $_POST['txt'];
     switch ($category) {
@@ -108,7 +104,7 @@ if (isset($_POST['txt']) and $_POST['txt'] != '') {
     }
 
     if (isset($recive) && is_array($recive)) {
-        $recive = AdminFilterFinanceFactors($recive, 'finance.statement', false);
+        $recive = AdminFilterFinanceFactors($recive, 'finance.statement');
     }
 
 
@@ -145,6 +141,7 @@ if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
     die();
 }
 if (isset($_GET['delfactor'])) {
+    AdminRequire('finance.statement.manage');
     $factorId = intval($_GET['delfactor']);
     $factor = queryFactor($factorId);
     if ($factor->status != 'موفق' and $factor->status != 'مسترد شده') {
@@ -195,6 +192,7 @@ if (isset($_GET['delfactor'])) {
 
 } //حذف فاکتور
 if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
+    AdminRequire('finance.statement.manage');
     if (CheckFactorNotSuccess($_GET['unverify'])) {
         date_default_timezone_set("Iran");
         $datenow = date("Y-m-d");
@@ -228,6 +226,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
     }
 }
 if (isset($_GET['cancel']) and $_GET['cancel'] != '') {
+    AdminRequire('finance.statement.manage');
     $factor = queryFactor($_GET['cancel']);
     if ($factor->status != 'موفق') {
         $_SESSION['cancel'] = 'این صورتحساب پرداخت نشده است و امکان استرداد وجود ندارد';
@@ -316,7 +315,7 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_bill')) { ?>
+                if (AdminCanSee('finance.statement')) { ?>
 
                     <!-- Row -->
                     <div class="row row-sm">
@@ -377,7 +376,7 @@ include_once '../../temp.html';
                                 " افزوده شد .
                             </div>
                         <?php } ?>
-                        <?php if (Permision('permision_viewwallet')) { ?>
+                        <?php if (AdminCan('finance.statement.wallet-column')) { ?>
                             <div class="col-12">
                                 <div class="card custom-card">
                                     <div class="card-body py-3">

@@ -14,20 +14,19 @@ $currentUser = (string)$_SESSION['admin']['user'];
 $sessionRole = $_SESSION['admin']['role'] ?? null;
 
 // ✅ Fetch adminrole + permissions ONCE
-$stmt = $conn->prepare("
-    SELECT
-        adminrole AS role,
-        COALESCE(administrator, 0)       AS administrator,
-        COALESCE(permision_viewalert, 0)  AS perm_viewalert,
-        COALESCE(permision_viewemploy, 0) AS perm_viewemploy,
-        COALESCE(permision_suporter, 0)   AS perm_supporter,
-        COALESCE(installment_permission, 0)   AS perm_installment
-    FROM dbadmin
-    WHERE username = ?
-    LIMIT 1
-");
+$stmt = $conn->prepare("SELECT adminrole AS role FROM dbadmin WHERE username = ? LIMIT 1");
 $stmt->execute([$currentUser]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+// The admin's school position, shown in the sidebar like the OES «سمت» badge
+$schoolRoleTitle = '';
+try {
+    $roleStmt = $conn->prepare('SELECT sr.title FROM dbadmin a JOIN school_admin_roles sr ON sr.id = a.school_role_id WHERE a.username = ? LIMIT 1');
+    $roleStmt->execute([$currentUser]);
+    $schoolRoleTitle = (string)$roleStmt->fetchColumn();
+} catch (PDOException $e) {
+    // older databases have no school roles yet
+}
 
 // ✅ Normalize role to int exactly once (safe default = 0)
 // Keep session override if it exists
@@ -36,11 +35,11 @@ $adminRole = ($sessionRole !== null)
     : (int)($row['role'] ?? 0);
 
 // ✅ permissions
-$isManager = !empty($row['perm_viewalert']);
-$canSeeAll = $isManager && !empty($row['perm_viewemploy']);
-$isOperator = !empty($row['perm_supporter']);
-$administrator = (int)($row['administrator'] ?? 0);
-$installment_manager = (int)($row['perm_installment'] ?? 0);
+$isManager = AdminCan(AdminNotificationCode('information.tickets.manage'));
+$canSeeAll = AdminCan(AdminNotificationCode('information.tickets.all'));
+$isOperator = AdminCan(AdminNotificationCode('information.tickets.own'));
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
+$installment_manager = AdminScope('finance.installments') === 'all' ? 1 : 0;
 
 $adminteachernotif = countTeacherManagementticket($currentUser, $administrator);
 $suspReqCount = countSuspensionRequestsNeedAction($currentUser, $isManager, $canSeeAll);
@@ -56,15 +55,12 @@ $Countsus = countSuspensionReviewedUnseen($currentUser, (int)$administrator);
 $Countnoop = countCancelOpReviewedUnseen($currentUser, (int)$administrator);
 $countInstallmentOverdue = countInstallmentOverdue($currentUser, (int)$installment_manager);
 $countPendingTicketReferrals = countPendingTicketReferrals($currentUser);
-$countPendinghomework = countPendingHomeworkAdmin();
 $schoolNotificationTypes = SchoolNotificationAllowedTypes(SchoolStaffRoleKey($currentUser));
 $schoolNotificationCount = CountSchoolNotificationMenu($currentUser);
 $schoolDirectNotificationCount = CountSchoolDirectNotifications($currentUser, false);
-if (AdminHasAnyCurrentTreePermission()) {
-    $schoolNotificationTypes = array_values(array_filter($schoolNotificationTypes, static fn(string $type): bool =>
-        IsSchoolDirectNotificationType($type)
-        || AdminHasMenuPermission('school-notifications.categories.' . $type)));
-}
+$schoolNotificationTypes = array_values(array_filter($schoolNotificationTypes, static fn(string $type): bool =>
+    IsSchoolDirectNotificationType($type)
+    || AdminCan(AdminNotificationCode('categories.' . $type))));
 
 
 $role = (int)($_SESSION['admin']['adminrole'] ?? $adminRole);
@@ -77,6 +73,8 @@ elseif ($role === 6) $c = '#ff8a00';
 elseif ($role >= 51 && $role <= 59) $c = '#244370';
 else                  $c = '#15233f';
 ?>
+
+<?php include_once __DIR__ . '/info-tooltip.php'; ?>
 
 <style>
     body .main-sidebar-sticky {
@@ -91,68 +89,15 @@ else                  $c = '#15233f';
     body .main-sidebar-body .nav-item.active > .nav-link::before {
         border-left: 20px solid <?= $c ?> !important;
     }
-
-
-    .menu-info-trigger {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 22px;
-        height: 22px;
-        color: #6c757d;
-        cursor: help;
-        transition: color 0.2s;
-    }
-
-    .menu-info-trigger:hover {
-        color: #0d6efd;
-    }
-
-    #menuInfoTooltip {
-        position: fixed;
-        z-index: 2147483647;
+    .school-role-badge {
         display: block;
-        box-sizing: border-box;
-        width: 280px;
-        max-width: calc(100vw - 20px);
-        padding: 10px 12px;
-        background-color: #1f2937;
-        color: #ffffff;
+        margin: 4px 18px 14px;
+        padding: 8px 10px;
         border-radius: 8px;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+        background: #f0f4ff;
+        color: #3448a3;
+        text-align: center;
         font-size: 12px;
-        line-height: 1.8;
-        text-align: right;
-        direction: rtl;
-        pointer-events: none;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-50%);
-        will-change: left, top, opacity;
-        transition: opacity 0.15s ease, visibility 0.15s ease;
-    }
-
-    #menuInfoTooltip.show {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    #menuInfoTooltip::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        border: 7px solid transparent;
-        transform: translateY(-50%);
-    }
-
-    #menuInfoTooltip.place-left::after {
-        left: 100%;
-        border-left-color: #1f2937;
-    }
-
-    #menuInfoTooltip.place-right::after {
-        right: 100%;
-        border-right-color: #1f2937;
     }
 </style>
 
@@ -166,6 +111,7 @@ else                  $c = '#15233f';
     <div class="main-sidebar-body">
         <ul class="nav">
             <li class="nav-header"><span class="nav-label" style="font-size: 15px; color: #CD964F;"><?= inst_is('institute') ? 'ویژه آموزشگاه' : 'ویژه مدارس' ?></span></li>
+            <li><div class="school-role-badge">سمت: <?= htmlspecialchars($schoolRoleTitle !== '' ? $schoolRoleTitle : 'بدون سمت', ENT_QUOTES, 'UTF-8') ?></div></li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo url('admin/index.php') ?>">
                     <span class="shape1"></span>
@@ -190,7 +136,7 @@ else                  $c = '#15233f';
                     </span>
                 </a>
             </li>
-            <?php if (Permision('permision_viewcall')) { ?>
+            <?php if (AdminCanSee('public-relations')) { ?>
 
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#">
@@ -214,13 +160,13 @@ else                  $c = '#15233f';
                         <i class="angle fe fe-chevron-left"></i>
                     </a>
                     <ul class="nav-sub">
-                        <?php if (AdminCanUsePermissionScope('public-relations.safe-call', ['permision_viewcall'])) { ?>
+                        <?php if (AdminCanSee('public-relations.safe-call')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_call.php') ?>">تماس امن
                                 </a>
                             </li>
                         <?php } ?>
-                        <?php if (AdminCanUsePermissionScope('public-relations.safe-sms', ['permision_viewcall'])) { ?>
+                        <?php if (AdminCanSee('public-relations.safe-sms')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/Tel/safe_sms.php') ?>">پیامک امن
                                 </a>
@@ -230,7 +176,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (AdminMenuCan('students', Permision('permision_viewstudent'))): ?>
+            <?php if (AdminCanSee('students')): ?>
                 <li class="nav-item" style="margin-bottom: 5px;">
                     <a class="nav-link with-sub" href="#">
                         <span class="shape1"></span><span class="shape2"></span>
@@ -255,7 +201,7 @@ else                  $c = '#15233f';
                     <ul class="nav-sub">
 
                         <!-- دانش آموزان قطعی -->
-                        <?php if (inst_is('school') || AdminMenuCan('students.definitive', true)): ?>
+                        <?php if (inst_is('school') || AdminCanSee('students.definitive')): ?>
                         <?php if (inst_is('institute')): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
@@ -266,7 +212,7 @@ else                  $c = '#15233f';
 
                             <ul class="nav-sub" style="padding-left: 20px;"> <!-- فاصله زیرمنو -->
                         <?php endif; ?>
-                                <?php if (AdminMenuCan('students.definitive.register', $adminRole !== 6)): ?>
+                                <?php if (AdminCanSee('students.definitive.register')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/add.php') ?>">ثبت نام</a>
                                     </li>
@@ -276,25 +222,25 @@ else                  $c = '#15233f';
                                         <a class="nav-sub-link" href="<//?= url('admin/Student/add-group.php') ?>">ثبت نام گروهی </a>
                                     </li>
                                 <//?php endif; ?> -->
-                                <?php if (AdminMenuCan('students.definitive.enrolment', true)): ?>
+                                <?php if (AdminCanSee('students.definitive.enrolment')): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/addcourse.php') ?>"><?php echo m('menu.student_register_course') ?></a>
                                 </li>
                                 <?php endif; ?>
-                                <?php if (inst_is('school') && AdminMenuCan('students.temporary.enrolment', $adminRole !== 2)): ?>
+                                <?php if (inst_is('school') && AdminCanSee('students.temporary.enrolment')): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>"><?= m('menu.register_democourse_student') ?></a>
                                 </li>
                                 <?php endif; ?>
-                                <?php if (AdminMenuCan('students.definitive.edit', true)): ?>
+                                <?php if (AdminCanSee('students.definitive.edit')): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/edit-absolute.php') ?>"><?= inst_is('school') ? 'ویرایش اطلاعات' : 'ویرایش اطلاعات قطعی' ?></a>
                                 </li>
                                 <?php endif; ?>
 
-                                <?php if ($adminRole == 1 || AdminHasAnyCurrentTreePermission()) : ?>
+                                <?php if (true) : ?>
 
-                                    <?php if (AdminMenuCan('students.definitive.my-students', true)): ?>
+                                    <?php if (AdminCanSee('students.definitive.my-students')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/mystudent.php') ?>">
@@ -303,7 +249,7 @@ else                  $c = '#15233f';
                                     </li>
                                     <?php endif; ?>
 
-                                    <?php if (inst_is('institute') && AdminMenuCan('students.definitive.my-courses', true)): ?>
+                                    <?php if (inst_is('institute') && AdminCanSee('students.definitive.my-courses')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/mypersonalcourse.php') ?>">
@@ -312,7 +258,7 @@ else                  $c = '#15233f';
                                     </li>
                                     <?php endif; ?>
 
-                                    <?php if (AdminMenuCan('students.definitive.cancelled-support', true)): ?>
+                                    <?php if (AdminCanSee('students.definitive.cancelled-support')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/canceled_student_list.php') ?>">
@@ -321,7 +267,7 @@ else                  $c = '#15233f';
                                     </li>
                                     <?php endif; ?>
 
-                                    <?php if (AdminMenuCan('students.definitive.suspended-support', true)): ?>
+                                    <?php if (AdminCanSee('students.definitive.suspended-support')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/panel/suspension_list.php') ?>">
@@ -333,32 +279,32 @@ else                  $c = '#15233f';
                                 <?php endif; ?>
 
 
-                                <?php if ($adminRole !== 2 || AdminHasAnyCurrentTreePermission()): ?>
-                                    <?php if (AdminMenuCan('students.definitive.course-report', true)): ?>
+                                <?php if (true): ?>
+                                    <?php if (AdminCanSee('students.definitive.course-report')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/Student/registration-Course-absolute.php') ?>">گزارش
                                             تفکیکی</a>
                                     </li>
                                     <?php endif; ?>
-                                    <?php if (inst_is('school') && AdminMenuCan('students.temporary.report', $adminRole !== 2)): ?>
+                                    <?php if (inst_is('school') && AdminCanSee('students.temporary.report')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/registration-Course-experimental.php') ?>">گزارش تفکیکی فوق برنامه</a>
                                     </li>
                                     <?php endif; ?>
-                                    <?php if (AdminMenuCan('students.definitive.inactive', true)): ?>
+                                    <?php if (AdminCanSee('students.definitive.inactive')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/Student/unactive-student.php') ?>">غیرفعال‌ها</a>
                                     </li>
                                     <?php endif; ?>
 
-                                    <?php if (AdminMenuCan('students.definitive.cancelled', Permision('permision_reportstudent'))): ?>
+                                    <?php if (AdminCanSee('students.definitive.cancelled')): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/canceled-student.php') ?>">انصرافی ها</a>
                                         </li>
                                     <?php endif; ?>
-                                    <?php if (AdminMenuCan('students.definitive.suspended', Permision('permision_reportstudent'))): ?>
+                                    <?php if (AdminCanSee('students.definitive.suspended')): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/suspended-student.php') ?>">
@@ -366,7 +312,7 @@ else                  $c = '#15233f';
                                             </a>
                                         </li>
                                     <?php endif; ?>
-                                    <?php if (AdminMenuCan('students.definitive.cancelled-operator', Permision('permision_reportstudent'))): ?>
+                                    <?php if (AdminCanSee('students.definitive.cancelled-operator')): ?>
                                         <li class="nav-sub-item" style="margin-bottom: 3px;">
                                             <a class="nav-sub-link"
                                                 href="<?= url('admin/Student/canceled-op-student.php') ?>">لغو پشتیبانی
@@ -381,7 +327,7 @@ else                  $c = '#15233f';
                         <?php endif; ?>
 
                         <!-- دانش آموزان آزمایشی -->
-                        <?php if (inst_is('institute') && AdminMenuCan('students.temporary', true)): ?>
+                        <?php if (inst_is('institute') && AdminCanSee('students.temporary')): ?>
                         <li class="nav-item show" style="margin-bottom: 5px;">
                             <a class="d-flex flex-row with-sub" href="#" style="height: 35px; padding-left: 25px;">
                                 <span class="shape1"></span><span class="shape2"></span>
@@ -390,7 +336,7 @@ else                  $c = '#15233f';
                             </a>
 
                             <ul class="nav-sub" style="padding-left: 20px;">
-                                <?php if (AdminMenuCan('students.temporary.register', true)): ?>
+                                <?php if (AdminCanSee('students.temporary.register')): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/experimental-add.php') ?>">ثبت
                                         نام
@@ -398,18 +344,18 @@ else                  $c = '#15233f';
                                         موقت</a>
                                 </li>
                                 <?php endif; ?>
-                                <?php if (AdminMenuCan('students.temporary.enrolment', $adminRole !== 2)): ?>
+                                <?php if (AdminCanSee('students.temporary.enrolment')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link" href="<?= url('admin/democourse/addstudent.php') ?>"><?php echo m('menu.register_democourse_student') ?></a>
                                     </li>
                                 <?php endif; ?>
-                                <?php if (AdminMenuCan('students.temporary.edit', true)): ?>
+                                <?php if (AdminCanSee('students.temporary.edit')): ?>
                                 <li class="nav-sub-item" style="margin-bottom: 3px;">
                                     <a class="nav-sub-link" href="<?= url('admin/Student/edit-experimental.php') ?>">ویرایش
                                         اطلاعات موقت</a>
                                 </li>
                                 <?php endif; ?>
-                                <?php if (AdminMenuCan('students.temporary.report', $adminRole !== 2)): ?>
+                                <?php if (AdminCanSee('students.temporary.report')): ?>
                                     <li class="nav-sub-item" style="margin-bottom: 3px;">
                                         <a class="nav-sub-link"
                                             href="<?= url('admin/Student/registration-Course-experimental.php') ?>">گزارش
@@ -426,9 +372,7 @@ else                  $c = '#15233f';
 
 
             <?php
-            $execMenuIsAdmin = Permision('administrator');
-            $execMenuCanViewAcademic = ((int)$adminRole === 3) || SchoolStaffRoleKey($currentUser) !== '';
-            if (AdminMenuCan('executive', $execMenuIsAdmin || $execMenuCanViewAcademic)) { ?>
+            if (AdminCanSee('executive')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-calendar  sidemenu-icon"></i>
@@ -453,26 +397,26 @@ else                  $c = '#15233f';
                             class="angle fe fe-chevron-left"></i></a>
 
                     <ul class="nav-sub">
-                        <?php if (AdminMenuCan('executive.calendar', $execMenuIsAdmin)) { ?>
+                        <?php if (AdminCanSee('executive.calendar')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/panel/calendar_panel.php') ?>">تقویم
                                     اجرایی</a>
                             </li>
                         <?php } ?>
-                        <?php if (AdminMenuCan('executive.academic-calendar', true)): ?>
+                        <?php if (AdminCanSee('executive.academic-calendar')): ?>
                         <li class="nav-sub-item">
                             <a class="nav-sub-link" href="<?php echo url('admin/panel/academic-calendar.php') ?>">تقویم
                                 آموزشی</a>
                         </li>
                         <?php endif; ?>
-                        <?php if (AdminMenuCan('executive.daily-notices', $execMenuIsAdmin)) { ?>
+                        <?php if (AdminCanSee('executive.daily-notices')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/notifications/daily_notifications.php') ?>">تابلو
                                     اعلان روزانه
                                 </a>
                             </li>
                         <?php } ?>
-                        <?php if (AdminMenuCan('executive.news', $execMenuIsAdmin)) { ?>
+                        <?php if (AdminCanSee('executive.news')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/notifications/news_panel.php') ?>">تابلو
                                     اخبار</a>
@@ -486,7 +430,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (AdminMenuCan('courses', true)): ?>
+            <?php if (AdminCanSee('courses')): ?>
             <li class="nav-item">
                 <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                         class="si si-organization sidemenu-icon"></i>
@@ -510,20 +454,20 @@ else                  $c = '#15233f';
                 </a>
 
                 <ul class="nav-sub ">
-                    <?php if (AdminMenuCan('courses.main', true)): ?>
+                    <?php if (AdminCanSee('courses.main')): ?>
                     <li class="nav-item show">
                         <a class="nav with-sub" href="#"><span class="shape1"></span><span class="shape2"></span>
                             <span class="sidemenu-label" style="font-size:16px; color: #79f57d;"><?php echo m('menu.courses_sub') ?></span>
                         </a>
 
                         <ul class="nav-sub">
-                            <?php if ($adminRole !== 2): ?>
-                                <?php if (AdminMenuCan('courses.main.create', Permision('permision_viewcourse'))) { ?>
+                            <?php if (true): ?>
+                                <?php if (AdminCanSee('courses.main.create')) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link" href="<?php echo url('admin/course/add-Course.php') ?>"><?php echo m('menu.course_create') ?></a>
                                     </li>
                                 <?php } ?>
-                                <?php if (AdminMenuCan('courses.main.demo-create', true)): ?>
+                                <?php if (AdminCanSee('courses.main.demo-create')): ?>
                                 <li class="nav-sub-item">
                                     <a class="nav-sub-link"
                                         href="<?php echo url('admin/democourse/add-democourse.php') ?>"><?php echo m('menu.democourse_create') ?></a>
@@ -531,27 +475,27 @@ else                  $c = '#15233f';
                                 <?php endif; ?>
                             <?php endif; ?>
 
-                            <?php if (AdminMenuCan('courses.main.active', true)): ?>
+                            <?php if (AdminCanSee('courses.main.active')): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/course/Active-course.php') ?>"><?php echo m('menu.active_courses') ?></a>
                             </li>
                             <?php endif; ?>
 
-                            <?php if (AdminMenuCan('courses.main.demo-active', true)): ?>
+                            <?php if (AdminCanSee('courses.main.demo-active')): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link"
                                     href="<?php echo url('admin/democourse/list-democourse.php?paye=all') ?>"><?php echo m('menu.active_democourses') ?></a>
                             </li>
                             <?php endif; ?>
-                            <?php if ($adminRole !== 2): ?>
-                                <?php if (AdminMenuCan('courses.main.archive', Permision('permision_viewcourse'))) { ?>
+                            <?php if (true): ?>
+                                <?php if (AdminCanSee('courses.main.archive')) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link"
                                             href="<?php echo url('admin/course/unactive-course.php') ?>">
                                             بایگانی سال‌های قبل</a>
                                     </li>
                                 <?php } ?>
-                                <?php if (AdminMenuCan('courses.main.discount', Permision('permision_discount'))) { ?>
+                                <?php if (AdminCanSee('courses.main.discount')) { ?>
                                     <li class="nav-sub-item">
                                         <a class="nav-sub-link"
                                             href="<?php echo url('admin/course/add-discount.php') ?>"> ایجاد
@@ -563,26 +507,26 @@ else                  $c = '#15233f';
                         </ul>
                     </li>
                     <?php endif; ?>
-                    <?php if (AdminMenuCan('courses.handhug', true)): ?>
+                    <?php if (AdminCanSee('courses.handhug')): ?>
                     <li class="nav-item show">
                         <a class="nav with-sub" href=""><span class="shape1"></span><span class="shape2"></span>
                             <span class="sidemenu-label "
                                 style="font-size:16px; color: #79f57d;">"بغل دستی ها"</span></a>
 
                         <ul class="nav-sub">
-                            <?php if (AdminMenuCan('courses.handhug.create', true)): ?>
+                            <?php if (AdminCanSee('courses.handhug.create')): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link " href="<?php echo url('admin/handhug/add-handhug.php') ?>"> ساخت
                                     محصول "بغل دستی ها"</a>
                             </li>
                             <?php endif; ?>
-                            <?php if (AdminMenuCan('courses.handhug.manage', true)): ?>
+                            <?php if (AdminCanSee('courses.handhug.manage')): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
                                     href="<?php echo url('admin/handhug/handhug-management.php') ?>"> <?php echo m('menu.handhug_active') ?></a>
                             </li>
                             <?php endif; ?>
-                            <?php if (AdminMenuCan('courses.handhug.archive', true)): ?>
+                            <?php if (AdminCanSee('courses.handhug.archive')): ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link "
                                     href="<?php echo url('admin/handhug/disabled-handhugs.php') ?>"> بایگانی سال‌های قبل
@@ -613,14 +557,20 @@ else                  $c = '#15233f';
             </li>
 
             <?php endif; ?>
-            <?php if (inst_is('school') && (AdminHasAnyCurrentTreePermission()
-                ? (AdminHasMenuNavigationPermission('school-notifications') || $schoolDirectNotificationCount > 0)
-                : $schoolNotificationTypes !== [])): ?>
+            <?php if (inst_is('school') && (AdminCanSee('school-notifications') || $schoolDirectNotificationCount > 0)): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/school_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>
                         <i class="fe fe-bell sidemenu-icon"></i>
-                        <span class="sidemenu-label"><?php echo m('menu.school_notifications') ?></span>
+                        <span class="sidemenu-label" style="display:inline-flex; align-items:center; gap:12px;">
+                            <?= htmlspecialchars(m('menu.school_notifications')) ?>
+                            <span class="menu-info-trigger" tabindex="0"
+                                  data-tooltip="<?= htmlspecialchars(m('menu.school_notifications_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                  aria-label="<?= htmlspecialchars('راهنمای ' . m('menu.school_notifications'), ENT_QUOTES, 'UTF-8') ?>"
+                                  onclick="event.preventDefault(); event.stopPropagation();">
+                                <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                            </span>
+                        </span>
                         <?php if ($schoolNotificationCount > 0): ?>
                             <span class="badge badge-warning side-badge mg-r-20"><?= (int)$schoolNotificationCount ?></span>
                         <?php endif; ?>
@@ -628,321 +578,27 @@ else                  $c = '#15233f';
                 </li>
             <?php endif; ?>
 
-            <?php if (inst_is('institute') && AdminMenuCan('institute-notifications', SchoolNotificationAllowedTypes() !== [])): ?>
+            <?php if (inst_is('institute') && AdminCanSee('institute-notifications')): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= url('admin/notifications/institute_notifications.php') ?>">
                         <span class="shape1"></span><span class="shape2"></span>
                         <i class="fe fe-bell sidemenu-icon"></i>
-                        <span class="sidemenu-label">اعلان‌های آموزشگاه</span>
+                        <span class="sidemenu-label" style="display:inline-flex; align-items:center; gap:12px;">
+                            <?= htmlspecialchars(m('menu.school_notifications')) ?>
+                            <span class="menu-info-trigger" tabindex="0"
+                                  data-tooltip="<?= htmlspecialchars(m('menu.school_notifications_tooltip'), ENT_QUOTES, 'UTF-8') ?>"
+                                  aria-label="<?= htmlspecialchars('راهنمای ' . m('menu.school_notifications'), ENT_QUOTES, 'UTF-8') ?>"
+                                  onclick="event.preventDefault(); event.stopPropagation();">
+                                <i class="fe fe-info fs-4" aria-hidden="true"></i>
+                            </span>
+                        </span>
                         <?php $instituteNotificationCount = CountInstituteNotificationMenu(); ?>
                         <?php if ($instituteNotificationCount > 0): ?><span class="badge badge-warning side-badge mg-r-20"><?= (int)$instituteNotificationCount ?></span><?php endif; ?>
                     </a>
                 </li>
             <?php endif; ?>
             <!-- The institute notification entry above opens the shared notification screen. -->
-            <?php if (false): ?>
-                <!--main alert navigator-->
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#">
-                        <span class="shape1"></span><span class="shape2"></span>
-                        <i class="fe fe-bell sidemenu-icon"></i>
-                        <span class="sidemenu-label"
-                            style="display:inline-flex;
-                             align-items:center;
-                             gap:12px;">
-
-                            اعلان‌ها
-
-                            <span class="menu-info-trigger"
-                                data-tooltip="<?php echo m('tooltip.notifications_menu') ?>"
-                                aria-label="راهنمای مدیریت اعلان‌ها"
-                                onclick="event.preventDefault(); event.stopPropagation();">
-
-                                <i class="fe fe-info fs-4"></i>
-                            </span>
-
-                        </span>
-                        <i class="angle fe fe-chevron-left"></i>
-                        <?php if ($notifTotalCount > 0): ?>
-                            <span class="badge badge-warning side-badge mg-r-20">*</span>
-                        <?php endif; ?>
-                    </a>
-
-                    <ul class="nav-sub"> <!--                    main ul                  -->
-                        <?php $allowed_users_management = [0];
-                        if (in_array($_SESSION['admin']['adminrole'], $allowed_users_management)) { ?>
-                            <li class="nav-item">
-                                <a class="d-flex flex-row with-sub" href="#" style="height: 30px;">
-                                    <span class="shape1"></span><span class="shape2"></span>
-                                    <span class="sidemenu-label" style="font-size:16px; color: #79f57d; "> مدیریت </span>
-                                    <?php if ($adminteachernotif > 0): ?>
-                                        <span class="badge badge-warning"
-                                            style="border-radius: 50px; display: flex; margin-right: 105px; height: 20px;">*</span>
-                                    <?php endif; ?>
-                                </a>
-                                <ul class="nav-sub">
-                                    <?php if (Permision('permision_viewalert')): ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/notif_rule_management.php') ?>">
-                                                کنترل محدودیت اعلان ها
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-
-                                    <?php if (Permision('permision_viewalert')): ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/manager_notif.php') ?>">
-                                                اعلان مدیریت
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-
-                                    <?php if (Permision('permision_viewalert')): ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/notification_view.php') ?>">
-                                                اعلان اپراتور ها
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <li class="nav-sub-item">
-                                        <a class="nav-sub-link"
-                                            href="<?= url('admin/notifications/admin_teacher_notif.php') ?>">
-                                            <?php echo m('label.teacher_notifications') ?>
-                                            <?php if ($adminteachernotif > 0): ?>
-                                                <span class="badge badge-warning"
-                                                    style="border-radius: 50px; display: flex; margin-right: 60px; height: 20px;"><?= (int)$adminteachernotif ?></span>
-                                            <?php endif; ?>
-                                            <span class="badge badge-light"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-sub-item">
-                                        <a class="nav-sub-link"
-                                            href="<?= url('admin/notifications/referred_tickets.php') ?>">
-                                            ارجاع یافته
-                                            <?php if ($countPendingTicketReferrals > 0): ?>
-                                                <span class="badge badge-warning"
-                                                    style="border-radius: 50px; display: flex; margin-right: 60px; height: 20px;"><?= (int)$countPendingTicketReferrals ?></span>
-                                            <?php endif; ?>
-                                            <span class="badge badge-light"></span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php $allowed_users_administrators = [0, 51, 52, 53, 54];
-                        if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators)) { ?>
-                            <li class="nav-item">
-                                <a class="d-flex flex-row with-sub" href="#" style="height: 30px;">
-                                    <span class="shape1"></span><span class="shape2"></span>
-                                    <span class="sidemenu-label" style="font-size:16px; color: #79f57d;"> معاونت </span>
-                                    <?php if ($administratorNotifcount > 0): ?>
-                                        <span class="badge badge-warning"
-                                            style="border-radius: 50px; display: flex; margin-right: 105px; height: 20px;">*</span>
-                                    <?php endif; ?>
-                                </a>
-                                <ul class="nav-sub">
-                                    <?php $allowed_users_administrators1 = [0, 51];
-                                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators1)) { ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/administrator_notif.php?type=1') ?>">
-                                                معاونت اجرایی
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php $allowed_users_administrators2 = [0, 51, 52];
-                                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators2)) { ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/administrator_notif.php?type=2') ?>">
-                                                معاونت آموزش
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php $allowed_users_administrators3 = [0, 51, 53, 52, 54];
-                                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators3)) { ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/administrator_notif.php?type=3') ?>">
-                                                معاونت فروش
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php $allowed_users_administrators3 = [0, 51, 52, 54];
-                                    if (in_array($_SESSION['admin']['adminrole'], $allowed_users_administrators3)) { ?>
-                                        <li class="nav-sub-item">
-                                            <a class="nav-sub-link"
-                                                href="<?= url('admin/notifications/administrator_notif.php?type=4') ?>">
-                                                معاونت فنی
-                                                <span class="badge badge-light"></span>
-                                            </a>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php $allowed_users_middle = [0, 2, 51, 52, 54];
-                        if (in_array($_SESSION['admin']['adminrole'], $allowed_users_middle)) { ?>
-                            <li class="nav-item">
-                                <a class="d-flex flex-row with-sub" href="#" style="height: 30px;">
-                                    <span class="shape1"></span><span class="shape2"></span>
-                                    <span class="sidemenu-label"
-                                        style="font-size:16px; color: #79f57d;"> معاونت میانی </span>
-                                    <!--                            --><?php //if ($notifTotalCount > 0): 
-                                                                        ?>
-                                    <!--                                <span class="badge badge-warning" style="border-radius: 50px; display: flex; margin-right: 87px; height: 20px;"></span>-->
-                                    <!--                            --><?php //endif; 
-                                                                        ?>
-                                </a>
-                                <ul class="nav-sub">
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php $allowed_users_sales = [0, 2, 51, 52, 54, 6];
-                        if (in_array($_SESSION['admin']['adminrole'], $allowed_users_sales)) { ?>
-                            <li class="nav-item">
-                                <a class="d-flex flex-row with-sub" href="#">
-                                    <span class="shape1"></span><span class="shape2" style="height: 30px;"></span>
-                                    <span class="sidemenu-label" style="font-size:16px; color: #79f57d;  "> واحد فروش</span>
-                                    <!--                            <i class="angle fe fe-chevron-left"></i>-->
-                                    <!--                            --><?php //if ($notifTotalCount > 0): 
-                                                                        ?>
-                                    <!--                            <span class="badge badge-warning" style="border-radius: 50px; display: flex; margin-right: 55px; height: 20px;"></span>-->
-                                    <!--                            --><?php //endif; 
-                                                                        ?>
-
-                                </a>
-                                <ul class="nav-sub">
-                                    <li class="nav-sub-item">
-                                        <a class="nav-sub-link" href="<?= url('admin/notifications/notif_sales.php') ?>">
-                                            لیست اعلان ها
-                                            <span class="badge badge-light"></span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php $allowed_users_operator = [0, 1, 2, 51, 52, 54];
-                        if (in_array($_SESSION['admin']['adminrole'], $allowed_users_operator)) { ?>
-                            <li class="nav-item">
-                                <a class="d-flex flex-row with-sub" href="#" style="height: 30px;">
-                                    <span class="shape1"></span><span class="shape2"></span>
-                                    <span class="sidemenu-label"
-                                        style="font-size:16px; color: #79f57d; "> واحد پشتیبانی </span>
-                                </a>
-                                <ul class="nav-sub">
-                                    <li class="nav-sub-item">
-                                        <a class="nav-sub-link" href="<?= url('admin/notifications/operator_notif.php') ?>">
-                                            لیست اعلان ها
-                                            <?php if ($teacherNotifCount > 0): ?>
-                                                <span class="badge badge-warning mg-r-20"><?= (int)$teacherNotifCount ?></span>
-                                            <?php endif; ?>
-                                            <span class="badge badge-light"></span>
-                                        </a>
-                                    </li>
-                                    <!--                                            <li class="nav-sub-item">-->
-                                    <!--                                                <a class="nav-sub-link" href="-->
-                                    <? //= url('admin/notifications/teachers_notif.php') 
-                                    ?><!--">-->
-                                    <!--                                                        تیکت اساتید-->
-                                    <!--                                                    --><?php //if ($teacherNotifCount > 0): 
-                                                                                                ?>
-                                    <!--                                                        <span class="badge badge-warning mg-r-20">-->
-                                    <? //= (int)$teacherNotifCount 
-                                    ?><!--</span>-->
-                                    <!--                                                    --><?php //endif; 
-                                                                                                ?>
-                                    <!--                                                    <span class="badge badge-light"></span>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-
-                                    <!--                                                <li class="nav-sub-item">-->
-                                    <!--                                                    <a class="nav-sub-link" href="-->
-                                    <? //= url('admin/notifications/studentoperator_changes_notif.php') 
-                                    ?><!--">-->
-                                    <!--                                                        --><? //= ((int)$administrator === 1) ? 'دانش آموزان تغییر پشتیبان یافته' : 'لیست دانش آموزان تغییر پشتیبان یافته به شما' 
-                                                                                                    ?>
-                                    <!--                                                        --><?php //if ($studentOpChangeCount > 0): 
-                                                                                                    ?>
-                                    <!--                                                            <span class="badge badge-warning pr-2">-->
-                                    <? //= (int)$studentOpChangeCount 
-                                    ?><!--</span>-->
-                                    <!--                                                        --><?php //endif; 
-                                                                                                    ?>
-                                    <!--                                                        <span class="badge badge-light"></span>-->
-                                    <!--                                                    </a>-->
-                                    <!--                                                </li>-->
-                                    <!---->
-                                    <!--                                                <li class="nav-sub-item">-->
-                                    <!--                                                    <a class="nav-sub-link" href="-->
-                                    <? //= url('admin/notifications/new_students.php') 
-                                    ?><!--">-->
-                                    <!--                                                        --><? //= ((int)$administrator === 1) ? 'دانش آموزان با پشتیبان جدید' : 'لیست دانش آموزان جدید شما' 
-                                                                                                    ?>
-                                    <!---->
-                                    <!--                                                        --><?php //if ($countNewStudent > 0): 
-                                                                                                    ?>
-                                    <!--                                                            <span class="badge badge-warning pr-2">-->
-                                    <? //= (int)$countNewStudent 
-                                    ?><!--</span>-->
-                                    <!--                                                        --><?php //endif; 
-                                                                                                    ?>
-                                    <!---->
-                                    <!--                                                        <span class="badge badge-light"></span>-->
-                                    <!--                                                    </a>-->
-                                    <!--                                                </li>-->
-                                    <!---->
-                                    <!--                                                <li class="nav-sub-item">-->
-                                    <!--                                                    <a class="nav-sub-link" href="-->
-                                    <? //= url('admin/notifications/new_student_tickets.php') 
-                                    ?><!--">-->
-                                    <!--                                                     تیکت دانش آموزان جدید-->
-                                    <!--                                                        <span class="badge badge-warning pr-2"></span>-->
-                                    <!--                                                        <span class="badge badge-light"></span>-->
-                                    <!--                                                    </a>-->
-                                    <!--                                                </li>-->
-                                    <!--                                            <li class="nav-sub-item">-->
-                                    <!--                                                <a class="nav-sub-link" href="#">-->
-                                    <!--                                                    اعلان اقساط-->
-                                    <!--                                                    <span class="badge badge-warning pr-2"></span>-->
-                                    <!--                                                    <span class="badge badge-light"></span>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-
-
-                                </ul>
-                            </li>
-                        <?php } ?>
-
-                        <!--                    <li class="nav-item">-->
-                        <!--                        <a class="d-flex flex-row with-sub" href="#" style="height: 30px;" >-->
-                        <!--                            <span class="shape1"></span><span class="shape2"></span>-->
-                        <!--                            <span class="sidemenu-label" style="color: white; font-size:17px;  "> واحد آموزش</span>-->
-                        <!--                             --><?php //if ($teacherNotifCount > 0): 
-                                                            ?>
-                        <!--                                 <span class="badge badge-warning" style="border-radius: 50px; display: flex; margin-right: 80px; height: 20px;">-->
-                        <? //= (int)$teacherNotifCount 
-                        ?><!--</span>-->
-                        <!--                             --><?php //endif; 
-                                                            ?>
-                        <!--                        </a>-->
-                        <!--                    </li>-->
-
-                    </ul>
-                </li>
-            <?php endif; ?>
-            <?php if (Permision('permision_viewsupport')) { ?>
+            <?php if (AdminCanSee('tickets')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="si si-speech  sidemenu-icon"></i>
@@ -969,7 +625,7 @@ else                  $c = '#15233f';
                                 class="badge badge-warning side-badge mg-r-20"><?php echo $count1; ?></span><?php } ?>
                     </a>
                     <ul class="nav-sub">
-                        <?php if (Permision('permision_refer')) { ?>
+                        <?php if (AdminCanSee('tickets.referred')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/Tickets/Refer.php') ?>"> منتظر
                                     ارجاع <?php if (countCheckNotreffer() > 0) { ?><span
@@ -993,7 +649,7 @@ else                  $c = '#15233f';
                             <a class="nav-sub-link" href="<?php echo url('admin/Tickets/openTicket.php') ?>"> کارتابل
                                 تیکت های باز <span class="badge badge-light "></span></a>
                         </li>
-                        <?php if (Permision('permision_allticket')) { ?>
+                        <?php if (AdminCanSee('tickets.all')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/Tickets/allticket.php') ?>"> کارتابل
                                     همه تیکت ها </a>
@@ -1004,7 +660,7 @@ else                  $c = '#15233f';
                     </ul>
                 </li>
             <?php } ?>
-            <?php if (Permision('permision_viewdocument')) { ?>
+            <?php if (AdminCanSee('documents')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-paperclip t sidemenu-icon"></i>
@@ -1056,7 +712,7 @@ else                  $c = '#15233f';
                 </li>
             <?php } ?>
 
-            <?php if (Permision('permision_viewemploy') || Permision('permission_staff_view')) { ?>
+            <?php if (AdminCanSee('staff')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="si si-people t sidemenu-icon"></i>
@@ -1082,31 +738,31 @@ else                  $c = '#15233f';
                             class="angle fe fe-chevron-left"></i>
                     </a>
                     <ul class="nav-sub">
-                        <?php if (Permision('permission_staff_view')) { ?>
+                        <?php if (AdminCanSee('staff.directory')) { ?>
                             <li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/staff-directory.php') ?>">مشاهده همکاران</a>
                             </li>
                         <?php } ?>
 
-                        <?php if (Permision('permision_viewemploy')) { ?>
-                            <li class="nav-sub-item">
+                        <?php if (true) { ?>
+                            <?php if (AdminCanSee('staff.manage')): ?><li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/listadmin.php') ?>">مدیریت همکاران</a>
-                            </li>
+                            </li><?php endif; ?>
 
-                            <li class="nav-sub-item">
+                            <?php if (AdminCanSee('staff.teachers')): ?><li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/listteacher.php') ?>">مشاهده
                                     <?php echo t('teacher_pl') ?> </a>
 
-                            </li>
+                            </li><?php endif; ?>
 
-                            <li class="nav-sub-item">
+                            <?php if (AdminCanSee('staff.create')): ?><li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/addemploy.php') ?>"> ثبت همکار
                                     جدید </a>
-                            </li>
+                            </li><?php endif; ?>
 
-                            <li class="nav-sub-item">
+                            <?php if (AdminCanSee('staff.teacher-create')): ?><li class="nav-sub-item">
                                 <a class="nav-sub-link" href="<?php echo url('admin/employ/addteacher.php') ?>"> <?php echo m('page.add_teacher') ?> </a>
-                            </li>
+                            </li><?php endif; ?>
                         <?php } ?>
 
                     </ul>
@@ -1114,17 +770,8 @@ else                  $c = '#15233f';
 
             <?php } ?>
 
-            <?php if (Permision('permission_assigned_tasks')) { ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo url('admin/tasks/assigned-tasks.php') ?>">
-                        <span class="shape1"></span><span class="shape2"></span>
-                        <i class="fe fe-check-square sidemenu-icon"></i>
-                        <span class="sidemenu-label">کارهای محول‌شده</span>
-                    </a>
-                </li>
-            <?php } ?>
 
-            <?php if (Permision('permision_viewcollague')) { ?>
+            <?php if (AdminCanSee('referrers')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
                             class="fe fe-link  sidemenu-icon"></i>
@@ -1165,7 +812,7 @@ else                  $c = '#15233f';
                                 معرفان غیرفعال
                             </a>
                         </li>
-                        <?php if (Permision('permision_reportcollague')) { ?>
+                        <?php if (AdminCanSee('referrers.report')) { ?>
                             <!--                            <li class="nav-sub-item">-->
                             <!--                                <a class="nav-sub-link" href="--><?php //echo url('admin/Collague/report-collague.php') 
                                                                                                     ?><!--">گزارش-->
@@ -1193,219 +840,62 @@ else                  $c = '#15233f';
             <?php } ?>
 
 
-            <?php if (AdminHasAnyCurrentTreePermission() && AdminHasMenuNavigationPermission('reports')) { ?>
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-radio sidemenu-icon"></i><span class="sidemenu-label">آمار و گزارشات</span><i class="angle fe fe-chevron-left"></i></a>
-                    <ul class="nav-sub">
-                        <?php if (AdminHasMenuNavigationPermission('reports.students')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/students.php') ?>"><?= m('menu.students') ?></a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('reports.staff')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/colleague.php') ?>">همکاران</a></li><?php endif; ?>
-                    </ul>
-                </li>
-            <?php } elseif (!AdminHasAnyCurrentTreePermission() && Permision('excel_permission')) { ?>
+            <?php if (AdminCanSee('attendance')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-radio sidemenu-icon"></i>
+                            class="fe fe-user-check sidemenu-icon"></i>
 
                         <span class="sidemenu-label"
                             style="display:inline-flex;
                      align-items:center;
                      gap:12px;">
 
-                            آمار و گزارشات
+                            حضور و غیاب
 
                             <span class="menu-info-trigger"
-                                data-tooltip="<?php echo m('menu.reports_tooltip') ?>"
-                                aria-label="راهنمای آمار و گزارشات"
+                                data-tooltip="در این بخش دستگاه‌های تشخیص چهره، اثر انگشت یا کارت مدرسه ثبت می‌شوند و ورود و خروج دانش‌آموزان با کد ملی دریافت می‌شود. امکاناتی مانند گزارش روزانهٔ حاضر، تأخیر و غایب، بارگذاری گزارش دستگاه از فایل اکسل و تعیین قوانین ثبت خودکار حضور و غیاب در دفتر کلاسی از طریق این قسمت انجام می‌شود."
+                                aria-label="راهنمای حضور و غیاب"
                                 onclick="event.preventDefault(); event.stopPropagation();">
 
                                 <i class="fe fe-info fs-4"></i>
                             </span>
 
                         </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i>
-                    </a>
+                        <i class="angle fe fe-chevron-left"></i></a>
                     <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/report/students.php') ?>"> <?php echo m('menu.students') ?>
-                            </a>
-                        </li>
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/report/colleague.php') ?>">همکاران
-                                <span class="badge badge-light "></span></a>
-                        </li>
+                        <?php if (AdminCanSee('attendance.report')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/report.php') ?>">گزارش روزانه</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('attendance.devices')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/devices.php') ?>">دستگاه‌ها و رکوردها</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('attendance.import')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/import.php') ?>">ورود از فایل اکسل</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('attendance.rules')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/attendance/rules.php') ?>">قوانین حضور و غیاب</a></li><?php endif; ?>
                     </ul>
                 </li>
             <?php } ?>
-            <?php if (($adminRole == 2) or (Permision('administrator'))) : ?>
+
+            <?php if (AdminCanSee('reports')) { ?>
                 <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="si si-badge t sidemenu-icon"></i> <!-- approvals / verified -->
-                        </i>
-
-                        <span class="sidemenu-label"
-                            style="display:inline-flex;
-                     align-items:center;
-                     gap:12px;">
-
-                            تایید تکالیف
-
-                            <span class="menu-info-trigger"
-                                data-tooltip="<?php echo m('tooltip.homework_review') ?>"
-                                aria-label="راهنمای تایید تکالیف"
-                                onclick="event.preventDefault(); event.stopPropagation();">
-
-                                <i class="fe fe-info fs-4"></i>
-                            </span>
-
-                        </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i>
-                        <?php if ($countPendinghomework > 0): ?>
-                            <span class="badge badge-warning side-badge mg-r-20"><?php echo $countPendinghomework; ?></span>
-                        <?php endif; ?>
-                    </a>
+                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-radio sidemenu-icon"></i><span class="sidemenu-label">آمار و گزارشات</span><i class="angle fe fe-chevron-left"></i></a>
                     <ul class="nav-sub">
-                        <li class="nav-sub-item">
-                            <a class="nav-sub-link" href="<?php echo url('admin/course/homework_check.php') ?>">تایید
-                                تکالیف
-                                <?php if ($countPendinghomework > 0): ?>
-                                    <span class="badge badge-warning"
-                                        style="border-radius: 50px; display: flex; margin-right: 60px; height: 20px;"><?= (int)$countPendinghomework ?></span>
-                                <?php endif; ?>
-                            </a>
-
-                        </li>
-
+                        <?php if (AdminCanSee('reports.students')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/students.php') ?>"><?= m('menu.students') ?></a></li><?php endif; ?>
+                        <?php if (AdminCanSee('reports.staff')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/report/colleague.php') ?>">همکاران</a></li><?php endif; ?>
                     </ul>
                 </li>
-
-            <?php endif ?>
-            <?php if (AdminHasAnyCurrentTreePermission() && AdminHasMenuNavigationPermission('finance')) { ?>
+            <?php } ?>
+            <?php if (AdminCanSee('finance')) { ?>
                 <li class="nav-item">
                     <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i class="fe fe-database sidemenu-icon"></i><span class="sidemenu-label">امور مالی</span><i class="angle fe fe-chevron-left"></i></a>
                     <ul class="nav-sub">
-                        <?php if (AdminHasMenuNavigationPermission('finance.pending')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/active-factor.php') ?>">فاکتورهای منتظر تأیید</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.unpaid')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/factor-notpay.php') ?>">فاکتورهای پرداخت‌نشده</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.returned')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/returned.php') ?>">فاکتورهای مستردشده</a></li><?php endif; ?>
-                        <?php if (inst_feature('wallet') && AdminHasMenuNavigationPermission('finance.wallet')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/waitingWallet.php') ?>">شارژهای کیف پول منتظر تأیید</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.referrer-commission')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/referrer-commission.php') ?>">کارمزد معرف</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.cards')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.statement')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/SearchBillView.php') ?>">صورتحساب‌ها</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.advanced-report')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/advanced-report.php') ?>">گزارش مالی پیشرفته</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.installments')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/payment.php') ?>">موارد اقساطی</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.monthly-payments')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/monthly-payments.php') ?>">واریز ماهانه همکاران</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.staff-documents')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/staff-documents.php') ?>">مستندات همکاران</a></li><?php endif; ?>
-                        <?php if (AdminHasMenuNavigationPermission('finance.insurance')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/insurance.php') ?>">بیمه افراد</a></li><?php endif; ?>
-                    </ul>
-                </li>
-            <?php } elseif (!AdminHasAnyCurrentTreePermission() && (Permision('permision_viewbill') || Permision('permission_monthly_payment') || Permision('permission_staff_documents') || Permision('permission_insurance'))) { ?>
-                <li class="nav-item">
-                    <a class="nav-link with-sub" href="#"><span class="shape1"></span><span class="shape2"></span><i
-                            class="fe fe-database  sidemenu-icon"></i>
-
-                        <span class="sidemenu-label"
-                            style="display:inline-flex;
-                     align-items:center;
-                     gap:12px;">
-
-                            امور مالی
-
-                            <span class="menu-info-trigger"
-                                data-tooltip="در این بخش می‌توانید فرآیندهای مالی سامانه را مدیریت و پیگیری کنید. امکاناتی مانند بررسی و تأیید فاکتورها، مشاهده فاکتورهای پرداخت‌نشده، مدیریت فاکتورهای مستردشده، تأیید تراکنش‌های کیف پول، مشاهده صورتحساب‌ها، گزارش‌های مالی و پیگیری موارد قسطی از طریق این قسمت انجام می‌شود."
-                                aria-label="راهنمای امور مالی"
-                                onclick="event.preventDefault(); event.stopPropagation();">
-
-                                <i class="fe fe-info fs-4"></i>
-                            </span>
-
-                        </span>
-                        <i
-                            class="angle fe fe-chevron-left"></i><?php $count = Permision('permision_viewbill') ? countCheckfactor() + (inst_feature('wallet') ? countCheckWallet() : 0) : 0;
-                                                                    if ($count > 0) { ?> <span
-                                class="badge badge-warning side-badge "><?php echo $count; ?></span><?php } ?></a>
-
-                    <ul class="nav-sub">
-                        <?php if (Permision('permision_viewbill')) { ?>
-                            <?php if (Permision('permision_actfactor')) { ?>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="<?php echo url('admin/Bill/active-factor.php') ?>">منتظر تایید
-                                        فاکتور <?php if (countCheckfactor() > 0) { ?><span
-                                                class="badge badge-warning mg-r-20"><?php echo countCheckfactor(); ?> </span><?php } ?>
-                                    </a>
-                                </li>
-                            <?php } ?>
-
-                            <?php if (Permision('permision_notpay')) { ?>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="<?php echo url('admin/Bill/factor-notpay.php') ?>"> فاکتورهای
-                                        پرداخت نشده </a>
-                                </li>
-                                <?php if ($adminRole !== 2): ?>
-                                    <li class="nav-sub-item">
-                                        <a class="nav-sub-link" href="<?php echo url('admin/Bill/returned.php') ?>"> فاکتورهای
-                                            مسترد
-                                            شده </a>
-                                    </li>
-                                <?php endif; ?>
-                            <?php } ?>
-
-                            <?php if (inst_feature('wallet') && Permision('permision_actwallet')) { ?>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="<?php echo url('admin/Bill/waitingWallet.php') ?>">منتظر تایید
-                                        کیف پول <?php if (countCheckWallet() > 0) { ?><span
-                                                class="badge badge-warning mg-r-20 "><?php echo countCheckWallet(); ?> </span><?php } ?>
-                                    </a>
-                                </li>
-                            <?php } ?>
-
-                            <?php if ($adminRole !== 2 && Permision('permision_bill')): ?>
-
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="<?php echo url('admin/Bill/SearchBillView.php') ?>">صورتحساب
-                                        ها</a>
-                                </li>
-                                <li class="nav-sub-item">
-                                    <a class="nav-sub-link" href="<?php echo url('admin/Bill/advanced-report.php') ?>">گزارش
-                                        پیشرفته</a>
-                                </li>
-                            <?php endif; ?>
-
-                            <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/Bill/payment.php') ?>"> موارد قسطی
-                                </a>
-                            </li>
-                        <?php } ?>
-
-                        <?php if (Permision('permision_viewbill')) { ?>
-                            <li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/referrer-commission.php') ?>">کارمزد معرف</a></li>
-                        <?php } ?>
-
-                        <?php if (Permision('permission_monthly_payment')) { ?>
-                            <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/finance/monthly-payments.php') ?>">واریز ماهانه همکاران</a>
-                            </li>
-                        <?php } ?>
-
-                        <?php if (Permision('permission_staff_documents')) { ?>
-                            <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/employ/staff-documents.php') ?>">مستندات همکاران</a>
-                            </li>
-                        <?php } ?>
-
-                        <?php if (Permision('permission_insurance')) { ?>
-                            <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/employ/insurance.php') ?>">بیمه افراد</a>
-                            </li>
-                        <?php } ?>
-
-                        <?php if (Permision('permision_viewbill')) { ?>
-                            <li class="nav-sub-item">
-                                <a class="nav-sub-link" href="<?php echo url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a>
-                            </li>
-                        <?php } ?>
-
-
+                        <?php if (AdminCanSee('finance.pending')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/active-factor.php') ?>">فاکتورهای منتظر تأیید</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.unpaid')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/factor-notpay.php') ?>">فاکتورهای پرداخت‌نشده</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.returned')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/returned.php') ?>">فاکتورهای مستردشده</a></li><?php endif; ?>
+                        <?php if (inst_feature('wallet') && AdminCanSee('finance.wallet')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/waitingWallet.php') ?>">شارژهای کیف پول منتظر تأیید</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.referrer-commission')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/referrer-commission.php') ?>">کارمزد معرف</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.cards')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/setting/credit-card.php') ?>">افزودن شماره کارت</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.statement')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/SearchBillView.php') ?>">صورتحساب‌ها</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.advanced-report')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/advanced-report.php') ?>">گزارش مالی پیشرفته</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.installments')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/Bill/payment.php') ?>">موارد اقساطی</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.monthly-payments')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/finance/monthly-payments.php') ?>">واریز ماهانه همکاران</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.staff-documents')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/staff-documents.php') ?>">مستندات همکاران</a></li><?php endif; ?>
+                        <?php if (AdminCanSee('finance.insurance')): ?><li class="nav-sub-item"><a class="nav-sub-link" href="<?= url('admin/employ/insurance.php') ?>">بیمه افراد</a></li><?php endif; ?>
                     </ul>
                 </li>
             <?php } ?>
@@ -1430,15 +920,12 @@ else                  $c = '#15233f';
                         </button>
 
                         <div class="dropdown-menu tx-13">
-                            <?php $usesPermissionTree = AdminHasAnyCurrentTreePermission();
-                            if ($usesPermissionTree
-                                ? AdminHasMenuNavigationPermission('dashboard.summary.overview.desktop')
-                                : in_array((int)$_SESSION['admin']['adminrole'], [1, 6, 52], true)) { ?>
+                            <?php if (AdminCanSee('dashboard.desks.mine')) { ?>
                                 <a class="dropdown-item" href="<?php echo url('admin/panel/desktop.php') ?>">میزکار
                                     من</a>
                             <?php } ?>
 
-                            <?php if (Permision('permision_manage_suporter')) { ?>
+                            <?php if (AdminCanSee('dashboard.desks.manager')) { ?>
                                 <a class="dropdown-item" href="<?php echo url('admin/panel/manager.php') ?>">داشبورد</a>
                             <?php } ?>
 
@@ -1461,65 +948,3 @@ else                  $c = '#15233f';
         </ul>
     </div>
 </div>
-
-<script>
-    (function () {
-        if (window.adminInfoTooltipInitialized) return;
-        window.adminInfoTooltipInitialized = true;
-
-        var tooltip = document.getElementById('menuInfoTooltip');
-        if (!tooltip) {
-            tooltip = document.createElement('div');
-            tooltip.id = 'menuInfoTooltip';
-            tooltip.setAttribute('role', 'tooltip');
-            document.body.appendChild(tooltip);
-        }
-        var activeTrigger = null;
-
-        function closestTrigger(target) {
-            while (target && target !== document) {
-                if (target.nodeType === 1 && target.classList.contains('menu-info-trigger') && target.hasAttribute('data-tooltip')) return target;
-                target = target.parentNode;
-            }
-            return null;
-        }
-        function showTooltip(trigger) {
-            var message = trigger.getAttribute('data-tooltip');
-            if (!message) return;
-            activeTrigger = trigger;
-            tooltip.textContent = message;
-            tooltip.classList.remove('place-left', 'place-right');
-            tooltip.classList.add('show');
-            var triggerRect = trigger.getBoundingClientRect();
-            var tooltipRect = tooltip.getBoundingClientRect();
-            var margin = 10;
-            var left = triggerRect.left - tooltipRect.width - margin;
-            var placement = 'place-left';
-            if (left < margin) { left = triggerRect.right + margin; placement = 'place-right'; }
-            left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
-            var halfHeight = tooltipRect.height / 2;
-            var top = triggerRect.top + (triggerRect.height / 2);
-            top = Math.max(halfHeight + margin, Math.min(top, window.innerHeight - halfHeight - margin));
-            tooltip.style.left = left + 'px';
-            tooltip.style.top = top + 'px';
-            tooltip.classList.add(placement);
-        }
-        function hideTooltip(trigger) {
-            if (trigger && activeTrigger && trigger !== activeTrigger) return;
-            activeTrigger = null;
-            tooltip.classList.remove('show', 'place-left', 'place-right');
-        }
-        document.addEventListener('pointerover', function (event) {
-            var trigger = closestTrigger(event.target);
-            if (trigger && (!event.relatedTarget || !trigger.contains(event.relatedTarget))) showTooltip(trigger);
-        });
-        document.addEventListener('pointerout', function (event) {
-            var trigger = closestTrigger(event.target);
-            if (trigger && (!event.relatedTarget || !trigger.contains(event.relatedTarget))) hideTooltip(trigger);
-        });
-        document.addEventListener('focusin', function (event) { var trigger = closestTrigger(event.target); if (trigger) showTooltip(trigger); });
-        document.addEventListener('focusout', function (event) { var trigger = closestTrigger(event.target); if (trigger) hideTooltip(trigger); });
-        window.addEventListener('scroll', function () { hideTooltip(); }, true);
-        window.addEventListener('resize', function () { hideTooltip(); });
-    })();
-</script>

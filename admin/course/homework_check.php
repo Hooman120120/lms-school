@@ -27,10 +27,6 @@ if (session_id() != ($re['session_id'] ?? '')) {
     die();
 }
 
-if (Permision('permision_suporter') && Permision('permision_viewcourse') == false) {
-    header('location: panel/desktop.php');
-    exit;
-}
 
 $operatorUsername = $re['username'] ?? ($_SESSION['admin']['user'] ?? '');
 
@@ -41,7 +37,7 @@ if ($operatorUsername !== '') {
     $st->execute([$operatorUsername]);
     $adminrole = (int)($st->fetchColumn() ?: 0);
 }
-$isAdministrator = in_array($adminrole, [0, 51, 52], true);
+$isAdministrator = AdminCan(AdminNotificationCode('information.homework-approval.all'));
 
 $filterCodecourse = null;
 if (isset($_GET['code']) && ctype_digit((string)$_GET['code'])) {
@@ -95,6 +91,7 @@ function deadline_jalali_date_only($raw)
    Handle Approve / Reject
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire(AdminNotificationCode('information.homework-approval.review'));
 
     if (!isset($_POST['token_hw_check'], $_SESSION['token_hw_check']) || $_POST['token_hw_check'] !== $_SESSION['token_hw_check']) {
         $_SESSION['message'] = 'نشست نامعتبر است. دوباره تلاش کنید.';

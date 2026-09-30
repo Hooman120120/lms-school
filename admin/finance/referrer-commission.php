@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!AdminCanUsePermissionScope('finance.referrer-commission', ['permision_viewbill'])) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 if (isset($_POST['darsad'])) {
+    AdminRequire('finance.referrer-commission.save');
     $wage = filter_var($_POST['darsad'], FILTER_VALIDATE_FLOAT);
     if ($wage === false || $wage < 0 || $wage > 100) {
         $message = 'درصد کارمزد باید عددی بین صفر و صد باشد';

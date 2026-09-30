@@ -22,7 +22,7 @@ if ($_SESSION['admin']['ip'] !== GetIp() && $_SESSION['admin']['os'] != GetOs())
     die();
 }
 
-if (!AdminCanUsePermissionScope('public-relations.safe-call.autodialer.contacts', ['autodialer'])) {
+if (!AdminCanSee('public-relations.safe-call.autodialer.contacts')) {
     echo "دسترسی ندارید.";
     die();
 }
@@ -53,6 +53,7 @@ function autodialerApiOk(string $apiOut): bool
 // Handle REMOVE contact POST
 // ---------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact_submit'])) {
+    AdminRequire('public-relations.safe-call.autodialer.contacts.delete');
 
     $id     = trim((string)($_POST['_id'] ?? ''));
     $number = trim((string)($_POST['number'] ?? '')); // for logging context
@@ -88,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact_submit
 // Handle ADD / EDIT contact POST
 // ---------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
+    AdminRequire('public-relations.safe-call.autodialer.contacts.create');
 
     $mode = trim((string)($_POST['mode'] ?? 'add')); // add|edit
     $id   = trim((string)($_POST['_id'] ?? ''));

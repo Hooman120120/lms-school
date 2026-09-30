@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcourse')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_GET['user']) and !isset($_GET['course'])) {
     echo '<strong>404</strong>';
     echo '<script>window.close() </script>';
@@ -153,9 +149,9 @@ include_once '../../temp.html';
                                                 <option label="دسته بندی ها">
                                                 </option>
                                                 <?php
-                                                $sql = 'SELECT * FROM dbadmin WHERE permision_suporter=? OR adminrole = 2 ORDER BY dakheli ASC ';
+                                                $sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' OR adminrole = 2 ORDER BY dakheli ASC ';
                                                 $query = $conn->prepare($sql);
-                                                $query->execute([1]);
+                                                $query->execute();
                                                 $result = $query->fetchAll(PDO::FETCH_OBJ);
                                                 if ($query->rowCount() > 0) {
                                                     foreach ($result as $admin) { ?>

@@ -21,9 +21,6 @@ if (session_id() != $re['session_id']) {
     session_unset();
     header('location: ' . url('admin/login.php')); die();
 }
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php')); die();
-}
 
 // ---------------- Utility ----------------
 function safeJalaliToGregorianDateTime(string $jalali, string $hhmm, string $fallbackDateTime): string {

@@ -25,10 +25,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewcourse')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
+AdminRequire(!empty($_GET['edit']) ? 'courses.handhug.manage.edit' : 'courses.handhug.create');
 
 if (isset($_POST['save'])) {
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {

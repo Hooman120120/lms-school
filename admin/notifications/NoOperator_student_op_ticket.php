@@ -44,7 +44,7 @@ $sq = "SELECT administrator FROM dbadmin WHERE username = ? LIMIT 1";
 $st = $conn->prepare($sq);
 $st->execute([$me]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
-$isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
+$isAdministrator = AdminCan('notifications.all-records');
 
 /* =========================
    GET: list operator-cancel requests

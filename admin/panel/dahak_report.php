@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 function safeJalaliToGregorianDateTime(string $jalali, string $hhmm, string $fallbackDateTime): string {
     if (preg_match('/^\d{4}\/\d{2}\/\d{2}$/', $jalali) && preg_match('/^\d{2}:\d{2}$/', $hhmm)) {

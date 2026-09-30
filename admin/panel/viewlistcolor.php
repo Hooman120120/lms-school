@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 //* End Check Session JUST ONE Session
 switch ($_GET['color']) {
     case 0:
@@ -49,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_POST['course_color_excel'])) {
+    AdminRequire('support.reports.color-list.excel');
     $code = isset($_POST['code']) && preg_match('/^[a-zA-Z0-9]+$/', $_POST['code']) ? $_POST['code'] : '';
     $color = isset($_POST['color']) && in_array($_POST['color'], ['0', '1', '2', '3']) ? $_POST['color'] : '';
     if (empty($code) || $color === '') {
@@ -119,7 +116,7 @@ include_once '../../temp.html';
                                     </div>
                                     <?php
                                     $currentUser = $_SESSION['admin']['user'];
-                                    if (PermisionUser('excel_permission', $currentUser)):
+                                    if (AdminCan('support.reports.color-list.excel')):
                                         $code = isset($_GET['Id']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['Id']) ? $_GET['Id'] : '';
                                         $color = isset($_GET['color']) && in_array($_GET['color'], ['0', '1', '2', '3']) ? $_GET['color'] : '';
                                         if (empty($code) || $color === '') {

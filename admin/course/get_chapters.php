@@ -3,6 +3,10 @@ include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
 include_once '../../inc/jdf.php';
+if (empty($_SESSION['admin'])) {
+    http_response_code(403);
+    exit;
+}
 
 if ($_GET['lesson_id']) {
     $sql = 'SELECT * FROM subchapters WHERE lesson_id = ?';

@@ -18,10 +18,6 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     header('location: ' . url('admin/login.php'));
     exit;
 }
-if (!Permision('permission_insurance')) {
-    http_response_code(403);
-    exit('مجوز مدیریت بیمه افراد را ندارید.');
-}
 if (empty($_SESSION['staff_insurance_csrf'])) $_SESSION['staff_insurance_csrf'] = bin2hex(random_bytes(24));
 $message = '';
 
@@ -47,6 +43,7 @@ function insuranceJalaliToGregorian(string $value): ?string
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('finance.insurance.manage');
     if (!hash_equals($_SESSION['staff_insurance_csrf'], (string)($_POST['csrf'] ?? ''))) {
         http_response_code(419);
         exit('درخواست نامعتبر است.');

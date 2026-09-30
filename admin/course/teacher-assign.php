@@ -26,9 +26,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcourse')) {
-    die("شما به این بخش دسترسی ندارید");
-}
 
 // Ensure code parameter exists in URL
 $courseCode = isset($_GET['code']) ? intval($_GET['code']) : 0;

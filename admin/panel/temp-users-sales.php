@@ -26,6 +26,7 @@ if (session_id() != $re['session_id']) {
 }
 
 if (isset($_GET['ajax_get_admins'])) {
+    AdminRequire('dashboard.reports.temp-sales.change-expert');
     $codemeli = $_GET['codemeli'];
 
     // Your logic: Find the person who originally requested the change
@@ -50,7 +51,7 @@ if (isset($_GET['ajax_get_admins'])) {
 }
 $sessionUser = $_SESSION['admin']['user'];
 $urlType = trim($_GET['type'] ?? '');
-$isImpersonate = ($_SESSION['admin']['can_impersonate']) == 1;
+$isImpersonate = AdminCan('dashboard.reports.temp-sales.pick-operator');
 $type = (int)($_GET['type'] ?? 0);
 $allowedTypes = [2, 1];
 if (!in_array($type, $allowedTypes, true)) {
@@ -60,11 +61,8 @@ if (!in_array($type, $allowedTypes, true)) {
 $check = $conn->query("SELECT CURDATE() AS today")->fetch(PDO::FETCH_ASSOC);
 $users = [];
 $isadmin = 0;
-if ($_SESSION['admin']['adminrole'] == 53 or $_SESSION['admin']['adminrole'] == 0 or $_SESSION['admin']['adminrole'] == 52 or $_SESSION['admin']['adminrole'] == 51) {
-    $isadmin = 1;
-}
-$salesScope = 'dashboard.summary.overview.manager.page-b9857fa208.' . ($type === 2 ? 'today' : 'period');
-$recordVisibility = AdminRecordVisibility($salesScope, $isadmin === 1);
+$salesScope = 'dashboard.reports.temp-sales.' . ($type === 2 ? 'today' : 'period');
+$recordVisibility = AdminScope($salesScope);
 if ($recordVisibility === null) {
     http_response_code(403);
     exit('دسترسی به این گزارش فروش تعریف نشده است.');
@@ -301,6 +299,7 @@ if ($type === 1) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reject') {
+    AdminRequire('dashboard.reports.temp-sales.reject');
 
     $codemeli = trim($_POST['codemeli'] ?? '');
     $createdBy = $_SESSION['admin']['user'] ?? 'unknown';
@@ -338,6 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'rejec
 }
 
 if (isset($_POST['change-expert'])) {
+    AdminRequire('dashboard.reports.temp-sales.change-expert');
     date_default_timezone_set("Asia/Tehran");
     $suggestedAdmin = $_POST['new_admin_id'];
     $username = $_POST['codemeli'];

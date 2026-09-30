@@ -27,20 +27,12 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewbill')) {
-    http_response_code(403);
-    exit('مجوز دسترسی به سوابق اقساط برای شما تعریف نشده است.');
-}
 $username = $_SESSION['admin']['user'];
 
 $canViewAll = false;
 
 try {
-    $stmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $stmt->execute(['username' => $username]);
-    $perm = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($perm && (int)$perm['installment_permission'] === 1) {
+    if (AdminScope('finance.installments') === 'all') {
         $canViewAll = true;
     }
 } catch (PDOException $e) {
@@ -49,6 +41,7 @@ try {
 
 // Handle payment form submission (create, update, delete)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('finance.installments.history.manage');
     try {
         if (isset($_POST['create_payment']) || isset($_POST['update_payment'])) {
             $codemeli = trim($_POST['codemeli']);

@@ -25,13 +25,13 @@ if (session_id() != $re['session_id']) {
 }
 
 // Admin permission & identity
-$stmt = $conn->prepare("SELECT idadmin, adminrole, permission_calendar FROM dbadmin WHERE username = ?");
+$stmt = $conn->prepare("SELECT idadmin, adminrole FROM dbadmin WHERE username = ?");
 $stmt->execute([$_SESSION['admin']['user']]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 $adminId      = $admin['idadmin'];
 $adminRole    = $admin['adminrole'];
 // Editing/deleting here follows the permission tree (executive.calendar.edit), legacy column as fallback.
-$permCalendar = AdminCanUsePermissionScope('executive.calendar.edit', ['permission_calendar']) ? 1 : 0;
+$permCalendar = AdminCan('executive.calendar.edit') ? 1 : 0;
 
 // Get Gregorian date from popup (YYYY-MM-DD)
 $date_greg = $_GET['date'] ?? date('Y-m-d');

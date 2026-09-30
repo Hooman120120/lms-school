@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_addcourse_student')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_POST['search'])) {
 
     $category = $_POST['category'];
@@ -84,6 +80,7 @@ if (isset($_SESSION['call'])) {
     unset($_SESSION['call']);
 }
 if (isset($_GET['disable'])) {
+    AdminRequire('students.definitive.course-report.toggle');
     $disable = intval($_GET['disable']);
     $update = 'UPDATE dbcourse SET activityuser=? WHERE idcourse=?';
     $qu = $conn->prepare($update);
@@ -93,6 +90,7 @@ if (isset($_GET['disable'])) {
     die();
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('students.definitive.course-report.toggle');
     $disable = intval($_GET['enable']);
 
     $check = 'SELECT * FROM dbcourse WHERE idcourse=?';
@@ -114,6 +112,7 @@ if (isset($_GET['enable'])) {
     }
 }
 if (isset($_GET['call-student'])) {
+    AdminRequire('students.definitive.course-report.call');
     $ret = retPerson($_GET['call-student']);
     $tel = $ret->tel1;
     $name = m('name.prefix_student') . $ret->fname . ' ' . $ret->lname;
@@ -125,6 +124,7 @@ if (isset($_GET['call-student'])) {
     die();
 }
 if (isset($_GET['call-mother'])) {
+    AdminRequire('students.definitive.course-report.call');
     $ret = retPerson($_GET['call-mother']);
     $tel = $ret->tel2;
     $name = m('name.prefix_mother') . $ret->fname . ' ' . $ret->lname;
@@ -136,6 +136,7 @@ if (isset($_GET['call-mother'])) {
     die();
 }
 if (isset($_GET['call-father'])) {
+    AdminRequire('students.definitive.course-report.call');
     $ret = retPerson($_GET['call-father']);
     $tel = $ret->tel3;
     $name = m('name.prefix_father') . $ret->fname . ' ' . $ret->lname;

@@ -2,7 +2,7 @@
 -- school   = مدرسه (حالت پیش‌فرض و رفتار فعلی سامانه)
 -- institute = آموزشگاه / دانشگاه
 ALTER TABLE `setting_public`
-    ADD COLUMN `institution_type` ENUM('school','institute') NOT NULL DEFAULT 'school'
+    ADD COLUMN IF NOT EXISTS `institution_type` ENUM('school','institute') NOT NULL DEFAULT 'school'
     AFTER `id`;
 
 -- اطمینان از اینکه نصب‌های موجود روی حالت مدرسه باقی بمانند

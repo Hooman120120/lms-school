@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewcourse')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if(isset($_GET['disable'])){
+    AdminRequire('courses.main.archive.activation');
     $disable='UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd=$conn->prepare($disable);
     $qupd->execute([0,$_GET['disable']]);
@@ -37,6 +34,7 @@ if(isset($_GET['disable'])){
     die();
 }
 if(isset($_GET['enable'])){
+    AdminRequire('courses.main.archive.activation');
     $disable='UPDATE codtbl_course SET courseactive=? WHERE codecourse=?';
     $qupd=$conn->prepare($disable);
     $qupd->execute([1,$_GET['enable']]);
@@ -44,6 +42,7 @@ if(isset($_GET['enable'])){
     die();
 }
 if(isset($_GET['active'])){
+    AdminRequire('courses.main.archive.activation');
     $disable='UPDATE codtbl_course SET activecourse=? WHERE codecourse=?';
     $qupd=$conn->prepare($disable);
     $qupd->execute([1,$_GET['active']]);
@@ -51,7 +50,7 @@ if(isset($_GET['active'])){
     die();
 }
 if(isset($_GET['close'])) {
-    if (Permision('permision_deletcourse')) {
+    if (AdminCan('courses.main.archive.delete')) {
         include_once '../../quizconfig.php';
         include_once '../../inc/function-quiz.php';
         if(!checkEntityGroupQuiz($_GET['close'])) {
@@ -134,7 +133,7 @@ include_once '../../temp.html';
                         </li>
                         <?php
                         $currentUser = $_SESSION['admin']['user'];
-                        if (PermisionUser('skill_permission', $currentUser)): ?>
+                        if (AdminCan('courses.main.archive.tab-skill')): ?>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="type2-tab" data-bs-toggle="tab" data-bs-target="#type2" type="button" role="tab">
                                     مهارتی
@@ -143,7 +142,7 @@ include_once '../../temp.html';
                         <?php endif; ?>
                         <?php
                         $currentUser = $_SESSION['admin']['user'];
-                        if (PermisionUser('olympiad_permission', $currentUser)): ?>
+                        if (AdminCan('courses.main.archive.tab-olympiad')): ?>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="type3-tab" data-bs-toggle="tab" data-bs-target="#type3" type="button" role="tab">
                                     المپیاد
@@ -373,7 +372,7 @@ include_once '../../temp.html';
                                                                                 </a>
 
                                                                                 <?php
-                                                                                if (Permision('permision_deletcourse')) { ?>
+                                                                                if (AdminCan('courses.main.archive.delete')) { ?>
                                                                                     <hr>
                                                                                     <a class="dropdown-item text-danger "
                                                                                        href="?close=<?php echo $res->codecourse ?>"
@@ -427,7 +426,7 @@ include_once '../../temp.html';
                         <!--                    type 2 tab 2-->
                         <?php
                         $currentUser = $_SESSION['admin']['user'];
-                        if (PermisionUser('skill_permission', $currentUser)): ?>
+                        if (AdminCan('courses.main.archive.tab-skill')): ?>
                             <div class="tab-pane fade" id="type2" role="tabpanel">
 
                                 <div class="col-lg-12">
@@ -514,7 +513,7 @@ include_once '../../temp.html';
                                                                                     </a>
 
                                                                                     <?php
-                                                                                    if (Permision('permision_deletcourse')) { ?>
+                                                                                    if (AdminCan('courses.main.archive.delete')) { ?>
                                                                                         <hr>
                                                                                         <a class="dropdown-item text-danger "
                                                                                            href="?close=<?php echo $res->codecourse ?>"
@@ -569,7 +568,7 @@ include_once '../../temp.html';
                         <!--                        olympiad-->
                         <?php
                         $currentUser = $_SESSION['admin']['user'];
-                        if (PermisionUser('olympiad_permission', $currentUser)): ?>
+                        if (AdminCan('courses.main.archive.tab-olympiad')): ?>
                             <div class="tab-pane fade" id="type3" role="tabpanel">
 
                                 <div class="col-lg-12">
@@ -656,7 +655,7 @@ include_once '../../temp.html';
                                                                                     </a>
 
                                                                                     <?php
-                                                                                    if (Permision('permision_deletcourse')) { ?>
+                                                                                    if (AdminCan('courses.main.archive.delete')) { ?>
                                                                                         <hr>
                                                                                         <a class="dropdown-item text-danger "
                                                                                            href="?close=<?php echo $res->codecourse ?>"

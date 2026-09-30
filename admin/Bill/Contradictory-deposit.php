@@ -26,7 +26,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_actfactor')) {
+// Tree accounts need the «تأیید یا رد فاکتور» operation and the invoice in their own/all scope.
+if (!AdminCanAccessFinanceFactor((int)($_GET['factor'] ?? 0), 'finance.pending')) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     die();

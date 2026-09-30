@@ -36,7 +36,7 @@ $sq = 'SELECT administrator FROM dbadmin WHERE username = ? LIMIT 1';
 $st = $conn->prepare($sq);
 $st->execute([$_SESSION['admin']['user']]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
-$isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
+$isAdministrator = AdminCan('notifications.all-records');
 
 // --- fetch changed operator students (last 7 days, not null) ---
 if ($isAdministrator) {

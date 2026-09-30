@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('../admin/login.php'));
     die();
 }
-if (!Permision('permission_news_notif')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 
 // ------------------------------------------------------------------------
 // Role mapping for display
@@ -93,6 +89,7 @@ function uploadNotificationImage($file, $old_image_path = null) {
 // ۱. عملیات ثبت اعلان جدید (Create)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
+    AdminRequire('executive.daily-notices.create');
     $text = trim($_POST['notif_text']);
     $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
     $expiration_raw = trim($_POST['expiration_date'] ?? '');
@@ -143,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_notif'])) {
 // ۲. عملیات ویرایش اعلان (Update)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_notif'])) {
+    AdminRequire('executive.daily-notices.edit');
     $notif_id = intval($_POST['notif_id']);
     $text = trim($_POST['notif_text']);
     $audiences = NormalizeDailyNotificationAudiences($_POST['audience'] ?? [], $audienceLabels);
@@ -202,6 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_notif'])) {
 // ۳. عملیات حذف اعلان (Delete)
 // ------------------------------------------------------------------------
 if (isset($_GET['delete_id'])) {
+    AdminRequire('executive.daily-notices.edit');
     $del_id = intval($_GET['delete_id']);
 
     $sql_get_img = "SELECT `image_path` FROM `notif` WHERE `id` = :id";
@@ -283,6 +282,7 @@ if (isset($_GET['delete_id'])) {
                             </h6>
                         </div>
                         <div class="card-body">
+                            <?php if (AdminCan('executive.daily-notices.create')): ?>
                             <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-8 mb-3">
@@ -336,6 +336,7 @@ if (isset($_GET['delete_id'])) {
                                 </div>
                                 <button type="submit" name="submit_notif" class="btn btn-primary px-4">ثبت و انتشار اعلان</button>
                             </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -424,8 +425,12 @@ if (isset($_GET['delete_id'])) {
                                                 </td>
                                                 <td dir="ltr"><?php echo !empty($exp_jalali) ? htmlspecialchars($exp_jalali) : '<span class="text-muted">بدون انقضا</span>'; ?></td>
                                                 <td>
+                                                    <?php if (AdminCan('executive.daily-notices.edit')): ?>
                                                     <a href="?edit_id=<?php echo $notif->id; ?>" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $notif->id; ?>">ویرایش</a>
+                                                    <?php endif; ?>
+                                                    <?php if (AdminCan('executive.daily-notices.edit')): ?>
                                                     <a href="?delete_id=<?php echo $notif->id; ?>" class="btn btn-sm btn-danger" onclick="return confirm('آیا از حذف این اعلان اطمینان دارید؟');">حذف</a>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
 

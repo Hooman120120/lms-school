@@ -97,7 +97,7 @@ include_once '../../temp.html';
                                             <tbody>
                                                 <?php
 
-                                                if (Permision('permission_quiz')) {
+                                                if (AdminCan('courses.main.demo-active.quiz.manage')) {
                                                     $absent = 'SELECT * FROM dbpersonal INNER JOIN dbcourse ON dbpersonal.codemeli=dbcourse.username WHERE dbcourse.activityuser=? AND dbcourse.codecourse=?';
                                                     $query = $conn->prepare($absent);
                                                     $query->execute([1, $db->codecourse]);

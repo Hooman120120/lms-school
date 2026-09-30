@@ -24,10 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_manage_suporter') and $_SESSION['admin']['user'] != 'op213') {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 //* End Check Session JUST ONE Session
 
 $rule = $conn->query("
@@ -47,6 +43,7 @@ $startDay = date('Y-m-d', strtotime('-' . ($periodDays - 1) . ' days'));
 $endDay = date('Y-m-d');
 
 if (isset($_POST['supporter_excel'])) {
+    AdminRequire('support.reports.supporter-students.excel');
     $op = isset($_GET['Op']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['Op']) ? $_GET['Op'] : '';
     $_SESSION['supporter_excel'] = array(
         "Op" => $op
@@ -72,6 +69,7 @@ if (!function_exists('secToHMS')) {
     }
 }
 if (isset($_POST['assign_operator'])) {
+    AdminRequire('support.reports.supporter-students.assign');
     // 1. ابتدا همه دانش آموزان این اپراتور را میگیریم (بدون شرط داشتن پرداختی)
     $sql = '
         SELECT dbcourse.*, codtbl_course.*, dbfactor.* 
@@ -208,7 +206,7 @@ include_once '../../temp.html';
 
                                         <?php
                                         $currentUser = $_SESSION['admin']['user'];
-                                        if (PermisionUser('excel_permission', $currentUser)):
+                                        if (AdminCan('support.reports.supporter-students.excel')):
                                             $op = isset($_GET['Op']) && preg_match('/^[a-zA-Z0-9]+$/', $_GET['Op']) ? $_GET['Op'] : '';
                                             if (empty($op)) {
                                                 echo '<p class="text-danger mb-0">خطا: مقدار Op نامعتبر یا وجود ندارد.</p>';

@@ -36,7 +36,6 @@ $adminRole = $_SESSION['admin']['adminrole'] ?? null;
 $requestedClassId = (isset($_GET['class_id']) && ctype_digit((string)$_GET['class_id']))
     ? (int)$_GET['class_id']
     : 0;
-RequireTeacherPermission('teacher_perm_homework', url('admin/course/Active-course.php'));
 if ((int)$adminRole === 3) {
     if ($requestedClassId <= 0 || !TeacherHasClassAccess($requestedClassId)) {
         http_response_code(403);
@@ -54,6 +53,7 @@ if ((int)$adminRole === 3) {
 }
 
 if (isset($_GET['act_class'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_class=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([1, $_GET['act_class']]);
@@ -81,6 +81,7 @@ if (isset($_GET['act_class'])) {
 }
 
 if (isset($_GET['act_general'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_general=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([1, $_GET['act_general']]);
@@ -108,6 +109,7 @@ if (isset($_GET['act_general'])) {
 }
 
 if (isset($_GET['act_quiz'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_quiz=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([1, $_GET['act_quiz']]);
@@ -135,6 +137,7 @@ if (isset($_GET['act_quiz'])) {
 }
 
 if (isset($_GET['expire_class'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_class=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([0, $_GET['expire_class']]);
@@ -162,6 +165,7 @@ if (isset($_GET['expire_class'])) {
 }
 
 if (isset($_GET['expire_general'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_general=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([0, $_GET['expire_general']]);
@@ -189,6 +193,7 @@ if (isset($_GET['expire_general'])) {
 }
 
 if (isset($_GET['expire_quiz'])) {
+    AdminRequire('courses.main.active.classes.activation');
     $sql = 'UPDATE classes SET act_quiz=? WHERE id = ?';
     $stmt = $conn->prepare($sql);
     $stmt->execute([0, $_GET['expire_quiz']]);
@@ -216,6 +221,7 @@ if (isset($_GET['expire_quiz'])) {
 }
 
 if (isset($_GET['unactive'])) {
+    AdminRequire('courses.main.active.classes.toggle');
     $sql = "DELETE FROM classes WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
@@ -344,6 +350,7 @@ function save_homework_upload($file, $UPLOAD_DIR_ABS, $UPLOAD_DIR_PUBLIC, $ALLOW
 
 
 if (isset($_POST['addhomework'])) {
+    AdminRequire('courses.main.active.classes.homeworks.create');
 
     // CSRF
     if (!isset($_POST['token'], $_SESSION['token']) || $_POST['token'] !== $_SESSION['token']) {
@@ -502,6 +509,7 @@ if (isset($_POST['addhomework'])) {
 }
 /* ---- delete homework (same file) ---- */
 if (isset($_GET['delete_hw']) && ctype_digit((string)$_GET['delete_hw'])) {
+    AdminRequire('courses.main.active.classes.homeworks.delete');
     $id = (int)$_GET['delete_hw'];
 
     // fetch to delete file from disk too (AND enforce class ownership)
@@ -570,6 +578,7 @@ function deadline_to_jalali_input($raw)
 
 /* UPDATE homework (deadline + video_link) */
 if (isset($_POST['update_hw'])) {
+    AdminRequire('courses.main.active.classes.homeworks.edit');
 
     if (!isset($_POST['token_edit_hw'], $_SESSION['token_edit_hw']) || $_POST['token_edit_hw'] !== $_SESSION['token_edit_hw']) {
         $_SESSION['message'] = 'نشست نامعتبر است. دوباره تلاش کنید.';
@@ -639,6 +648,7 @@ if (empty($_SESSION['token_prof'])) {
 $token_prof = $_SESSION['token_prof'];
 
 if (isset($_POST['save_prof_answer'])) {
+    AdminRequire('courses.main.active.classes.homeworks.answer');
 
     if (!isset($_POST['token_prof'], $_SESSION['token_prof']) || $_POST['token_prof'] !== $_SESSION['token_prof']) {
         $_SESSION['message'] = 'نشست نامعتبر است. دوباره تلاش کنید.';
@@ -784,6 +794,7 @@ include_once '../../temp.html';
                                 $hash = bin2hex(random_bytes(32));
                                 $_SESSION['token'] = $hash;
                                 ?>
+                                <?php if (AdminCan('courses.main.active.classes.homeworks.create')): ?>
                                 <form method="post" enctype="multipart/form-data" data-parsley-validate>
                                     <div class="row">
                                         <div class="col-lg-12 mg-t-20">
@@ -877,6 +888,7 @@ include_once '../../temp.html';
                                         </div>
                                     </div>
                                 </form>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -938,7 +950,7 @@ include_once '../../temp.html';
                                         $homeworks = $stmt->fetchAll(PDO::FETCH_OBJ);
                                         ?>
 
-                                        <?php if (Permision('permision_viewcourse') && $codecourse > 0) { ?>
+                                        <?php if (AdminCanSee('courses.main.active.content.dars') && $codecourse > 0) { ?>
                                             <button class="btn ripple btn-dark pd-x-20"
                                                     onclick="window.location.href='dars.php?code=<?= (int)$codecourse ?>'">
                                                 <i class="fe fe-bar-chart-2"></i>
@@ -1047,11 +1059,11 @@ include_once '../../temp.html';
                                                 </td>
 
                                                 <td class="wd-20">
-                                                    <a class="btn btn-sm btn-outline-danger"
+                                                    <?php if (AdminCan('courses.main.active.classes.homeworks.delete')): ?><a class="btn btn-sm btn-outline-danger"
                                                        href="homeworks.php?delete_hw=<?= (int)$h->id ?>&class_id=<?= (int)$class_id ?>"
                                                        onclick="return confirm('حذف تکلیف؟');">
                                                         حذف
-                                                    </a>
+                                                    </a><?php endif; ?>
 
                                                     <a class="btn btn-sm btn-outline-primary ms-2"
                                                        href="homeworks.php?answers=<?= (int)$h->id ?>&class_id=<?= (int)$class_id ?>#answers">
@@ -1062,7 +1074,7 @@ include_once '../../temp.html';
                                                     </a>
 
                                                     <!-- ONE EDIT BUTTON: deadline + video -->
-                                                    <button type="button"
+                                                    <?php if (AdminCan('courses.main.active.classes.homeworks.edit')): ?><button type="button"
                                                             class="btn btn-sm btn-outline-warning ms-2"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#editHwModal"
@@ -1070,7 +1082,7 @@ include_once '../../temp.html';
                                                             data-deadline="<?= $deadline_attr ?>"
                                                             data-video-link="<?= $video_attr ?>">
                                                         ویرایش
-                                                    </button>
+                                                    </button><?php endif; ?>
                                                 </td>
                                             </tr>
                                             <?php $i++; endforeach; else: ?>
@@ -1205,14 +1217,14 @@ include_once '../../temp.html';
 
                                                             <td>
                                                                 <?php if ($hasSubmitted): ?>
-                                                                    <button type="button"
+                                                                    <?php if (AdminCan('courses.main.active.classes.homeworks.answer')): ?><button type="button"
                                                                             class="btn btn-sm btn-outline-success"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#profAnswerModal"
                                                                             data-sub-id="<?= (int)$s->submission_id ?>"
                                                                             data-prof-answer="<?= htmlspecialchars((string)($s->professors_answer ?? ''), ENT_QUOTES, 'UTF-8') ?>">
                                                                         ثبت / ویرایش نمره
-                                                                    </button>
+                                                                    </button><?php endif; ?>
                                                                 <?php else: ?>
                                                                     <button type="button" class="btn btn-sm btn-light disabled" disabled>تکلیفی ثبت نشده</button>
                                                                 <?php endif; ?>

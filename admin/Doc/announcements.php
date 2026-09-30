@@ -52,10 +52,6 @@ if (session_id() != $re['session_id']) {
 // ---------------------------------------------------------
 // Access to documents section
 // ---------------------------------------------------------
-if (!Permision('permision_viewdocument')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $announcementsPageSize = 5;
@@ -72,6 +68,7 @@ if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['delete_announcement'])
 ) {
+    AdminRequire('documents.announcements.delete');
     $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
     if ($id) {
         try {
@@ -101,6 +98,7 @@ if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['toggle_publish'])
 ) {
+    AdminRequire('documents.announcements.publish');
     $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
     if ($id) {
         try {

@@ -17,20 +17,11 @@ if (!isset($_SESSION['admin'])) {
 /**
  * Permission check (session + DB)
  */
-$canImpersonateSession = !empty($_SESSION['admin']['can_impersonate']) && (int)$_SESSION['admin']['can_impersonate'] === 1;
-if (!$canImpersonateSession) {
+if (!AdminCan('system.impersonate', AdminRealUsername())) {
     http_response_code(403);
     exit('Not allowed');
 }
 
-// Extra hardening: verify permission from DB (prevents session tampering)
-$permissionUser = $_SESSION['admin']['real_user'] ?? $_SESSION['admin']['user'];
-$stmt = $conn->prepare("SELECT can_impersonate FROM dbadmin WHERE username = ? LIMIT 1");
-$stmt->execute([$permissionUser]);
-if ((int)$stmt->fetchColumn() !== 1) {
-    http_response_code(403);
-    exit('Not allowed');
-}
 
 /**
  * CSRF protection (requires header.php to send csrf field)
@@ -64,6 +55,11 @@ $targetRow = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$targetRow) {
     http_response_code(404);
     exit('User not found');
+}
+// Viewing as an account with the whole tree would borrow its access.
+if (AdminHoldsEverything((string)$targetRow['username']) && !AdminHoldsEverything(AdminRealUsername())) {
+    http_response_code(403);
+    exit('Not allowed');
 }
 
 /**

@@ -27,12 +27,7 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.pending')
-    : !Permision('permision_actfactor')) {
-    http_response_code(403); exit('مجوز بررسی و تأیید فاکتور برای شما تعریف نشده است.');
-}
-$pendingScope = AdminRecordVisibility('finance.pending', false);
+$pendingScope = AdminScope('finance.pending');
 if ($pendingScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای منتظر تأیید برای شما فعال نشده است.');
 }
@@ -62,6 +57,7 @@ if (isset($_GET['call']) and $_GET['call'] != '') {
     die();
 }
 if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
+    AdminRequire('finance.pending.unverify');
     if (CheckFactorNotSuccess($_GET['unverify'])) {
         date_default_timezone_set("Iran");
         $datenow = date("Y-m-d");
@@ -128,7 +124,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_actfactor')) { ?>
+                if (AdminCanSee('finance.pending')) { ?>
 
 
                     <!-- Row -->
@@ -209,7 +205,7 @@ if (isset($_GET['unverify']) and $_GET['unverify'] != '') {
                                                 $query->execute(['در انتظار بررسی']);
                                             }
                                             $result = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $result = AdminFilterFinanceFactors($result, 'finance.pending', false);
+                                            $result = AdminFilterFinanceFactors($result, 'finance.pending');
                                             if ($query->rowCount() > 0) {
                                                 foreach (
                                                     $result

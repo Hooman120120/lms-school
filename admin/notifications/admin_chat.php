@@ -63,7 +63,7 @@ $me = (string)($_SESSION['admin']['user'] ?? '');
 $st = $conn->prepare("SELECT administrator FROM dbadmin WHERE username=? LIMIT 1");
 $st->execute([$me]);
 $row = $st->fetch(PDO::FETCH_ASSOC);
-$isAdministrator = !empty($row) && (int)$row['administrator'] === 1;
+$isAdministrator = AdminCan('notifications.all-records');
 
 /* =========================
    Ticket id
@@ -127,6 +127,7 @@ $updSeen->execute([$me, $ticketId, $me, $me]);
    POST actions
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    AdminRequire('notifications.admin-chat.send');
 
     // change status
     if (($_POST['action'] ?? '') === 'set_status') {

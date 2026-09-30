@@ -24,12 +24,6 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.installments')
-    : !Permision('permision_viewbill')) {
-    http_response_code(403);
-    exit('مجوز دسترسی به پرونده‌های اقساطی برای شما تعریف نشده است.');
-}
 
 // PDO exceptions
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -58,15 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh_status'])) {
 }
 
 try {
-    $permStmt = $conn->prepare("SELECT installment_permission FROM dbadmin WHERE username = :username LIMIT 1");
-    $permStmt->execute([':username' => $username]);
-    $permRow = $permStmt->fetch(PDO::FETCH_ASSOC);
-    $canViewAll = ($permRow && (int)$permRow['installment_permission'] === 1);
+    $canViewAll = AdminScope('finance.installments') === 'all';
 } catch (PDOException $e) {
     error_log("Permission check error: " . $e->getMessage());
     $canViewAll = false;
 }
-$installmentScope = AdminRecordVisibility('finance.installments', $canViewAll);
+$installmentScope = AdminScope('finance.installments');
 if ($installmentScope === null) {
     http_response_code(403);
     exit('سطح مشاهدهٔ پرونده‌های اقساطی برای شما فعال نشده است.');
@@ -179,6 +170,7 @@ function refreshPaymentStatusFromLastInstallment(PDO $conn, int $payment_id): vo
 // Handle mark paid
 // -----------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_paid'])) {
+    AdminRequire('finance.installments.details.manage');
     try {
         $installment_id = intval($_POST['installment_id'] ?? 0);
         if ($installment_id <= 0) throw new Exception("قسط نامعتبر است.");
@@ -229,6 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_paid'])) {
 // Handle add installment
 // -----------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_installment'])) {
+    AdminRequire('finance.installments.details.manage');
     try {
         if (!$canEdit) throw new Exception("شما مجوز افزودن قسط برای این پرداخت را ندارید.");
 
@@ -292,6 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_installment'])) {
 // Handle update installment
 // -----------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_installment'])) {
+    AdminRequire('finance.installments.details.manage');
     try {
         if (!$canEdit) throw new Exception("شما مجوز ویرایش این قسط را ندارید.");
 
@@ -340,6 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_installment'])
 // Handle delete installment
 // -----------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_installment'])) {
+    AdminRequire('finance.installments.details.manage');
     try {
         if (!$canViewAll) {
             throw new Exception("شما مجوز حذف این قسط را ندارید.");

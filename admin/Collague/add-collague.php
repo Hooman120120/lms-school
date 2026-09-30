@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewcollague')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['change'])) {
     unset($_SESSION['add-collague']);
     header('location: ' . url('admin/Collague/add-collague.php'));

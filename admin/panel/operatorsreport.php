@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 date_default_timezone_set("Iran");
 // Handle date filter form
 if (isset($_POST['filter'])) {
@@ -264,7 +260,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
     for ($num = 0; $num < sizeof($response->data->data); $num++) {
         if ($response->data->data[$num]->disposition == 'ANSWERED') {
             $answered++;
-            $time_answered = $time_answered + $response->data->data[$num]->duration;
+            $time_answered = $time_answered + $response->data->data[$num]->billsec; // talk time only, not ringing
         }
         if ($response->data->data[$num]->disposition == 'NO ANSWER' || $response->data->data[$num]->disposition == 'BUSY') {
             $noanswered++;
@@ -272,7 +268,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
         }
     }
 
-    $time_total = $time_answered + $time_noanswered;
+    $time_total = $time_answered; // missed-call ring time is not work time
 
     // ✅ Use the global helper functions you defined earlier
     $hds = secondsToTime($time_answered);
@@ -334,7 +330,7 @@ function reportCallSimotelTotal($start, $end, $op, $count = 100000) //og
 //}
 
 // Fetch all operators
-$sql = 'SELECT * FROM dbadmin WHERE permision_suporter = 1 or adminrole =2';
+$sql = 'SELECT * FROM dbadmin WHERE ' . AdminHoldersSql('support.assignable', 'username', false) . ' or adminrole =2';
 $exe = $conn->query($sql);
 $operators = $exe->fetchAll(PDO::FETCH_ASSOC);
 

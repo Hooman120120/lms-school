@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_discount')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['del'])) {
+    AdminRequire('courses.main.discount.delete');
     $del = intval($_GET['del']);
     $delete = 'DELETE FROM dbdiscount WHERE id=?';
     $query_del = $conn->prepare($delete);
@@ -38,6 +35,7 @@ if (isset($_GET['del'])) {
     die();
 }
 if(isset($_POST['save'])){
+    AdminRequire('courses.main.discount.create');
     if(isset($_SESSION['token']) AND $_SESSION['token']== $_POST['token'] ){
         if(!discountEntity($_POST['discount'])){
             $indis='INSERT INTO dbdiscount(name_discount,discount,value_discount,type_discount,role) VALUES (?,?,?,?,?)';

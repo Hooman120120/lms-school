@@ -30,11 +30,6 @@ if (!isset($_GET['code'])) {
     echo '<script>window.close() </script>';
     exit;
 }
-if (!Permision('permision_editstudent')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    exit;
-}
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>

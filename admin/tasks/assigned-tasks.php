@@ -2,6 +2,7 @@
 include_once '../../dbconfig.php';
 include_once '../../inc/function_login.php';
 include_once '../../inc/function.php';
+AdminDeny('این بخش از پنل حذف شده است.');
 include_once '../../inc/jdf.php';
 
 if (!isset($_SESSION['admin'])) {
@@ -18,10 +19,6 @@ if (session_id() != ($sessionRow['session_id'] ?? null)) {
     session_unset();
     header('location: ' . url('admin/login.php'));
     exit;
-}
-if (!Permision('permission_assigned_tasks')) {
-    http_response_code(403);
-    exit('مجوز کارهای محول‌شده را ندارید.');
 }
 
 if (empty($_SESSION['assigned_tasks_csrf'])) {
@@ -61,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $taskId = (int)($_POST['task_id'] ?? 0);
+
     if (isset($_POST['delete_task'])) {
         if (!assignedTaskExists($conn, $taskId)) {
             $message = 'کار موردنظر یافت نشد.';

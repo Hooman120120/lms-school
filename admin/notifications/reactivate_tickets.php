@@ -49,8 +49,8 @@ $sq = "SELECT administrator FROM dbadmin WHERE username = ? LIMIT 1";
 $st = $conn->prepare($sq);
 $st->execute([$me]);
 $adminRow = $st->fetch(PDO::FETCH_ASSOC);
-$isAdministrator = !empty($adminRow) && (int)$adminRow['administrator'] === 1;
-$ticketVisibility = AdminRecordVisibility('tickets.reactivate-requests', $isAdministrator);
+$isAdministrator = AdminCan('notifications.all-records');
+$ticketVisibility = AdminScope('tickets.reactivate-requests');
 if ($ticketVisibility === null) {
     http_response_code(403);
     exit('دسترسی به درخواست‌های بازگردانی تعریف نشده است.');
@@ -61,6 +61,7 @@ $isAdministrator = $ticketVisibility === 'all';
    POST: set ticket status
    ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'set_status') {
+    AdminRequire('tickets.reactivate-requests.status');
     $csrfOk = isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? '');
     $id     = (int)($_POST['id'] ?? 0);
     $status = (int)($_POST['status'] ?? -1);

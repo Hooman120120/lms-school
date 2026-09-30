@@ -27,11 +27,7 @@ if (session_id() != $re['session_id']) {
 //* End Check Session JUST ONE Session
 //HARD CODE
 if ($_SESSION['admin']['user'] != 'op213') {
-    if (!Permision('permision_manage_suporter')) {
-        header('location: ' . url('admin/index.php'));
-        die();
     }
-}
 include_once '../../temp.html';
 ?>
 <!DOCTYPE html>

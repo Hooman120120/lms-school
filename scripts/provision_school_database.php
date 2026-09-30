@@ -123,14 +123,12 @@ try {
     $server->exec('INSERT IGNORE INTO hf_control_state (id) VALUES (1)');
     $insert = $server->prepare('INSERT INTO dbadmin (`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', array_fill(0, count($columns), '?')) . ')');
     $insert->execute($values);
-    // The first admin also gets the whole permission tree: a granted branch covers
-    // everything under it, so the top-level codes are enough (a panel ignores the
-    // branches that are not for its institution type).
-    $registry = require dirname(__DIR__) . '/config/admin_permission_registry.php';
-    $grant = $server->prepare('INSERT IGNORE INTO admin_user_permissions (admin_username, permission_code) VALUES (?, ?)');
-    foreach ($registry as $node) {
-        if (!empty($node['code'])) $grant->execute([$username, (string) $node['code']]);
-    }
+    // The first admin (the school manager) holds the whole permission tree ('*'),
+    // and the new database starts on the tree, so the one-time conversion of old
+    // permissions (inc/admin_permissions_convert.php) is marked done.
+    $server->prepare('INSERT IGNORE INTO admin_user_permissions (admin_username, permission_code) VALUES (?, ?)')->execute([$username, '*']);
+    $server->exec("CREATE TABLE IF NOT EXISTS app_seeds (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $server->exec("INSERT IGNORE INTO app_seeds (name) VALUES ('permission_tree_v2')");
     $server->commit();
     echo $targetName . PHP_EOL;
 } finally {

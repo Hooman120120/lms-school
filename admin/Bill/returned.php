@@ -27,18 +27,12 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (AdminHasAnyCurrentTreePermission()
-    ? !AdminHasMenuNavigationPermission('finance.returned')
-    : !Permision('permision_notpay')) {
-    http_response_code(403); exit('مجوز مدیریت فاکتورهای مسترد برای شما تعریف نشده است.');
-}
 $username = (string)($_SESSION['admin']['user'] ?? '');
-$returnedScope = AdminRecordVisibility('finance.returned', false);
+$returnedScope = AdminScope('finance.returned');
 if ($returnedScope === null) {
     http_response_code(403); exit('سطح مشاهدهٔ فاکتورهای مستردشده برای شما فعال نشده است.');
 }
-$canManageReturned = !AdminHasAnyCurrentTreePermission()
-    || AdminHasMenuPermission('finance.returned.manage');
+$canManageReturned = AdminCan('finance.returned.manage');
 if (isset($_SESSION['call'])) {
     $name = $_SESSION['call']['name'];
     $call = 1;
@@ -87,7 +81,7 @@ if (isset($_GET['call-student']) and $_GET['call-student'] != '') {
 }
 if (isset($_GET['delfactor'])) {
     $factorId = intval($_GET['delfactor']);
-    if (!$canManageReturned || !AdminCanAccessFinanceFactor($factorId, 'finance.returned', false)) {
+    if (!$canManageReturned || !AdminCanAccessFinanceFactor($factorId, 'finance.returned')) {
         http_response_code(403); exit('مجوز مدیریت این فاکتور فعال نشده است.');
     }
     $factor = queryFactor($factorId);
@@ -141,7 +135,7 @@ include_once '../../temp.html';
         <div class="container-fluid">
             <div class="inner-body">
                 <?php
-                if (Permision('permision_notpay')) { ?>
+                if (AdminCanSee('finance.returned')) { ?>
 
 
                     <!-- Row -->
@@ -239,7 +233,7 @@ include_once '../../temp.html';
                                                 $query->execute($params);
                                             }
                                             $result = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $result = AdminFilterFinanceFactors($result, 'finance.returned', false);
+                                            $result = AdminFilterFinanceFactors($result, 'finance.returned');
                                             if ($query->rowCount() > 0) {
                                                 foreach (
                                                     $result

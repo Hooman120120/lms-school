@@ -41,7 +41,7 @@ if ($codecourse > 0) {
         exit('این پایه در فهرست پایه‌های فعال شما نیست.');
     }
 }
-$allGrades = GetStudentVisibleClassRegister($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
+$allGrades = GetStudentVisibleClassGrades($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
 $lessonFilters = [];
 $studentLessons = GetStudentActiveClassLessons($studentUsername, $codecourse > 0 ? $codecourse : null);
 foreach ($studentLessons as $lessonRow) {
@@ -64,7 +64,7 @@ if ($selectedDarsId > 0 && !isset($lessonFilters[$selectedDarsId])) {
 }
 $grades = $selectedDarsId > 0
     ? array_values(array_filter($allGrades, static fn(array $row): bool => (int)($row['dars_id'] ?? 0) === $selectedDarsId))
-    : $allGrades;
+    : [];
 $qualityOptions = registerClassQualityOptions();
 include_once '../temp.html';
 ?>
@@ -111,10 +111,10 @@ include_once '../temp.html';
                 <div class="grades-hero">
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">نمرات کلاسی<?php echo $courseTitle !== '' ? ' - ' . htmlspecialchars($courseTitle) : ' من'; ?></h2>
-                        <p class="text-muted mb-0">همه ستون‌های دفتر کلاسی و نتیجه‌های ثبت‌شده توسط استاد.</p>
+                        <p class="text-muted mb-0">نمره‌هایی که استاد برای نمایش به شما منتشر کرده است.</p>
                     </div>
                     <div class="d-flex align-items-center flex-wrap" style="gap:8px">
-                        <span class="grades-count"><?php echo count($grades); ?> ستون</span>
+                        <span class="grades-count"><?php echo count($grades); ?> نمره</span>
                         <?php if ($codecourse > 0): ?>
                             <a class="btn btn-outline-primary" href="mycourse.php?code=<?php echo $codecourse; ?>"><i class="fe fe-arrow-right ml-1"></i>بازگشت به پایه</a>
                         <?php endif; ?>
@@ -136,7 +136,11 @@ include_once '../temp.html';
                 <?php if ($grades === []): ?>
                     <div class="card custom-card grades-empty"><div class="card-body text-center py-5 text-muted">
                         <i class="fe <?php echo $selectedDarsId === 0 ? 'fe-book-open' : 'fe-award'; ?> tx-40 d-block mb-3" style="opacity:.45"></i>
-                        هنوز ستونی از دفتر کلاسی برای این پایه ثبت نشده است.
+                        <?php if ($selectedDarsId === 0): ?>
+                            برای مشاهده نمرات، یکی از درس‌های بالا را انتخاب کنید.
+                        <?php else: ?>
+                            هنوز نمره کلاسی قابل نمایشی برای این درس ثبت نشده است.
+                        <?php endif; ?>
                     </div></div>
                 <?php else: ?>
                     <div class="row">
@@ -157,20 +161,12 @@ include_once '../temp.html';
                             $courseName = trim((string)($grade['coursename'] ?? ''));
                             $className = trim((string)($grade['class_name'] ?? ''));
                             $lessonName = trim((string)($grade['dars_name'] ?? '')) ?: 'درس نامشخص';
-                            $gradeModalId = 'gradeDetails' . (int)$grade['event_id'];
-                            $eventType = (int)($grade['type'] ?? 1);
-                            $attendanceLabels = [1 => 'حاضر', 2 => 'غایب'];
-                            $attendanceValue = $attendanceLabels[(int)($grade['attendance_status'] ?? 0)] ?? 'ثبت نشده';
-                            $isAttendance = in_array($eventType, [0, 2], true);
-                            $eventTypeLabels = [0 => 'حضور و غیاب دستی', 1 => 'نمره کلاسی', 2 => 'حضور و غیاب آنلاین', 3 => 'توضیحات', 4 => 'تراز آزمون آنلاین', 5 => 'نمره تکلیف'];
-                            $eventTypeLabel = $eventTypeLabels[$eventType] ?? 'ستون دفتر کلاسی';
+                            $gradeModalId = 'gradeDetails' . (int)$grade['id'];
                         ?>
                             <div class="col-12 col-xl-6 mb-3">
                                 <div class="card custom-card grade-card h-100 mb-0">
                                     <div class="card-body d-flex align-items-start" style="gap:16px">
-                                        <?php if ($isAttendance): ?>
-                                            <div class="grade-score"><span><i class="fe fe-calendar"></i></span><small><?php echo htmlspecialchars($attendanceValue); ?></small></div>
-                                        <?php elseif ($isQualityAssessment): ?>
+                                        <?php if ($isQualityAssessment): ?>
                                             <div class="grade-score"><span><i class="fe fe-check-circle"></i></span><small>ارزیابی کیفی</small></div>
                                         <?php else: ?>
                                             <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از <?php echo htmlspecialchars($maxScore); ?></small></div>
@@ -183,7 +179,7 @@ include_once '../temp.html';
                                                         <?php echo htmlspecialchars($lessonName); ?>
                                                     </div>
                                                 </div>
-                                                <?php if ($isAttendance): ?><span class="grade-quality"><?php echo htmlspecialchars($attendanceValue); ?></span><?php elseif ($isQualityAssessment): ?><span class="grade-quality"><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></span><?php endif; ?>
+                                                <?php if ($isQualityAssessment): ?><span class="grade-quality"><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></span><?php endif; ?>
                                             </div>
                                             <div class="grade-actions">
                                                 <span class="grade-teacher-brief"><i class="fe fe-user ml-1"></i>استاد: <strong><?php echo htmlspecialchars($teacherName); ?></strong></span>
@@ -205,15 +201,12 @@ include_once '../temp.html';
                                         </div>
                                         <div class="modal-body">
                                             <div class="grade-detail-list">
-                                                <?php if ($isAttendance): ?>
-                                                    <div class="grade-detail-item"><span>وضعیت</span><strong><?php echo htmlspecialchars($attendanceValue); ?></strong></div>
-                                                <?php elseif ($isQualityAssessment): ?>
+                                                <?php if ($isQualityAssessment): ?>
                                                     <div class="grade-detail-item"><span>ارزیابی توصیفی</span><strong><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></strong></div>
                                                 <?php else: ?>
                                                     <div class="grade-detail-item"><span>نمره</span><strong><?php echo htmlspecialchars($score); ?> از <?php echo htmlspecialchars($maxScore); ?></strong></div>
                                                 <?php endif; ?>
                                                 <div class="grade-detail-item"><span>درس</span><strong><?php echo htmlspecialchars($lessonName); ?></strong></div>
-                                                <div class="grade-detail-item"><span>نوع ستون</span><strong><?php echo htmlspecialchars($eventTypeLabel); ?></strong></div>
                                                 <div class="grade-detail-item"><span>استاد</span><strong><?php echo htmlspecialchars($teacherName); ?></strong></div>
                                                 <div class="grade-detail-item full"><span>عنوان پایه</span><strong><?php echo htmlspecialchars($courseName); ?></strong></div>
                                                 <?php if ($className !== '' && $className !== $courseName): ?>

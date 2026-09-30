@@ -83,21 +83,14 @@ function tg_label_fa(string $tg): string
 $currentUser = (string)($_SESSION['admin']['user'] ?? '');
 $sessionRole = isset($_SESSION['admin']['adminrole']) ? (int)$_SESSION['admin']['adminrole'] : 0;
 
-if ($sessionRole === 3) {
-    RequireTeacherPermission('teacher_perm_messages', url('admin/index.php'));
-}
 
-$meStmt = $conn->prepare("SELECT username, administrator, permision_suporter, permision_viewalert, permision_viewemploy FROM dbadmin WHERE username=? LIMIT 1");
-$meStmt->execute([$currentUser]);
-$me = $meStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-$administrator = (int)($me['administrator'] ?? 0);
+$administrator = AdminCan('notifications.all-records') ? 1 : 0;
 
 $schoolRoleKey = SchoolStaffRoleKey($currentUser);
 $isSchoolManager = in_array($schoolRoleKey, ['manager', 'general_deputy'], true);
-$isOperator = !empty($me['permision_suporter']) || $schoolRoleKey === 'counselor';
-$isManager = !empty($me['permision_viewalert']) || $isSchoolManager
-    || AdminCanUsePermissionScope('school-notifications.information.tickets', ['permision_viewalert']);
-$canSeeAll = $isSchoolManager || ($isManager && Permision('permision_viewemploy'));
+$isOperator = AdminCan(AdminNotificationCode('information.tickets.own'));
+$isManager = AdminCan(AdminNotificationCode('information.tickets.manage'));
+$canSeeAll = AdminCan(AdminNotificationCode('information.tickets.all'));
 if (!$isOperator && !$isManager && $sessionRole !== 3) {
     http_response_code(403);
     exit('دسترسی مشاهده این تیکت برای سمت شما تعریف نشده است.');
@@ -296,8 +289,8 @@ if ($MODE === 'report') {
     $mStmt = $conn->prepare("
         SELECT m.id, m.sender_username, m.body, m.created_at,
                m.seen_by_operator, m.seen_by_manager, m.seen_at_operator, m.seen_at_manager,
-               da.permision_viewalert AS sender_is_manager,
-               da.permision_suporter AS sender_is_operator
+               (" . AdminHoldersSql(AdminNotificationCode('information.tickets.manage'), 'da.username') . ") AS sender_is_manager,
+               (" . AdminHoldersSql('support.assignable', 'da.username', false) . ") AS sender_is_operator
         FROM report_messages m
         LEFT JOIN dbadmin da ON da.username = m.sender_username
         WHERE m.thread_id = ?
@@ -528,8 +521,8 @@ if ($codemeli !== '') {
 $mStmt = $conn->prepare("
         SELECT m.id, m.sender_username, m.body, m.created_at,
                m.seen_by_operator, m.seen_by_manager, m.seen_at_operator, m.seen_at_manager,
-               da.permision_viewalert AS sender_is_manager,
-               da.permision_suporter AS sender_is_operator
+               (" . AdminHoldersSql(AdminNotificationCode('information.tickets.manage'), 'da.username') . ") AS sender_is_manager,
+               (" . AdminHoldersSql('support.assignable', 'da.username', false) . ") AS sender_is_operator
         FROM report_messages m
         LEFT JOIN dbadmin da ON da.username = m.sender_username
         WHERE m.thread_id = ?
@@ -761,7 +754,7 @@ if (isset($_GET['delm'])) {
     $message = $stmt->fetch(PDO::FETCH_OBJ);
     $datetime = $message->created_at;
 
-    if (time() - strtotime($datetime) <= 86400 or Permision('administrator')) {
+    if (time() - strtotime($datetime) <= 86400 or AdminCan(AdminNotificationCode('information.tickets.manage'))) {
         if ($message && !empty($message->file_path)) {
             $file_path = $_SERVER['DOCUMENT_ROOT'] . $message->file_path;
             if (file_exists($file_path)) {

@@ -30,10 +30,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permission_news_notif')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 
 // ------------------------------------------------------------------------
 // Handle Flash Messages (Post/Redirect/Get)
@@ -101,6 +97,7 @@ function uploadNewsImage($file, $old_image_path = null) {
 // Quick toggle status action
 // ------------------------------------------------------------------------
 if (isset($_GET['toggle_status_id'])) {
+    AdminRequire('executive.news.status');
     $toggle_id = (int) $_GET['toggle_status_id'];
     $stmt = $conn->prepare("UPDATE news SET status = IF(status = 1, 0, 1) WHERE id = :id");
     $stmt->execute([':id' => $toggle_id]);
@@ -113,6 +110,7 @@ if (isset($_GET['toggle_status_id'])) {
 // Save / Edit news (with news_audience support)
 // ------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_news'])) {
+    AdminRequire(!empty($_POST['news_id']) ? 'executive.news.edit' : 'executive.news.create');
 
     // Prevent duplicate submission using form tokens
     if (!isset($_POST['form_token']) || !isset($_SESSION['form_token']) || $_POST['form_token'] !== $_SESSION['form_token']) {
@@ -213,6 +211,7 @@ $_SESSION['form_token'] = bin2hex(random_bytes(32));
 // Delete news (with image & audience records)
 // ------------------------------------------------------------------------
 if (isset($_GET['delete_id'])) {
+    AdminRequire('executive.news.edit');
     $del_id = (int) $_GET['delete_id'];
 
     $stmt_img = $conn->prepare("SELECT image_path FROM news WHERE id = :id");
@@ -289,6 +288,7 @@ if (isset($_GET['edit_id'])) {
                             <h6 class="mb-0 fw-bold"><?php echo $edit_news ? 'ویرایش خبر' : 'ثبت خبر جدید'; ?></h6>
                         </div>
                         <div class="card-body">
+                            <?php if (AdminCanAny('executive.news.create', 'executive.news.edit')): ?>
                             <form action="<?php echo htmlspecialchars($_SERVER["REQUEST_URI"]); ?>" method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="form_token" value="<?php echo $_SESSION['form_token']; ?>">
                                 <input type="hidden" name="news_id" value="<?php echo $edit_news ? $edit_news->id : '0'; ?>">
@@ -363,6 +363,7 @@ if (isset($_GET['edit_id'])) {
                                     <a href="<?php echo strtok($_SERVER["REQUEST_URI"], '?'); ?>" class="btn btn-secondary">انصراف</a>
                                 <?php endif; ?>
                             </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -462,13 +463,18 @@ if (isset($_GET['edit_id'])) {
                                                     <?php echo $date_show . $update_show; ?>
                                                 </td>
                                                 <td>
-                                                    <?php if ($news->status == 1): ?>
+                                                    <?php if (!AdminCan('executive.news.status')): ?>
+                                                    <?php elseif ($news->status == 1): ?>
                                                         <a href="?toggle_status_id=<?php echo $news->id; ?>" class="btn btn-sm btn-warning mb-1" title="مخفی‌سازی">مخفی‌سازی</a>
                                                     <?php else: ?>
                                                         <a href="?toggle_status_id=<?php echo $news->id; ?>" class="btn btn-sm btn-success mb-1" title="فعال‌سازی">فعال‌سازی</a>
                                                     <?php endif; ?>
+                                                    <?php if (AdminCan('executive.news.edit')): ?>
                                                     <a href="?edit_id=<?php echo $news->id; ?>" class="btn btn-sm btn-info mb-1">ویرایش</a>
+                                                    <?php endif; ?>
+                                                    <?php if (AdminCan('executive.news.edit')): ?>
                                                     <a href="?delete_id=<?php echo $news->id; ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('آیا از حذف این خبر اطمینان دارید؟');">حذف</a>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

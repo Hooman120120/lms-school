@@ -30,10 +30,9 @@ if (!isset($_GET['ticket'])) {
     echo '<script>window.close() </script>';
     die();
 }
-if (!Permision('permision_viewsupport')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    die();
+if (isset($_POST['closed']) || isset($_POST['opened']) || isset($_POST['sub'])) {
+    AdminRequire(isset($_POST['sub']) ? 'tickets.inbox.reply' : 'tickets.inbox.status',
+        'tickets.all', 'tickets.open', 'tickets.emergency', 'tickets.referred', 'public-relations.safe-call');
 }
 if (isset($_POST['closed']) and isset($_GET['ticket'])) {
     $ticketid = intval($_GET['ticket']);

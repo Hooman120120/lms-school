@@ -29,10 +29,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('administrator')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 include_once '../../temp.html';
 
@@ -45,6 +41,7 @@ if (!isset($_SESSION['flash_errors']))  $_SESSION['flash_errors']  = [];
 
 // Unsuspend Action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'unsuspend_student') {
+    AdminRequire('students.definitive.suspended.unsuspend');
     $studentUsername = trim($_POST['student_username'] ?? '');
 
     if ($studentUsername === '') {
@@ -71,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'unsus
 
 // Approve/Reject Action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['request_id']) && in_array($_POST['action'], ['approve', 'reject'], true)) {
+    AdminRequire('students.definitive.suspended.review');
     $action     = $_POST['action'];
     $requestId  = (int)($_POST['request_id'] ?? 0);
 
@@ -141,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['req
         }
 
         // Handle Referral logic if requested and user is superadmin (role 0)
-        if ($referredToId > 0 && isset($_SESSION['admin']['adminrole']) ) {
+        if ($referredToId > 0 && AdminCan('students.definitive.suspended.refer')) {
             // Get current admin's ID
             $stAd = $conn->prepare("SELECT idadmin FROM dbadmin WHERE username = ? LIMIT 1");
             $stAd->execute([$_SESSION['admin']['user']]);
@@ -486,7 +484,7 @@ $supportUsers = $stSupport->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="invalid-feedback">وارد کردن علت رد اجباری است.</div>
                             </div>
 
-                            <?php if (isset($_SESSION['admin']['adminrole']) && $_SESSION['admin']['adminrole'] == 0): ?>
+                            <?php if (AdminCan('students.definitive.suspended.refer')): ?>
                                 <hr>
                                 <button class="btn btn-sm btn-outline-info w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReferReject" aria-expanded="false" aria-controls="collapseReferReject">
                                     ارجاع به پشتیبان ؟ (کلیک کنید)

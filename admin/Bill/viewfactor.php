@@ -32,7 +32,26 @@ if (!isset($_GET['id'])) {
     echo '<script>window.close() </script>';
     exit;
 }
-if (!Permision('permision_bill')) {
+/*
+ * Read-only view. Besides the statement flag, it opens for any invoice the
+ * account can see in a list that links here, including the installment cases
+ * (payment.php), where "own" means payments.operator_username.
+ */
+$viewFactorId = (int)$_GET['id'];
+$viewFactorAllowed = AdminCanAccessFinanceFactor($viewFactorId, 'finance.statement')
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.advanced-report')
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.pending')
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.unpaid')
+    || AdminCanAccessFinanceFactor($viewFactorId, 'finance.returned');
+if (!$viewFactorAllowed && $viewFactorId > 0) {
+    $installmentScope = AdminScope('finance.installments');
+    if ($installmentScope !== null) {
+        $installmentFactor = $conn->prepare('SELECT 1 FROM payments WHERE idfactor = ? AND (? = 1 OR operator_username = ?) LIMIT 1');
+        $installmentFactor->execute([$viewFactorId, $installmentScope === 'all' ? 1 : 0, (string)$_SESSION['admin']['user']]);
+        $viewFactorAllowed = (bool)$installmentFactor->fetchColumn();
+    }
+}
+if (!$viewFactorAllowed) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';
     exit;

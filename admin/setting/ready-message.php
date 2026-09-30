@@ -25,11 +25,8 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!AdminCanUsePermissionScope('dashboard.summary.overview.manager.ready-messages', ['permision_manage_chat'])) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_POST['addmessage'])) {
+    AdminRequire('dashboard.ready-messages.create');
     $message_text = $_POST['message_text'];
     $sql = "INSERT INTO suport_message_constant (content) VALUES (?)";
     $stmt = $conn->prepare($sql);
@@ -39,6 +36,7 @@ if (isset($_POST['addmessage'])) {
 }
 
 if (isset($_GET['delete']) and !isset($_GET['delete_all_usages'])) {
+    AdminRequire('dashboard.ready-messages.delete');
     $sql = "DELETE FROM suport_message_constant WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$_GET['id']]);
@@ -48,6 +46,7 @@ if (isset($_GET['delete']) and !isset($_GET['delete_all_usages'])) {
 }
 
 if (isset($_GET['delete']) and isset($_GET['delete_all_usages'])) {
+    AdminRequire('dashboard.ready-messages.delete');
     $select = "SELECT * FROM suport_message_constant WHERE id = ?";
     $stm = $conn->prepare($select);
     $stm->execute([$_GET['id']]);
@@ -151,6 +150,7 @@ include_once '../../temp.html';
                                         <?php echo $erortoken ?>
                                     </div>
                                 <?php } ?>
+                                <?php if (AdminCan('dashboard.ready-messages.create')): ?>
                                 <form method="post" data-parsley-validate="">
                                     <div class="row">
                                         <div class="col-lg-12 mg-t-20">
@@ -167,6 +167,7 @@ include_once '../../temp.html';
                                         </div>
                                     </div>
                                 </form>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -222,22 +223,26 @@ include_once '../../temp.html';
                                                         <?= $message->count ?>
                                                     </td>
                                                     <td class="wd-15">
+                                                        <?php if (AdminCan('dashboard.ready-messages.edit')): ?>
                                                         <div class="btn btn-sm ripple btn-success btn-icon"
                                                              onclick="window.open('edit-ready-message.php?id='+'<?php echo $message->id ?>','ویرایش پیام آماده'
                                                                      ,'width=1000,height=800,menubar=0,toolbar=0,resizable=0,left=180,top=100,status=0,scrollbars=0,location=0' )">
                                                             <i class="fe fe-edit"></i>
                                                         </div>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td class="wd-15">
                                                         <!-- <a href="?id=<?php echo $message->id ?>&delete=true"
                                                                     onclick="return confirm('آیا با حذف این پیام آماده  موافقید؟ این اقدام غیر قابل بازگشت است!')"
                                                                     class="btn btn-sm ripple btn-danger btn-icon"><i
                                                                         class="fe fe-x"></i></a> -->
+                                                        <?php if (AdminCan('dashboard.ready-messages.delete')): ?>
                                                         <a href="#"
                                                            onclick="return deleteWithOptions(<?= $message->id ?>)"
                                                            class="btn btn-sm btn-danger btn-icon">
                                                             <i class="fe fe-x"></i>
                                                         </a>
+                                                        <?php endif; ?>
 
                                                     </td>
                                                 </tr>

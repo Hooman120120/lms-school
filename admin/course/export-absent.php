@@ -27,10 +27,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permision_viewtest')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (isset($_GET['exp'])) {
     $db = retDbquiz($_GET['exp']);
     $course=returnCourse($db->codecourse);

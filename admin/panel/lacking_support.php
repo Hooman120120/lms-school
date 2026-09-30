@@ -26,10 +26,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 // Permission
-if (!Permision('permision_manage_suporter')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 /**
  * 1) COUNT – must match the dashboard card exactly

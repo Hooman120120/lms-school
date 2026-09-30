@@ -9,7 +9,7 @@ if (isset($_SESSION['auth']) and $_SESSION['auth']['role'] == 1) {
     $studentGender = trim((string)$studentGenderStmt->fetchColumn());
 
     if (in_array($studentGender, ['خانم', 'دختر', 'زن', 'female', 'Female', '1'], true)) {
-        $studentMenuColor = '#A100DD';
+        $studentMenuColor = '#a41572';
     } elseif (in_array($studentGender, ['آقا', 'پسر', 'مرد', 'male', 'Male', '0'], true)) {
         $studentMenuColor = '#000BDB';
     }

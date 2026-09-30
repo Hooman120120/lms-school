@@ -29,10 +29,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 
-if (!Permision('permission_calendar')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 
 include_once 'calendar.php';
 include_once '../../temp.html';

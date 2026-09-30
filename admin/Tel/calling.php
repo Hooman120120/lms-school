@@ -26,12 +26,8 @@ if (session_id() != $re['session_id']) {
     header('location: ' . url('admin/login.php'));
     die();
 }
-if (!Permision('permision_viewcall')) {
-    header('location: ' . url('admin/index.php'));
-    die();
-}
 if (!isset($_SESSION['act-call'])) {
-    header('location: ' . url('admin/Tel/uncall.php'));
+    header('location: ' . url('admin/Tel/managecall.php'));
     die();
 }
 
@@ -62,6 +58,7 @@ switch ($_SESSION['act-call']['box']) {
         break;
 }
 if (isset($_POST['save-comment'])) {
+    AdminRequire('public-relations.safe-call.calling.result');
     // IMPORTANT: do this once (or in dbconfig.php)
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -137,6 +134,7 @@ if (isset($_POST['save-comment'])) {
 }
 
 if (isset($_POST['olgo'])) {
+    AdminRequire('public-relations.safe-call.calling.sms');
     if (isset($_SESSION['token']) and $_SESSION['token'] == $_POST['token']) {
         $olgo = $_POST['act'];
         $sms = retTelDb($_SESSION['act-call']['id']);
@@ -188,6 +186,7 @@ if (isset($_POST['olgo'])) {
 }
 
 if (isset($_POST['general-sms'])) {
+    AdminRequire('public-relations.safe-call.calling.sms');
     if (!empty($_POST['detail'])) {
         $sms_text = $_POST['detail'];
         $sms_info = retTelDb($_SESSION['act-call']['id']); // گرفتن اطلاعات تماس

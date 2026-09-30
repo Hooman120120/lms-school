@@ -43,8 +43,7 @@ if ($notificationType === '' || !in_array($notificationType, SchoolNotificationA
 }
 
 if ($adminRole === 3) {
-    RequireTeacherPermission('teacher_perm_attendance', url('admin/course/Active-course.php'));
-    if (!TeacherHasClassAccess((int)$event['class_id'], $sessionUser)) {
+        if (!TeacherHasClassAccess((int)$event['class_id'], $sessionUser)) {
         http_response_code(403);
         exit('این کلاس به شما تخصیص داده نشده است.');
     }

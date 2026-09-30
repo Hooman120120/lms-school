@@ -63,12 +63,6 @@ if (session_id() != $re['session_id']) {
 // Access to documents section
 // ---------------------------------------------------------
 
-if (!Permision('permision_viewdocument')) {
-
-    header('location: ' . url('admin/index.php'));
-
-    die();
-}
 
 
 // ---------------------------------------------------------

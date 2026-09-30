@@ -26,11 +26,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //*
-if (!Permision('permision_bill')) {
-    echo '<strong>403</strong>';
-    echo '<script>window.close() </script>';
-    die();
-}
 if (!isset($_GET['order'])) {
     echo '<strong>403</strong>';
     echo '<script>window.close() </script>';

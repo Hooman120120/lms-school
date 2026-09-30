@@ -25,10 +25,6 @@ if (session_id() != $re['session_id']) {
     die();
 }
 //* End Check Session JUST ONE Session
-if (!Permision('permision_viewemploy')) {
-    header('location:' . url("admin/index.php"));
-    die();
-}
 
 $academicYear = getSchoolAcademicYearRange();
 $academicStart = $academicYear['start_gregorian'];
@@ -59,6 +55,7 @@ $activeFilterQuery = $selectedCourse > 0 ? '?course=' . $selectedCourse : '';
 $activeFilterSuffix = $selectedCourse > 0 ? '&course=' . $selectedCourse : '';
 
 if (isset($_GET['disable'])) {
+    AdminRequire('staff.teachers.toggle');
     if($_GET['disable']!=$_SESSION['admin']['user']) {
         $sql = 'UPDATE dbadmin SET adminactive =? WHERE username=?';
         $query = $conn->prepare($sql);
@@ -68,6 +65,7 @@ if (isset($_GET['disable'])) {
     }
 }
 if (isset($_GET['enable'])) {
+    AdminRequire('staff.teachers.toggle');
     $sql = 'UPDATE dbadmin SET adminactive =? WHERE username=?';
     $query = $conn->prepare($sql);
     $query->execute([1, $_GET['enable']]);
