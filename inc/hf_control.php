@@ -31,6 +31,21 @@ function hf_control_configured(): bool
     return hf_control_config() !== null;
 }
 
+/**
+ * A developer must be able to run the panel on XAMPP without production
+ * licence credentials. Both the requested host and the connecting address
+ * must be loopback, so this cannot turn an unconfigured hosted panel on.
+ */
+function hf_control_is_local_development(): bool
+{
+    $hostHeader = trim((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    $host = strtolower((string) parse_url('http://' . $hostHeader, PHP_URL_HOST));
+    $remoteAddress = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+
+    return in_array($host, ['localhost', '127.0.0.1', '::1'], true)
+        && in_array($remoteAddress, ['127.0.0.1', '::1'], true);
+}
+
 function hf_control_request(string $endpoint, string $method = 'GET', ?array $payload = null): array
 {
     $config = hf_control_config();
@@ -180,6 +195,10 @@ const HF_CONTROL_HARD_TTL = 900;
 
 function hf_control_access_state(PDO $conn, bool $forceRefresh = false): array
 {
+    if (!hf_control_configured() && hf_control_is_local_development()) {
+        return ['allowed' => true, 'reason' => 'local_development'];
+    }
+
     // No hf connection means no licence: the panel does not run unlicensed.
     if (!hf_control_configured()) {
         return ['allowed' => false, 'reason' => 'not_configured'];
