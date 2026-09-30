@@ -1,4 +1,3 @@
-```php
 <?php
 
 return (static function (): array {
@@ -14,4 +13,3 @@ return (static function (): array {
 
     return $registry;
 })();
-```
