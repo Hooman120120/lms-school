@@ -4471,16 +4471,10 @@ function getRegisterClassEvents(int $classId, int $createdBy, int $adminrole): a
         $params[] = $createdBy;
     }
 
-    // تاریخ قدیمی تر اول؛ داخل هر دسته، ترتیب ثابت انواع ستون رعایت می شود
-    // (حضور دستی، حضور آنلاین، نمره کلاسی، تراز آزمون، توضیحات)
-    // به این ترتیب دسته های قدیمی هم با همین چیدمان نمایش داده می شوند.
-    $kindOrder = implode(',', array_map(
-        static fn($k) => "'" . $k['type'] . "'",
-        registerClassColumnKinds()
-    ));
-    // ستون های بدون تاریخ انتهای جدول قرار می گیرند
-    $sql .= " ORDER BY (ev.event_date IS NULL) ASC, ev.event_date ASC, ev.group_uid ASC,
-              FIELD(ev.type, $kindOrder), ev.id ASC";
+    // در جدول راست به چپ، اولین رکورد نتیجه نزدیک ترین ستون به سمت راست است.
+    // بنابراین ستون تازه‌ساخته‌شده باید با زمان ساخت و شناسهٔ بزرگ‌تر اول بیاید؛
+    // حتی اگر کاربر برای آن تاریخ قدیمی‌تری انتخاب کرده باشد.
+    $sql .= " ORDER BY ev.created_at DESC, ev.id DESC";
 
     $st = $conn->prepare($sql);
     $st->execute($params);
