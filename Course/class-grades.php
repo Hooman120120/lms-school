@@ -41,7 +41,7 @@ if ($codecourse > 0) {
         exit('این پایه در فهرست پایه‌های فعال شما نیست.');
     }
 }
-$allGrades = GetStudentVisibleClassGrades($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
+$allGrades = GetStudentVisibleClassRegister($studentUsername, 300, $codecourse > 0 ? $codecourse : null);
 $lessonFilters = [];
 $studentLessons = GetStudentActiveClassLessons($studentUsername, $codecourse > 0 ? $codecourse : null);
 foreach ($studentLessons as $lessonRow) {
@@ -64,7 +64,7 @@ if ($selectedDarsId > 0 && !isset($lessonFilters[$selectedDarsId])) {
 }
 $grades = $selectedDarsId > 0
     ? array_values(array_filter($allGrades, static fn(array $row): bool => (int)($row['dars_id'] ?? 0) === $selectedDarsId))
-    : [];
+    : $allGrades;
 $qualityOptions = registerClassQualityOptions();
 include_once '../temp.html';
 ?>
@@ -111,10 +111,10 @@ include_once '../temp.html';
                 <div class="grades-hero">
                     <div>
                         <h2 class="main-content-title tx-24 mg-b-5">نمرات کلاسی<?php echo $courseTitle !== '' ? ' - ' . htmlspecialchars($courseTitle) : ' من'; ?></h2>
-                        <p class="text-muted mb-0">نمره‌هایی که استاد برای نمایش به شما منتشر کرده است.</p>
+                        <p class="text-muted mb-0">همه اطلاعاتی که استاد در دفتر کلاسی برای شما ثبت کرده است.</p>
                     </div>
                     <div class="d-flex align-items-center flex-wrap" style="gap:8px">
-                        <span class="grades-count"><?php echo count($grades); ?> نمره</span>
+                        <span class="grades-count"><?php echo count($grades); ?> ستون</span>
                         <?php if ($codecourse > 0): ?>
                             <a class="btn btn-outline-primary" href="mycourse.php?code=<?php echo $codecourse; ?>"><i class="fe fe-arrow-right ml-1"></i>بازگشت به پایه</a>
                         <?php endif; ?>
@@ -136,11 +136,7 @@ include_once '../temp.html';
                 <?php if ($grades === []): ?>
                     <div class="card custom-card grades-empty"><div class="card-body text-center py-5 text-muted">
                         <i class="fe <?php echo $selectedDarsId === 0 ? 'fe-book-open' : 'fe-award'; ?> tx-40 d-block mb-3" style="opacity:.45"></i>
-                        <?php if ($selectedDarsId === 0): ?>
-                            برای مشاهده نمرات، یکی از درس‌های بالا را انتخاب کنید.
-                        <?php else: ?>
-                            هنوز نمره کلاسی قابل نمایشی برای این درس ثبت نشده است.
-                        <?php endif; ?>
+                        هنوز ستونی از دفتر کلاسی برای این پایه ثبت نشده است.
                     </div></div>
                 <?php else: ?>
                     <div class="row">
@@ -151,25 +147,39 @@ include_once '../temp.html';
                                 ? $qualityOptions[(int)$grade['quality']] : '';
                             $assessmentMode = (string)($grade['assessment_mode'] ?? 'score');
                             $isQualityAssessment = $assessmentMode === 'quality';
-                            $dateValue = (string)($grade['event_date'] ?: $grade['created_at']);
+                            $dateValue = (string)($grade['event_date'] ?: ($grade['created_at'] ?? $grade['event_created_at'] ?? ''));
+                            $eventType = (int)($grade['type'] ?? 1);
+                            $isAttendance = in_array($eventType, [0, 2], true);
+                            $attendanceValue = ((string)($grade['attendance_status'] ?? '') === '1') ? 'حاضر' : (((string)($grade['attendance_status'] ?? '') === '2') ? 'غایب' : 'ثبت نشده');
+                            $eventTypeLabels = [0 => 'حضور و غیاب دستی', 1 => 'نمره کلاسی', 2 => 'حضور و غیاب آنلاین', 3 => 'توضیحات', 4 => 'تراز آزمون آنلاین', 5 => 'نمره تکلیف'];
+                            $eventTypeLabel = $eventTypeLabels[$eventType] ?? 'ستون دفتر کلاسی';
+                            $eventIcons = [0 => 'fe-calendar', 1 => 'fe-award', 2 => 'fe-wifi', 3 => 'fe-file-text', 4 => 'fe-bar-chart-2', 5 => 'fe-check-square'];
+                            $eventIcon = $eventIcons[$eventType] ?? 'fe-grid';
+                            $noteText = trim((string)($grade['note'] ?? ''));
                             $teacherFirstName = trim((string)($grade['teacher_fname'] ?? ''));
                             $teacherLastName = trim((string)($grade['teacher_lname'] ?? ''));
                             $teacherName = $teacherFirstName !== '' && $teacherFirstName === $teacherLastName
                                 ? $teacherFirstName
                                 : trim($teacherFirstName . ' ' . $teacherLastName);
-                            if ($teacherName === '') $teacherName = (string)($grade['teacher_username'] ?? 'استاد نامشخص');
+                            if ($teacherName === '' || in_array($teacherName, ['..', '—', '-'], true)) {
+                                $teacherName = (string)($grade['teacher_username'] ?? 'استاد نامشخص');
+                            }
                             $courseName = trim((string)($grade['coursename'] ?? ''));
                             $className = trim((string)($grade['class_name'] ?? ''));
                             $lessonName = trim((string)($grade['dars_name'] ?? '')) ?: 'درس نامشخص';
-                            $gradeModalId = 'gradeDetails' . (int)$grade['id'];
+                            $gradeModalId = 'gradeDetails' . (int)$grade['event_id'];
                         ?>
                             <div class="col-12 col-xl-6 mb-3">
                                 <div class="card custom-card grade-card h-100 mb-0">
                                     <div class="card-body d-flex align-items-start" style="gap:16px">
-                                        <?php if ($isQualityAssessment): ?>
+                                        <?php if ($eventType === 3): ?>
+                                            <div class="grade-score"><span><i class="fe <?php echo $eventIcon; ?>"></i></span><small>توضیحات</small></div>
+                                        <?php elseif ($isAttendance): ?>
+                                            <div class="grade-score"><span><i class="fe fe-calendar"></i></span><small><?php echo htmlspecialchars($attendanceValue); ?></small></div>
+                                        <?php elseif ($isQualityAssessment): ?>
                                             <div class="grade-score"><span><i class="fe fe-check-circle"></i></span><small>ارزیابی کیفی</small></div>
                                         <?php else: ?>
-                                            <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small>از <?php echo htmlspecialchars($maxScore); ?></small></div>
+                                            <div class="grade-score"><span><?php echo htmlspecialchars($score); ?></span><small><?php echo $eventType === 4 ? 'تراز آزمون' : 'از ' . htmlspecialchars($maxScore); ?></small></div>
                                         <?php endif; ?>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start flex-wrap mb-2" style="gap:8px">
@@ -179,7 +189,7 @@ include_once '../temp.html';
                                                         <?php echo htmlspecialchars($lessonName); ?>
                                                     </div>
                                                 </div>
-                                                <?php if ($isQualityAssessment): ?><span class="grade-quality"><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></span><?php endif; ?>
+                                                <?php if ($eventType === 3): ?><span class="grade-quality">توضیحات ثبت‌شده</span><?php elseif ($isAttendance): ?><span class="grade-quality"><?php echo htmlspecialchars($attendanceValue); ?></span><?php elseif ($isQualityAssessment): ?><span class="grade-quality"><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></span><?php endif; ?>
                                             </div>
                                             <div class="grade-actions">
                                                 <span class="grade-teacher-brief"><i class="fe fe-user ml-1"></i>استاد: <strong><?php echo htmlspecialchars($teacherName); ?></strong></span>
@@ -196,15 +206,19 @@ include_once '../temp.html';
                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">جزئیات نمره <?php echo htmlspecialchars($lessonName); ?></h5>
+                                            <h5 class="modal-title"><i class="fe <?php echo $eventIcon; ?> ml-1"></i>جزئیات <?php echo htmlspecialchars($eventTypeLabel); ?> <?php echo htmlspecialchars($lessonName); ?></h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="grade-detail-list">
-                                                <?php if ($isQualityAssessment): ?>
+                                                <?php if ($eventType === 3): ?>
+                                                    <div class="grade-detail-item full"><span>متن توضیحات</span><strong><?php echo $noteText !== '' ? nl2br(htmlspecialchars($noteText)) : 'توضیحی ثبت نشده است.'; ?></strong></div>
+                                                <?php elseif ($isAttendance): ?>
+                                                    <div class="grade-detail-item"><span>وضعیت حضور</span><strong><?php echo htmlspecialchars($attendanceValue); ?></strong></div>
+                                                <?php elseif ($isQualityAssessment): ?>
                                                     <div class="grade-detail-item"><span>ارزیابی توصیفی</span><strong><?php echo htmlspecialchars($quality !== '' ? $quality : 'ثبت نشده'); ?></strong></div>
                                                 <?php else: ?>
-                                                    <div class="grade-detail-item"><span>نمره</span><strong><?php echo htmlspecialchars($score); ?> از <?php echo htmlspecialchars($maxScore); ?></strong></div>
+                                                    <div class="grade-detail-item"><span><?php echo $eventType === 4 ? 'تراز آزمون' : 'نمره'; ?></span><strong><?php echo htmlspecialchars($score); ?><?php echo $eventType === 4 ? '' : ' از ' . htmlspecialchars($maxScore); ?></strong></div>
                                                 <?php endif; ?>
                                                 <div class="grade-detail-item"><span>درس</span><strong><?php echo htmlspecialchars($lessonName); ?></strong></div>
                                                 <div class="grade-detail-item"><span>استاد</span><strong><?php echo htmlspecialchars($teacherName); ?></strong></div>
@@ -213,7 +227,6 @@ include_once '../temp.html';
                                                     <div class="grade-detail-item full"><span>کلاس</span><strong><?php echo htmlspecialchars($className); ?></strong></div>
                                                 <?php endif; ?>
                                                 <div class="grade-detail-item full"><span>تاریخ ثبت</span><strong><?php echo htmlspecialchars(toJalali($dateValue, 'Y/m/d H:i', 'fa')); ?></strong></div>
-                                                <div class="grade-detail-item full"><span>توضیحات استاد</span><strong><?php echo trim((string)($grade['note'] ?? '')) !== '' ? nl2br(htmlspecialchars((string)$grade['note'])) : 'توضیحی ثبت نشده است.'; ?></strong></div>
                                             </div>
                                         </div>
                                         <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button></div>

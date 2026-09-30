@@ -4758,6 +4758,38 @@ function GetStudentVisibleClassGrades(string $studentUsername, int $limit = 100,
     return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 }
 
+/** تمام ستون‌های دفتر کلاسی و ثبت همان دانش‌آموز. */
+function GetStudentVisibleClassRegister(string $studentUsername, int $limit = 300, ?int $codecourse = null): array
+{
+    global $conn;
+    if ($studentUsername === '') return [];
+    $limit = max(1, min(500, $limit));
+    $sql = "SELECT ev.id AS event_id, ev.title, ev.event_date, ev.type, ev.dars_id, ev.max_score, ev.assessment_mode,
+                   ev.created_at AS event_created_at, c.id AS class_id, c.name AS class_name, c.codecourse,
+                   cr.coursename, d.dars AS dars_name, a.fname AS teacher_fname, a.lname AS teacher_lname,
+                   a.username AS teacher_username, e.score, e.quality, e.note, e.created_at,
+                   att.status AS attendance_status
+            FROM register_class_events ev
+            INNER JOIN classes c ON c.id = ev.class_id
+            INNER JOIN dbcourse dc ON dc.class_id = c.id AND dc.username = ? AND dc.activityuser = 1
+            INNER JOIN codtbl_course cr ON cr.codecourse = c.codecourse
+            LEFT JOIN dbdars d ON d.id = ev.dars_id
+            LEFT JOIN dbadmin a ON a.idadmin = ev.teacher_id
+            LEFT JOIN register_class_evaluation e ON e.register_class_events_id = ev.id
+                AND e.username = ? AND e.visibility_target IN ('student','both')
+            LEFT JOIN register_class_attendance att ON att.register_class_events_id = ev.id AND att.username = ?
+            WHERE 1=1
+              " . (($codecourse !== null && $codecourse > 0) ? " AND c.codecourse = ?" : "") . "
+            ORDER BY COALESCE(ev.event_date, DATE(COALESCE(e.created_at, att.created_at, ev.created_at))) DESC,
+                     COALESCE(e.created_at, att.created_at, ev.created_at) DESC, ev.id DESC
+            LIMIT {$limit}";
+    $params = [$studentUsername, $studentUsername, $studentUsername];
+    if ($codecourse !== null && $codecourse > 0) $params[] = $codecourse;
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+}
+
 /** Lessons belonging to the student's active classes, optionally limited to one course. */
 function GetStudentActiveClassLessons(string $studentUsername, ?int $codecourse = null): array
 {
